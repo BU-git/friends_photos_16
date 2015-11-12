@@ -1,6 +1,6 @@
 package com.bionic.fp.dao;
 
-import com.bionic.fp.entity.Groups;
+import com.bionic.fp.domain.Group;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -11,7 +11,7 @@ import javax.persistence.PersistenceContext;
  */
 
 @Repository
-public class GroupsDAO implements GenericDAO<Groups, Long> {
+public class GroupsDAO implements GenericDAO<Group, Long> {
 
     @PersistenceContext(unitName = "entityManager")
     private EntityManager entityManager;
@@ -19,18 +19,18 @@ public class GroupsDAO implements GenericDAO<Groups, Long> {
     public GroupsDAO(){}
 
     @Override
-    public Long create(Groups newInstance) {
+    public Long create(Group newInstance) {
         entityManager.persist(newInstance);
         return newInstance.getId();
     }
 
     @Override
-    public Groups read(Long id) {
-        return entityManager.find(Groups.class, id);
+    public Group read(Long id) {
+        return entityManager.find(Group.class, id);
     }
 
     @Override
-    public Groups update(Groups transientObject) {
+    public Group update(Group transientObject) {
         entityManager.merge(transientObject);
         return transientObject;
     }

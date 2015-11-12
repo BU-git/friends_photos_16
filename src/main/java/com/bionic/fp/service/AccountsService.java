@@ -1,7 +1,7 @@
 package com.bionic.fp.service;
 
 import com.bionic.fp.dao.AccountsDAO;
-import com.bionic.fp.entity.Accounts;
+import com.bionic.fp.domain.Account;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -20,7 +20,7 @@ public class AccountsService {
 
     public AccountsService() {}
 
-    public Long addAccount(Accounts account) {
+    public Long addAccount(Account account) {
         if (account == null) return null;
         return accountsDAO.create(account);
     }

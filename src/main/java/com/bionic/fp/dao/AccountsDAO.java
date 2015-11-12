@@ -1,6 +1,6 @@
 package com.bionic.fp.dao;
 
-import com.bionic.fp.entity.Accounts;
+import com.bionic.fp.domain.Account;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -11,7 +11,7 @@ import javax.persistence.PersistenceContext;
  */
 
 @Repository
-public class AccountsDAO implements GenericDAO<Accounts, Long> {
+public class AccountsDAO implements GenericDAO<Account, Long> {
 
     @PersistenceContext(unitName = "entityManager")
     private EntityManager entityManager;
@@ -19,18 +19,18 @@ public class AccountsDAO implements GenericDAO<Accounts, Long> {
     public AccountsDAO() {}
 
     @Override
-    public Long create(Accounts newInstance) {
+    public Long create(Account newInstance) {
         entityManager.persist(newInstance);
         return newInstance.getId();
     }
 
     @Override
-    public Accounts read(Long id) {
-        return entityManager.find(Accounts.class, id);
+    public Account read(Long id) {
+        return entityManager.find(Account.class, id);
     }
 
     @Override
-    public Accounts update(Accounts transientObject) {
+    public Account update(Account transientObject) {
         entityManager.merge(transientObject);
         return transientObject;
     }

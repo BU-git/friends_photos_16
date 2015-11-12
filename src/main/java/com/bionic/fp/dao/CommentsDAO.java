@@ -1,7 +1,6 @@
 package com.bionic.fp.dao;
 
-import com.bionic.fp.entity.Accounts;
-import com.bionic.fp.entity.Comments;
+import com.bionic.fp.domain.Comment;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -12,7 +11,7 @@ import javax.persistence.PersistenceContext;
  */
 
 @Repository
-public class CommentsDAO implements GenericDAO<Comments, Long> {
+public class CommentsDAO implements GenericDAO<Comment, Long> {
 
     @PersistenceContext(unitName = "entityManager")
     private EntityManager entityManager;
@@ -20,18 +19,18 @@ public class CommentsDAO implements GenericDAO<Comments, Long> {
     public CommentsDAO() {}
 
     @Override
-    public Long create(Comments newInstance) {
+    public Long create(Comment newInstance) {
         entityManager.persist(newInstance);
         return newInstance.getId();
     }
 
     @Override
-    public Comments read(Long id) {
-        return entityManager.find(Comments.class, id);
+    public Comment read(Long id) {
+        return entityManager.find(Comment.class, id);
     }
 
     @Override
-    public Comments update(Comments transientObject) {
+    public Comment update(Comment transientObject) {
         entityManager.merge(transientObject);
         return transientObject;
     }

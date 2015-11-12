@@ -1,6 +1,6 @@
 package com.bionic.fp.dao;
 
-import com.bionic.fp.entity.Photos;
+import com.bionic.fp.domain.Photo;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -11,7 +11,7 @@ import javax.persistence.PersistenceContext;
  */
 
 @Repository
-public class PhotosDAO implements GenericDAO<Photos, Long> {
+public class PhotosDAO implements GenericDAO<Photo, Long> {
 
     @PersistenceContext(unitName = "entityManager")
     private EntityManager entityManager;
@@ -19,18 +19,18 @@ public class PhotosDAO implements GenericDAO<Photos, Long> {
     public PhotosDAO() {}
 
     @Override
-    public Long create(Photos newInstance) {
+    public Long create(Photo newInstance) {
         entityManager.persist(newInstance);
         return newInstance.getId();
     }
 
     @Override
-    public Photos read(Long id) {
-        return entityManager.find(Photos.class, id);
+    public Photo read(Long id) {
+        return entityManager.find(Photo.class, id);
     }
 
     @Override
-    public Photos update(Photos transientObject) {
+    public Photo update(Photo transientObject) {
         entityManager.merge(transientObject);
         return transientObject;
     }
