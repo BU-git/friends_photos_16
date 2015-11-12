@@ -8,9 +8,9 @@ public class AccountGroupConnection {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Account account;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Group group;
     @Enumerated(EnumType.STRING)
     private Role role;

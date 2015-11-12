@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -11,7 +12,7 @@ import java.util.List;
 public class Account implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @JsonIgnore
     private String password;
     @Column(name = "user_name")
@@ -33,8 +34,8 @@ public class Account implements Serializable {
     private String vkProfileUrl;
     private boolean guest;
     private boolean active;
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-    private List<AccountGroupConnection> repositoryConnections;
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AccountGroupConnection> groupConnections = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -124,12 +125,16 @@ public class Account implements Serializable {
         this.vkProfileUrl = vkProfileUrl;
     }
 
-    public List<AccountGroupConnection> getRepositoryConnections() {
-        return repositoryConnections;
+    public List<AccountGroupConnection> getGroupConnections() {
+        return groupConnections;
     }
 
-    public void setRepositoryConnections(List<AccountGroupConnection> repositoryConnections) {
-        this.repositoryConnections = repositoryConnections;
+    public void setGroupConnections(List<AccountGroupConnection> groupConnections) {
+        this.groupConnections = groupConnections;
+    }
+
+    public void addGroupConnection(AccountGroupConnection groupConnection) {
+        groupConnections.add(groupConnection);
     }
 
     public boolean isGuest() {

@@ -3,6 +3,7 @@ package com.bionic.fp.domain;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -10,27 +11,25 @@ import java.util.List;
 public class Group implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
+    private Long id;
     private String name;
     private String description;
     private Date date;
     @Column(name = "expire_date")
     private Date expireDate;
-    @OneToMany(mappedBy = "group")
-    private List<Photo> photos;
-    @OneToOne
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    private List<Photo> photos = new ArrayList<>();
+    @OneToOne(fetch = FetchType.LAZY)
     private Account owner;
     @Enumerated(EnumType.STRING)
     @Column(name = "group_type")
     private GroupType groupType;
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
-    private List<AccountGroupConnection> accountConnections;
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AccountGroupConnection> accountConnections = new ArrayList<>();
     private double latitude;
     private double longitude;
-
-    @OneToMany
-    private List<Comment> comments;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Comment> comments = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -80,6 +79,10 @@ public class Group implements Serializable {
         this.photos = photos;
     }
 
+    public void addPhoto(Photo photo) {
+        photos.add(photo);
+    }
+
     public Account getOwner() {
         return owner;
     }
@@ -104,12 +107,20 @@ public class Group implements Serializable {
         this.accountConnections = accountConnections;
     }
 
+    public void addAccountConnection(AccountGroupConnection accountConnection) {
+        accountConnections.add(accountConnection);
+    }
+
     public List<Comment> getComments() {
         return comments;
     }
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
     }
 
     public double getLatitude() {

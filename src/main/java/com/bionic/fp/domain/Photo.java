@@ -3,6 +3,7 @@ package com.bionic.fp.domain;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,12 +16,12 @@ public class Photo implements Serializable {
     private String url;
     @Column(name = "preview_url")
     private String previewUrl;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Group group;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Account owner;
-    @OneToMany
-    private List<Comment> comments;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Comment> comments = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -72,6 +73,10 @@ public class Photo implements Serializable {
 
     public List<Comment> getComments() {
         return comments;
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
     }
 
     public void setComments(List<Comment> comments) {

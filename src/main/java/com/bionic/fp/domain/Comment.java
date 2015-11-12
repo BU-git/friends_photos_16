@@ -12,7 +12,7 @@ public class Comment implements Serializable {
     private Long id;
     private String text;
     private Date date;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Account author;
 
     public long getId() {
