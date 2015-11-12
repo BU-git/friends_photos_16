@@ -1,8 +1,10 @@
 package com.bionic.fp.domain;
 
+import com.bionic.fp.util.LocalDateTimePersistenceConverter;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +14,8 @@ public class Photo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Date date;
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
+    private LocalDateTime date;
     private String url;
     @Column(name = "preview_url")
     private String previewUrl;
@@ -31,11 +34,11 @@ public class Photo implements Serializable {
         this.id = id;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

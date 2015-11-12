@@ -1,8 +1,10 @@
 package com.bionic.fp.domain;
 
+import com.bionic.fp.util.LocalDateTimePersistenceConverter;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,9 +16,11 @@ public class Group implements Serializable {
     private Long id;
     private String name;
     private String description;
-    private Date date;
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
+    private LocalDateTime date;
     @Column(name = "expire_date")
-    private Date expireDate;
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
+    private LocalDateTime expireDate;
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     private List<Photo> photos = new ArrayList<>();
     @OneToOne(fetch = FetchType.LAZY)
@@ -55,19 +59,19 @@ public class Group implements Serializable {
         this.description = description;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
-    public Date getExpireDate() {
+    public LocalDateTime getExpireDate() {
         return expireDate;
     }
 
-    public void setExpireDate(Date expireDate) {
+    public void setExpireDate(LocalDateTime expireDate) {
         this.expireDate = expireDate;
     }
 

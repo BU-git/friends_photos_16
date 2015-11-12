@@ -1,8 +1,10 @@
 package com.bionic.fp.domain;
 
+import com.bionic.fp.util.LocalDateTimePersistenceConverter;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comments")
@@ -11,7 +13,8 @@ public class Comment implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String text;
-    private Date date;
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
+    private LocalDateTime date;
     @ManyToOne(fetch = FetchType.LAZY)
     private Account author;
 
@@ -31,11 +34,11 @@ public class Comment implements Serializable {
         this.text = text;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
