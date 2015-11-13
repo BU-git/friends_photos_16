@@ -1,7 +1,7 @@
 package com.bionic.fp;
 
-import com.bionic.fp.entity.Accounts;
-import com.bionic.fp.service.AccountsService;
+import com.bionic.fp.entity.Account;
+import com.bionic.fp.service.AccountService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -10,15 +10,15 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class Test {
     private static ApplicationContext context;
-    private static AccountsService accountsService;
+    private static AccountService accountsService;
 
     static {
         context = new ClassPathXmlApplicationContext("beans.xml");
-        accountsService = context.getBean(AccountsService.class);
+        accountsService = context.getBean(AccountService.class);
     }
 
     public static void main(String[] args) {
-        Accounts account = new Accounts();
+        Account account = new Account();
         account.setActive(true);
         account.setEmail("xxx@xxx.com");
         account.setUserName("Lozhkin");
