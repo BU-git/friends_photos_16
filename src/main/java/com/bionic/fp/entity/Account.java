@@ -41,7 +41,7 @@ public class Account implements Serializable {
     @Column(name = "profile_image_url")
     private String profileImageURL;
 
-    @Column(name = "userName")
+    @Column(name = "user_name")
     private String userName;
 
     @Column(name = "vk_id")

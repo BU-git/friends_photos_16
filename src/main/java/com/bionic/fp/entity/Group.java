@@ -31,6 +31,9 @@ public class Group implements Serializable {
     @Column(name = "owner_id")
     private Long ownerID;
 
+    private Double latitude;
+    private Double longitude;
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "account_group",
                 joinColumns = {@JoinColumn(name = "group_id", referencedColumnName = "id")},
@@ -118,16 +121,11 @@ public class Group implements Serializable {
         this.comments = comments;
     }
 
-    @Override
-    public String toString() {
-        return "Group{" +
-                "id=" + id +
-                ", date=" + date +
-                ", description='" + description + '\'' +
-                ", expireDate=" + expireDate +
-                ", groupType='" + groupType + '\'' +
-                ", name='" + name + '\'' +
-                ", ownerID=" + ownerID +
-                '}';
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
     }
 }
