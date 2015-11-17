@@ -5,6 +5,9 @@ import com.bionic.fp.service.AccountService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by boubdyk on 11.11.2015.
  */
@@ -18,11 +21,7 @@ public class Test {
     }
 
     public static void main(String[] args) {
-        Account account = new Account();
-        account.setActive(true);
-        account.setEmail("xxx@xxx.com");
-        account.setUserName("Lozhkin");
-        System.out.println(account);
-        System.out.println(accountsService.addAccount(account));
+        //String fbID, String fbProfile, String fbToken, String userName
+        System.out.println(accountsService.loginByFB("58966666", "fb.com/fbfb", "tokkkken", "Tomas"));
     }
 }

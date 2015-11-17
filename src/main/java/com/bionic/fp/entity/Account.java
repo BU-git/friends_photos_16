@@ -48,7 +48,7 @@ public class Account implements Serializable {
     private String vkID;
 
     @Column(name = "vk_profile_url")
-    private String vkProfileURL;
+    private String vkProfile;
 
     @Column(name = "vk_token")
     private String vkToken;
@@ -60,6 +60,28 @@ public class Account implements Serializable {
     private List<Group> groups;
 
     public Account(){}
+
+    public Account(boolean active, String fbID, String fbProfile, String fbToken, String userName) {
+        this.active = active;
+        this.fbID = fbID;
+        this.fbProfile = fbProfile;
+        this.fbToken = fbToken;
+        this.userName = userName;
+    }
+
+    public Account(String vkID, String vkProfileURL, String vkToken, String userName) {
+        this.vkID = vkID;
+        this.vkProfile = vkProfileURL;
+        this.vkToken = vkToken;
+        this.userName = userName;
+    }
+
+    public Account(boolean active, String email, String userName, String password) {
+        this.active = active;
+        this.email = email;
+        this.userName = userName;
+        this.password = password;
+    }
 
     public Long getId() {
         return id;
@@ -149,12 +171,12 @@ public class Account implements Serializable {
         this.vkID = vkID;
     }
 
-    public String getVkProfileURL() {
-        return vkProfileURL;
+    public String getVkProfile() {
+        return vkProfile;
     }
 
-    public void setVkProfileURL(String vkProfileURL) {
-        this.vkProfileURL = vkProfileURL;
+    public void setVkProfile(String vkProfile) {
+        this.vkProfile = vkProfile;
     }
 
     public String getVkToken() {
@@ -187,7 +209,7 @@ public class Account implements Serializable {
                 ", profileImageURL='" + profileImageURL + '\'' +
                 ", userName='" + userName + '\'' +
                 ", vkID='" + vkID + '\'' +
-                ", vkProfileURL='" + vkProfileURL + '\'' +
+                ", vkProfile='" + vkProfile + '\'' +
                 ", vkToken='" + vkToken + '\'' +
                 '}';
     }
