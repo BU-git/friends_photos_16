@@ -3,10 +3,17 @@ package com.bionic.fp.rest;
 import com.bionic.fp.exception.*;
 import com.bionic.fp.jsonhelper.FromJSONParser;
 import com.bionic.fp.service.AccountService;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import org.json.simple.JSONObject;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -15,10 +22,7 @@ import javax.ws.rs.core.Response;
 /**
  * Created by boubdyk on 15.11.2015.
  */
-
-//TODO
-
-@Path("/account")
+@RestController("/account")
 public class AccountRESTService {
 
     private static ApplicationContext context;
@@ -49,33 +53,37 @@ public class AccountRESTService {
      * @param input input JSON object.
      * @return error code and JSON.
      */
-    @POST
-    @Path("/fb")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public final Response loginByFB(final String input) {
+	@RequestMapping(
+			value = "/fb",
+			method = RequestMethod.POST,
+			consumes  = "application/json",
+			produces = "application/json")
+    public final ResponseEntity loginByFB(@RequestBody final String input) {
         JSONObject inputObject = parser.parse(input);
         JSONObject returnObject;
         String fbID = (String)inputObject.get("fbID");
         if (StringUtils.isEmpty(fbID)) {
-            return Response.status(Constants.CODE_NOT_MODIFIED).entity(errorMsgToJson("Facebook id is empty or null")).build();
+			return new ResponseEntity<String>("Facebook id is empty or null", HttpStatus.BAD_REQUEST);
         }
         String fbProfile = (String)inputObject.get("fbProfile");
         if (StringUtils.isEmpty(fbProfile)) {
-            return Response.status(Constants.CODE_NOT_MODIFIED).entity(errorMsgToJson("Facebook profile URL is empty or null")).build();
+			return new ResponseEntity<String>("Facebook profile URL is empty or null", HttpStatus.BAD_REQUEST);
         }
         String fbToken = (String)inputObject.get("fbToken");
         if (StringUtils.isEmpty(fbToken)) {
-            return Response.status(Constants.CODE_NOT_MODIFIED).entity(errorMsgToJson("Facebook token is empty or null")).build();
+			return new ResponseEntity<String>("Facebook token is empty or null", HttpStatus.BAD_REQUEST);
         }
         String userName = (String)inputObject.get("userName");
         if (StringUtils.isEmpty(userName)) {
-            return Response.status(Constants.CODE_NOT_MODIFIED).entity(errorMsgToJson("Facebook user name is empty or null")).build();
+			return new ResponseEntity<String>("Facebook userName is empty or null", HttpStatus.BAD_REQUEST);
         }
-        Long userID = accountService.loginByFB(fbID, fbProfile, fbToken, userName);
-        returnObject = new JSONObject();
-        returnObject.put("userID", userID);
-        return Response.status(Constants.CODE_CREATED).entity(returnObject).build();
+		try {
+			Long userID = accountService.loginByFB(fbID, fbProfile, fbToken, userName);
+			return new ResponseEntity<String>("{userID: \"" + userID + "\"}", HttpStatus.CREATED);
+		}
+		catch (Exception e) { // FIXME use more narrow exception type
+			return new ResponseEntity<String>("null", HttpStatus.BAD_REQUEST);
+		}
     }
 
     //TODO generate gson error report. (CODE NOT MODIFIED)
