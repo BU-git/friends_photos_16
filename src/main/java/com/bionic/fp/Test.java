@@ -22,6 +22,6 @@ public class Test {
 
     public static void main(String[] args) {
         //String fbID, String fbProfile, String fbToken, String userName
-        System.out.println(accountsService.loginByFB("58966666", "fb.com/fbfb", "tokkkken", "Tomas"));
+        //System.out.println(accountsService.loginByFB("58966666", "fb.com/fbfb", "tokkkken", "Tomas"));
     }
 }

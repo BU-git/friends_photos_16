@@ -1,6 +1,6 @@
 package com.bionic.fp.dao;
 
-import com.bionic.fp.entity.Photo;
+import com.bionic.fp.domain.Photo;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

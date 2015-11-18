@@ -13,29 +13,50 @@ public class Account implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @JsonIgnore
     private String password;
+
     @Column(name = "user_name")
     private String userName;
+
     private String email;
+
     @Column(name = "profile_image_url")
     private String profileImageUrl;
+
     @Column(name = "fb_id")
-    private String facebookId;
+    private String fbId;
+
     @Column(name = "fb_profile_url")
-    private String facebookProfileUrl;
+    private String fbProfileUrl;
+
     @Column(name = "fb_token")
-    private String facebookToken;
+    private String fbToken;
+
     @Column(name = "vk_id")
     private String vkId;
+
     @Column(name = "vk_token")
     private String vkToken;
+
     @Column(name = "vk_profile_url")
     private String vkProfileUrl;
+
     private boolean guest;
-    private boolean active;
+
+    private boolean active = true;
+
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<AccountGroupConnection> groupConnections = new ArrayList<>();
+
+    public Account() {}
+
+    public Account(String email, String userName, String password) {
+        this.email = email;
+        this.userName = userName;
+        this.password = password;
+    }
 
     public long getId() {
         return id;
@@ -78,27 +99,27 @@ public class Account implements Serializable {
     }
 
     public String getFacebookId() {
-        return facebookId;
+        return fbId;
     }
 
     public void setFacebookId(String facebookId) {
-        this.facebookId = facebookId;
+        this.fbId = facebookId;
     }
 
     public String getFacebookToken() {
-        return facebookToken;
+        return fbToken;
     }
 
     public void setFacebookToken(String facebookToken) {
-        this.facebookToken = facebookToken;
+        this.fbToken = facebookToken;
     }
 
     public String getFacebookProfileUrl() {
-        return facebookProfileUrl;
+        return fbProfileUrl;
     }
 
     public void setFacebookProfileUrl(String facebookProfileUrl) {
-        this.facebookProfileUrl = facebookProfileUrl;
+        this.fbProfileUrl = facebookProfileUrl;
     }
 
     public String getVkId() {
@@ -159,9 +180,9 @@ public class Account implements Serializable {
                 "id=" + id +
                 ", active=" + active +
                 ", email='" + email + '\'' +
-                ", fbID='" + facebookId + '\'' +
-                ", fbProfile='" + facebookProfileUrl + '\'' +
-                ", fbToken='" + facebookToken + '\'' +
+                ", fbID='" + fbId + '\'' +
+                ", fbProfile='" + fbProfileUrl + '\'' +
+                ", fbToken='" + fbToken + '\'' +
                 ", guest=" + guest +
                 ", password='" + password + '\'' +
                 ", profileImageURL='" + profileImageUrl + '\'' +

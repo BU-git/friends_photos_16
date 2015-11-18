@@ -54,6 +54,10 @@ public class FBUserInfoResponse {
         this.error = error;
     }
 
+    public boolean hasError() {
+        return error != null;
+    }
+
     @Override
     public String toString() {
         return "FBUserInfoResponse{" +

@@ -1,6 +1,6 @@
 package com.bionic.fp.dao;
 
-import com.bionic.fp.entity.Comment;
+import com.bionic.fp.domain.Comment;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

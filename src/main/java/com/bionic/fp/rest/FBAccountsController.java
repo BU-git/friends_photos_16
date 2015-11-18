@@ -4,15 +4,15 @@ import com.bionic.fp.domain.Account;
 import com.bionic.fp.rest.json.FBUserInfoResponse;
 import com.bionic.fp.rest.json.AuthResponse;
 import com.bionic.fp.rest.json.FBUserTokenInfo;
-import com.bionic.fp.service.AccountsService;
+import com.bionic.fp.service.AccountService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.io.IOException;
 
@@ -25,7 +25,10 @@ public class FBAccountsController {
             "https://graph.facebook.com/%s?fields=name,email&access_token=%s";
 
     @Inject
-    private AccountsService accountsService;
+    private AccountService accountService;
+
+    @Inject
+    private RestTemplate restTemplate;
 
     @Value("${fb.key}")
     private String appKey;
@@ -37,40 +40,35 @@ public class FBAccountsController {
     public AuthResponse loginViaFacebook(@RequestParam(name = "fbId") String fbId,
                                          @RequestParam(name = "fbToken") String token) {
 
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-        restTemplate.setErrorHandler(new ResponseErrorHandler() {
-            @Override
-            public boolean hasError(ClientHttpResponse response) throws IOException {
-                return false;
-            }
-
-            @Override
-            public void handleError(ClientHttpResponse response) throws IOException {
-
-            }
-        });
+        AuthResponse authResponse = new AuthResponse();
 
         FBUserTokenInfo fbUserTokenInfo =
                 restTemplate.getForObject(String.format(DEBUG_TOKEN_URL, token, appKey, appSecret), FBUserTokenInfo.class);
 
         if (fbUserTokenInfo == null) {
-            return new AuthResponse(AuthResponse.SERVER_PROBLEM);
-        } else if (!fbUserTokenInfo.getData().isValid()) {
-            return new AuthResponse(AuthResponse.BAD_FB_TOKEN, fbUserTokenInfo.getData().getError().getMessage());
+            authResponse.setCode(AuthResponse.SERVER_PROBLEM);
+            authResponse.setMessage("Unable to verify token.");
+            return authResponse;
+        }
+
+        if (fbUserTokenInfo.hasError()) {
+            authResponse.setCode(AuthResponse.BAD_FB_TOKEN);
+            authResponse.setMessage(fbUserTokenInfo.getData().getError().getMessage());
+            return authResponse;
         }
 
         FBUserInfoResponse userInfo
                 = restTemplate.getForObject(String.format(REQUEST_USER_INFO_URL, fbId, token), FBUserInfoResponse.class);
 
-        if (userInfo.getError() != null) {
-            return new AuthResponse(AuthResponse.BAD_FB_TOKEN, userInfo.getError().getMessage());
+        if (userInfo.hasError()) {
+            authResponse.setCode(AuthResponse.BAD_FB_TOKEN);
+            authResponse.setMessage(userInfo.getError().getMessage());
+            return authResponse;
         }
 
-        Account account = accountsService.getOrCreateAccountForFBId(userInfo.getId(),
+        Account account = accountService.getOrCreateAccountForFBId(userInfo.getId(),
                 userInfo.getName(), userInfo.getEmail());
 
-        AuthResponse authResponse = new AuthResponse();
         authResponse.setCode(AuthResponse.AUTHENTICATED);
         authResponse.setUserId(String.valueOf(account.getId()));
         authResponse.setToken("");//TODO: set valid access token here
@@ -84,5 +82,20 @@ public class FBAccountsController {
 
     public void setAppKey(String appKey) {
         this.appKey = appKey;
+    }
+
+    @PostConstruct
+    public void configure() {
+        restTemplate.setErrorHandler(new ResponseErrorHandler() {
+            @Override
+            public boolean hasError(ClientHttpResponse response) throws IOException {
+                return false;
+            }
+
+            @Override
+            public void handleError(ClientHttpResponse response) throws IOException {
+
+            }
+        });
     }
 }

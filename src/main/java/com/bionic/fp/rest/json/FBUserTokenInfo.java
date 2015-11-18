@@ -25,6 +25,10 @@ public class FBUserTokenInfo {
         this.data = data;
     }
 
+    public boolean hasError() {
+        return data != null && data.error != null;
+    }
+
     @Override
     public String toString() {
         return "FBUserTokenInfo{" +

@@ -1,9 +1,9 @@
 package com.bionic.fp.service;
 
 import com.bionic.fp.dao.AccountDAO;
-import com.bionic.fp.entity.Account;
+import com.bionic.fp.domain.Account;
 import com.bionic.fp.exception.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -17,6 +17,7 @@ import javax.persistence.NoResultException;
 @Named
 @Transactional
 public class AccountService {
+    public static final String FACEBOOK_BASE_URL = "https://www.facebook.com/";
 
     @Inject
     private AccountDAO accountDAO;
@@ -48,12 +49,12 @@ public class AccountService {
         }
         if (fbID != null) {
             try {
-                account = accountDAO.getByFB(fbID);
+                account = accountDAO.getByFBId(fbID);
                 return true;
             } catch (NoResultException nre) {
                 return false;
             }
-//            return accountDAO.getByFB(fbID) != null ? true : false;
+//            return accountDAO.getByFBId(fbID) != null ? true : false;
         }
         if (vkID != null) {
             try {
@@ -65,57 +66,6 @@ public class AccountService {
 //            return accountDAO.getByVK(vkID) != null ? true : false;
         }
         return false;
-    }
-
-    /**
-     * Used to register user by FB. If user exist method return user id. If user doesn't exist method
-     * create new user in DB and return his id.
-     * @param fbID users FB unique identifier.
-     * @param fbProfile users FB url.
-     * @param fbToken users FB token.
-     * @param userName users name from FB.
-     * @return user unique identifier.
-     */
-    public Long loginByFB(String fbID, String fbProfile, String fbToken, String userName) {
-        if (isExist(null, fbID, null)) {
-            Account account = accountDAO.getByFB(fbID);
-            account.setActive(true);
-            accountDAO.update(account);
-            return account.getId();
-        } else {
-            Account account = new Account(true, fbID, fbProfile, fbToken, userName);
-
-            //TODO Set nullable true for email!!!
-            account.setEmail("mylo!!!");
-
-            return accountDAO.create(account);
-        }
-    }
-
-    /**
-     * Used to register user by VK. If user exist method return user id. If user doesn't exist method
-     * create new user in DB and return his id.
-     * @param vkID users VK unique identifier.
-     * @param vkProfile users VK url.
-     * @param vkToken users VK token.
-     * @param userName users name from VK.
-     * @return user unique identifier.
-     */
-    public Long loginByVK(String vkID, String vkProfile, String vkToken, String userName) {
-        if (isExist(null, null, vkID)) {
-            Account account = accountDAO.getByVK(vkID);
-            account.setActive(true);
-            accountDAO.update(account);
-            return account.getId();
-        } else {
-            Account account = new Account(vkID, vkProfile, vkToken, userName);
-            account.setActive(true);
-
-            //TODO Set nullable true for email!!!
-            account.setEmail("mylo");
-
-            return accountDAO.create(account);
-        }
     }
 
     /**
@@ -145,7 +95,7 @@ public class AccountService {
         if (StringUtils.isEmpty(password)) {
             throw new EmptyPasswordException();
         }
-        account = new Account(true, email, userName, password);
+        account = new Account(email, userName, password);
         return accountDAO.create(account);
 
     }
@@ -179,5 +129,38 @@ public class AccountService {
         account.setActive(true);
         accountDAO.update(account);
         return account.getId();
+    }
+
+    /**
+     * Get account with specified facebook id or email, or creates new account if such account not found
+     * @param facebookId facebook id
+     * @param name user name
+     * @param email user email
+     * @return existing or new account
+     */
+    public Account getOrCreateAccountForFBId(String facebookId, String name, String email) {
+        Account account;
+        try {
+            account = accountDAO.getByFBId(facebookId);
+            return account;
+        } catch (NoResultException ignored) {}
+
+        if (email != null && !"".equals(email.trim())) {
+            try {
+                account = accountDAO.getByEmail(email);
+                account.setFacebookId(facebookId);
+                account.setFacebookProfileUrl(FACEBOOK_BASE_URL + facebookId);
+                return account;
+            } catch (NoResultException ignored) {}
+        }
+
+        // no account at all
+        account = new Account();
+        account.setUserName(name);
+        account.setEmail(email);
+        account.setFacebookId(facebookId);
+        account.setFacebookProfileUrl(FACEBOOK_BASE_URL + facebookId);
+        accountDAO.create(account);
+        return account;
     }
 }

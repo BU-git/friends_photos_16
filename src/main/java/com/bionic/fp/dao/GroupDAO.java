@@ -1,6 +1,6 @@
 package com.bionic.fp.dao;
 
-import com.bionic.fp.entity.Group;
+import com.bionic.fp.domain.Group;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
