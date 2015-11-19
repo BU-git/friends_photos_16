@@ -40,6 +40,7 @@ public class GroupController {
         group.setLongitude(groupDto.getLongitude());
         group.setLatitude(groupDto.getLatitude());
         group.setDate(LocalDateTime.now());
+        group.setVisible(groupDto.isVisible());
 
         this.groupService.addGroup(group);
     }

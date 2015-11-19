@@ -34,6 +34,7 @@ public class Group implements Serializable {
     private Double longitude;
     @OneToMany(fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
+    private boolean visible = true;
 
     public Long getId() {
         return id;
@@ -149,6 +150,14 @@ public class Group implements Serializable {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     @Override

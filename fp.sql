@@ -1,62 +1,37 @@
-CREATE DATABASE  IF NOT EXISTS `friendsphotos` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `friendsphotos`;
--- MySQL dump 10.13  Distrib 5.7.9, for Win32 (AMD64)
+-- phpMyAdmin SQL Dump
+-- version 3.4.10.1deb1
+-- http://www.phpmyadmin.net
 --
--- Host: 127.0.0.1    Database: friendsphotos
--- ------------------------------------------------------
--- Server version	5.7.9
+-- Хост: localhost
+-- Время создания: Ноя 15 2015 г., 22:17
+-- Версия сервера: 5.5.46
+-- Версия PHP: 5.3.10-1ubuntu3.21
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `account_group`
+-- База данных: `friendsphotos`
 --
 
-DROP TABLE IF EXISTS `account_group`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `account_group` (
-  `id` bigint(20) NOT NULL,
-  `role` varchar(255) DEFAULT NULL,
-  `account_id` bigint(20) DEFAULT NULL,
-  `group_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKk8hu2h76qobbyl54968qygbk` (`account_id`),
-  KEY `FKklf0v50gkwrrr6ondf993ixm9` (`group_id`),
-  CONSTRAINT `FKk8hu2h76qobbyl54968qygbk` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`),
-  CONSTRAINT `FKklf0v50gkwrrr6ondf993ixm9` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `account_group`
+-- Структура таблицы `accounts`
+--
+-- Создание: Ноя 15 2015 г., 20:04
 --
 
-LOCK TABLES `account_group` WRITE;
-/*!40000 ALTER TABLE `account_group` DISABLE KEYS */;
-/*!40000 ALTER TABLE `account_group` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `accounts`
---
-
-DROP TABLE IF EXISTS `accounts`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `accounts` (
+CREATE TABLE IF NOT EXISTS `accounts` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `active` bit(1) NOT NULL,
-  `email` varchar(255) NOT NULL,
+  `email` varchar(255),
   `fb_id` varchar(255) DEFAULT NULL,
   `fb_profile_url` varchar(255) DEFAULT NULL,
   `fb_token` varchar(255) DEFAULT NULL,
@@ -68,53 +43,53 @@ CREATE TABLE `accounts` (
   `vk_profile_url` varchar(255) DEFAULT NULL,
   `vk_token` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `accounts`
+-- Структура таблицы `accounts_groups`
+--
+-- Создание: Ноя 15 2015 г., 20:15
 --
 
-LOCK TABLES `accounts` WRITE;
-/*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
-UNLOCK TABLES;
+CREATE TABLE IF NOT EXISTS `accounts_groups` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `role_id` int(11) NOT NULL DEFAULT '1',
+  `account_id` bigint(20) DEFAULT NULL,
+  `group_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKk8hu2h76qobbyl54968qygbk` (`account_id`),
+  KEY `FKklf0v50gkwrrr6ondf993ixm9` (`group_id`),
+  KEY `role_id` (`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `comments`
+-- Структура таблицы `comments`
+--
+-- Создание: Ноя 15 2015 г., 20:04
 --
 
-DROP TABLE IF EXISTS `comments`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `comments` (
+CREATE TABLE IF NOT EXISTS `comments` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT NULL,
   `text` varchar(255) DEFAULT NULL,
   `author_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `FKkme10xlodeckscmx4urfb50q5` (`author_id`),
-  CONSTRAINT `FKkme10xlodeckscmx4urfb50q5` FOREIGN KEY (`author_id`) REFERENCES `accounts` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  KEY `FKkme10xlodeckscmx4urfb50q5` (`author_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `comments`
+-- Структура таблицы `groups`
+--
+-- Создание: Ноя 15 2015 г., 20:04
 --
 
-LOCK TABLES `comments` WRITE;
-/*!40000 ALTER TABLE `comments` DISABLE KEYS */;
-/*!40000 ALTER TABLE `comments` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `groups`
---
-
-DROP TABLE IF EXISTS `groups`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `groups` (
+CREATE TABLE IF NOT EXISTS `groups` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
@@ -124,55 +99,35 @@ CREATE TABLE `groups` (
   `longitude` double NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `owner_id` bigint(20) DEFAULT NULL,
+  `visible` bit(1) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `FKm8hjkaiexhs4km0ewx539sk1k` (`owner_id`),
-  CONSTRAINT `FKm8hjkaiexhs4km0ewx539sk1k` FOREIGN KEY (`owner_id`) REFERENCES `accounts` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  KEY `FKm8hjkaiexhs4km0ewx539sk1k` (`owner_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `groups`
+-- Структура таблицы `groups_comments`
+--
+-- Создание: Ноя 15 2015 г., 20:04
 --
 
-LOCK TABLES `groups` WRITE;
-/*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-/*!40000 ALTER TABLE `groups` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `groups_comments`
---
-
-DROP TABLE IF EXISTS `groups_comments`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `groups_comments` (
-  `Group_id` bigint(20) NOT NULL,
+CREATE TABLE IF NOT EXISTS `groups_comments` (
+  `group_id` bigint(20) NOT NULL,
   `comments_id` bigint(20) NOT NULL,
   UNIQUE KEY `UK_5n6j5b6piu0ilsl2ytw25k9r` (`comments_id`),
-  KEY `FK7olox9xr2lb2n0r9y56wpliap` (`Group_id`),
-  CONSTRAINT `FK7olox9xr2lb2n0r9y56wpliap` FOREIGN KEY (`Group_id`) REFERENCES `groups` (`id`),
-  CONSTRAINT `FKr3fj48hy5rn73obot6niilhpa` FOREIGN KEY (`comments_id`) REFERENCES `comments` (`id`)
+  KEY `FK7olox9xr2lb2n0r9y56wpliap` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `groups_comments`
+-- Структура таблицы `photos`
+--
+-- Создание: Ноя 15 2015 г., 20:04
 --
 
-LOCK TABLES `groups_comments` WRITE;
-/*!40000 ALTER TABLE `groups_comments` DISABLE KEYS */;
-/*!40000 ALTER TABLE `groups_comments` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `photos`
---
-
-DROP TABLE IF EXISTS `photos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `photos` (
+CREATE TABLE IF NOT EXISTS `photos` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT NULL,
   `preview_url` varchar(255) DEFAULT NULL,
@@ -181,54 +136,84 @@ CREATE TABLE `photos` (
   `owner_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKii7cq96qtw9ddno2hcemefp8a` (`group_id`),
-  KEY `FKgy507q953m6ba1ik8vo9ew368` (`owner_id`),
-  CONSTRAINT `FKgy507q953m6ba1ik8vo9ew368` FOREIGN KEY (`owner_id`) REFERENCES `accounts` (`id`),
-  CONSTRAINT `FKii7cq96qtw9ddno2hcemefp8a` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  KEY `FKgy507q953m6ba1ik8vo9ew368` (`owner_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `photos`
+-- Структура таблицы `photos_comments`
+--
+-- Создание: Ноя 15 2015 г., 20:05
 --
 
-LOCK TABLES `photos` WRITE;
-/*!40000 ALTER TABLE `photos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `photos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `photos_comments`
---
-
-DROP TABLE IF EXISTS `photos_comments`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `photos_comments` (
-  `Photo_id` bigint(20) NOT NULL,
+CREATE TABLE IF NOT EXISTS `photos_comments` (
+  `photo_id` bigint(20) NOT NULL,
   `comments_id` bigint(20) NOT NULL,
   UNIQUE KEY `UK_b6d2eeh2ccei3nbrot0fce39g` (`comments_id`),
-  KEY `FK75om0dg3qmoti4upba83j54ob` (`Photo_id`),
-  CONSTRAINT `FK75om0dg3qmoti4upba83j54ob` FOREIGN KEY (`Photo_id`) REFERENCES `photos` (`id`),
-  CONSTRAINT `FKqubsxk100fwyde607ip2neeiy` FOREIGN KEY (`comments_id`) REFERENCES `comments` (`id`)
+  KEY `FK75om0dg3qmoti4upba83j54ob` (`photo_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `photos_comments`
+-- Структура таблицы `roles`
+--
+-- Создание: Ноя 15 2015 г., 20:08
 --
 
-LOCK TABLES `photos_comments` WRITE;
-/*!40000 ALTER TABLE `photos_comments` DISABLE KEYS */;
-/*!40000 ALTER TABLE `photos_comments` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+CREATE TABLE IF NOT EXISTS `roles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `role` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `role` (`role`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+--
+-- Ограничения внешнего ключа сохраненных таблиц
+--
+
+--
+-- Ограничения внешнего ключа таблицы `accounts_groups`
+--
+ALTER TABLE `accounts_groups`
+ADD CONSTRAINT `accounts_groups_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`),
+ADD CONSTRAINT `FKk8hu2h76qobbyl54968qygbk` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`),
+ADD CONSTRAINT `FKklf0v50gkwrrr6ondf993ixm9` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`);
+
+--
+-- Ограничения внешнего ключа таблицы `comments`
+--
+ALTER TABLE `comments`
+ADD CONSTRAINT `FKkme10xlodeckscmx4urfb50q5` FOREIGN KEY (`author_id`) REFERENCES `accounts` (`id`);
+
+--
+-- Ограничения внешнего ключа таблицы `groups`
+--
+ALTER TABLE `groups`
+ADD CONSTRAINT `FKm8hjkaiexhs4km0ewx539sk1k` FOREIGN KEY (`owner_id`) REFERENCES `accounts` (`id`);
+
+--
+-- Ограничения внешнего ключа таблицы `groups_comments`
+--
+ALTER TABLE `groups_comments`
+ADD CONSTRAINT `FK7olox9xr2lb2n0r9y56wpliap` FOREIGN KEY (`Group_id`) REFERENCES `groups` (`id`),
+ADD CONSTRAINT `FKr3fj48hy5rn73obot6niilhpa` FOREIGN KEY (`comments_id`) REFERENCES `comments` (`id`);
+
+--
+-- Ограничения внешнего ключа таблицы `photos`
+--
+ALTER TABLE `photos`
+ADD CONSTRAINT `FKgy507q953m6ba1ik8vo9ew368` FOREIGN KEY (`owner_id`) REFERENCES `accounts` (`id`),
+ADD CONSTRAINT `FKii7cq96qtw9ddno2hcemefp8a` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`);
+
+--
+-- Ограничения внешнего ключа таблицы `photos_comments`
+--
+ALTER TABLE `photos_comments`
+ADD CONSTRAINT `FK75om0dg3qmoti4upba83j54ob` FOREIGN KEY (`Photo_id`) REFERENCES `photos` (`id`),
+ADD CONSTRAINT `FKqubsxk100fwyde607ip2neeiy` FOREIGN KEY (`comments_id`) REFERENCES `comments` (`id`);
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2015-11-12  4:27:09

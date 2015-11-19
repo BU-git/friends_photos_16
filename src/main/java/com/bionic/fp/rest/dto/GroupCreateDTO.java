@@ -12,6 +12,7 @@ public class GroupCreateDTO {
     private String description;
     private GroupType type;
     private Long ownerId;
+    private boolean visible;
     private Double latitude;
     private Double longitude;
 
@@ -64,5 +65,13 @@ public class GroupCreateDTO {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }
