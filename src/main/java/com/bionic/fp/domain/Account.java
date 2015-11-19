@@ -9,6 +9,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "accounts")
+@NamedEntityGraph(name = "Account.groupConnections",
+        attributeNodes = @NamedAttributeNode("groupConnections")
+)
 public class Account implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,6 +51,7 @@ public class Account implements Serializable {
     private boolean active = true;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER) // todo
     private List<AccountGroupConnection> groupConnections = new ArrayList<>();
 
     public Account() {}

@@ -3,10 +3,9 @@ package com.bionic.fp.dao;
 import com.bionic.fp.domain.Account;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -35,6 +34,13 @@ public class AccountDAO implements GenericDAO<Account, Long> {
     @Override
     public Account read(Long id) {
         return entityManager.find(Account.class, id);
+    }
+
+    public Account readWithGroups(final Long id) {
+        EntityGraph graph = this.entityManager.getEntityGraph("Account.groupConnections");
+        Map<String, Object> hints = new HashMap<>();
+        hints.put("javax.persistence.loadgraph", graph);
+        return this.entityManager.find(Account.class, id, hints);
     }
 
     @Override
