@@ -36,6 +36,13 @@ public class AccountDAO implements GenericDAO<Account, Long> {
         return entityManager.find(Account.class, id);
     }
 
+    /**
+     * Returns an account with its groups by the specified id.
+     * Queries an account with setting EAGER for list of groups
+     *
+     * @param id the unique identifier
+     * @return an account with its groups by the specified id
+     */
     public Account readWithGroups(final Long id) {
         EntityGraph graph = this.entityManager.getEntityGraph("Account.groupConnections");
         Map<String, Object> hints = new HashMap<>();

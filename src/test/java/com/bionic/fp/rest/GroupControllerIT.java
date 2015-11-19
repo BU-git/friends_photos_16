@@ -64,6 +64,8 @@ public class GroupControllerIT {
         groupDTO.setDescription("Happy New Year!");
         groupDTO.setType(GroupType.PRIVATE);
         groupDTO.setOwnerId(ownerId);
+        groupDTO.setLatitude(0.0);
+        groupDTO.setLongitude(0.0);
 
         given()
             .body(groupDTO)

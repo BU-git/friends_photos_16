@@ -51,7 +51,6 @@ public class Account implements Serializable {
     private boolean active = true;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER) // todo
     private List<AccountGroupConnection> groupConnections = new ArrayList<>();
 
     public Account() {}

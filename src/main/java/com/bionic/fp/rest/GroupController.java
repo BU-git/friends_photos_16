@@ -37,6 +37,8 @@ public class GroupController {
         group.setDescription(groupDto.getDescription());
         group.setGroupType(groupDto.getType());
         group.setOwner(this.accountService.getByIdWithGroups(groupDto.getOwnerId()));
+        group.setLongitude(groupDto.getLongitude());
+        group.setLatitude(groupDto.getLatitude());
         group.setDate(LocalDateTime.now());
 
         this.groupService.addGroup(group);

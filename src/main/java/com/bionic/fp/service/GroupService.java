@@ -27,8 +27,4 @@ public class GroupService {
         }
         return this.groupDAO.create(group);
     }
-
-//    public void clear() {
-//        this.groupDAO.fi
-//    }
 }

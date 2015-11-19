@@ -3,7 +3,7 @@ package com.bionic.fp.rest.dto;
 import com.bionic.fp.domain.GroupType;
 
 /**
- * todo: comment
+ * Holds group for the client-server communication
  *
  * @author Sergiy Gabriel
  */
@@ -12,6 +12,8 @@ public class GroupCreateDTO {
     private String description;
     private GroupType type;
     private Long ownerId;
+    private Double latitude;
+    private Double longitude;
 
     public GroupCreateDTO() {
     }
@@ -46,5 +48,21 @@ public class GroupCreateDTO {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 }
