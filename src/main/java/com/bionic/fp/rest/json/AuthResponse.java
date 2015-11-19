@@ -10,7 +10,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class AuthResponse {
     public static final int AUTHENTICATED = 0;
     public static final int BAD_FB_TOKEN = 1;
-    public static final int SERVER_PROBLEM = 2;
+    public static final int BAD_VK_TOKEN = 2;
+    public static final int SERVER_PROBLEM = 3;
 
     private int code;
     private String userId;

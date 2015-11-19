@@ -18,6 +18,7 @@ import javax.persistence.NoResultException;
 @Transactional
 public class AccountService {
     public static final String FACEBOOK_BASE_URL = "https://www.facebook.com/";
+    private static final String VK_BASE_URL = "http://vk.com/";
 
     @Inject
     private AccountDAO accountDAO;
@@ -58,12 +59,12 @@ public class AccountService {
         }
         if (vkID != null) {
             try {
-                account = accountDAO.getByVK(vkID);
+                account = accountDAO.getByVKId(vkID);
                 return true;
             } catch (NoResultException nre) {
                 return false;
             }
-//            return accountDAO.getByVK(vkID) != null ? true : false;
+//            return accountDAO.getByVKId(vkID) != null ? true : false;
         }
         return false;
     }
@@ -160,6 +161,21 @@ public class AccountService {
         account.setEmail(email);
         account.setFacebookId(facebookId);
         account.setFacebookProfileUrl(FACEBOOK_BASE_URL + facebookId);
+        accountDAO.create(account);
+        return account;
+    }
+
+    public Account getOrCreateAccountForVKId(String vkId) {
+        Account account;
+        try {
+            account = accountDAO.getByVKId(vkId);
+            return account;
+        } catch (NoResultException ignored) {}
+
+        // no account at all
+        account = new Account();
+        account.setVkId(vkId);
+        account.setVkProfileUrl(VK_BASE_URL + "id" + vkId);
         accountDAO.create(account);
         return account;
     }

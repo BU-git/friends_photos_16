@@ -18,7 +18,7 @@ public class AccountDAO implements GenericDAO<Account, Long> {
 
     public static final String SELECT_ACCOUNT_BY_EMAIL_QUERY = "SELECT a FROM Account a WHERE a.email=:email";
     public static final String SELECT_ACCOUNT_BY_FBID_QUERY = "SELECT a FROM Account a WHERE a.fbId=:fbId";
-    public static final String SELECT_ACCOUNT_BY_VKID_QUERY = "SELECT a FROM Account a WHERE a.vkID=:vkId";
+    public static final String SELECT_ACCOUNT_BY_VKID_QUERY = "SELECT a FROM Account a WHERE a.vkId=:vkId";
     public static final String SELECT_ACCOUNT_BY_USERNAME_QUERY = "SELECT a FROM Account a WHERE a.userName=:userName";
 
     @PersistenceContext(unitName = "entityManager")
@@ -76,7 +76,7 @@ public class AccountDAO implements GenericDAO<Account, Long> {
      * @param vkId users vk unique identifier.
      * @return instance of Account by requested fb id.
      */
-    public Account getByVK(String vkId)  throws NoResultException {
+    public Account getByVKId(String vkId)  throws NoResultException {
         TypedQuery<Account> result = entityManager.createQuery(SELECT_ACCOUNT_BY_VKID_QUERY, Account.class);
         result.setParameter("vkId", vkId);
         return result.getSingleResult();
