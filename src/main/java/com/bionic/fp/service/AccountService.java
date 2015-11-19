@@ -179,4 +179,18 @@ public class AccountService {
         accountDAO.create(account);
         return account;
     }
+
+    public Account getById(final Long id) {
+        if(id == null) {
+            return null;
+        }
+        return this.accountDAO.read(id);
+    }
+
+    public Account getByIdWithGroups(final Long id) {
+        if(id == null) {
+            return null;
+        }
+        return this.accountDAO.readWithGroups(id);
+    }
 }

@@ -9,6 +9,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "accounts")
+@NamedEntityGraph(name = "Account.groupConnections",
+        attributeNodes = @NamedAttributeNode("groupConnections")
+)
 public class Account implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

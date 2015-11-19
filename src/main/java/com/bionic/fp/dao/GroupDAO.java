@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 /**
  * Created by boubdyk on 11.11.2015.
@@ -39,4 +41,9 @@ public class GroupDAO implements GenericDAO<Group, Long> {
     public void delete(Long persistentObjectID) {
         entityManager.remove(read(persistentObjectID));
     }
+
+//    public List<Group> findAll() {
+//        TypedQuery<Group> query = this.entityManager.createQuery("SELECT g FROM Group g", Group.class);
+//        return query.getResultList();
+//    }
 }

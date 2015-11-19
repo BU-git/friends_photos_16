@@ -30,16 +30,17 @@ public class Group implements Serializable {
     private GroupType groupType;
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<AccountGroupConnection> accountConnections = new ArrayList<>();
-    private double latitude;
-    private double longitude;
+    private Double latitude;
+    private Double longitude;
     @OneToMany(fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
+    private boolean visible = true;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -93,6 +94,14 @@ public class Group implements Serializable {
 
     public void setOwner(Account owner) {
         this.owner = owner;
+
+        AccountGroupConnection accountGroup = new AccountGroupConnection();
+        accountGroup.setAccount(owner);
+        accountGroup.setGroup(this);
+        accountGroup.setRole(Role.OWNER);
+
+        this.accountConnections.add(accountGroup);
+        owner.addGroupConnection(accountGroup);
     }
 
     public GroupType getGroupType() {
@@ -127,20 +136,28 @@ public class Group implements Serializable {
         comments.add(comment);
     }
 
-    public double getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     @Override
