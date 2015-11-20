@@ -22,8 +22,6 @@ import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.Assert.assertTrue;
 
 /**
- * todo: comment
- *
  * @author Sergiy Gabriel
  */
 @RunWith(SpringJUnit4ClassRunner.class)
