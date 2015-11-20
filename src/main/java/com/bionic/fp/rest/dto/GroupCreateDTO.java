@@ -1,5 +1,6 @@
 package com.bionic.fp.rest.dto;
 
+import com.bionic.fp.domain.Group;
 import com.bionic.fp.domain.GroupType;
 
 /**
@@ -17,6 +18,26 @@ public class GroupCreateDTO {
     private Double longitude;
 
     public GroupCreateDTO() {
+    }
+
+    public GroupCreateDTO(final Group group) {
+        this.name = group.getName();
+        this.description = group.getDescription();
+        this.ownerId = group.getOwner().getId();
+        this.type = group.getGroupType();
+        this.latitude = group.getLatitude();
+        this.longitude = group.getLongitude();
+        this.visible = group.isVisible();
+    }
+
+    public GroupCreateDTO(final Group group, final Long ownerId) {
+        this.name = group.getName();
+        this.description = group.getDescription();
+        this.ownerId = ownerId;
+        this.type = group.getGroupType();
+        this.latitude = group.getLatitude();
+        this.longitude = group.getLongitude();
+        this.visible = group.isVisible();
     }
 
     public String getName() {

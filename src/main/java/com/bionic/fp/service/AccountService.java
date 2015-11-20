@@ -181,16 +181,10 @@ public class AccountService {
     }
 
     public Account getById(final Long id) {
-        if(id == null) {
-            return null;
-        }
-        return this.accountDAO.read(id);
+        return id == null ? null : this.accountDAO.read(id);
     }
 
     public Account getByIdWithGroups(final Long id) {
-        if(id == null) {
-            return null;
-        }
-        return this.accountDAO.readWithGroups(id);
+        return id == null ? null : this.accountDAO.readWithGroups(id);
     }
 }
