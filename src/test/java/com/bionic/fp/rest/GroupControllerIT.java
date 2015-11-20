@@ -17,6 +17,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static com.bionic.fp.util.DateTimeFormatterConstants.LOCAL_DATE_TIME;
 import static com.jayway.restassured.http.ContentType.JSON;
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.when;
@@ -246,8 +247,7 @@ public class GroupControllerIT {
             .body("name", is(group.getName()))
             .body("type", is(group.getGroupType().toString()))
             .body("description", is(group.getDescription()))
-            // fix format output
-//            .body("date.toString()", is(group.getDate().toString()))
+            .body("date", is(group.getDate().format(LOCAL_DATE_TIME)))
 //            .body("expire_date", is(group.getExpireDate().toString()))
             .body("latitude", is(group.getLatitude()))
             .body("longitude", is(group.getLongitude()))
