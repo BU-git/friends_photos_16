@@ -2,7 +2,12 @@ package com.bionic.fp.rest.dto;
 
 import com.bionic.fp.domain.Group;
 import com.bionic.fp.domain.GroupType;
+import com.bionic.fp.util.LocalDateTimeJsonDeserializer;
+import com.bionic.fp.util.LocalDateTimeJsonSerializer;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.time.LocalDateTime;
 
@@ -16,8 +21,12 @@ public class GroupInfoDTO {
     private Long id;
     private String name;
     private String description;
+    @JsonSerialize(using = LocalDateTimeJsonSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeJsonDeserializer.class)
     private LocalDateTime date;
     @JsonProperty("expire_date")
+    @JsonSerialize(using = LocalDateTimeJsonSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeJsonDeserializer.class)
     private LocalDateTime expireDate;
     private OwnerInfoDTO owner;
     private GroupType type;
