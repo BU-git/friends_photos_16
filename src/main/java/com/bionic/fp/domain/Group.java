@@ -10,9 +10,15 @@ import java.util.List;
 
 @Entity
 @Table(name = "groups")
-@NamedEntityGraph(name = "Group.owner",
-        attributeNodes = @NamedAttributeNode("owner")
-)
+@NamedEntityGraphs({
+        @NamedEntityGraph(name="Group.owner", attributeNodes={
+                @NamedAttributeNode("owner")}
+        ),
+        @NamedEntityGraph(name="Group.owner&accounts", attributeNodes={
+                @NamedAttributeNode("owner"),
+                @NamedAttributeNode("accountConnections")}
+        )
+})
 public class Group implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +43,9 @@ public class Group implements Serializable {
     private Double longitude;
     @OneToMany(fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
+    /**
+     * Is the group visible in the general mode of search?
+     */
     private boolean visible = true;
 
     public Long getId() {
@@ -95,16 +104,8 @@ public class Group implements Serializable {
         return owner;
     }
 
-    public void setOwner(Account owner) {
+    public void setOwner(final Account owner) {
         this.owner = owner;
-
-        AccountGroupConnection accountGroup = new AccountGroupConnection();
-        accountGroup.setAccount(owner);
-        accountGroup.setGroup(this);
-        accountGroup.setRole(Role.OWNER);
-
-        this.accountConnections.add(accountGroup);
-        owner.addGroupConnection(accountGroup);
     }
 
     public GroupType getGroupType() {

@@ -4,6 +4,8 @@ import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Group;
 import com.bionic.fp.domain.GroupType;
 import com.bionic.fp.rest.dto.GroupCreateDTO;
+import com.bionic.fp.rest.dto.GroupUpdateDTO;
+import com.bionic.fp.service.AccountGroupConnectionService;
 import com.bionic.fp.service.AccountService;
 import com.bionic.fp.service.GroupService;
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -46,6 +48,9 @@ public class GroupControllerIT {
     private AccountService accountService;
 
     @Autowired
+    private AccountGroupConnectionService accountGroupConnectionService;
+
+    @Autowired
     private WebApplicationContext context;
 
     @Before
@@ -77,6 +82,19 @@ public class GroupControllerIT {
             .post(GROUPS)
         .then()
             .statusCode(SC_OK);
+
+        Account account = this.accountService.getByIdWithGroups(ownerId);
+        Long connId = account.getGroupConnections().get(0).getId();
+        Long groupId = this.accountGroupConnectionService.getByIdWithAccountAndGroup(connId).getGroup().getId();
+        Group group = this.groupService.getByIdWithOwner(groupId);
+
+        assertEquals(group.getOwner().getId(), ownerId);
+        assertEquals(group.getName(), groupDTO.getName());
+        assertEquals(group.getDescription(), groupDTO.getDescription());
+        assertEquals(group.getGroupType(), groupDTO.getType());
+        assertEquals(group.getLatitude(), groupDTO.getLatitude());
+        assertEquals(group.getLongitude(), groupDTO.getLongitude());
+        assertEquals(group.isVisible(), groupDTO.isVisible());
     }
 
     @Test
@@ -186,6 +204,37 @@ public class GroupControllerIT {
     }
 
     @Test
+    public void testSaveGroupWithoutValidOwnerIdShouldReturnBadRequest() {
+        GroupCreateDTO groupDTO = new GroupCreateDTO();
+        groupDTO.setName("NY 400");
+        groupDTO.setDescription("Happy New Year!");
+        groupDTO.setType(GroupType.PRIVATE);
+        groupDTO.setVisible(true);
+
+        // without owner ID
+        groupDTO.setOwnerId(null);
+
+        given()
+            .body(groupDTO)
+            .contentType(JSON)
+        .when()
+            .post(GROUPS)
+        .then()
+            .statusCode(SC_BAD_REQUEST);
+
+        // with a non-existent ID
+        groupDTO.setOwnerId(Long.MAX_VALUE);
+
+        given()
+            .body(groupDTO)
+            .contentType(JSON)
+        .when()
+            .post(GROUPS)
+        .then()
+            .statusCode(SC_BAD_REQUEST);
+    }
+
+    @Test
     public void testRemoveGroupByIdSuccess() {
         Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
         owner.setActive(true);
@@ -197,10 +246,9 @@ public class GroupControllerIT {
         group.setName("NY 2016");
         group.setDescription("Happy New Year!");
         group.setGroupType(GroupType.PRIVATE);
-        group.setOwner(owner);
         group.setVisible(true);
 
-        Long groupId = this.groupService.addGroup(group);
+        Long groupId = this.groupService.createGroup(ownerId, group);
 
         when()
             .delete(GROUPS + "/{id}", group.getId())
@@ -234,10 +282,9 @@ public class GroupControllerIT {
         group.setName("NY 2016");
         group.setDescription("Happy New Year!");
         group.setGroupType(GroupType.PRIVATE);
-        group.setOwner(owner);
         group.setVisible(true);
 
-        Long groupId = this.groupService.addGroup(group);
+        Long groupId = this.groupService.createGroup(ownerId, group);
 
         when()
             .get(GROUPS + "/{id}", group.getId())
@@ -255,5 +302,106 @@ public class GroupControllerIT {
             .body("owner.user_name", is(group.getOwner().getUserName()))
             .body("owner.email", is(group.getOwner().getEmail()))
             .body("owner.profile_image_url", is(group.getOwner().getProfileImageUrl()));
+    }
+
+    @Test
+    public void testUpdateGroupSuccess() {
+        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
+        owner.setActive(true);
+        owner.setGuest(false);
+        Long ownerId = this.accountService.addAccount(owner);
+
+        Group group = new Group();
+        group.setName("NY 2015");
+        group.setDescription("Happy New Year!");
+        group.setGroupType(GroupType.PRIVATE);
+        group.setVisible(true);
+        Long groupId = this.groupService.createGroup(ownerId, group);
+
+        GroupUpdateDTO groupDTO = new GroupUpdateDTO();
+        groupDTO.setId(groupId);
+        groupDTO.setName("NY 2016");
+        groupDTO.setDescription("Happy New Year!!!");
+        groupDTO.setType(GroupType.VIEW_OPEN);
+        groupDTO.setVisible(false);
+        groupDTO.setLatitude(40.0);
+        groupDTO.setLongitude(40.0);
+
+        assertNotEquals(group.getName(), groupDTO.getName());
+        assertNotEquals(group.getDescription(), groupDTO.getDescription());
+        assertNotEquals(group.getGroupType(), groupDTO.getType());
+        assertNotEquals(group.getLatitude(), groupDTO.getLatitude());
+        assertNotEquals(group.getLongitude(), groupDTO.getLongitude());
+        assertNotEquals(group.isVisible(), groupDTO.getVisible());
+
+        given()
+            .body(groupDTO)
+            .contentType(JSON)
+        .when()
+            .put(GROUPS)
+        .then()
+            .statusCode(SC_OK);
+
+        group = this.groupService.getByIdWithOwner(groupId);
+
+        assertEquals(group.getName(), groupDTO.getName());
+        assertEquals(group.getDescription(), groupDTO.getDescription());
+        assertEquals(group.getGroupType(), groupDTO.getType());
+        assertEquals(group.getLatitude(), groupDTO.getLatitude());
+        assertEquals(group.getLongitude(), groupDTO.getLongitude());
+        assertEquals(group.isVisible(), groupDTO.getVisible());
+
+
+        groupDTO = new GroupUpdateDTO();
+        groupDTO.setId(groupId);
+        groupDTO.setName("NY 2017");
+
+        assertNotEquals(group.getName(), groupDTO.getName());
+        assertNotEquals(group.getDescription(), groupDTO.getDescription());
+        assertNotEquals(group.getGroupType(), groupDTO.getType());
+        assertNotEquals(group.getLatitude(), groupDTO.getLatitude());
+        assertNotEquals(group.getLongitude(), groupDTO.getLongitude());
+        assertNotEquals(group.isVisible(), groupDTO.getVisible());
+
+        given()
+            .body(groupDTO)
+            .contentType(JSON)
+        .when()
+            .put(GROUPS)
+        .then()
+            .statusCode(SC_OK);
+
+        group = this.groupService.getByIdWithOwner(groupId);
+
+        assertEquals(group.getName(), groupDTO.getName());
+        assertNotEquals(group.getDescription(), groupDTO.getDescription());
+        assertNotEquals(group.getGroupType(), groupDTO.getType());
+        assertNotEquals(group.getLatitude(), groupDTO.getLatitude());
+        assertNotEquals(group.getLongitude(), groupDTO.getLongitude());
+        assertNotEquals(group.isVisible(), groupDTO.getVisible());
+    }
+
+    @Test
+    public void testUpdateGroupShouldReturnNotFound() {
+        GroupUpdateDTO groupDTO = new GroupUpdateDTO();
+        groupDTO.setId(null);
+
+        given()
+            .body(groupDTO)
+            .contentType(JSON)
+        .when()
+            .put(GROUPS)
+        .then()
+            .statusCode(SC_NOT_FOUND);
+
+        groupDTO.setId(Long.MAX_VALUE);
+
+        given()
+            .body(groupDTO)
+            .contentType(JSON)
+        .when()
+            .put(GROUPS)
+        .then()
+            .statusCode(SC_NOT_FOUND);
     }
 }

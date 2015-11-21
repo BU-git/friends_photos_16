@@ -30,7 +30,7 @@
         </property>
         <property name="jpaProperties">
             <props>
-                <prop key="hibernate.hbm2ddl.auto">create</prop>
+                <prop key="hibernate.hbm2ddl.auto">validate</prop>
             </props>
         </property>
         <property name="jpaVendorAdapter">
