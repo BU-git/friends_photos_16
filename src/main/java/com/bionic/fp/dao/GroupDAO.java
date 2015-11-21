@@ -1,15 +1,12 @@
 package com.bionic.fp.dao;
 
-import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Group;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,13 +48,41 @@ public class GroupDAO implements GenericDAO<Group, Long> {
 
     /**
      * Returns a group with its owner by the specified id.
-     * Queries a group with setting EAGER for owner
+     * Queries a group with setting EAGER for its owner
      *
      * @param id the unique identifier
      * @return a group with its owner by the specified id
      */
     public Group readWithOwner(final Long id) {
         EntityGraph graph = this.entityManager.getEntityGraph("Group.owner");
+        Map<String, Object> hints = new HashMap<>();
+        hints.put("javax.persistence.loadgraph", graph);
+        return this.entityManager.find(Group.class, id, hints);
+    }
+
+    /**
+     * Returns a group with its accounts by the specified id.
+     * Queries a group with setting EAGER for its accounts
+     *
+     * @param id the unique identifier
+     * @return a group with its accounts by the specified id
+     */
+    public Group readWithAccounts(final Long id) {
+        EntityGraph graph = this.entityManager.getEntityGraph("Group.accounts");
+        Map<String, Object> hints = new HashMap<>();
+        hints.put("javax.persistence.loadgraph", graph);
+        return this.entityManager.find(Group.class, id, hints);
+    }
+
+    /**
+     * Returns a group with its owner and accounts by the specified id.
+     * Queries a group with setting EAGER for its owner and accounts
+     *
+     * @param id the unique identifier
+     * @return a group with its owner and accounts by the specified id
+     */
+    public Group readWithOwnerAndAccounts(final Long id) {
+        EntityGraph graph = this.entityManager.getEntityGraph("Group.owner&accounts");
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
         return this.entityManager.find(Group.class, id, hints);

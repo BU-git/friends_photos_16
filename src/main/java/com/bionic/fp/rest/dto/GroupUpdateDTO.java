@@ -8,26 +8,44 @@ import com.bionic.fp.domain.GroupType;
  *
  * @author Sergiy Gabriel
  */
-public class GroupCreateDTO {
+public class GroupUpdateDTO {
+    private Long id;
     private String name;
     private String description;
     private GroupType type;
-    private Long ownerId;
-    private boolean visible = true;
+    private Boolean visible;
     private Double latitude;
     private Double longitude;
 
-    public GroupCreateDTO() {
+    public GroupUpdateDTO() {
     }
 
-    public GroupCreateDTO(final Group group, final Long ownerId) {
+    public GroupUpdateDTO(final Group group) {
+        this.id = group.getId();
         this.name = group.getName();
         this.description = group.getDescription();
         this.type = group.getGroupType();
         this.latitude = group.getLatitude();
         this.longitude = group.getLongitude();
         this.visible = group.isVisible();
-        this.ownerId = ownerId;
+    }
+
+    public GroupUpdateDTO(final Group group, final Long ownerId) {
+        this.id = group.getId();
+        this.name = group.getName();
+        this.description = group.getDescription();
+        this.type = group.getGroupType();
+        this.latitude = group.getLatitude();
+        this.longitude = group.getLongitude();
+        this.visible = group.isVisible();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -54,14 +72,6 @@ public class GroupCreateDTO {
         this.type = type;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
-    }
-
     public Double getLatitude() {
         return latitude;
     }
@@ -78,11 +88,11 @@ public class GroupCreateDTO {
         this.longitude = longitude;
     }
 
-    public boolean isVisible() {
+    public Boolean getVisible() {
         return visible;
     }
 
-    public void setVisible(boolean visible) {
+    public void setVisible(Boolean visible) {
         this.visible = visible;
     }
 }
