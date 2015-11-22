@@ -22,6 +22,8 @@ public class EventType implements Serializable {
 	@Column(name = "type_name")
     private String typeName;
 
+
+
     @Override
     public String toString() {
         return "EventType{" +

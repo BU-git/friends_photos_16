@@ -30,7 +30,8 @@ public class Event implements Serializable {
     private String name;
     @Column(nullable = false)
     private String description;
-    @Column(name = "event_type", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_type")
     private EventType eventType;
     @OneToOne(fetch = FetchType.LAZY)
     private Account owner;
