@@ -13,7 +13,7 @@ import javax.persistence.Table;
  * Created by Yevhenii on 11/17/2015.
  */
 @Entity
-@Table(name="accounts_groups")
+@Table(name="accounts_events")
 //@IdClass(AccountEvent.class)
 public class AccountEvent {
 
