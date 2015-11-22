@@ -1,6 +1,6 @@
 package com.bionic.fp;
 
-//import com.bionic.fp.service.AccountService;
+import com.bionic.fp.service.AccountService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -9,11 +9,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class Test {
     private static ApplicationContext context;
-//    private static AccountService accountsService;
+    private static AccountService accountsService;
 
     static {
         context = new ClassPathXmlApplicationContext("beans.xml");
-//        accountsService = context.getBean(AccountService.class);
+        accountsService = context.getBean(AccountService.class);
     }
 
     public static void main(String[] args) {

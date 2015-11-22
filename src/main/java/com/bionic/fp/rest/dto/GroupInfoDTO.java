@@ -42,7 +42,7 @@ public class GroupInfoDTO {
         this.date = event.getDate();
         this.expireDate = event.getExpireDate();
         this.owner = new OwnerInfoDTO(event.getOwner());
-        this.type = event.getEventType();
+//        this.type = event.getEventType();
         this.latitude = event.getLatitude();
         this.longitude = event.getLongitude();
     }

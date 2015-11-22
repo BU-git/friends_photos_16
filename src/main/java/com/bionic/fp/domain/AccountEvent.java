@@ -28,7 +28,7 @@ public class AccountEvent {
     private Event event;
 
     @OneToOne(fetch = FetchType.EAGER)
-	private Role role;
+    private Role role;
 
     public AccountEvent() {
     }
