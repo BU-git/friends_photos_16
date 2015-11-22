@@ -1,5 +1,6 @@
-package com.bionic.fp.dao;
+package com.bionic.fp.dao.impl;
 
+import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.domain.Event;
 import org.springframework.stereotype.Repository;
 
@@ -14,12 +15,12 @@ import java.util.Map;
  */
 
 @Repository
-public class GroupDAO implements GenericDAO<Event, Long> {
+public class EventDaoImpl implements EventDAO {
 
     @PersistenceContext(unitName = "entityManager")
     private EntityManager entityManager;
 
-    public GroupDAO(){}
+    public EventDaoImpl(){}
 
     @Override
     public Long create(Event newInstance) {
@@ -46,50 +47,27 @@ public class GroupDAO implements GenericDAO<Event, Long> {
         }
     }
 
-    /**
-     * Returns a group with its owner by the specified id.
-     * Queries a group with setting EAGER for its owner
-     *
-     * @param id the unique identifier
-     * @return a group with its owner by the specified id
-     */
-    public Event readWithOwner(final Long id) {
+    @Override
+    public Event getWithOwner(final Long id) {
         EntityGraph graph = this.entityManager.getEntityGraph("Event.owner");
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
         return this.entityManager.find(Event.class, id, hints);
     }
 
-    /**
-     * Returns a group with its accounts by the specified id.
-     * Queries a group with setting EAGER for its accounts
-     *
-     * @param id the unique identifier
-     * @return a group with its accounts by the specified id
-     */
-    public Event readWithAccounts(final Long id) {
+    @Override
+    public Event getWithAccounts(final Long id) {
         EntityGraph graph = this.entityManager.getEntityGraph("Event.accounts");
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
         return this.entityManager.find(Event.class, id, hints);
     }
 
-    /**
-     * Returns a group with its owner and accounts by the specified id.
-     * Queries a group with setting EAGER for its owner and accounts
-     *
-     * @param id the unique identifier
-     * @return a group with its owner and accounts by the specified id
-     */
-    public Event readWithOwnerAndAccounts(final Long id) {
+    @Override
+    public Event getWithOwnerAndAccounts(final Long id) {
         EntityGraph graph = this.entityManager.getEntityGraph("Event.owner&accounts");
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
         return this.entityManager.find(Event.class, id, hints);
     }
-
-//    public List<Event> findAll() {
-//        TypedQuery<Event> query = this.entityManager.createQuery("SELECT g FROM Event g", Event.class);
-//        return query.getResultList();
-//    }
 }

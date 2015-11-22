@@ -1,8 +1,8 @@
 package com.bionic.fp.service;
 
-import com.bionic.fp.dao.AccountDAO;
-import com.bionic.fp.dao.AccountEventDAO;
-import com.bionic.fp.dao.GroupDAO;
+import com.bionic.fp.dao.AccountDaoImpl;
+import com.bionic.fp.dao.AccountEventDaoImpl;
+import com.bionic.fp.dao.EventDaoImpl;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * Entry point to perform operations over group entities
@@ -24,13 +23,13 @@ import java.util.List;
 public class GroupService {
 
     @Inject
-    private AccountDAO accountDAO;
+    private AccountDaoImpl accountDAO;
 
     @Inject
-    private GroupDAO groupDAO;
+    private EventDaoImpl groupDAO;
 
     @Inject
-    private AccountEventDAO accountEventDAO;
+    private AccountEventDaoImpl accountEventDAO;
 
     public GroupService() {}
 
@@ -52,7 +51,7 @@ public class GroupService {
             this.accountEventDAO.update(conn);
         } else {
             Account account = this.accountDAO.readWithGroups(accountId);
-            Event event = this.groupDAO.readWithAccounts(groupId);
+            Event event = this.groupDAO.getWithAccounts(groupId);
             if(account != null && event != null) {
                 conn = new AccountEvent();
                 conn.setAccount(account);
@@ -107,11 +106,11 @@ public class GroupService {
     }
 
     public Event getByIdWithOwner(final Long id) {
-        return id == null ? null : this.groupDAO.readWithOwner(id);
+        return id == null ? null : this.groupDAO.getWithOwner(id);
     }
 
     public Event getByIdWithOwnerAndAccounts(final Long id) {
-        return id == null ? null : this.groupDAO.readWithOwnerAndAccounts(id);
+        return id == null ? null : this.groupDAO.getWithOwnerAndAccounts(id);
     }
 
     public Event update(final Event event) {

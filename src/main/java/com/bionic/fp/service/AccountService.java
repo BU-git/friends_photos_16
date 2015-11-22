@@ -1,6 +1,6 @@
 package com.bionic.fp.service;
 
-import com.bionic.fp.dao.AccountDAO;
+import com.bionic.fp.dao.AccountDaoImpl;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.exception.*;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +21,7 @@ public class AccountService {
     private static final String VK_BASE_URL = "http://vk.com/";
 
     @Inject
-    private AccountDAO accountDAO;
+    private AccountDaoImpl accountDAO;
 
     public AccountService() {}
 
@@ -149,8 +149,8 @@ public class AccountService {
         if (email != null && !"".equals(email.trim())) {
             try {
                 account = accountDAO.getByEmail(email);
-                account.setFacebookId(facebookId);
-                account.setFacebookProfileUrl(FACEBOOK_BASE_URL + facebookId);
+//                account.setFacebookId(facebookId);
+//                account.setFacebookProfileUrl(FACEBOOK_BASE_URL + facebookId);
                 return account;
             } catch (NoResultException ignored) {}
         }
@@ -159,8 +159,8 @@ public class AccountService {
         account = new Account();
         account.setUserName(name);
         account.setEmail(email);
-        account.setFacebookId(facebookId);
-        account.setFacebookProfileUrl(FACEBOOK_BASE_URL + facebookId);
+//        account.setFacebookId(facebookId);
+//        account.setFacebookProfileUrl(FACEBOOK_BASE_URL + facebookId);
         accountDAO.create(account);
         return account;
     }

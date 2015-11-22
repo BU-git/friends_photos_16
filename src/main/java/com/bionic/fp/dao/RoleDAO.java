@@ -1,7 +1,5 @@
-package com.bionic.fp.dao.interfaces;
+package com.bionic.fp.dao;
 
-
-import com.bionic.fp.dao.GenericDAO;
 import com.bionic.fp.domain.Role;
 
 /**

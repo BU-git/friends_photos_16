@@ -1,6 +1,6 @@
 package com.bionic.fp.service;
 
-import com.bionic.fp.dao.AccountEventDAO;
+import com.bionic.fp.dao.AccountEventDaoImpl;
 import com.bionic.fp.domain.AccountEvent;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +17,7 @@ import javax.inject.Named;
 public class AccountEventService {
 
     @Inject
-    private AccountEventDAO accountEventDAO;
+    private AccountEventDaoImpl accountEventDAO;
 
     public AccountEventService() {}
 
