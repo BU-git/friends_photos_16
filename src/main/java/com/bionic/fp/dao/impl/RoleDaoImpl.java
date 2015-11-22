@@ -1,6 +1,6 @@
-package com.bionic.fp.dao;
+package com.bionic.fp.dao.impl;
 
-import com.bionic.fp.dao.interfaces.RoleDAO;
+import com.bionic.fp.dao.RoleDAO;
 import com.bionic.fp.domain.Role;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +12,7 @@ import javax.persistence.PersistenceContext;
  * Created by Yevhenii on 11/16/2015.
  */
 @Repository
-public class RoleDAOImpl implements RoleDAO {
+public class RoleDaoImpl implements RoleDAO {
 
     @PersistenceContext(unitName = "entityManager")
     private EntityManager entityManager;
