@@ -9,14 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "groups")
+@Table(name = "events")
 @NamedEntityGraphs({
         @NamedEntityGraph(name="Event.owner", attributeNodes={
                 @NamedAttributeNode("owner")}
         ),
         @NamedEntityGraph(name="Event.owner&accounts", attributeNodes={
                 @NamedAttributeNode("owner"),
-                @NamedAttributeNode("accountConnections")}
+                @NamedAttributeNode("AccountEvent")}
         )
 })
 public class Event implements Serializable {
