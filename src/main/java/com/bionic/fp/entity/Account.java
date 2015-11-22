@@ -53,11 +53,8 @@ public class Account implements Serializable {
     @Column(name = "vk_token")
     private String vkToken;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "account_goup",
-                joinColumns = {@JoinColumn(name = "account_id", referencedColumnName = "id")},
-                inverseJoinColumns = {@JoinColumn(name = "group_id", referencedColumnName = "id")})
-    private List<Group> groups;
+    @OneToMany(mappedBy = "accounts")
+    private List<AccountsGroups> groups;
 
     public Account(){}
 
@@ -187,11 +184,11 @@ public class Account implements Serializable {
         this.vkToken = vkToken;
     }
 
-    public List<Group> getGroups() {
+    public List<AccountsGroups> getGroups() {
         return groups;
     }
 
-    public void setGroups(List<Group> groups) {
+    public void setGroups(List<AccountsGroups> groups) {
         this.groups = groups;
     }
 

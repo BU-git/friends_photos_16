@@ -34,11 +34,8 @@ public class Group implements Serializable {
     private Double latitude;
     private Double longitude;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "account_group",
-                joinColumns = {@JoinColumn(name = "group_id", referencedColumnName = "id")},
-                inverseJoinColumns = {@JoinColumn(name = "account_id", referencedColumnName = "id")})
-    private List<Account> accounts;
+    @OneToMany(mappedBy = "groups")
+    private List<AccountsGroups> accounts;
 
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -105,11 +102,11 @@ public class Group implements Serializable {
         this.ownerID = ownerID;
     }
 
-    public List<Account> getAccounts() {
+    public List<AccountsGroups> getAccounts() {
         return accounts;
     }
 
-    public void setAccounts(List<Account> accounts) {
+    public void setAccounts(List<AccountsGroups> accounts) {
         this.accounts = accounts;
     }
 
