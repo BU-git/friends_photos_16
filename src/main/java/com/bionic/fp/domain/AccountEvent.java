@@ -21,7 +21,7 @@ public class AccountEvent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "role_id")
+/*    @Column(name = "role_id")
     private int roleId;
 
     @Column(name = "account_id")
@@ -30,7 +30,7 @@ public class AccountEvent {
 
     @Column(name = "group_id")
     @Id
-    private Long groupId;
+    private Long groupId;*/
 
     @ManyToOne
     @PrimaryKeyJoinColumn(name = "account_id", referencedColumnName = "id")
@@ -53,6 +53,7 @@ public class AccountEvent {
     public void setId(Long id) {
         this.id = id;
     }
+/*
 
     public int getRoleId() {
         return roleId;
@@ -77,6 +78,7 @@ public class AccountEvent {
     public void setGroupId(Long groupId) {
         this.groupId = groupId;
     }
+*/
 
     public Account getAccount() {
         return account;

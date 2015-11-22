@@ -24,7 +24,7 @@ public class GroupUpdateDTO {
         this.id = event.getId();
         this.name = event.getName();
         this.description = event.getDescription();
-        this.type = event.getEventType();
+//        this.type = event.getEventType();
         this.latitude = event.getLatitude();
         this.longitude = event.getLongitude();
         this.visible = event.isVisible();
@@ -34,7 +34,7 @@ public class GroupUpdateDTO {
         this.id = event.getId();
         this.name = event.getName();
         this.description = event.getDescription();
-        this.type = event.getEventType();
+//        this.type = event.getEventType();
         this.latitude = event.getLatitude();
         this.longitude = event.getLongitude();
         this.visible = event.isVisible();

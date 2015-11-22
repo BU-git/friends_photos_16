@@ -23,7 +23,7 @@ public class GroupCreateDTO {
     public GroupCreateDTO(final Event event, final Long ownerId) {
         this.name = event.getName();
         this.description = event.getDescription();
-        this.type = event.getEventType();
+//        this.type = event.getEventType();
         this.latitude = event.getLatitude();
         this.longitude = event.getLongitude();
         this.visible = event.isVisible();

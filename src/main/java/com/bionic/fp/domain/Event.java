@@ -30,14 +30,14 @@ public class Event implements Serializable {
     @Column(name = "expire_date")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime expireDate;
-    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
-    private List<Photo> photos = new ArrayList<>();
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
+    private List<Photo> photos;
     @OneToOne(fetch = FetchType.LAZY)
     private Account owner;
-    @Enumerated(EnumType.STRING)
+/*    @Enumerated(EnumType.STRING)
     @Column(name = "group_type")
-    private EventType eventType;
-	@OneToMany(mappedBy = "groups")
+    private EventType eventType;*/
+	@OneToMany(mappedBy = "event")
 	private List<AccountEvent> accounts;
     private Double latitude;
     private Double longitude;
@@ -107,14 +107,14 @@ public class Event implements Serializable {
     public void setOwner(final Account owner) {
         this.owner = owner;
     }
-
+/*
     public EventType getEventType() {
         return eventType;
-    }
+    }*/
 
-    public void setEventType(EventType eventType) {
+/*    public void setEventType(EventType eventType) {
         this.eventType = eventType;
-    }
+    }*/
 
 	public List<AccountEvent> getAccounts() {
 		return accounts;
@@ -167,7 +167,7 @@ public class Event implements Serializable {
                 ", date=" + date +
                 ", description='" + description + '\'' +
                 ", expireDate=" + expireDate +
-                ", eventType='" + eventType + '\'' +
+                /*", eventType='" + eventType + '\'' +*/
                 ", name='" + name + '\'' +
                 ", owner=" + owner +
                 '}';

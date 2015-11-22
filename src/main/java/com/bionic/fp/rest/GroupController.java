@@ -46,7 +46,7 @@ public class GroupController {
         // required parameters (should not be null)
         event.setName(groupDto.getName());
         event.setDescription(groupDto.getDescription());
-        event.setEventType(groupDto.getType());
+//        event.setEventType(groupDto.getType());
         event.setVisible(groupDto.isVisible());
         // optional parameters (possible null)
         event.setLongitude(groupDto.getLongitude());
@@ -87,9 +87,9 @@ public class GroupController {
         if(groupDto.getDescription() != null) {
             event.setDescription(groupDto.getDescription());
         }
-        if(groupDto.getType() != null) {
+/*        if(groupDto.getType() != null) {
             event.setEventType(groupDto.getType());
-        }
+        }*/
         if(groupDto.getVisible() != null) {
             event.setVisible(groupDto.getVisible());
         }

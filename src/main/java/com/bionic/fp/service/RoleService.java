@@ -25,10 +25,9 @@ public class RoleService {
     public void setRole(Account account, Event event, Role role) {
         AccountEvent accountEvent = new AccountEvent();
         accountEvent.setAccount(account);
-        accountEvent.setAccountId(account.getId());
+//        accountEvent.setAccountId(account.getId());
         accountEvent.setEvent(event);
-        accountEvent.setGroupId(event.getId());
-        accountEvent.setRoleId(role.getId());
-
+//        accountEvent.setGroupId(event.getId());
+//        accountEvent.setRoleId(role.getId());
     }
 }
