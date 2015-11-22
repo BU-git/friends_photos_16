@@ -2,9 +2,18 @@ package com.bionic.fp.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -48,10 +57,11 @@ public class Account implements Serializable {
 
     private boolean guest;
 
-    private boolean active = true;
+	@Column(name = "active")
+    private boolean active;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<AccountGroupConnection> groupConnections = new ArrayList<>();
+	private List<AccountEvent> groups;
 
     public Account() {}
 
@@ -149,17 +159,13 @@ public class Account implements Serializable {
         this.vkProfileUrl = vkProfileUrl;
     }
 
-    public List<AccountGroupConnection> getGroupConnections() {
-        return groupConnections;
-    }
+	public List<AccountEvent> getGroups() {
+		return groups;
+	}
 
-    public void setGroupConnections(List<AccountGroupConnection> groupConnections) {
-        this.groupConnections = groupConnections;
-    }
-
-    public void addGroupConnection(AccountGroupConnection groupConnection) {
-        groupConnections.add(groupConnection);
-    }
+	public void setGroups(List<AccountEvent> groups) {
+		this.groups = groups;
+	}
 
     public boolean isGuest() {
         return guest;

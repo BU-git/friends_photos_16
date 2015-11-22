@@ -1,6 +1,6 @@
 package com.bionic.fp.dao;
 
-import com.bionic.fp.domain.Group;
+import com.bionic.fp.domain.Event;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityGraph;
@@ -14,7 +14,7 @@ import java.util.Map;
  */
 
 @Repository
-public class GroupDAO implements GenericDAO<Group, Long> {
+public class GroupDAO implements GenericDAO<Event, Long> {
 
     @PersistenceContext(unitName = "entityManager")
     private EntityManager entityManager;
@@ -22,27 +22,27 @@ public class GroupDAO implements GenericDAO<Group, Long> {
     public GroupDAO(){}
 
     @Override
-    public Long create(Group newInstance) {
+    public Long create(Event newInstance) {
         entityManager.persist(newInstance);
         return newInstance.getId();
     }
 
     @Override
-    public Group read(Long id) {
-        return entityManager.find(Group.class, id);
+    public Event read(Long id) {
+        return entityManager.find(Event.class, id);
     }
 
     @Override
-    public Group update(Group transientObject) {
+    public Event update(Event transientObject) {
         entityManager.merge(transientObject);
         return transientObject;
     }
 
     @Override
     public void delete(Long persistentObjectID) {
-        Group group = read(persistentObjectID);
-        if(group != null) {
-            entityManager.remove(group);
+        Event event = read(persistentObjectID);
+        if(event != null) {
+            entityManager.remove(event);
         }
     }
 
@@ -53,11 +53,11 @@ public class GroupDAO implements GenericDAO<Group, Long> {
      * @param id the unique identifier
      * @return a group with its owner by the specified id
      */
-    public Group readWithOwner(final Long id) {
-        EntityGraph graph = this.entityManager.getEntityGraph("Group.owner");
+    public Event readWithOwner(final Long id) {
+        EntityGraph graph = this.entityManager.getEntityGraph("Event.owner");
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
-        return this.entityManager.find(Group.class, id, hints);
+        return this.entityManager.find(Event.class, id, hints);
     }
 
     /**
@@ -67,11 +67,11 @@ public class GroupDAO implements GenericDAO<Group, Long> {
      * @param id the unique identifier
      * @return a group with its accounts by the specified id
      */
-    public Group readWithAccounts(final Long id) {
-        EntityGraph graph = this.entityManager.getEntityGraph("Group.accounts");
+    public Event readWithAccounts(final Long id) {
+        EntityGraph graph = this.entityManager.getEntityGraph("Event.accounts");
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
-        return this.entityManager.find(Group.class, id, hints);
+        return this.entityManager.find(Event.class, id, hints);
     }
 
     /**
@@ -81,15 +81,15 @@ public class GroupDAO implements GenericDAO<Group, Long> {
      * @param id the unique identifier
      * @return a group with its owner and accounts by the specified id
      */
-    public Group readWithOwnerAndAccounts(final Long id) {
-        EntityGraph graph = this.entityManager.getEntityGraph("Group.owner&accounts");
+    public Event readWithOwnerAndAccounts(final Long id) {
+        EntityGraph graph = this.entityManager.getEntityGraph("Event.owner&accounts");
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
-        return this.entityManager.find(Group.class, id, hints);
+        return this.entityManager.find(Event.class, id, hints);
     }
 
-//    public List<Group> findAll() {
-//        TypedQuery<Group> query = this.entityManager.createQuery("SELECT g FROM Group g", Group.class);
+//    public List<Event> findAll() {
+//        TypedQuery<Event> query = this.entityManager.createQuery("SELECT g FROM Event g", Event.class);
 //        return query.getResultList();
 //    }
 }

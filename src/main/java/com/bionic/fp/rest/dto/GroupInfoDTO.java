@@ -1,10 +1,9 @@
 package com.bionic.fp.rest.dto;
 
-import com.bionic.fp.domain.Group;
-import com.bionic.fp.domain.GroupType;
+import com.bionic.fp.domain.Event;
+import com.bionic.fp.domain.EventType;
 import com.bionic.fp.util.LocalDateTimeJsonDeserializer;
 import com.bionic.fp.util.LocalDateTimeJsonSerializer;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -29,23 +28,23 @@ public class GroupInfoDTO {
     @JsonDeserialize(using = LocalDateTimeJsonDeserializer.class)
     private LocalDateTime expireDate;
     private OwnerInfoDTO owner;
-    private GroupType type;
+    private EventType type;
     private Double latitude;
     private Double longitude;
 
     public GroupInfoDTO() {
     }
 
-    public GroupInfoDTO(final Group group) {
-        this.id = group.getId();
-        this.name = group.getName();
-        this.description = group.getDescription();
-        this.date = group.getDate();
-        this.expireDate = group.getExpireDate();
-        this.owner = new OwnerInfoDTO(group.getOwner());
-        this.type = group.getGroupType();
-        this.latitude = group.getLatitude();
-        this.longitude = group.getLongitude();
+    public GroupInfoDTO(final Event event) {
+        this.id = event.getId();
+        this.name = event.getName();
+        this.description = event.getDescription();
+        this.date = event.getDate();
+        this.expireDate = event.getExpireDate();
+        this.owner = new OwnerInfoDTO(event.getOwner());
+        this.type = event.getEventType();
+        this.latitude = event.getLatitude();
+        this.longitude = event.getLongitude();
     }
 
     public Long getId() {
@@ -96,11 +95,11 @@ public class GroupInfoDTO {
         this.owner = owner;
     }
 
-    public GroupType getType() {
+    public EventType getType() {
         return type;
     }
 
-    public void setType(GroupType type) {
+    public void setType(EventType type) {
         this.type = type;
     }
 

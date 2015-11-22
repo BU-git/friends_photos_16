@@ -1,8 +1,6 @@
 package com.bionic.fp.rest;
 
 import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.GroupType;
-import com.bionic.fp.rest.dto.GroupCreateDTO;
 import com.bionic.fp.service.AccountService;
 import com.bionic.fp.service.GroupService;
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -16,9 +14,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static com.jayway.restassured.http.ContentType.JSON;
-import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
-import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.Assert.assertTrue;
 
 /**

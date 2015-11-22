@@ -1,11 +1,10 @@
 package com.bionic.fp.service;
 
-import com.bionic.fp.dao.AccountDAO;
 import com.bionic.fp.dao.interfaces.RoleDAO;
-import com.bionic.fp.entity.Account;
-import com.bionic.fp.entity.AccountsGroups;
-import com.bionic.fp.entity.Group;
-import com.bionic.fp.entity.Role;
+import com.bionic.fp.domain.Account;
+import com.bionic.fp.domain.AccountEvent;
+import com.bionic.fp.domain.Event;
+import com.bionic.fp.domain.Role;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -23,13 +22,13 @@ public class RoleService {
 
     public RoleService() {}
 
-    public void setRole(Account account, Group group, Role role) {
-        AccountsGroups accountsGroups = new AccountsGroups();
-        accountsGroups.setAccount(account);
-        accountsGroups.setAccountId(account.getId());
-        accountsGroups.setGroup(group);
-        accountsGroups.setGroupId(group.getId());
-        accountsGroups.setRoleId(role.getId());
+    public void setRole(Account account, Event event, Role role) {
+        AccountEvent accountEvent = new AccountEvent();
+        accountEvent.setAccount(account);
+        accountEvent.setAccountId(account.getId());
+        accountEvent.setEvent(event);
+        accountEvent.setGroupId(event.getId());
+        accountEvent.setRoleId(role.getId());
 
     }
 }

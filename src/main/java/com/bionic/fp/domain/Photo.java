@@ -20,7 +20,7 @@ public class Photo implements Serializable {
     @Column(name = "preview_url")
     private String previewUrl;
     @OneToOne(fetch = FetchType.LAZY)
-    private Group group;
+    private Event event;
     @OneToOne(fetch = FetchType.LAZY)
     private Account owner;
     @OneToMany(fetch = FetchType.LAZY)
@@ -58,12 +58,12 @@ public class Photo implements Serializable {
         this.previewUrl = previewUrl;
     }
 
-    public Group getGroup() {
-        return group;
+    public Event getEvent() {
+        return event;
     }
 
-    public void setGroup(Group group) {
-        this.group = group;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     public Account getOwner() {
@@ -92,7 +92,7 @@ public class Photo implements Serializable {
                 ", date=" + date +
                 ", previewURL='" + previewUrl + '\'' +
                 ", url='" + url + '\'' +
-                ", group=" + group +
+                ", event=" + event +
                 ", owner=" + owner +
                 '}';
     }

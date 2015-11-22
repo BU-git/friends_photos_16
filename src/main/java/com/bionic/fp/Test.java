@@ -1,12 +1,8 @@
 package com.bionic.fp;
 
-import com.bionic.fp.entity.Account;
 import com.bionic.fp.service.AccountService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by boubdyk on 11.11.2015.

@@ -1,7 +1,7 @@
 package com.bionic.fp.dao;
 
 import com.bionic.fp.dao.interfaces.RoleDAO;
-import com.bionic.fp.entity.Role;
+import com.bionic.fp.domain.Role;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

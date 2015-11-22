@@ -1,7 +1,7 @@
 package com.bionic.fp.rest.dto;
 
-import com.bionic.fp.domain.Group;
-import com.bionic.fp.domain.GroupType;
+import com.bionic.fp.domain.Event;
+import com.bionic.fp.domain.EventType;
 
 /**
  * Holds group for the client-server communication
@@ -11,7 +11,7 @@ import com.bionic.fp.domain.GroupType;
 public class GroupCreateDTO {
     private String name;
     private String description;
-    private GroupType type;
+    private EventType type;
     private Long ownerId;
     private boolean visible = true;
     private Double latitude;
@@ -20,13 +20,13 @@ public class GroupCreateDTO {
     public GroupCreateDTO() {
     }
 
-    public GroupCreateDTO(final Group group, final Long ownerId) {
-        this.name = group.getName();
-        this.description = group.getDescription();
-        this.type = group.getGroupType();
-        this.latitude = group.getLatitude();
-        this.longitude = group.getLongitude();
-        this.visible = group.isVisible();
+    public GroupCreateDTO(final Event event, final Long ownerId) {
+        this.name = event.getName();
+        this.description = event.getDescription();
+        this.type = event.getEventType();
+        this.latitude = event.getLatitude();
+        this.longitude = event.getLongitude();
+        this.visible = event.isVisible();
         this.ownerId = ownerId;
     }
 
@@ -46,11 +46,11 @@ public class GroupCreateDTO {
         this.description = description;
     }
 
-    public GroupType getType() {
+    public EventType getType() {
         return type;
     }
 
-    public void setType(GroupType type) {
+    public void setType(EventType type) {
         this.type = type;
     }
 

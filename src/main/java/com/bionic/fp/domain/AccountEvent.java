@@ -1,14 +1,21 @@
-package com.bionic.fp.entity;
+package com.bionic.fp.domain;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
 
 /**
  * Created by Yevhenii on 11/17/2015.
  */
 @Entity
 @Table(name="accounts_groups")
-//@IdClass(AccountsGroups.class)
-public class AccountsGroups {
+//@IdClass(AccountEvent.class)
+public class AccountEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,9 +38,13 @@ public class AccountsGroups {
 
     @ManyToOne
     @PrimaryKeyJoinColumn(name = "group_id", referencedColumnName = "id")
-    private Group group;
+    private Event event;
 
-    public AccountsGroups() {}
+	@ManyToOne
+	@PrimaryKeyJoinColumn(name = "role_id", referencedColumnName = "id")
+	private Role role;
+
+    public AccountEvent() {}
 
     public Long getId() {
         return id;
@@ -75,11 +86,19 @@ public class AccountsGroups {
         this.account = account;
     }
 
-    public Group getGroup() {
-        return group;
+    public Event getEvent() {
+        return event;
     }
 
-    public void setGroup(Group group) {
-        this.group = group;
+    public void setEvent(Event event) {
+        this.event = event;
     }
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
 }

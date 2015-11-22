@@ -11,15 +11,15 @@ import java.util.List;
 @Entity
 @Table(name = "groups")
 @NamedEntityGraphs({
-        @NamedEntityGraph(name="Group.owner", attributeNodes={
+        @NamedEntityGraph(name="Event.owner", attributeNodes={
                 @NamedAttributeNode("owner")}
         ),
-        @NamedEntityGraph(name="Group.owner&accounts", attributeNodes={
+        @NamedEntityGraph(name="Event.owner&accounts", attributeNodes={
                 @NamedAttributeNode("owner"),
                 @NamedAttributeNode("accountConnections")}
         )
 })
-public class Group implements Serializable {
+public class Event implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,9 +36,9 @@ public class Group implements Serializable {
     private Account owner;
     @Enumerated(EnumType.STRING)
     @Column(name = "group_type")
-    private GroupType groupType;
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<AccountGroupConnection> accountConnections = new ArrayList<>();
+    private EventType eventType;
+	@OneToMany(mappedBy = "groups")
+	private List<AccountEvent> accounts;
     private Double latitude;
     private Double longitude;
     @OneToMany(fetch = FetchType.LAZY)
@@ -108,27 +108,23 @@ public class Group implements Serializable {
         this.owner = owner;
     }
 
-    public GroupType getGroupType() {
-        return groupType;
+    public EventType getEventType() {
+        return eventType;
     }
 
-    public void setGroupType(GroupType groupType) {
-        this.groupType = groupType;
+    public void setEventType(EventType eventType) {
+        this.eventType = eventType;
     }
 
-    public List<AccountGroupConnection> getAccountConnections() {
-        return accountConnections;
-    }
+	public List<AccountEvent> getAccounts() {
+		return accounts;
+	}
 
-    public void setAccountConnections(List<AccountGroupConnection> accountConnections) {
-        this.accountConnections = accountConnections;
-    }
+	public void setAccounts(List<AccountEvent> accounts) {
+		this.accounts = accounts;
+	}
 
-    public void addAccountConnection(AccountGroupConnection accountConnection) {
-        accountConnections.add(accountConnection);
-    }
-
-    public List<Comment> getComments() {
+	public List<Comment> getComments() {
         return comments;
     }
 
@@ -166,12 +162,12 @@ public class Group implements Serializable {
 
     @Override
     public String toString() {
-        return "Group{" +
+        return "Event{" +
                 "id=" + id +
                 ", date=" + date +
                 ", description='" + description + '\'' +
                 ", expireDate=" + expireDate +
-                ", groupType='" + groupType + '\'' +
+                ", eventType='" + eventType + '\'' +
                 ", name='" + name + '\'' +
                 ", owner=" + owner +
                 '}';

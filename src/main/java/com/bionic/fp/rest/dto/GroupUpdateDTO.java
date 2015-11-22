@@ -1,7 +1,7 @@
 package com.bionic.fp.rest.dto;
 
-import com.bionic.fp.domain.Group;
-import com.bionic.fp.domain.GroupType;
+import com.bionic.fp.domain.Event;
+import com.bionic.fp.domain.EventType;
 
 /**
  * Holds group for the client-server communication
@@ -12,7 +12,7 @@ public class GroupUpdateDTO {
     private Long id;
     private String name;
     private String description;
-    private GroupType type;
+    private EventType type;
     private Boolean visible;
     private Double latitude;
     private Double longitude;
@@ -20,24 +20,24 @@ public class GroupUpdateDTO {
     public GroupUpdateDTO() {
     }
 
-    public GroupUpdateDTO(final Group group) {
-        this.id = group.getId();
-        this.name = group.getName();
-        this.description = group.getDescription();
-        this.type = group.getGroupType();
-        this.latitude = group.getLatitude();
-        this.longitude = group.getLongitude();
-        this.visible = group.isVisible();
+    public GroupUpdateDTO(final Event event) {
+        this.id = event.getId();
+        this.name = event.getName();
+        this.description = event.getDescription();
+        this.type = event.getEventType();
+        this.latitude = event.getLatitude();
+        this.longitude = event.getLongitude();
+        this.visible = event.isVisible();
     }
 
-    public GroupUpdateDTO(final Group group, final Long ownerId) {
-        this.id = group.getId();
-        this.name = group.getName();
-        this.description = group.getDescription();
-        this.type = group.getGroupType();
-        this.latitude = group.getLatitude();
-        this.longitude = group.getLongitude();
-        this.visible = group.isVisible();
+    public GroupUpdateDTO(final Event event, final Long ownerId) {
+        this.id = event.getId();
+        this.name = event.getName();
+        this.description = event.getDescription();
+        this.type = event.getEventType();
+        this.latitude = event.getLatitude();
+        this.longitude = event.getLongitude();
+        this.visible = event.isVisible();
     }
 
     public Long getId() {
@@ -64,11 +64,11 @@ public class GroupUpdateDTO {
         this.description = description;
     }
 
-    public GroupType getType() {
+    public EventType getType() {
         return type;
     }
 
-    public void setType(GroupType type) {
+    public void setType(EventType type) {
         this.type = type;
     }
 

@@ -1,7 +1,6 @@
 package com.bionic.fp.rest;
 
-import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.Group;
+import com.bionic.fp.domain.Event;
 import com.bionic.fp.rest.dto.GroupCreateDTO;
 import com.bionic.fp.rest.dto.GroupInfoDTO;
 import com.bionic.fp.rest.dto.GroupUpdateDTO;
@@ -11,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
-
-import java.time.LocalDateTime;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -45,17 +42,17 @@ public class GroupController {
 //        if(owner == null) {
 //            return new ResponseEntity(BAD_REQUEST);
 //        }
-        Group group = new Group();
+        Event event = new Event();
         // required parameters (should not be null)
-        group.setName(groupDto.getName());
-        group.setDescription(groupDto.getDescription());
-        group.setGroupType(groupDto.getType());
-        group.setVisible(groupDto.isVisible());
+        event.setName(groupDto.getName());
+        event.setDescription(groupDto.getDescription());
+        event.setEventType(groupDto.getType());
+        event.setVisible(groupDto.isVisible());
         // optional parameters (possible null)
-        group.setLongitude(groupDto.getLongitude());
-        group.setLatitude(groupDto.getLatitude());
+        event.setLongitude(groupDto.getLongitude());
+        event.setLatitude(groupDto.getLatitude());
 
-        Long groupId = this.groupService.createGroup(groupDto.getOwnerId(), group);
+        Long groupId = this.groupService.createGroup(groupDto.getOwnerId(), event);
 
         return groupId != null ? new ResponseEntity(OK) : new ResponseEntity(BAD_REQUEST);
     }
@@ -68,45 +65,45 @@ public class GroupController {
 
     @RequestMapping(value = "/{id:[\\d]+}", method = GET, produces = APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<GroupInfoDTO> findGroupById(@PathVariable("id") final Long id) {
-        Group group = this.groupService.getByIdWithOwner(id);
-        if(group == null) {
+        Event event = this.groupService.getByIdWithOwner(id);
+        if(event == null) {
             return new ResponseEntity<>(NOT_FOUND);
         }
-        GroupInfoDTO body = new GroupInfoDTO(group);
+        GroupInfoDTO body = new GroupInfoDTO(event);
         return new ResponseEntity<>(body, OK);
     }
 
     @RequestMapping(method = PUT, consumes = APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity updateGroup(@RequestBody final GroupUpdateDTO groupDto) {
-        Group group = this.groupService.getByIdWithOwnerAndAccounts(groupDto.getId());
-        if(group == null) {
+        Event event = this.groupService.getByIdWithOwnerAndAccounts(groupDto.getId());
+        if(event == null) {
             return new ResponseEntity(NOT_FOUND);
         }
 
         // required parameters (should not be null)
         if(groupDto.getName() != null) {
-            group.setName(groupDto.getName());
+            event.setName(groupDto.getName());
         }
         if(groupDto.getDescription() != null) {
-            group.setDescription(groupDto.getDescription());
+            event.setDescription(groupDto.getDescription());
         }
         if(groupDto.getType() != null) {
-            group.setGroupType(groupDto.getType());
+            event.setEventType(groupDto.getType());
         }
         if(groupDto.getVisible() != null) {
-            group.setVisible(groupDto.getVisible());
+            event.setVisible(groupDto.getVisible());
         }
 
         // optional parameters (possible null, but their use depends on the geolocationServicesEnabled,
         // therefore these parameters will not be cleared)
         if(groupDto.getLongitude() != null) {
-            group.setLongitude(groupDto.getLongitude());
+            event.setLongitude(groupDto.getLongitude());
         }
         if(groupDto.getLatitude() != null) {
-            group.setLatitude(groupDto.getLatitude());
+            event.setLatitude(groupDto.getLatitude());
         }
 
-        this.groupService.update(group);
+        this.groupService.update(event);
 
         return new ResponseEntity(OK);
     }
