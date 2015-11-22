@@ -2,6 +2,7 @@ package com.bionic.fp.service;
 
 import com.bionic.fp.dao.RoleDAO;
 import com.bionic.fp.domain.Account;
+import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Role;
 import org.springframework.transaction.annotation.Transactional;

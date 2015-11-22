@@ -1,6 +1,6 @@
 package com.bionic.fp.service;
 
-import com.bionic.fp.dao.AccountDaoImpl;
+import com.bionic.fp.dao.AccountDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.exception.*;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +21,7 @@ public class AccountService {
     private static final String VK_BASE_URL = "http://vk.com/";
 
     @Inject
-    private AccountDaoImpl accountDAO;
+    private AccountDAO accountDAO;
 
     public AccountService() {}
 
@@ -185,6 +185,6 @@ public class AccountService {
     }
 
     public Account getByIdWithGroups(final Long id) {
-        return id == null ? null : this.accountDAO.readWithGroups(id);
+        return id == null ? null : this.accountDAO.getWithEvents(id);
     }
 }
