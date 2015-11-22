@@ -84,8 +84,8 @@
 //            .statusCode(SC_OK);
 //
 //        Account account = this.accountService.getByIdWithGroups(ownerId);
-////        Long connId = account.getGroupConnections().get(0).getId();
-////        Long groupId = this.accountEventService.getByIdWithAccountAndGroup(connId).getEvent().getId();
+//        Long connId = account.getEvents().get(0).getId();
+//        Long groupId = this.accountEventService.getByIdWithAccountAndGroup(connId).getEvent().getId();
 //        Event event = this.groupService.getByIdWithOwner(groupId);
 //
 //        assertEquals(event.getOwner().getId(), ownerId);

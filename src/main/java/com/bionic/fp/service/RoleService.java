@@ -1,6 +1,6 @@
 package com.bionic.fp.service;
 
-import com.bionic.fp.dao.interfaces.RoleDAO;
+import com.bionic.fp.dao.RoleDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
@@ -23,11 +23,12 @@ public class RoleService {
     public RoleService() {}
 
     public void setRole(Account account, Event event, Role role) {
-        AccountEvent accountEvent = new AccountEvent();
-        accountEvent.setAccount(account);
+//        AccountEvent accountEvent = new AccountEvent();
+//        accountEvent.setAccount(account);
 //        accountEvent.setAccountId(account.getId());
-        accountEvent.setEvent(event);
+//        accountEvent.setEvent(event);
 //        accountEvent.setGroupId(event.getId());
 //        accountEvent.setRoleId(role.getId());
+
     }
 }

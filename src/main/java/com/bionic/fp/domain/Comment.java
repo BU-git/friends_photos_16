@@ -18,11 +18,11 @@ public class Comment implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Account author;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

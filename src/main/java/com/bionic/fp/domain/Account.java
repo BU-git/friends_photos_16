@@ -18,8 +18,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "accounts")
-@NamedEntityGraph(name = "Account.groupConnections",
-        attributeNodes = @NamedAttributeNode("groupConnections")
+@NamedEntityGraph(name = "Account.events",
+        attributeNodes = @NamedAttributeNode("events")
 )
 public class Account implements Serializable {
     @Id
@@ -61,7 +61,7 @@ public class Account implements Serializable {
     private boolean active;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<AccountEvent> groups;
+	private List<AccountEvent> events;
 
     public Account() {}
 
@@ -111,28 +111,28 @@ public class Account implements Serializable {
         this.profileImageUrl = profileImageUrl;
     }
 
-    public String getFacebookId() {
+    public String getFbId() {
         return fbId;
     }
 
-    public void setFacebookId(String facebookId) {
-        this.fbId = facebookId;
+    public void setFbId(String fbId) {
+        this.fbId = fbId;
     }
 
-    public String getFacebookToken() {
-        return fbToken;
-    }
-
-    public void setFacebookToken(String facebookToken) {
-        this.fbToken = facebookToken;
-    }
-
-    public String getFacebookProfileUrl() {
+    public String getFbProfileUrl() {
         return fbProfileUrl;
     }
 
-    public void setFacebookProfileUrl(String facebookProfileUrl) {
-        this.fbProfileUrl = facebookProfileUrl;
+    public void setFbProfileUrl(String fbProfileUrl) {
+        this.fbProfileUrl = fbProfileUrl;
+    }
+
+    public String getFbToken() {
+        return fbToken;
+    }
+
+    public void setFbToken(String fbToken) {
+        this.fbToken = fbToken;
     }
 
     public String getVkId() {
@@ -159,14 +159,6 @@ public class Account implements Serializable {
         this.vkProfileUrl = vkProfileUrl;
     }
 
-	public List<AccountEvent> getGroups() {
-		return groups;
-	}
-
-	public void setGroups(List<AccountEvent> groups) {
-		this.groups = groups;
-	}
-
     public boolean isGuest() {
         return guest;
     }
@@ -181,6 +173,14 @@ public class Account implements Serializable {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public List<AccountEvent> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<AccountEvent> events) {
+        this.events = events;
     }
 
     @Override

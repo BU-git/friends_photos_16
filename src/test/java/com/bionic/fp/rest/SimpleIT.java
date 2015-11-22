@@ -1,8 +1,7 @@
 package com.bionic.fp.rest;
 
-import com.bionic.fp.domain.Account;
-import com.bionic.fp.service.AccountService;
-import com.bionic.fp.service.GroupService;
+//import com.bionic.fp.service.AccountService;
+//import com.bionic.fp.service.GroupService;
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,11 +23,11 @@ import static org.junit.Assert.assertTrue;
 @ContextConfiguration("classpath:spring/test-root-context.xml")
 public class SimpleIT {
 
-    @Autowired
-    private GroupService groupService;
-
-    @Autowired
-    private AccountService accountService;
+//    @Autowired
+//    private GroupService groupService;
+//
+//    @Autowired
+//    private AccountService accountService;
 
     @Autowired
     private WebApplicationContext context;
@@ -41,14 +40,6 @@ public class SimpleIT {
 
     @Test
     public void testSuccess() {
-        assertTrue(this.groupService != null);
-        assertTrue(this.accountService != null);
-        assertTrue(this.context != null);
-
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        owner.setActive(true);
-        owner.setGuest(false);
-        Long ownerId = this.accountService.addAccount(owner);
 
     }
 }

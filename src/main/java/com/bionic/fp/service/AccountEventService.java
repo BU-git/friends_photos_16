@@ -1,7 +1,7 @@
 package com.bionic.fp.service;
 
-import com.bionic.fp.dao.AccountEventDAO;
 import com.bionic.fp.domain.AccountEvent;
+import com.bionic.fp.dao.AccountEventDAO;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -37,16 +37,16 @@ public class AccountEventService {
 
     public AccountEvent getByAccountAndGroupId(final Long accountId, final Long groupId) {
         return (accountId == null || groupId == null) ? null :
-                this.accountEventDAO.readByAccountAndGroupId(accountId, groupId);
+                this.accountEventDAO.getByAccountAndGroupId(accountId, groupId);
     }
 
     public AccountEvent getByIdWithAccountAndGroup(final Long id) {
-        return id == null ? null : this.accountEventDAO.readWithAccountAndGroup(id);
+        return id == null ? null : this.accountEventDAO.getWithAccountAndGroup(id);
     }
 
     public AccountEvent getByAccountAndGroupIdWithAccountAndGroup(final Long accountId, final Long groupId) {
         return (accountId == null || groupId == null) ? null :
-                this.accountEventDAO.readByAccountAndGroupIdWithAccountAndGroup(accountId, groupId);
+                this.accountEventDAO.getByAccountAndGroupIdWithAccountAndGroup(accountId, groupId);
     }
 
     public AccountEvent update(final AccountEvent accountGroup) {

@@ -14,39 +14,53 @@ import java.util.List;
         @NamedEntityGraph(name="Event.owner", attributeNodes={
                 @NamedAttributeNode("owner")}
         ),
+        @NamedEntityGraph(name="Event.accounts", attributeNodes={
+                @NamedAttributeNode("accounts")}
+        ),
         @NamedEntityGraph(name="Event.owner&accounts", attributeNodes={
                 @NamedAttributeNode("owner"),
-                @NamedAttributeNode("AccountEvent")}
+                @NamedAttributeNode("accounts")}
         )
 })
 public class Event implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String description;
+    @Column(name = "event_type", nullable = false)
+    private EventType eventType;
+    @OneToOne(fetch = FetchType.LAZY)
+    private Account owner;
+    /**
+     * Is this event visible in the general mode of search?
+     */
+    private boolean visible = true;
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime date;
     @Column(name = "expire_date")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime expireDate;
-    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
-    private List<Photo> photos;
-    @OneToOne(fetch = FetchType.LAZY)
-    private Account owner;
-/*    @Enumerated(EnumType.STRING)
-    @Column(name = "group_type")
-    private EventType eventType;*/
-	@OneToMany(mappedBy = "event")
-	private List<AccountEvent> accounts;
     private Double latitude;
     private Double longitude;
+    private Float radius;
+    @Column(name = "geolocation")
+    private boolean geolocationServicesEnabled = false;
+    /**
+     * Is this event deleted? Because the event is not deleted physically
+     */
+    private boolean deleted = false;
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AccountEvent> accounts = new ArrayList<>();
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
+    private List<Photo> photos = new ArrayList<>();
     @OneToMany(fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
-    /**
-     * Is the group visible in the general mode of search?
-     */
-    private boolean visible = true;
+
+    public Event() {
+    }
 
     public Long getId() {
         return id;
@@ -72,6 +86,30 @@ public class Event implements Serializable {
         this.description = description;
     }
 
+    public EventType getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(EventType eventType) {
+        this.eventType = eventType;
+    }
+
+    public Account getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Account owner) {
+        this.owner = owner;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
     public LocalDateTime getDate() {
         return date;
     }
@@ -86,54 +124,6 @@ public class Event implements Serializable {
 
     public void setExpireDate(LocalDateTime expireDate) {
         this.expireDate = expireDate;
-    }
-
-    public List<Photo> getPhotos() {
-        return photos;
-    }
-
-    public void setPhotos(List<Photo> photos) {
-        this.photos = photos;
-    }
-
-    public void addPhoto(Photo photo) {
-        photos.add(photo);
-    }
-
-    public Account getOwner() {
-        return owner;
-    }
-
-    public void setOwner(final Account owner) {
-        this.owner = owner;
-    }
-/*
-    public EventType getEventType() {
-        return eventType;
-    }*/
-
-/*    public void setEventType(EventType eventType) {
-        this.eventType = eventType;
-    }*/
-
-	public List<AccountEvent> getAccounts() {
-		return accounts;
-	}
-
-	public void setAccounts(List<AccountEvent> accounts) {
-		this.accounts = accounts;
-	}
-
-	public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-
-    public void addComment(Comment comment) {
-        comments.add(comment);
     }
 
     public Double getLatitude() {
@@ -152,24 +142,71 @@ public class Event implements Serializable {
         this.longitude = longitude;
     }
 
-    public boolean isVisible() {
-        return visible;
+    public Float getRadius() {
+        return radius;
     }
 
-    public void setVisible(boolean visible) {
-        this.visible = visible;
+    public void setRadius(Float radius) {
+        this.radius = radius;
+    }
+
+    public boolean isGeolocationServicesEnabled() {
+        return geolocationServicesEnabled;
+    }
+
+    public void setGeolocationServicesEnabled(boolean geolocationServicesEnabled) {
+        this.geolocationServicesEnabled = geolocationServicesEnabled;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public List<AccountEvent> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(List<AccountEvent> accounts) {
+        this.accounts = accounts;
+    }
+
+    public List<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<Photo> photos) {
+        this.photos = photos;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     @Override
     public String toString() {
-        return "Event{" +
-                "id=" + id +
-                ", date=" + date +
-                ", description='" + description + '\'' +
-                ", expireDate=" + expireDate +
-                /*", eventType='" + eventType + '\'' +*/
-                ", name='" + name + '\'' +
-                ", owner=" + owner +
-                '}';
+        final StringBuilder sb = new StringBuilder("Event{");
+        sb.append("id=").append(id);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", description='").append(description).append('\'');
+        sb.append(", eventType=").append(eventType);
+        sb.append(", owner=").append(owner);
+        sb.append(", visible=").append(visible);
+        sb.append(", date=").append(date);
+        sb.append(", expireDate=").append(expireDate);
+        sb.append(", latitude=").append(latitude);
+        sb.append(", longitude=").append(longitude);
+        sb.append(", radius=").append(radius);
+        sb.append(", geolocationServicesEnabled=").append(geolocationServicesEnabled);
+        sb.append(", deleted=").append(deleted);
+        sb.append('}');
+        return sb.toString();
     }
 }
