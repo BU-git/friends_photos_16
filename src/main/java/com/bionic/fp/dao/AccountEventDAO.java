@@ -17,12 +17,12 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
      * @param id the unique identifier
      * @return an account-group conn with its account and group by the specified id
      */
-    AccountEvent getWithAccountAndGroup(Long id);
+    AccountEvent getWithAccountAndEvent(Long id);
 
-    AccountEvent getByAccountAndGroupId(Long accountId, Long groupId);
+    AccountEvent getByAccountAndEventId(Long accountId, Long eventId);
 
-    AccountEvent getByAccountAndGroupIdWithAccountAndGroup(Long accountId, Long groupId);
+    AccountEvent getByAccountAndEventIdWithAccountAndEvent(Long accountId, Long eventId);
 
-    Role getRoleByAccountAndGroupId(Long accountId, Long groupId);
+    Role getRoleByAccountAndEventId(Long accountId, Long eventId);
 
 }

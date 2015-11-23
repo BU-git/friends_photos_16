@@ -31,4 +31,8 @@ public class RoleService {
 //        accountEvent.setRoleId(role.getId());
 
     }
+
+    public Role getOwner() {
+        return this.roleDAO.getOwner();
+    }
 }

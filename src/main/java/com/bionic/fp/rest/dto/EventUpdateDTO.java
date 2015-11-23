@@ -2,50 +2,36 @@ package com.bionic.fp.rest.dto;
 
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Holds group for the client-server communication
  *
  * @author Sergiy Gabriel
  */
-public class GroupUpdateDTO {
-    private Long id;
+public class EventUpdateDTO {
     private String name;
     private String description;
-    private EventType type;
+    @JsonProperty("type_id")
+    private Integer typeId;
     private Boolean visible;
     private Double latitude;
     private Double longitude;
+    private Float radius;
+    private Boolean geolocation;
 
-    public GroupUpdateDTO() {
+    public EventUpdateDTO() {
     }
 
-    public GroupUpdateDTO(final Event event) {
-        this.id = event.getId();
+    public EventUpdateDTO(final Event event) {
         this.name = event.getName();
         this.description = event.getDescription();
-//        this.type = event.getEventType();
+        this.typeId = event.getEventType().getId();
+        this.visible = event.isVisible();
         this.latitude = event.getLatitude();
         this.longitude = event.getLongitude();
-        this.visible = event.isVisible();
-    }
-
-    public GroupUpdateDTO(final Event event, final Long ownerId) {
-        this.id = event.getId();
-        this.name = event.getName();
-        this.description = event.getDescription();
-//        this.type = event.getEventType();
-        this.latitude = event.getLatitude();
-        this.longitude = event.getLongitude();
-        this.visible = event.isVisible();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        this.radius = event.getRadius();
+        this.geolocation = event.isGeolocationServicesEnabled();
     }
 
     public String getName() {
@@ -64,12 +50,20 @@ public class GroupUpdateDTO {
         this.description = description;
     }
 
-    public EventType getType() {
-        return type;
+    public Integer getTypeId() {
+        return typeId;
     }
 
-    public void setType(EventType type) {
-        this.type = type;
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
+    }
+
+    public Boolean getVisible() {
+        return visible;
+    }
+
+    public void setVisible(Boolean visible) {
+        this.visible = visible;
     }
 
     public Double getLatitude() {
@@ -88,11 +82,19 @@ public class GroupUpdateDTO {
         this.longitude = longitude;
     }
 
-    public Boolean getVisible() {
-        return visible;
+    public Float getRadius() {
+        return radius;
     }
 
-    public void setVisible(Boolean visible) {
-        this.visible = visible;
+    public void setRadius(Float radius) {
+        this.radius = radius;
+    }
+
+    public Boolean getGeolocation() {
+        return geolocation;
+    }
+
+    public void setGeolocation(Boolean geolocation) {
+        this.geolocation = geolocation;
     }
 }

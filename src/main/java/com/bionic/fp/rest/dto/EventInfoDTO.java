@@ -4,6 +4,7 @@ import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
 import com.bionic.fp.util.LocalDateTimeJsonDeserializer;
 import com.bionic.fp.util.LocalDateTimeJsonSerializer;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -15,7 +16,8 @@ import java.time.LocalDateTime;
  *
  * @author Sergiy Gabriel
  */
-public class GroupInfoDTO {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class EventInfoDTO {
 
     private Long id;
     private String name;
@@ -27,24 +29,30 @@ public class GroupInfoDTO {
     @JsonSerialize(using = LocalDateTimeJsonSerializer.class)
     @JsonDeserialize(using = LocalDateTimeJsonDeserializer.class)
     private LocalDateTime expireDate;
+    private Integer typeId;
     private OwnerInfoDTO owner;
-    private EventType type;
     private Double latitude;
     private Double longitude;
+    private Float radius;
+    private Boolean geolocation;
+    private Boolean visible;
 
-    public GroupInfoDTO() {
+    public EventInfoDTO() {
     }
 
-    public GroupInfoDTO(final Event event) {
+    public EventInfoDTO(final Event event) {
         this.id = event.getId();
         this.name = event.getName();
         this.description = event.getDescription();
         this.date = event.getDate();
         this.expireDate = event.getExpireDate();
+        this.typeId = event.getEventType().getId();
         this.owner = new OwnerInfoDTO(event.getOwner());
-//        this.type = event.getEventType();
         this.latitude = event.getLatitude();
         this.longitude = event.getLongitude();
+        this.radius = event.getRadius();
+        this.geolocation = event.isGeolocationServicesEnabled();
+        this.visible = event.isVisible();
     }
 
     public Long getId() {
@@ -87,20 +95,20 @@ public class GroupInfoDTO {
         this.expireDate = expireDate;
     }
 
+    public Integer getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
+    }
+
     public OwnerInfoDTO getOwner() {
         return owner;
     }
 
     public void setOwner(OwnerInfoDTO owner) {
         this.owner = owner;
-    }
-
-    public EventType getType() {
-        return type;
-    }
-
-    public void setType(EventType type) {
-        this.type = type;
     }
 
     public Double getLatitude() {
@@ -119,4 +127,27 @@ public class GroupInfoDTO {
         this.longitude = longitude;
     }
 
+    public Float getRadius() {
+        return radius;
+    }
+
+    public void setRadius(Float radius) {
+        this.radius = radius;
+    }
+
+    public Boolean getGeolocation() {
+        return geolocation;
+    }
+
+    public void setGeolocation(Boolean geolocation) {
+        this.geolocation = geolocation;
+    }
+
+    public Boolean getVisible() {
+        return visible;
+    }
+
+    public void setVisible(Boolean visible) {
+        this.visible = visible;
+    }
 }

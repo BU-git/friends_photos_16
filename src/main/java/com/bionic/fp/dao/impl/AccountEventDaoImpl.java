@@ -49,7 +49,7 @@ public class AccountEventDaoImpl implements AccountEventDAO {
     }
 
     @Override
-    public AccountEvent getWithAccountAndGroup(final Long id) {
+    public AccountEvent getWithAccountAndEvent(final Long id) {
         EntityGraph graph = this.entityManager.getEntityGraph("AccountEvent.account&event");
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
@@ -57,7 +57,7 @@ public class AccountEventDaoImpl implements AccountEventDAO {
     }
 
     @Override
-    public AccountEvent getByAccountAndGroupId(final Long accountId, final Long groupId) {
+    public AccountEvent getByAccountAndEventId(final Long accountId, final Long groupId) {
         return this.entityManager.createNamedQuery("findConnByAccount&Event", AccountEvent.class)
                 .setParameter("accountId", accountId)
                 .setParameter("eventId", groupId)
@@ -65,7 +65,7 @@ public class AccountEventDaoImpl implements AccountEventDAO {
     }
 
     @Override
-    public AccountEvent getByAccountAndGroupIdWithAccountAndGroup(final Long accountId, final Long groupId) {
+    public AccountEvent getByAccountAndEventIdWithAccountAndEvent(final Long accountId, final Long groupId) {
         EntityGraph graph = this.entityManager.getEntityGraph("AccountEvent.account&event");
         return this.entityManager.createNamedQuery("findConnByAccount&Event", AccountEvent.class)
                 .setParameter("accountId", accountId)
@@ -75,7 +75,7 @@ public class AccountEventDaoImpl implements AccountEventDAO {
     }
 
     @Override
-    public Role getRoleByAccountAndGroupId(final Long accountId, final Long groupId) {
+    public Role getRoleByAccountAndEventId(final Long accountId, final Long groupId) {
         AccountEvent result = this.entityManager.createNamedQuery("findConnByAccount&Event", AccountEvent.class)
                 .setParameter("accountId", accountId)
                 .setParameter("eventId", groupId)

@@ -2,10 +2,12 @@ package com.bionic.fp.dao.impl;
 
 import com.bionic.fp.dao.AccountDAO;
 import com.bionic.fp.domain.Account;
+import com.bionic.fp.domain.AccountEvent;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,6 +48,29 @@ public class AccountDaoImpl implements AccountDAO {
     @Override
     public void delete(Long persistentObjectID) {
         entityManager.remove(read(persistentObjectID));
+    }
+
+    @Override
+    public Account addAccountEvent(final Long accountId, final AccountEvent accountEvent) {
+        Account account = getWithEvents(accountId);
+        if(account != null) {
+            account.getEvents().add(accountEvent);
+        }
+        return account;
+    }
+
+    @Override
+    public Account addAccountEvent(Account account, final AccountEvent accountEvent) {
+        if(account != null) {
+            if (account.isNew()) {
+                List<AccountEvent> accountEvents = account.getEvents();
+                accountEvents.add(accountEvent);
+//                account.setEvents(accountEvents);
+            } else {
+                account = addAccountEvent(account.getId(), accountEvent);
+            }
+        }
+        return account;
     }
 
     @Override

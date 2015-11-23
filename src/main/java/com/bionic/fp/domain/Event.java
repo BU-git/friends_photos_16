@@ -30,8 +30,8 @@ public class Event implements Serializable {
     private String name;
     @Column(nullable = false)
     private String description;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "event_type")
+    @ManyToOne
+    @JoinColumn(name = "event_id")
     private EventType eventType;
     @OneToOne(fetch = FetchType.LAZY)
     private Account owner;
@@ -189,6 +189,10 @@ public class Event implements Serializable {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public boolean isNew() {
+        return this.id == null;
     }
 
     @Override

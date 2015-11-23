@@ -2,31 +2,38 @@ package com.bionic.fp.rest.dto;
 
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Holds group for the client-server communication
  *
  * @author Sergiy Gabriel
  */
-public class GroupCreateDTO {
+public class EventCreateDTO {
     private String name;
     private String description;
-    private EventType type;
+    @JsonProperty("type_id")
+    private Integer typeId;
+    @JsonProperty("owner_id")
     private Long ownerId;
-    private boolean visible = true;
+    private Boolean visible = true;
     private Double latitude;
     private Double longitude;
+    private Float radius;
+    private Boolean geolocation = false;
 
-    public GroupCreateDTO() {
+    public EventCreateDTO() {
     }
 
-    public GroupCreateDTO(final Event event, final Long ownerId) {
+    public EventCreateDTO(final Event event, final Long ownerId) {
         this.name = event.getName();
         this.description = event.getDescription();
-//        this.type = event.getEventType();
+        this.typeId = event.getEventType().getId();
+        this.visible = event.isVisible();
         this.latitude = event.getLatitude();
         this.longitude = event.getLongitude();
-        this.visible = event.isVisible();
+        this.radius = event.getRadius();
+        this.geolocation = event.isGeolocationServicesEnabled();
         this.ownerId = ownerId;
     }
 
@@ -46,12 +53,12 @@ public class GroupCreateDTO {
         this.description = description;
     }
 
-    public EventType getType() {
-        return type;
+    public Integer getTypeId() {
+        return typeId;
     }
 
-    public void setType(EventType type) {
-        this.type = type;
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
     }
 
     public Long getOwnerId() {
@@ -60,6 +67,16 @@ public class GroupCreateDTO {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public Boolean getVisible() {
+        return visible;
+    }
+
+    public void setVisible(Boolean visible) {
+        if(visible != null) {
+            this.visible = visible;
+        }
     }
 
     public Double getLatitude() {
@@ -78,11 +95,21 @@ public class GroupCreateDTO {
         this.longitude = longitude;
     }
 
-    public boolean isVisible() {
-        return visible;
+    public Float getRadius() {
+        return radius;
     }
 
-    public void setVisible(boolean visible) {
-        this.visible = visible;
+    public void setRadius(Float radius) {
+        this.radius = radius;
+    }
+
+    public Boolean getGeolocation() {
+        return geolocation;
+    }
+
+    public void setGeolocation(Boolean geolocation) {
+        if(geolocation != null) {
+            this.geolocation = geolocation;
+        }
     }
 }

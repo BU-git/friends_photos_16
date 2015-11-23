@@ -85,7 +85,7 @@
 //
 //        Account account = this.accountService.getByIdWithGroups(ownerId);
 //        Long connId = account.getEvents().get(0).getId();
-//        Long groupId = this.accountEventService.getByIdWithAccountAndGroup(connId).getEvent().getId();
+//        Long groupId = this.accountEventService.getByIdWithAccountAndEvent(connId).getEvent().getId();
 //        Event event = this.groupService.getByIdWithOwner(groupId);
 //
 //        assertEquals(event.getOwner().getId(), ownerId);
@@ -248,7 +248,7 @@
 //        event.setEventType(EventType.PRIVATE);
 //        event.setVisible(true);
 //
-//        Long groupId = this.groupService.createGroup(ownerId, event);
+//        Long groupId = this.groupService.createEvent(ownerId, event);
 //
 //        when()
 //            .delete(GROUPS + "/{id}", event.getId())
@@ -284,7 +284,7 @@
 //        event.setEventType(EventType.PRIVATE);
 //        event.setVisible(true);
 //
-//        Long groupId = this.groupService.createGroup(ownerId, event);
+//        Long groupId = this.groupService.createEvent(ownerId, event);
 //
 //        when()
 //            .get(GROUPS + "/{id}", event.getId())
@@ -316,7 +316,7 @@
 //        event.setDescription("Happy New Year!");
 //        event.setEventType(EventType.PRIVATE);
 //        event.setVisible(true);
-//        Long groupId = this.groupService.createGroup(ownerId, event);
+//        Long groupId = this.groupService.createEvent(ownerId, event);
 //
 //        GroupUpdateDTO groupDTO = new GroupUpdateDTO();
 //        groupDTO.setId(groupId);

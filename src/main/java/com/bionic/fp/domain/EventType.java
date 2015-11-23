@@ -22,8 +22,6 @@ public class EventType implements Serializable {
 	@Column(name = "type_name")
     private String typeName;
 
-
-
     @Override
     public String toString() {
         return "EventType{" +
@@ -46,5 +44,24 @@ public class EventType implements Serializable {
 
     public void setTypeName(String typeName) {
         this.typeName = typeName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        EventType eventType = (EventType) o;
+
+        if (id != null ? !id.equals(eventType.id) : eventType.id != null) return false;
+        return !(typeName != null ? !typeName.equals(eventType.typeName) : eventType.typeName != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (typeName != null ? typeName.hashCode() : 0);
+        return result;
     }
 }

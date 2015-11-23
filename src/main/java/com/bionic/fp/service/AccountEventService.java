@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Entry point to perform operations over account-group connection entities
+ * Entry point to perform operations over account-event connection entities
  *
  * @author Sergiy Gabriel
  */
@@ -21,8 +21,8 @@ public class AccountEventService {
 
     public AccountEventService() {}
 
-    public Long addAccountEvent(final AccountEvent accountGroup) {
-        return accountGroup == null ? null : this.accountEventDAO.create(accountGroup);
+    public Long addAccountEvent(final AccountEvent accountEvent) {
+        return accountEvent == null ? null : this.accountEventDAO.create(accountEvent);
     }
 
     public void removeById(final Long id) {
@@ -35,21 +35,21 @@ public class AccountEventService {
         return id == null ? null : this.accountEventDAO.read(id);
     }
 
-    public AccountEvent getByAccountAndGroupId(final Long accountId, final Long groupId) {
-        return (accountId == null || groupId == null) ? null :
-                this.accountEventDAO.getByAccountAndGroupId(accountId, groupId);
+    public AccountEvent getByAccountAndEventId(final Long accountId, final Long eventId) {
+        return (accountId == null || eventId == null) ? null :
+                this.accountEventDAO.getByAccountAndEventId(accountId, eventId);
     }
 
-    public AccountEvent getByIdWithAccountAndGroup(final Long id) {
-        return id == null ? null : this.accountEventDAO.getWithAccountAndGroup(id);
+    public AccountEvent getByIdWithAccountAndEvent(final Long id) {
+        return id == null ? null : this.accountEventDAO.getWithAccountAndEvent(id);
     }
 
-    public AccountEvent getByAccountAndGroupIdWithAccountAndGroup(final Long accountId, final Long groupId) {
-        return (accountId == null || groupId == null) ? null :
-                this.accountEventDAO.getByAccountAndGroupIdWithAccountAndGroup(accountId, groupId);
+    public AccountEvent getByAccountAndEventIdWithAccountAndEvent(final Long accountId, final Long eventId) {
+        return (accountId == null || eventId == null) ? null :
+                this.accountEventDAO.getByAccountAndEventIdWithAccountAndEvent(accountId, eventId);
     }
 
-    public AccountEvent update(final AccountEvent accountGroup) {
-        return accountGroup == null ? null : this.accountEventDAO.update(accountGroup);
+    public AccountEvent update(final AccountEvent accountEvent) {
+        return accountEvent == null ? null : this.accountEventDAO.update(accountEvent);
     }
 }

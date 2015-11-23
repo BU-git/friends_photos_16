@@ -1,5 +1,6 @@
 package com.bionic.fp.dao;
 
+import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
 
 /**
@@ -8,6 +9,10 @@ import com.bionic.fp.domain.Event;
  * @author Sergiy Gabriel
  */
 public interface EventDAO extends GenericDAO<Event, Long> {
+
+    Event addAccountEvent(Long eventId, AccountEvent accountEvent);
+
+    Event addAccountEvent(Event event, AccountEvent accountEvent);
 
     /**
      * Returns a group with its owner by the specified id.
@@ -35,4 +40,12 @@ public interface EventDAO extends GenericDAO<Event, Long> {
      * @return a group with its owner and accounts by the specified id
      */
     Event getWithOwnerAndAccounts(Long id);
+
+    /**
+     * Sets the deleted field of the event by event ID
+     *
+     * @param id the event ID
+     * @param value the value
+     */
+    void setDeleted(Long id, boolean value);
 }

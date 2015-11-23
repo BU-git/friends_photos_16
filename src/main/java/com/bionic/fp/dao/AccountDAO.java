@@ -1,6 +1,7 @@
 package com.bionic.fp.dao;
 
 import com.bionic.fp.domain.Account;
+import com.bionic.fp.domain.AccountEvent;
 
 import javax.persistence.NoResultException;
 
@@ -10,6 +11,11 @@ import javax.persistence.NoResultException;
  * @author Sergiy Gabriel
  */
 public interface AccountDAO extends GenericDAO<Account, Long> {
+
+    Account addAccountEvent(Long accountId, AccountEvent accountEvent);
+
+    Account addAccountEvent(Account account, AccountEvent accountEvent);
+
     /**
      * Returns an account with its groups by the specified id.
      * Queries an account with setting EAGER for list of groups

@@ -7,4 +7,12 @@ import com.bionic.fp.domain.Role;
  */
 public interface RoleDAO extends GenericDAO<Role, Integer> {
 
+    Role getOwner();
+
+//    Role getAdmin();
+
+//    Role getAnonymous();
+
+//    Role getGuest();
+
 }
