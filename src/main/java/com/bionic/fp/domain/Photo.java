@@ -24,6 +24,9 @@ public class Photo implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     private Account owner;
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "photos_comments",
+            joinColumns = {@JoinColumn(name = "photo_id")},
+            inverseJoinColumns = {@JoinColumn(name = "comment_id")})
     private List<Comment> comments = new ArrayList<>();
 
     public Long getId() {

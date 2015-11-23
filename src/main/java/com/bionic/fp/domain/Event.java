@@ -31,7 +31,7 @@ public class Event implements Serializable {
     @Column(nullable = false)
     private String description;
     @ManyToOne
-    @JoinColumn(name = "event_id")
+    @JoinColumn(name = "event_type")
     private EventType eventType;
     @OneToOne(fetch = FetchType.LAZY)
     private Account owner;
@@ -58,6 +58,9 @@ public class Event implements Serializable {
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
     private List<Photo> photos = new ArrayList<>();
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "events_comments",
+            joinColumns = {@JoinColumn(name = "event_id")},
+            inverseJoinColumns = {@JoinColumn(name = "comment_id")})
     private List<Comment> comments = new ArrayList<>();
 
     public Event() {
