@@ -82,7 +82,7 @@ public class AccountDaoImpl implements AccountDAO {
     }
 
     @Override
-    public Account getByEmail(String email)  throws NoResultException {
+    public Account getByEmail(String email) throws NoResultException {
         TypedQuery<Account> result = entityManager.createQuery(SELECT_ACCOUNT_BY_EMAIL_QUERY, Account.class);
         result.setParameter("email", email);
         return result.getSingleResult();
@@ -96,14 +96,14 @@ public class AccountDaoImpl implements AccountDAO {
     }
 
     @Override
-    public Account getByVKId(String vkId)  throws NoResultException {
+    public Account getByVKId(String vkId) throws NoResultException {
         TypedQuery<Account> result = entityManager.createQuery(SELECT_ACCOUNT_BY_VKID_QUERY, Account.class);
         result.setParameter("vkId", vkId);
         return result.getSingleResult();
     }
 
     @Override
-    public Account getByUserName(String userName)  throws NoResultException {
+    public Account getByUserName(String userName) throws NoResultException {
         TypedQuery<Account> result = entityManager.createQuery(SELECT_ACCOUNT_BY_USERNAME_QUERY, Account.class);
         result.setParameter("userName", userName);
         return result.getSingleResult();

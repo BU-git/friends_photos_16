@@ -12,7 +12,7 @@ public class Test {
     private static AccountService accountsService;
 
     static {
-        context = new ClassPathXmlApplicationContext("beans.xml");
+        context = new ClassPathXmlApplicationContext("spring/data.xml");
         accountsService = context.getBean(AccountService.class);
     }
 
