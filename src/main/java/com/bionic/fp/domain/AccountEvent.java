@@ -21,10 +21,12 @@ public class AccountEvent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn(name="account_id", referencedColumnName = "id")
     private Account account;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn(name = "event_id", referencedColumnName = "id")
     private Event event;
 
     @OneToOne(fetch = FetchType.EAGER)
