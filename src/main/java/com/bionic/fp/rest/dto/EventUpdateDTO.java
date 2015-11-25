@@ -1,7 +1,6 @@
 package com.bionic.fp.rest.dto;
 
 import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.EventType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -15,10 +14,12 @@ public class EventUpdateDTO {
     @JsonProperty("type_id")
     private Integer typeId;
     private Boolean visible;
+    @JsonProperty("lat")
     private Double latitude;
+    @JsonProperty("lng")
     private Double longitude;
     private Float radius;
-    private Boolean geolocation;
+    private Boolean geo;
 
     public EventUpdateDTO() {
     }
@@ -31,7 +32,7 @@ public class EventUpdateDTO {
         this.latitude = event.getLatitude();
         this.longitude = event.getLongitude();
         this.radius = event.getRadius();
-        this.geolocation = event.isGeolocationServicesEnabled();
+        this.geo = event.isGeoServicesEnabled();
     }
 
     public String getName() {
@@ -90,11 +91,11 @@ public class EventUpdateDTO {
         this.radius = radius;
     }
 
-    public Boolean getGeolocation() {
-        return geolocation;
+    public Boolean getGeo() {
+        return geo;
     }
 
-    public void setGeolocation(Boolean geolocation) {
-        this.geolocation = geolocation;
+    public void setGeo(Boolean geo) {
+        this.geo = geo;
     }
 }

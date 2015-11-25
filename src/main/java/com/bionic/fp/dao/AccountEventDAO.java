@@ -4,7 +4,7 @@ import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Role;
 
 /**
- * todo: comment
+ * Represents data access object of the account-event
  *
  * @author Sergiy Gabriel
  */

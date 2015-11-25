@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * todo: comment
+ * Entry point to perform operations over event type entities
  *
  * @author Sergiy Gabriel
  */
@@ -27,4 +27,7 @@ public class EventTypeService {
         return this.eventTypeDAO.getPrivate();
     }
 
+    public EventType getById(final Integer id) {
+        return id == null ? null : this.eventTypeDAO.read(id);
+    }
 }

@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 /**
- * todo: comment
+ * This is implementation of {@link EventTypeDAO}
  *
  * @author Sergiy Gabriel
  */
@@ -46,12 +46,12 @@ public class EventTypeDaoImpl implements EventTypeDAO {
     @Override
     public EventType getPrivate() {
         // todo: delete this block
-        EventType eventType = new EventType();
-        eventType.setTypeName("PRIVATE");
-        this.entityManager.persist(eventType);
-        return this.entityManager.find(EventType.class, eventType.getId());
+//        EventType eventType = new EventType();
+//        eventType.setTypeName("PRIVATE");
+//        this.entityManager.persist(eventType);
+//        return this.entityManager.find(EventType.class, eventType.getId());
 
         // todo: use it
-//        return this.entityManager.find(EventType.class, 1L);
+        return this.entityManager.find(EventType.class, 1);
     }
 }

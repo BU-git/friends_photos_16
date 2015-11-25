@@ -62,7 +62,7 @@ public class AccountDaoImpl implements AccountDAO {
     @Override
     public Account addAccountEvent(Account account, final AccountEvent accountEvent) {
         if(account != null) {
-            if (account.isNew()) {
+            if (account.getId() == null) {
                 List<AccountEvent> accountEvents = account.getEvents();
                 accountEvents.add(accountEvent);
 //                account.setEvents(accountEvents);

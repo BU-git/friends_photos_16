@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * todo: comment
+ * This is implementation of {@link AccountEventDAO}
  *
  * @author Sergiy Gabriel
  */

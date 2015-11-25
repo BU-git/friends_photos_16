@@ -44,11 +44,13 @@ public class Event implements Serializable {
     @Column(name = "expire_date")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime expireDate;
+    @Column(name = "lat")
     private Double latitude;
+    @Column(name = "lng")
     private Double longitude;
     private Float radius;
-    @Column(name = "geolocation")
-    private boolean geolocationServicesEnabled = false;
+    @Column(name = "geo")
+    private boolean geoServicesEnabled = false;
     /**
      * Is this event deleted? Because the event is not deleted physically
      */
@@ -154,12 +156,12 @@ public class Event implements Serializable {
         this.radius = radius;
     }
 
-    public boolean isGeolocationServicesEnabled() {
-        return geolocationServicesEnabled;
+    public boolean isGeoServicesEnabled() {
+        return geoServicesEnabled;
     }
 
-    public void setGeolocationServicesEnabled(boolean geolocationServicesEnabled) {
-        this.geolocationServicesEnabled = geolocationServicesEnabled;
+    public void setGeoServicesEnabled(boolean geoServicesEnabled) {
+        this.geoServicesEnabled = geoServicesEnabled;
     }
 
     public boolean isDeleted() {
@@ -194,10 +196,6 @@ public class Event implements Serializable {
         this.comments = comments;
     }
 
-    public boolean isNew() {
-        return this.id == null;
-    }
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Event{");
@@ -212,7 +210,7 @@ public class Event implements Serializable {
         sb.append(", latitude=").append(latitude);
         sb.append(", longitude=").append(longitude);
         sb.append(", radius=").append(radius);
-        sb.append(", geolocationServicesEnabled=").append(geolocationServicesEnabled);
+        sb.append(", geoServicesEnabled=").append(geoServicesEnabled);
         sb.append(", deleted=").append(deleted);
         sb.append('}');
         return sb.toString();

@@ -6,7 +6,7 @@ import com.bionic.fp.domain.AccountEvent;
 import javax.persistence.NoResultException;
 
 /**
- * todo: comment
+ * Represents data access object of the account
  *
  * @author Sergiy Gabriel
  */

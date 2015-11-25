@@ -1,7 +1,6 @@
 package com.bionic.fp.rest.dto;
 
 import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.EventType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -16,11 +15,13 @@ public class EventCreateDTO {
     private Integer typeId;
     @JsonProperty("owner_id")
     private Long ownerId;
-    private Boolean visible = true;
+    private Boolean visible;
+    @JsonProperty("lat")
     private Double latitude;
+    @JsonProperty("lng")
     private Double longitude;
     private Float radius;
-    private Boolean geolocation = false;
+    private Boolean geo;
 
     public EventCreateDTO() {
     }
@@ -33,7 +34,7 @@ public class EventCreateDTO {
         this.latitude = event.getLatitude();
         this.longitude = event.getLongitude();
         this.radius = event.getRadius();
-        this.geolocation = event.isGeolocationServicesEnabled();
+        this.geo = event.isGeoServicesEnabled();
         this.ownerId = ownerId;
     }
 
@@ -74,9 +75,7 @@ public class EventCreateDTO {
     }
 
     public void setVisible(Boolean visible) {
-        if(visible != null) {
-            this.visible = visible;
-        }
+        this.visible = visible;
     }
 
     public Double getLatitude() {
@@ -103,13 +102,11 @@ public class EventCreateDTO {
         this.radius = radius;
     }
 
-    public Boolean getGeolocation() {
-        return geolocation;
+    public Boolean getGeo() {
+        return geo;
     }
 
-    public void setGeolocation(Boolean geolocation) {
-        if(geolocation != null) {
-            this.geolocation = geolocation;
-        }
+    public void setGeo(Boolean geo) {
+        this.geo = geo;
     }
 }

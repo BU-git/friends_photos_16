@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Entry point to perform operations over event entities
@@ -37,6 +38,9 @@ public class EventService {
 
     public EventService() {}
 
+    /**
+     * todo: test
+     */
     public void addOrUpdateAccountToEvent(final Long accountId, final Long eventId, final Role role) {
         if(accountId == null || eventId == null || role == null) {
             return;
@@ -73,7 +77,7 @@ public class EventService {
      * @return the event ID and null otherwise
      */
     public Long createEvent(final Long ownerId, Event event) {
-        if(ownerId == null || event == null || !event.isNew()) {
+        if(ownerId == null || !isValid(event) || event.getId() != null) {
             return null;
         }
 
@@ -116,14 +120,12 @@ public class EventService {
     }
 
     /**
-     * Changes the deleted field to true
+     * Changes the deleted field to true (soft delete)
      *
      * @param id the event ID
      */
-    public void removeById(final Long id) {
-        if(id != null) {
-            this.eventDAO.setDeleted(id, true);
-        }
+    public boolean removeById(final Long id) {
+        return id != null && this.eventDAO.setDeleted(id, true);
     }
 
     /**
@@ -165,6 +167,29 @@ public class EventService {
      * @return the current state of the event and null otherwise
      */
     public Event update(final Event event) {
-        return event == null ? null : this.eventDAO.update(event);
+        if(!isValid(event) || event.getId() == null) {
+            return null;
+        }
+        // can't change the owner
+        if(this.eventDAO.isOwnerLoaded(event)) {
+            Event actual = getByIdWithOwner(event.getId());
+            if (actual == null || event.getOwner() == null || !Objects.equals(event.getOwner().getId(), actual.getOwner().getId())) {
+                return null;
+            }
+        }
+        return this.eventDAO.update(event);
+    }
+
+    /**
+     * Checks required parameters (should not be null) of an event
+     *
+     * @param event the event
+     * @return true if all required parameters are initialized and false otherwise
+     */
+    private boolean isValid(final Event event) {
+        return event != null &&
+                event.getName() != null &&
+                event.getEventType() != null &&
+                event.getDescription() != null;
     }
 }

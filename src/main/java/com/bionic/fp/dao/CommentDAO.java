@@ -3,7 +3,7 @@ package com.bionic.fp.dao;
 import com.bionic.fp.domain.Comment;
 
 /**
- * todo: comment
+ * Represents data access object of the comment
  *
  * @author Sergiy Gabriel
  */

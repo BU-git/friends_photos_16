@@ -43,12 +43,12 @@ public class RoleDaoImpl implements RoleDAO {
     @Override
     public Role getOwner() {
         // todo: delete this block
-        Role role = new Role();
-        role.setRole("OWNER");
-        this.entityManager.persist(role);
-        return this.entityManager.find(Role.class, role.getId());
+//        Role role = new Role();
+//        role.setRole("OWNER");
+//        this.entityManager.persist(role);
+//        return this.entityManager.find(Role.class, role.getId());
 
         // todo: use it
-//        return this.entityManager.find(Role.class, 1L);
+        return this.entityManager.find(Role.class, 1);
     }
 }

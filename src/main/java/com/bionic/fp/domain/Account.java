@@ -183,10 +183,6 @@ public class Account implements Serializable {
         this.events = events;
     }
 
-    public boolean isNew() {
-        return this.id == null;
-    }
-
     @Override
     public String toString() {
         return "Account{" +

@@ -3,7 +3,7 @@ package com.bionic.fp.dao;
 import com.bionic.fp.domain.Photo;
 
 /**
- * todo: comment
+ * Represents data access object of the photo
  *
  * @author Sergiy Gabriel
  */

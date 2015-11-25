@@ -1,7 +1,6 @@
 package com.bionic.fp.rest.dto;
 
 import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.EventType;
 import com.bionic.fp.util.LocalDateTimeJsonDeserializer;
 import com.bionic.fp.util.LocalDateTimeJsonSerializer;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -29,12 +28,15 @@ public class EventInfoDTO {
     @JsonSerialize(using = LocalDateTimeJsonSerializer.class)
     @JsonDeserialize(using = LocalDateTimeJsonDeserializer.class)
     private LocalDateTime expireDate;
+    @JsonProperty("type_id")
     private Integer typeId;
     private OwnerInfoDTO owner;
+    @JsonProperty("lat")
     private Double latitude;
+    @JsonProperty("lng")
     private Double longitude;
     private Float radius;
-    private Boolean geolocation;
+    private Boolean geo;
     private Boolean visible;
 
     public EventInfoDTO() {
@@ -51,7 +53,7 @@ public class EventInfoDTO {
         this.latitude = event.getLatitude();
         this.longitude = event.getLongitude();
         this.radius = event.getRadius();
-        this.geolocation = event.isGeolocationServicesEnabled();
+        this.geo = event.isGeoServicesEnabled();
         this.visible = event.isVisible();
     }
 
@@ -135,12 +137,12 @@ public class EventInfoDTO {
         this.radius = radius;
     }
 
-    public Boolean getGeolocation() {
-        return geolocation;
+    public Boolean getGeo() {
+        return geo;
     }
 
-    public void setGeolocation(Boolean geolocation) {
-        this.geolocation = geolocation;
+    public void setGeo(Boolean geo) {
+        this.geo = geo;
     }
 
     public Boolean getVisible() {

@@ -3,7 +3,7 @@ package com.bionic.fp.dao;
 import com.bionic.fp.domain.EventType;
 
 /**
- * todo: comment
+ * Represents data access object of the event type
  *
  * @author Sergiy Gabriel
  */

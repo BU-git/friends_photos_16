@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by boubdyk on 11.11.2015.
+ * This is implementation of {@link EventDAO}
+ *
+ * @author Sergiy Gabriel
  */
 @Repository
 public class EventDaoImpl implements EventDAO {
@@ -21,7 +23,8 @@ public class EventDaoImpl implements EventDAO {
     @PersistenceContext(unitName = "entityManager")
     private EntityManager entityManager;
 
-    public EventDaoImpl(){}
+    public EventDaoImpl(){
+    }
 
     @Override
     public Long create(Event event) {
@@ -35,9 +38,8 @@ public class EventDaoImpl implements EventDAO {
     }
 
     @Override
-    public Event update(final Event transientObject) {
-        this.entityManager.merge(transientObject);
-        return transientObject;
+    public Event update(final Event event) {
+        return this.entityManager.merge(event);
     }
 
     @Override
@@ -60,7 +62,7 @@ public class EventDaoImpl implements EventDAO {
     @Override
     public Event addAccountEvent(Event event, final AccountEvent accountEvent) {
         if(event != null) {
-            if (event.isNew()) {
+            if (event.getId() == null) {
                 List<AccountEvent> accountEvents = event.getAccounts();
                 accountEvents.add(accountEvent);
 //                event.setAccounts(accountEvents);
@@ -96,11 +98,18 @@ public class EventDaoImpl implements EventDAO {
     }
 
     @Override
-    public void setDeleted(final Long id, final boolean value) {
+    public boolean setDeleted(final Long id, final boolean value) {
         Event event = read(id);
-        if(event != null) {
-            event.setDeleted(value);
-            update(event);
+        if(event == null) {
+            return false;
         }
+        event.setDeleted(value);
+        update(event);
+        return true;
+    }
+
+    @Override
+    public boolean isOwnerLoaded(final Event event) {
+        return this.entityManager.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(event, "owner");
     }
 }
