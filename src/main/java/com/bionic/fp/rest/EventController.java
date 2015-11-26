@@ -5,6 +5,7 @@ import com.bionic.fp.domain.EventType;
 import com.bionic.fp.rest.dto.EventCreateDTO;
 import com.bionic.fp.rest.dto.EventInfoDTO;
 import com.bionic.fp.rest.dto.EventUpdateDTO;
+import com.bionic.fp.rest.dto.IdInfoDTO;
 import com.bionic.fp.service.EventService;
 import com.bionic.fp.service.EventTypeService;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class EventController {
     private EventTypeService eventTypeService;
 
     @RequestMapping(method = POST, consumes = APPLICATION_JSON_VALUE)
-    public @ResponseBody ResponseEntity saveGroup(@RequestBody final EventCreateDTO eventDto) {
+    public @ResponseBody ResponseEntity<IdInfoDTO> saveGroup(@RequestBody final EventCreateDTO eventDto) {
         Event event = new Event();
         // required parameters (should not be null)
         event.setName(eventDto.getName());
@@ -52,7 +53,7 @@ public class EventController {
 
         Long eventId = this.eventService.createEvent(eventDto.getOwnerId(), event);
 
-        return eventId != null ? new ResponseEntity(CREATED) : new ResponseEntity(BAD_REQUEST);
+        return eventId != null ? new ResponseEntity<>(new IdInfoDTO(eventId), CREATED) : new ResponseEntity<>(BAD_REQUEST);
     }
 
     @RequestMapping(value = "/{id:[\\d]+}", method = DELETE)

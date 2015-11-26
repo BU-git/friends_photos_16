@@ -308,10 +308,10 @@ public class EventControllerIT {
 //            .body("expire_date", is(group.getExpireDate().toString()))
             .body("lat", is(event.getLatitude()))
             .body("lng", is(event.getLongitude()))
-            .body("owner.id.toString()", is(event.getOwner().getId().toString()))
-            .body("owner.user_name", is(event.getOwner().getUserName()))
-            .body("owner.email", is(event.getOwner().getEmail()))
-            .body("owner.profile_image_url", is(event.getOwner().getProfileImageUrl()));
+            .body("radius", is(event.getRadius()))
+            .body("geo", is(event.isGeoServicesEnabled()))
+            .body("visible", is(event.isVisible()))
+            .body("owner_id.toString()", is(event.getOwner().getId().toString()));
     }
 
     @Test

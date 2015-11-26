@@ -30,7 +30,8 @@ public class EventInfoDTO {
     private LocalDateTime expireDate;
     @JsonProperty("type_id")
     private Integer typeId;
-    private OwnerInfoDTO owner;
+    @JsonProperty("owner_id")
+    private Long ownerId;
     @JsonProperty("lat")
     private Double latitude;
     @JsonProperty("lng")
@@ -49,7 +50,7 @@ public class EventInfoDTO {
         this.date = event.getDate();
         this.expireDate = event.getExpireDate();
         this.typeId = event.getEventType().getId();
-        this.owner = new OwnerInfoDTO(event.getOwner());
+        this.ownerId = event.getOwner().getId();
         this.latitude = event.getLatitude();
         this.longitude = event.getLongitude();
         this.radius = event.getRadius();
@@ -105,12 +106,12 @@ public class EventInfoDTO {
         this.typeId = typeId;
     }
 
-    public OwnerInfoDTO getOwner() {
-        return owner;
+    public Long getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwner(OwnerInfoDTO owner) {
-        this.owner = owner;
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public Double getLatitude() {

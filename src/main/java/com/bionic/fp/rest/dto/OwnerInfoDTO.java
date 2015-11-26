@@ -1,6 +1,7 @@
 package com.bionic.fp.rest.dto;
 
 import com.bionic.fp.domain.Account;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @author Sergiy Gabriel
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OwnerInfoDTO {
 
     private Long id;
