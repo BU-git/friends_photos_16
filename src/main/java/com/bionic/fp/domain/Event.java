@@ -10,18 +10,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "events")
-@NamedEntityGraphs({
-        @NamedEntityGraph(name="Event.owner", attributeNodes={
-                @NamedAttributeNode("owner")}
-        ),
-        @NamedEntityGraph(name="Event.accounts", attributeNodes={
-                @NamedAttributeNode("accounts")}
-        ),
-        @NamedEntityGraph(name="Event.owner&accounts", attributeNodes={
-                @NamedAttributeNode("owner"),
-                @NamedAttributeNode("accounts")}
-        )
-})
 public class Event implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

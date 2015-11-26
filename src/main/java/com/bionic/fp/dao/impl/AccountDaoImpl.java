@@ -3,6 +3,7 @@ package com.bionic.fp.dao.impl;
 import com.bionic.fp.dao.AccountDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
+import com.bionic.fp.domain.Account_;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
@@ -75,7 +76,8 @@ public class AccountDaoImpl implements AccountDAO {
 
     @Override
     public Account getWithEvents(final Long id) {
-        EntityGraph graph = this.entityManager.getEntityGraph("Account.events");
+        EntityGraph<Account> graph = this.entityManager.createEntityGraph(Account.class);
+        graph.addAttributeNodes(Account_.events);
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
         return this.entityManager.find(Account.class, id, hints);

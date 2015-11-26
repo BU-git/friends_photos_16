@@ -3,6 +3,7 @@ package com.bionic.fp.dao.impl;
 import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
+import com.bionic.fp.domain.Event_;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityGraph;
@@ -75,7 +76,8 @@ public class EventDaoImpl implements EventDAO {
 
     @Override
     public Event getWithOwner(final Long id) {
-        EntityGraph graph = this.entityManager.getEntityGraph("Event.owner");
+        EntityGraph<Event> graph = this.entityManager.createEntityGraph(Event.class);
+        graph.addAttributeNodes(Event_.owner);
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
         return this.entityManager.find(Event.class, id, hints);
@@ -83,7 +85,8 @@ public class EventDaoImpl implements EventDAO {
 
     @Override
     public Event getWithAccounts(final Long id) {
-        EntityGraph graph = this.entityManager.getEntityGraph("Event.accounts");
+        EntityGraph<Event> graph = this.entityManager.createEntityGraph(Event.class);
+        graph.addAttributeNodes(Event_.accounts);
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
         return this.entityManager.find(Event.class, id, hints);
@@ -91,7 +94,9 @@ public class EventDaoImpl implements EventDAO {
 
     @Override
     public Event getWithOwnerAndAccounts(final Long id) {
-        EntityGraph graph = this.entityManager.getEntityGraph("Event.owner&accounts");
+        EntityGraph<Event> graph = this.entityManager.createEntityGraph(Event.class);
+        graph.addAttributeNodes(Event_.owner);
+        graph.addAttributeNodes(Event_.accounts);
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
         return this.entityManager.find(Event.class, id, hints);

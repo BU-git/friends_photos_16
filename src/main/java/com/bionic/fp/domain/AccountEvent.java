@@ -7,10 +7,6 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="accounts_events")
-@NamedEntityGraph(name = "AccountEvent.account&event", attributeNodes = {
-        @NamedAttributeNode("account"),
-        @NamedAttributeNode("event")}
-)
 @NamedQuery(
         name="findConnByAccount&Event",
         query="SELECT ae FROM AccountEvent ae WHERE ae.account.id = :accountId AND ae.event.id = :eventId"
