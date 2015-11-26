@@ -53,7 +53,7 @@ public class Account implements Serializable {
     private boolean guest;
 
 	@Column(name = "active")
-    private boolean active;
+    private boolean active = true;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<AccountEvent> events;

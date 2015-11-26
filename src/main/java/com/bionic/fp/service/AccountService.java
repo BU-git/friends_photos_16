@@ -149,8 +149,8 @@ public class AccountService {
         if (email != null && !"".equals(email.trim())) {
             try {
                 account = accountDAO.getByEmail(email);
-//                account.setFacebookId(facebookId);
-//                account.setFacebookProfileUrl(FACEBOOK_BASE_URL + facebookId);
+                account.setFbId(facebookId);
+                account.setFbProfileUrl(FACEBOOK_BASE_URL + facebookId);
                 return account;
             } catch (NoResultException ignored) {}
         }
@@ -159,8 +159,8 @@ public class AccountService {
         account = new Account();
         account.setUserName(name);
         account.setEmail(email);
-//        account.setFacebookId(facebookId);
-//        account.setFacebookProfileUrl(FACEBOOK_BASE_URL + facebookId);
+        account.setFbId(facebookId);
+        account.setFbProfileUrl(FACEBOOK_BASE_URL + facebookId);
         accountDAO.create(account);
         return account;
     }

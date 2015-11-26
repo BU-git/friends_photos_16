@@ -1,15 +1,16 @@
 package com.bionic.fp.rest;
 
 import com.bionic.fp.domain.Account;
-import com.bionic.fp.rest.json.FBUserInfoResponse;
-import com.bionic.fp.rest.json.AuthResponse;
-import com.bionic.fp.rest.json.FBUserTokenInfo;
+import com.bionic.fp.rest.dto.FBUserInfoResponse;
+import com.bionic.fp.rest.dto.AuthResponse;
+import com.bionic.fp.rest.dto.FBUserTokenInfo;
 import com.bionic.fp.service.AccountService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.ResponseErrorHandler;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
@@ -42,8 +43,11 @@ public class FBAccountsController {
 
         AuthResponse authResponse = new AuthResponse();
 
-        FBUserTokenInfo fbUserTokenInfo =
+        FBUserTokenInfo fbUserTokenInfo = null;
+        try {
+            fbUserTokenInfo =
                 restTemplate.getForObject(String.format(DEBUG_TOKEN_URL, token, appKey, appSecret), FBUserTokenInfo.class);
+        } catch (RestClientException ignored) {}
 
         if (fbUserTokenInfo == null) {
             authResponse.setCode(AuthResponse.SERVER_PROBLEM);
@@ -57,10 +61,16 @@ public class FBAccountsController {
             return authResponse;
         }
 
-        FBUserInfoResponse userInfo
-                = restTemplate.getForObject(String.format(REQUEST_USER_INFO_URL, fbId, token), FBUserInfoResponse.class);
+        FBUserInfoResponse userInfo = null;
+        try {
+            userInfo = restTemplate.getForObject(String.format(REQUEST_USER_INFO_URL, fbId, token), FBUserInfoResponse.class);
+        } catch (RestClientException ignored) {}
 
-        if (userInfo.hasError()) {
+        if (userInfo == null) {
+            authResponse.setCode(AuthResponse.SERVER_PROBLEM);
+            authResponse.setMessage("Unable to get user info from facebook.");
+            return authResponse;
+        } else if (userInfo.hasError()) {
             authResponse.setCode(AuthResponse.BAD_FB_TOKEN);
             authResponse.setMessage(userInfo.getError().getMessage());
             return authResponse;
@@ -74,14 +84,6 @@ public class FBAccountsController {
         authResponse.setToken("");//TODO: set valid access token here
 
         return authResponse;
-    }
-
-    public void setAppSecret(String appSecret) {
-        this.appSecret = appSecret;
-    }
-
-    public void setAppKey(String appKey) {
-        this.appKey = appKey;
     }
 
     @PostConstruct

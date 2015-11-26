@@ -1,7 +1,9 @@
 package com.bionic.fp.rest;
 
 import com.bionic.fp.domain.Account;
-import com.bionic.fp.rest.json.*;
+import com.bionic.fp.rest.dto.AuthResponse;
+import com.bionic.fp.rest.dto.VKAccessTokenResponse;
+import com.bionic.fp.rest.dto.VKCheckTokenResponse;
 import com.bionic.fp.service.AccountService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -71,14 +73,6 @@ public class VKAccountsController {
         authResponse.setToken("");//TODO: set valid access token here
 
         return authResponse;
-    }
-
-    public void setAppSecret(String appSecret) {
-        this.appSecret = appSecret;
-    }
-
-    public void setAppKey(String appKey) {
-        this.appKey = appKey;
     }
 
     @PostConstruct
