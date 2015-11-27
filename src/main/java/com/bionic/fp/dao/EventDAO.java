@@ -3,8 +3,6 @@ package com.bionic.fp.dao;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
 
-import javax.persistence.PersistenceUnitUtil;
-
 /**
  * Represents data access object of the event
  *
@@ -12,18 +10,23 @@ import javax.persistence.PersistenceUnitUtil;
  */
 public interface EventDAO extends GenericDAO<Event, Long> {
 
+    /**
+     * Adds an account-event to the event by event ID
+     *
+     * @param eventId the event ID
+     * @param accountEvent the account-event
+     * @return an updated event
+     */
     Event addAccountEvent(Long eventId, AccountEvent accountEvent);
 
-    Event addAccountEvent(Event event, AccountEvent accountEvent);
-
     /**
-     * Returns an event with its owner by the specified id.
-     * Queries an event with setting EAGER for its owner
+     * Adds an account-event to the event by instance of the event
      *
-     * @param id the unique identifier
-     * @return an event with its owner by the specified id
+     * @param event the event
+     * @param accountEvent the account-event
+     * @return an updated event
      */
-    Event getWithOwner(Long id);
+    Event addAccountEvent(Event event, AccountEvent accountEvent);
 
     /**
      * Returns an event with its accounts by the specified id.
@@ -33,15 +36,6 @@ public interface EventDAO extends GenericDAO<Event, Long> {
      * @return an event with its accounts by the specified id
      */
     Event getWithAccounts(Long id);
-
-    /**
-     * Returns an event with its owner and accounts by the specified id.
-     * Queries an event with setting EAGER for its owner and accounts
-     *
-     * @param id the unique identifier
-     * @return an event with its owner and accounts by the specified id
-     */
-    Event getWithOwnerAndAccounts(Long id);
 
     /**
      * Sets the deleted field of the event by event ID.

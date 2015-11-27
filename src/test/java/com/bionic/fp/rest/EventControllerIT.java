@@ -19,15 +19,18 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static com.bionic.fp.util.DateTimeFormatterConstants.LOCAL_DATE_TIME;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Random;
+
 import static com.jayway.restassured.http.ContentType.JSON;
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.when;
 import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This is an integration test that verifies {@link EventController}
@@ -61,21 +64,10 @@ public class EventControllerIT {
 
     @Test
     public void testSaveEventSuccess() {
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        Long ownerId = this.accountService.addAccount(owner);
-        assertNotNull(ownerId);
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
+        Account owner = getSavedAccount();
+        EventType privateEvent = getPrivateEventType();
 
-        EventCreateDTO eventDto = new EventCreateDTO();
-        eventDto.setName("NY 2016");
-        eventDto.setDescription("Happy New Year!");
-        eventDto.setTypeId(privateEvent.getId());
-        eventDto.setOwnerId(ownerId);
-        eventDto.setVisible(true);
-        eventDto.setLatitude(15.0);
-        eventDto.setLongitude(25.0);
-        eventDto.setRadius(0.5f);
+        EventCreateDTO eventDto = new EventCreateDTO(getNewEventMax(), owner.getId());
 
         given()
             .body(eventDto)
@@ -85,10 +77,10 @@ public class EventControllerIT {
         .then()
             .statusCode(SC_CREATED);
 
-        Account account = this.accountService.getByIdWithGroups(ownerId);
+        Account account = this.accountService.getWithEvents(owner.getId());
         assertNotNull(account);
         Long eventId = account.getEvents().get(0).getId();
-        Event actual = this.eventService.getByIdWithOwner(eventId);
+        Event actual = this.eventService.get(eventId);
         assertNotNull(actual);
 
         assertEquals(actual.getId(), eventId);
@@ -101,7 +93,7 @@ public class EventControllerIT {
         // by default
         assertEquals(actual.isVisible(), true);
         assertEquals(actual.isGeoServicesEnabled(), false);
-        assertEquals(actual.getOwner().getId(), ownerId);
+        assertEquals(actual.getOwner().getId(), owner.getId());
         assertEquals(actual.getOwner().getEmail(), owner.getEmail());
         assertEquals(actual.getOwner().getUserName(), owner.getUserName());
         assertEquals(actual.getOwner().getPassword(), owner.getPassword());
@@ -109,18 +101,10 @@ public class EventControllerIT {
 
     @Test
     public void testSaveEventShouldReturnBadRequest() {
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        Long ownerId = this.accountService.addAccount(owner);
-        assertNotNull(ownerId);
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
+        Account owner = getSavedAccount();
+        EventType privateEvent = getPrivateEventType();
 
-        EventCreateDTO eventDto = new EventCreateDTO();
-        eventDto.setOwnerId(ownerId);
-        eventDto.setVisible(true);
-        eventDto.setLatitude(15.0);
-        eventDto.setLongitude(25.0);
-        eventDto.setRadius(0.5f);
+        EventCreateDTO eventDto = new EventCreateDTO(getNewEventMax(), owner.getId());
 
         // without name, description, type
         eventDto.setName(null);
@@ -216,12 +200,8 @@ public class EventControllerIT {
 
     @Test
     public void testSaveEventWithoutValidOwnerIdShouldReturnBadRequest() {
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-        EventCreateDTO eventDto = new EventCreateDTO();
-        eventDto.setName("NY 400");
-        eventDto.setDescription("Happy New Year!");
-        eventDto.setTypeId(privateEvent.getId());
+        EventType privateEvent = getPrivateEventType();
+        EventCreateDTO eventDto = new EventCreateDTO(getNewEventMin(), null);
 
         // without owner ID
         eventDto.setOwnerId(null);
@@ -248,22 +228,12 @@ public class EventControllerIT {
 
     @Test
     public void testRemoveEventByIdSuccess() {
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        Long ownerId = this.accountService.addAccount(owner);
-        assertNotNull(ownerId);
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-        Event event = new Event();
-        event.setName("NY 2017");
-        event.setDescription("Happy New Year!");
-        event.setEventType(privateEvent);
-        Long eventId = this.eventService.createEvent(ownerId, event);
-        assertNotNull(eventId);
+        Event event = getSavedEventMin(getSavedAccount());
 
         when()
-            .delete(EVENTS_ID, eventId)
+            .delete(EVENTS_ID, event.getId())
         .then()
-            .statusCode(SC_OK);
+            .statusCode(SC_NO_CONTENT);
     }
 
     @Test
@@ -282,20 +252,11 @@ public class EventControllerIT {
 
     @Test
     public void testFindEventByIdSuccess() {
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        Long ownerId = this.accountService.addAccount(owner);
-        assertNotNull(ownerId);
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-        Event event = new Event();
-        event.setName("NY 2018");
-        event.setDescription("Happy New Year!");
-        event.setEventType(privateEvent);
-        Long eventId = this.eventService.createEvent(ownerId, event);
-        assertNotNull(eventId);
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMin(owner);
 
         when()
-            .get(EVENTS_ID, eventId)
+            .get(EVENTS_ID, event.getId())
         .then()
             .statusCode(SC_OK)
             .body("id.toString()", is(event.getId().toString()))
@@ -312,6 +273,28 @@ public class EventControllerIT {
             .body("geo", is(event.isGeoServicesEnabled()))
             .body("visible", is(event.isVisible()))
             .body("owner_id.toString()", is(event.getOwner().getId().toString()));
+
+        event = getSavedEventMax(owner);
+
+        when()
+            .get(EVENTS_ID, event.getId())
+        .then()
+            .statusCode(SC_OK)
+            .body("id.toString()", is(event.getId().toString()))
+            .body("name", is(event.getName()))
+            .body("type_id.toString()", is(event.getEventType().getId().toString()))
+            .body("description", is(event.getDescription()))
+            // sometimes failure 2015-11-24 16:51:53 == 2015-11-24 16:51:53.213
+            // but 2015-11-24 16:51:53 != 2015-11-24 16:51:53.599
+//            .body("date", is(event.getDate().format(LOCAL_DATE_TIME)))
+//            .body("expire_date", is(group.getExpireDate().toString()))
+            // digits
+//            .body("lat.toString()", is(event.getLatitude().toString()))
+//            .body("lng.toString()", is(event.getLongitude().toString()))
+//            .body("radius.toString()", is(event.getRadius().toString()))
+            .body("geo", is(event.isGeoServicesEnabled()))
+            .body("visible", is(event.isVisible()))
+            .body("owner_id.toString()", is(event.getOwner().getId().toString()));
     }
 
     @Test
@@ -323,28 +306,11 @@ public class EventControllerIT {
     }
 
     @Test
-    public void testUpdateGroupSuccess() {
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        Long ownerId = this.accountService.addAccount(owner);
-        assertNotNull(ownerId);
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-        Event event = new Event();
-        event.setName("-Failure-");
-        event.setDescription("-Failure-");
-        event.setEventType(privateEvent);
-        Long eventId = this.eventService.createEvent(ownerId, event);
-        assertNotNull(eventId);
+    public void testUpdateEventSuccess() {
+        Event event = getSavedEventMin(getSavedAccount());
 
-        EventUpdateDTO eventDto = new EventUpdateDTO();
-        eventDto.setName("NY 2019");
-        eventDto.setDescription("Happy New Year!");
-        eventDto.setTypeId(privateEvent.getId());
-        eventDto.setVisible(false);
-        eventDto.setLatitude(40.0);
-        eventDto.setLongitude(40.0);
-        eventDto.setRadius(0.1f);
-        eventDto.setGeo(true);
+
+        EventUpdateDTO eventDto = new EventUpdateDTO(updateEvent(getNewEventMax()));
 
         assertNotEquals(event.getName(), eventDto.getName());
         assertNotEquals(event.getDescription(), eventDto.getDescription());
@@ -360,11 +326,11 @@ public class EventControllerIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .put(EVENTS_ID, eventId)
+            .put(EVENTS_ID, event.getId())
         .then()
             .statusCode(SC_OK);
 
-        event = this.eventService.getById(eventId);
+        event = this.eventService.get(event.getId());
 
         assertEquals(event.getName(), eventDto.getName());
         assertEquals(event.getDescription(), eventDto.getDescription());
@@ -393,11 +359,11 @@ public class EventControllerIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .put(EVENTS_ID, eventId)
+            .put(EVENTS_ID, event.getId())
         .then()
             .statusCode(SC_OK);
 
-        event = this.eventService.getById(eventId);
+        event = this.eventService.get(event.getId());
 
         assertEquals(event.getName(), eventDto.getName());
         assertNotEquals(event.getDescription(), eventDto.getDescription());
@@ -410,7 +376,7 @@ public class EventControllerIT {
     }
 
     @Test
-    public void testUpdateGroupShouldReturnNotFound() {
+    public void testUpdateEventShouldReturnNotFound() {
         EventUpdateDTO eventDto = new EventUpdateDTO();
 
         given()
@@ -428,5 +394,94 @@ public class EventControllerIT {
             .put(EVENTS_ID, Long.MAX_VALUE)
         .then()
             .statusCode(SC_NOT_FOUND);
+    }
+
+    private Account getSavedAccount() {
+        String s = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME);
+        Account account = new Account("yaya@gmail.com" + s, "Yaya" + s, "yaya" + s);
+        Long accountId = this.accountService.addAccount(account);
+        assertNotNull(accountId);
+        return account;
+    }
+
+    private EventType getPrivateEventType() {
+        EventType privateEvent = this.eventTypeService.getPrivate();
+        assertNotNull(privateEvent);
+        return privateEvent;
+    }
+
+    private Event getNewEventMin() {
+        Event event = new Event();
+        LocalDateTime now = LocalDateTime.now();
+        event.setName("Nano is " + now.getNano());
+        event.setDescription("Today is " + now);
+        event.setEventType(getPrivateEventType());
+
+        assertFalse(event.isDeleted());
+        assertTrue(event.isVisible());
+        assertFalse(event.isGeoServicesEnabled());
+
+        return event;
+    }
+
+    private Event getNewEventMax() {
+        Random random = new Random();
+        Event event = getNewEventMin();
+        event.setVisible(true);
+        event.setLatitude(random.nextDouble());
+        event.setLongitude(random.nextDouble());
+        event.setRadius(0.1f);
+        event.setGeoServicesEnabled(false);
+
+        assertFalse(event.isDeleted());
+
+        return event;
+    }
+
+    private Event getSavedEventMin(final Account owner) {
+        Event event = getNewEventMin();
+
+        Long eventId = this.eventService.createEvent(owner.getId(), event);
+
+        assertNotNull(eventId);
+        assertFalse(event.isDeleted());
+        assertTrue(event.isVisible());
+        assertFalse(event.isGeoServicesEnabled());
+
+        return event;
+    }
+
+    private Event getSavedEventMax(final Account owner) {
+        Event event = getNewEventMax();
+
+        Long eventId = this.eventService.createEvent(owner.getId(), event);
+
+        assertNotNull(eventId);
+        assertFalse(event.isDeleted());
+
+        return event;
+    }
+
+    private Event getSavedEventMaxReverse(final Account owner) {
+        Event event = updateEvent(getNewEventMax());
+
+        Long eventId = this.eventService.createEvent(owner.getId(), event);
+
+        assertNotNull(eventId);
+        assertFalse(event.isDeleted());
+
+        return event;
+    }
+
+    private Event updateEvent(final Event event) {
+        event.setName(event.getName() + "_up");
+        event.setDescription(event.getDescription() + "_up");
+        event.setLatitude(event.getLatitude() == null ? 0 : event.getLatitude() + 1);
+        event.setLongitude(event.getLongitude() == null ? 0 : event.getLongitude() + 1);
+        event.setRadius(event.getRadius() == null ? 0 : event.getRadius() + 1);
+        event.setVisible(!event.isVisible());
+        event.setGeoServicesEnabled(!event.isGeoServicesEnabled());
+
+        return event;
     }
 }

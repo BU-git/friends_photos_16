@@ -33,12 +33,12 @@ public class EventController {
     private EventTypeService eventTypeService;
 
     @RequestMapping(method = POST, consumes = APPLICATION_JSON_VALUE)
-    public @ResponseBody ResponseEntity<IdInfoDTO> saveGroup(@RequestBody final EventCreateDTO eventDto) {
+    public @ResponseBody ResponseEntity<IdInfoDTO> createEvent(@RequestBody final EventCreateDTO eventDto) {
         Event event = new Event();
         // required parameters (should not be null)
         event.setName(eventDto.getName());
         event.setDescription(eventDto.getDescription());
-        event.setEventType(this.eventTypeService.getById(eventDto.getTypeId()));
+        event.setEventType(this.eventTypeService.get(eventDto.getTypeId()));
 
         // optional parameters (possible null)
         if(eventDto.getVisible() != null) {
@@ -58,12 +58,12 @@ public class EventController {
 
     @RequestMapping(value = "/{id:[\\d]+}", method = DELETE)
     public @ResponseBody ResponseEntity deleteEventById(@PathVariable("id") final Long id) {
-        return this.eventService.removeById(id) ? new ResponseEntity(OK) : new ResponseEntity(BAD_REQUEST);
+        return this.eventService.remove(id) ? new ResponseEntity(NO_CONTENT) : new ResponseEntity(BAD_REQUEST);
     }
 
     @RequestMapping(value = "/{id:[\\d]+}", method = GET, produces = APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<EventInfoDTO> findEventById(@PathVariable("id") final Long id) {
-        Event event = this.eventService.getByIdWithOwner(id);
+        Event event = this.eventService.get(id);
         if(event == null) {
             return new ResponseEntity<>(NOT_FOUND);
         }
@@ -73,14 +73,14 @@ public class EventController {
 
     @RequestMapping(value = "/{id:[\\d]+}",  method = PUT, consumes = APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity updateEvent(@PathVariable("id") final Long eventId, @RequestBody final EventUpdateDTO eventDto) {
-        Event event = this.eventService.getById(eventId);
+        Event event = this.eventService.get(eventId);
         if(event == null) {
             return new ResponseEntity(NOT_FOUND);
         }
 
         // required parameters (should not be null)
         if(eventDto.getTypeId() != null) {
-            EventType eventType = this.eventTypeService.getById(eventDto.getTypeId());
+            EventType eventType = this.eventTypeService.get(eventDto.getTypeId());
             if(eventType == null) {
                 return new ResponseEntity(BAD_REQUEST);
             }

@@ -3,12 +3,9 @@ package com.bionic.fp.dao.impl;
 import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.Event_;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityGraph;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +50,7 @@ public class EventDaoImpl implements EventDAO {
 
     @Override
     public Event addAccountEvent(final Long eventId, final AccountEvent accountEvent) {
-        Event event = getWithAccounts(eventId);
+        Event event = read(eventId);
         if(event != null) {
             event.getAccounts().add(accountEvent);
         }
@@ -75,28 +72,8 @@ public class EventDaoImpl implements EventDAO {
     }
 
     @Override
-    public Event getWithOwner(final Long id) {
-        EntityGraph<Event> graph = this.entityManager.createEntityGraph(Event.class);
-        graph.addAttributeNodes(Event_.owner);
-        Map<String, Object> hints = new HashMap<>();
-        hints.put("javax.persistence.loadgraph", graph);
-        return this.entityManager.find(Event.class, id, hints);
-    }
-
-    @Override
     public Event getWithAccounts(final Long id) {
-        EntityGraph<Event> graph = this.entityManager.createEntityGraph(Event.class);
-        graph.addAttributeNodes(Event_.accounts);
-        Map<String, Object> hints = new HashMap<>();
-        hints.put("javax.persistence.loadgraph", graph);
-        return this.entityManager.find(Event.class, id, hints);
-    }
-
-    @Override
-    public Event getWithOwnerAndAccounts(final Long id) {
-        EntityGraph<Event> graph = this.entityManager.createEntityGraph(Event.class);
-        graph.addAttributeNodes(Event_.owner);
-        graph.addAttributeNodes(Event_.accounts);
+        EntityGraph graph = this.entityManager.getEntityGraph("Event.accounts");
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
         return this.entityManager.find(Event.class, id, hints);

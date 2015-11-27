@@ -12,16 +12,30 @@ import javax.persistence.NoResultException;
  */
 public interface AccountDAO extends GenericDAO<Account, Long> {
 
+    /**
+     * Adds an account-event to the account by account ID
+     *
+     * @param accountId the account ID
+     * @param accountEvent the account-event
+     * @return an updated account
+     */
     Account addAccountEvent(Long accountId, AccountEvent accountEvent);
 
+    /**
+     * Adds an account-event to the account by instance of the account
+     *
+     * @param account the account
+     * @param accountEvent the account-event
+     * @return an updated account
+     */
     Account addAccountEvent(Account account, AccountEvent accountEvent);
 
     /**
      * Returns an account with its groups by the specified id.
-     * Queries an account with setting EAGER for list of groups
+     * Queries an account with setting EAGER for list of events
      *
      * @param id the unique identifier
-     * @return an account with its groups by the specified id
+     * @return an account with its events by the specified id
      */
     Account getWithEvents(Long id);
 

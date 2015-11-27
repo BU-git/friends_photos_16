@@ -14,7 +14,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -47,13 +49,8 @@ public class EventServiceIT {
 
     @Test
     public void testCreateEventSuccess() {
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        Long ownerId = this.accountService.addAccount(owner);
-
-        assertNotNull(ownerId);
-
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
+        Account owner = getSavedAccount();
+        EventType privateEvent = getPrivateEventType();
 
         Event event = new Event();
         event.setName("NY 2016");
@@ -63,11 +60,11 @@ public class EventServiceIT {
         event.setLatitude(15.0);
         event.setLongitude(25.0);
 
-        Long eventId = this.eventService.createEvent(ownerId, event);
+        Long eventId = this.eventService.createEvent(owner.getId(), event);
 
         assertNotNull(eventId);
 
-        Event actual = this.eventService.getByIdWithOwner(eventId);
+        Event actual = this.eventService.get(eventId);
 
         assertNotNull(actual);
         assertEquals(actual.getId(), event.getId());
@@ -96,12 +93,8 @@ public class EventServiceIT {
 
     @Test
     public void testCreateEventEventInvalidFailure() {
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        Long ownerId = this.accountService.addAccount(owner);
-        assertNotNull(ownerId);
-
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
+        Account owner = getSavedAccount();
+        EventType privateEvent = getPrivateEventType();
 
         Event event = new Event();
 
@@ -110,55 +103,54 @@ public class EventServiceIT {
         event.setDescription(null);
         event.setEventType(null);
 
-        assertNull(this.eventService.createEvent(ownerId, event));
+        assertNull(this.eventService.createEvent(owner.getId(), event));
 
         // without description, type
         event.setName("NY 2016");
         event.setDescription(null);
         event.setEventType(null);
 
-        assertNull(this.eventService.createEvent(ownerId, event));
+        assertNull(this.eventService.createEvent(owner.getId(), event));
 
         // without name, description
         event.setName(null);
         event.setDescription(null);
         event.setEventType(privateEvent);
 
-        assertNull(this.eventService.createEvent(ownerId, event));
+        assertNull(this.eventService.createEvent(owner.getId(), event));
 
         // without name, type
         event.setName(null);
         event.setDescription("Happy New Year!");
         event.setEventType(null);
 
-        assertNull(this.eventService.createEvent(ownerId, event));
+        assertNull(this.eventService.createEvent(owner.getId(), event));
 
         // without name
         event.setName(null);
         event.setDescription("Happy New Year!");
         event.setEventType(privateEvent);
 
-        assertNull(this.eventService.createEvent(ownerId, event));
+        assertNull(this.eventService.createEvent(owner.getId(), event));
 
         // without description
         event.setName("NY 2016");
         event.setDescription(null);
         event.setEventType(privateEvent);
 
-        assertNull(this.eventService.createEvent(ownerId, event));
+        assertNull(this.eventService.createEvent(owner.getId(), event));
 
         // without event type
         event.setName("NY 2016");
         event.setDescription("Happy New Year!");
         event.setEventType(null);
 
-        assertNull(this.eventService.createEvent(ownerId, event));
+        assertNull(this.eventService.createEvent(owner.getId(), event));
     }
 
     @Test
     public void testCreateEventOwnerIdNullFailure() {
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
+        EventType privateEvent = getPrivateEventType();
 
         // valid event
         Event event = new Event();
@@ -171,8 +163,7 @@ public class EventServiceIT {
 
     @Test
     public void testCreateEventOwnerIdNotFoundFailure() {
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
+        EventType privateEvent = getPrivateEventType();
 
         // valid event
         Event event = new Event();
@@ -185,91 +176,49 @@ public class EventServiceIT {
 
     @Test
     public void testRemoveByIdSuccess() {
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        Long ownerId = this.accountService.addAccount(owner);
-
-        assertNotNull(ownerId);
-
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-
-        Event event = new Event();
-        event.setName("NY 2017");
-        event.setDescription("testRemoveByIdSuccess");
-        event.setEventType(privateEvent);
-        assertFalse(event.isDeleted());
-
-        Long eventId = this.eventService.createEvent(ownerId, event);
-        assertNotNull(eventId);
-        assertFalse(event.isDeleted());
-        Event actual = this.eventService.getById(eventId);
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMin(owner);
+        Event actual = this.eventService.get(event.getId());
         assertNotNull(actual);
         assertFalse(actual.isDeleted());
 
-        assertTrue(this.eventService.removeById(eventId));
+        assertTrue(this.eventService.remove(event.getId()));
 
         assertFalse(event.isDeleted());
-        actual = this.eventService.getById(eventId);
+        actual = this.eventService.get(event.getId());
         assertNotNull(actual);
         assertTrue(actual.isDeleted());
     }
 
     @Test
     public void testRemoveByIdEventIdNullFailure() {
-        assertFalse(this.eventService.removeById(null));
+        assertFalse(this.eventService.remove(null));
     }
 
     @Test
     public void testRemoveByIdEventIdNotFoundFailure() {
-        assertFalse(this.eventService.removeById(Long.MAX_VALUE));
+        assertFalse(this.eventService.remove(Long.MAX_VALUE));
     }
 
     @Test
     public void testRemoveByIdPhysicallySuccess() {
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        Long ownerId = this.accountService.addAccount(owner);
-
-        assertNotNull(ownerId);
-
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-
-        Event event = new Event();
-        event.setName("NY 2018");
-        event.setDescription("testRemoveByIdPhysicallySuccess");
-        event.setEventType(privateEvent);
-        Long eventId = this.eventService.createEvent(ownerId, event);
-        assertNotNull(eventId);
-
-        Event actual = this.eventService.getById(eventId);
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMin(owner);
+        Event actual = this.eventService.get(event.getId());
         assertNotNull(actual);
 
-        this.eventService.removeByIdPhysically(eventId);
+        this.eventService.removePhysically(event.getId());
 
-        actual = this.eventService.getById(eventId);
+        actual = this.eventService.get(event.getId());
         assertNull(actual);
     }
 
     @Test
     public void testUpdateByIdUsingLazyOwnerSuccess() {
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        Long ownerId = this.accountService.addAccount(owner);
-        assertNotNull(ownerId);
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-        Event event = new Event();
-        event.setName("NY 2017");
-        event.setDescription("-Failure!-");
-        event.setEventType(privateEvent);
-        event.setVisible(true);
-        event.setLatitude(15.0);
-        event.setLongitude(25.0);
-        event.setRadius(0.1f);
-        event.setGeoServicesEnabled(true);
-        Long eventId = this.eventService.createEvent(ownerId, event);
-        assertNotNull(eventId);
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMax(owner);
 
-        Event actual = this.eventService.getById(eventId);
+        Event actual = this.eventService.get(event.getId());
         assertNotNull(actual);
 
         assertEquals(actual.getId(), event.getId());
@@ -282,14 +231,7 @@ public class EventServiceIT {
         assertEquals(actual.isVisible(), event.isVisible());
         assertEquals(actual.isGeoServicesEnabled(), event.isGeoServicesEnabled());
 
-        actual.setName("NY 2018");
-        actual.setDescription("testUpdateByIdSuccess");
-        System.out.println(actual.getEventType());
-        actual.setVisible(false);
-        actual.setLatitude(15.5);
-        actual.setLongitude(25.3);
-        actual.setRadius(0.2f);
-        actual.setGeoServicesEnabled(false);
+        updateEvent(actual);
 
         assertEquals(actual.getId(), event.getId());
         assertNotEquals(actual.getName(), event.getName());
@@ -313,7 +255,7 @@ public class EventServiceIT {
         assertEquals(actual.isVisible(), updated.isVisible());
         assertEquals(actual.isGeoServicesEnabled(), updated.isGeoServicesEnabled());
 
-        actual = this.eventService.getById(eventId);
+        actual = this.eventService.get(event.getId());
         assertNotNull(actual);
 
         assertEquals(actual.getId(), updated.getId());
@@ -329,24 +271,10 @@ public class EventServiceIT {
 
     @Test
     public void testUpdateByIdUsingOwnerEagerSuccess() {
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        Long ownerId = this.accountService.addAccount(owner);
-        assertNotNull(ownerId);
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-        Event event = new Event();
-        event.setName("NY 2017");
-        event.setDescription("-Failure!-");
-        event.setEventType(privateEvent);
-        event.setVisible(true);
-        event.setLatitude(15.0);
-        event.setLongitude(25.0);
-        event.setRadius(0.1f);
-        event.setGeoServicesEnabled(true);
-        Long eventId = this.eventService.createEvent(ownerId, event);
-        assertNotNull(eventId);
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMax(owner);
 
-        Event actual = this.eventService.getByIdWithOwner(eventId);
+        Event actual = this.eventService.get(event.getId());
         assertNotNull(actual);
 
         assertEquals(actual.getId(), event.getId());
@@ -359,14 +287,7 @@ public class EventServiceIT {
         assertEquals(actual.isVisible(), event.isVisible());
         assertEquals(actual.isGeoServicesEnabled(), event.isGeoServicesEnabled());
 
-        actual.setName("NY 2018");
-        actual.setDescription("testUpdateByIdSuccess");
-        System.out.println(actual.getEventType());
-        actual.setVisible(false);
-        actual.setLatitude(15.5);
-        actual.setLongitude(25.3);
-        actual.setRadius(0.2f);
-        actual.setGeoServicesEnabled(false);
+        updateEvent(actual);
 
         assertEquals(actual.getId(), event.getId());
         assertNotEquals(actual.getName(), event.getName());
@@ -390,7 +311,7 @@ public class EventServiceIT {
         assertEquals(actual.isVisible(), updated.isVisible());
         assertEquals(actual.isGeoServicesEnabled(), updated.isGeoServicesEnabled());
 
-        actual = this.eventService.getById(eventId);
+        actual = this.eventService.get(event.getId());
         assertNotNull(actual);
 
         assertEquals(actual.getId(), updated.getId());
@@ -406,34 +327,11 @@ public class EventServiceIT {
 
     @Test
     public void testUpdateByIdUsingNewEventSuccess() {
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        Long ownerId = this.accountService.addAccount(owner);
-        assertNotNull(ownerId);
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-        Event event = new Event();
-        event.setName("NY 2017");
-        event.setDescription("-Failure!-");
-        event.setEventType(privateEvent);
-        event.setVisible(true);
-        event.setLatitude(15.0);
-        event.setLongitude(25.0);
-        event.setRadius(0.1f);
-        event.setGeoServicesEnabled(true);
-        Long eventId = this.eventService.createEvent(ownerId, event);
-        assertNotNull(eventId);
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMax(owner);
+        Event newEvent = updateEvent(getNewEventMax());
 
-        Event newEvent = new Event();
-
-        newEvent.setId(eventId);
-        newEvent.setName("NY 2018");
-        newEvent.setDescription("testUpdateByIdSuccess");
-        newEvent.setEventType(privateEvent);
-        newEvent.setVisible(false);
-        newEvent.setLatitude(15.5);
-        newEvent.setLongitude(25.3);
-        newEvent.setRadius(0.2f);
-        newEvent.setGeoServicesEnabled(false);
+        newEvent.setId(event.getId());
         newEvent.setOwner(owner);
 
         assertEquals(newEvent.getId(), event.getId());
@@ -458,7 +356,7 @@ public class EventServiceIT {
         assertEquals(newEvent.isVisible(), updated.isVisible());
         assertEquals(newEvent.isGeoServicesEnabled(), updated.isGeoServicesEnabled());
 
-        newEvent = this.eventService.getById(eventId);
+        newEvent = this.eventService.get(event.getId());
         assertNotNull(newEvent);
 
         assertEquals(newEvent.getId(), updated.getId());
@@ -479,27 +377,11 @@ public class EventServiceIT {
 
     @Test
     public void testUpdateByIdChangeOwnerFailure() {
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        Long ownerId = this.accountService.addAccount(owner);
-        assertNotNull(ownerId);
-        Account newOwner = new Account("yaya2@gmail.com", "Yaya2", "yaya2");
-        Long newOwnerId = this.accountService.addAccount(newOwner);
-        assertNotNull(newOwnerId);
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-        Event event = new Event();
-        event.setName("NY 2017");
-        event.setDescription("testUpdateByIdOwnerFailure");
-        event.setEventType(privateEvent);
-        event.setVisible(true);
-        event.setLatitude(15.0);
-        event.setLongitude(25.0);
-        event.setRadius(0.1f);
-        event.setGeoServicesEnabled(true);
-        Long eventId = this.eventService.createEvent(ownerId, event);
-        assertNotNull(eventId);
+        Account owner = getSavedAccount();
+        Account newOwner = getSavedAccount();
+        Event event = getSavedEventMax(owner);
 
-        Event actual = this.eventService.getByIdWithOwner(eventId);
+        Event actual = this.eventService.get(event.getId());
         assertNotNull(actual);
 
         assertEquals(actual.getId(), event.getId());
@@ -521,13 +403,7 @@ public class EventServiceIT {
         assertEquals(actual.getOwner().getUserName(), owner.getUserName());
         assertEquals(actual.getOwner().getPassword(), owner.getPassword());
 
-        actual.setName("NY 2018");
-        actual.setDescription("testUpdateByIdSuccess");
-        actual.setVisible(false);
-        actual.setLatitude(15.5);
-        actual.setLongitude(25.3);
-        actual.setRadius(0.2f);
-        actual.setGeoServicesEnabled(false);
+        updateEvent(actual);
         actual.setOwner(newOwner);
 
         assertEquals(actual.getId(), event.getId());
@@ -553,37 +429,12 @@ public class EventServiceIT {
 
     @Test
     public void testUpdateByIdChangeOwnerUsingNewEventFailure() {
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        Long ownerId = this.accountService.addAccount(owner);
-        assertNotNull(ownerId);
-        Account newOwner = new Account("yaya2@gmail.com", "Yaya2", "yaya2");
-        Long newOwnerId = this.accountService.addAccount(newOwner);
-        assertNotNull(newOwnerId);
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-        Event event = new Event();
-        event.setName("NY 2017");
-        event.setDescription("testUpdateByIdOwnerFailure");
-        event.setEventType(privateEvent);
-        event.setVisible(true);
-        event.setLatitude(15.0);
-        event.setLongitude(25.0);
-        event.setRadius(0.1f);
-        event.setGeoServicesEnabled(true);
-        Long eventId = this.eventService.createEvent(ownerId, event);
-        assertNotNull(eventId);
+        Account owner = getSavedAccount();
+        Account newOwner = getSavedAccount();
+        Event event = getSavedEventMax(owner);
 
-        Event newEvent = new Event();
-
-        newEvent.setId(eventId);
-        newEvent.setName("NY 2018");
-        newEvent.setDescription("testUpdateByIdSuccess");
-        newEvent.setEventType(privateEvent);
-        newEvent.setVisible(false);
-        newEvent.setLatitude(15.5);
-        newEvent.setLongitude(25.3);
-        newEvent.setRadius(0.2f);
-        newEvent.setGeoServicesEnabled(false);
+        Event newEvent = updateEvent(getNewEventMax());
+        newEvent.setId(event.getId());
         newEvent.setOwner(newOwner);
 
         assertEquals(newEvent.getId(), event.getId());
@@ -609,34 +460,11 @@ public class EventServiceIT {
 
     @Test
     public void testUpdateByIdUsingNewEventOwnerNullFailure() {
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        Long ownerId = this.accountService.addAccount(owner);
-        assertNotNull(ownerId);
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-        Event event = new Event();
-        event.setName("NY 2017");
-        event.setDescription("-Failure!-");
-        event.setEventType(privateEvent);
-        event.setVisible(true);
-        event.setLatitude(15.0);
-        event.setLongitude(25.0);
-        event.setRadius(0.1f);
-        event.setGeoServicesEnabled(true);
-        Long eventId = this.eventService.createEvent(ownerId, event);
-        assertNotNull(eventId);
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMax(owner);
 
-        Event newEvent = new Event();
-
-        newEvent.setId(eventId);
-        newEvent.setName("NY 2018");
-        newEvent.setDescription("testUpdateByIdSuccess");
-        newEvent.setEventType(privateEvent);
-        newEvent.setVisible(false);
-        newEvent.setLatitude(15.5);
-        newEvent.setLongitude(25.3);
-        newEvent.setRadius(0.2f);
-        newEvent.setGeoServicesEnabled(false);
+        Event newEvent = updateEvent(getNewEventMax());
+        newEvent.setId(event.getId());
 
         assertEquals(newEvent.getId(), event.getId());
         assertNotEquals(newEvent.getName(), event.getName());
@@ -652,25 +480,10 @@ public class EventServiceIT {
 
     @Test
     public void testGetByIdSuccess() {
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        Long ownerId = this.accountService.addAccount(owner);
-        assertNotNull(ownerId);
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-        Event event = new Event();
-        event.setName("NY 2019");
-        event.setDescription("testGetByIdSuccess");
-        event.setEventType(privateEvent);
-        event.setVisible(true);
-        event.setLatitude(15.0);
-        event.setLongitude(25.0);
-        event.setRadius(0.1f);
-        event.setGeoServicesEnabled(true);
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMax(owner);
 
-        Long eventId = this.eventService.createEvent(ownerId, event);
-        assertNotNull(eventId);
-
-        Event actual = this.eventService.getById(eventId);
+        Event actual = this.eventService.get(event.getId());
         assertNotNull(actual);
 
         assertEquals(actual.getId(), event.getId());
@@ -686,25 +499,10 @@ public class EventServiceIT {
 
     @Test
     public void testGetByIdWithOwnerSuccess() {
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        Long ownerId = this.accountService.addAccount(owner);
-        assertNotNull(ownerId);
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-        Event event = new Event();
-        event.setName("NY 2020");
-        event.setDescription("testGetByIdWithOwnerSuccess");
-        event.setEventType(privateEvent);
-        event.setVisible(true);
-        event.setLatitude(15.0);
-        event.setLongitude(25.0);
-        event.setRadius(0.1f);
-        event.setGeoServicesEnabled(true);
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMax(owner);
 
-        Long eventId = this.eventService.createEvent(ownerId, event);
-        assertNotNull(eventId);
-
-        Event actual = this.eventService.getByIdWithOwner(eventId);
+        Event actual = this.eventService.get(event.getId());
         assertNotNull(actual);
 
         assertEquals(actual.getId(), event.getId());
@@ -729,25 +527,10 @@ public class EventServiceIT {
 
     @Test
     public void testGetByIdWithOwnerAndAccountsSuccess() {
-        Account owner = new Account("yaya@gmail.com", "Yaya", "yaya");
-        Long ownerId = this.accountService.addAccount(owner);
-        assertNotNull(ownerId);
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-        Event event = new Event();
-        event.setName("NY 2021");
-        event.setDescription("testGetByIdWithOwnerAndAccountsSuccess");
-        event.setEventType(privateEvent);
-        event.setVisible(true);
-        event.setLatitude(15.0);
-        event.setLongitude(25.0);
-        event.setRadius(0.1f);
-        event.setGeoServicesEnabled(true);
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMax(owner);
 
-        Long eventId = this.eventService.createEvent(ownerId, event);
-        assertNotNull(eventId);
-
-        Event actual = this.eventService.getByIdWithOwnerAndAccounts(eventId);
+        Event actual = this.eventService.getWithAccounts(event.getId());
         assertNotNull(actual);
 
         assertEquals(actual.getId(), event.getId());
@@ -772,5 +555,92 @@ public class EventServiceIT {
         assertFalse(actual.getAccounts().isEmpty());
         assertFalse(event.getAccounts().isEmpty());
         assertEquals(actual.getAccounts().size(), event.getAccounts().size());
+    }
+
+    private Account getSavedAccount() {
+        String s = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME);
+        Account account = new Account("yaya@gmail.com" + s, "Yaya" + s, "yaya" + s);
+        Long accountId = this.accountService.addAccount(account);
+        assertNotNull(accountId);
+        return account;
+    }
+
+    private EventType getPrivateEventType() {
+        EventType privateEvent = this.eventTypeService.getPrivate();
+        assertNotNull(privateEvent);
+        return privateEvent;
+    }
+
+    private Event getSavedEventMin(final Account owner) {
+        Event event = new Event();
+        event.setName("NY 2016");
+        event.setDescription("testRemoveByIdSuccess");
+        event.setEventType(getPrivateEventType());
+
+        assertFalse(event.isDeleted());
+        assertTrue(event.isVisible());
+        assertFalse(event.isGeoServicesEnabled());
+
+        Long eventId = this.eventService.createEvent(owner.getId(), event);
+
+        assertNotNull(eventId);
+        assertFalse(event.isDeleted());
+        assertTrue(event.isVisible());
+        assertFalse(event.isGeoServicesEnabled());
+
+        return event;
+    }
+
+    private Event getNewEventMax() {
+        Random random = new Random();
+
+        Event event = new Event();
+        LocalDateTime now = LocalDateTime.now();
+        event.setName("Nano is " + now.getNano());
+        event.setDescription("Today is " + now);
+        event.setEventType(getPrivateEventType());
+        event.setVisible(true);
+        event.setLatitude(random.nextDouble());
+        event.setLongitude(random.nextDouble());
+        event.setRadius(0.1f);
+        event.setGeoServicesEnabled(false);
+
+        assertFalse(event.isDeleted());
+
+        return event;
+    }
+
+    private Event getSavedEventMax(final Account owner) {
+        Event event = getNewEventMax();
+
+        Long eventId = this.eventService.createEvent(owner.getId(), event);
+
+        assertNotNull(eventId);
+        assertFalse(event.isDeleted());
+
+        return event;
+    }
+
+    private Event getSavedEventMaxReverse(final Account owner) {
+        Event event = updateEvent(getNewEventMax());
+
+        Long eventId = this.eventService.createEvent(owner.getId(), event);
+
+        assertNotNull(eventId);
+        assertFalse(event.isDeleted());
+
+        return event;
+    }
+
+    private Event updateEvent(final Event event) {
+        event.setName(event.getName() + "_up");
+        event.setDescription(event.getDescription() + "_up");
+        event.setLatitude(event.getLatitude() + 1);
+        event.setLongitude(event.getLongitude() + 1);
+        event.setRadius(event.getRadius() + 1);
+        event.setVisible(!event.isVisible());
+        event.setGeoServicesEnabled(!event.isGeoServicesEnabled());
+
+        return event;
     }
 }

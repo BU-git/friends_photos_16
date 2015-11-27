@@ -46,7 +46,7 @@ public class EventService {
             return;
         }
 
-        AccountEvent conn = this.accountEventDAO.getByAccountAndEventId(accountId, eventId);
+        AccountEvent conn = this.accountEventDAO.get(accountId, eventId);
         if(conn != null) {
             conn.setRole(role);
             this.accountEventDAO.update(conn);
@@ -111,53 +111,43 @@ public class EventService {
     /**
      * Removes an event physically from database
      *
-     * @param id the event ID
+     * @param eventId the event ID
      */
-    public void removeByIdPhysically(final Long id) {
-        if(id != null) {
-            this.eventDAO.delete(id);
+    public void removePhysically(final Long eventId) {
+        if(eventId != null) {
+            this.eventDAO.delete(eventId);
         }
     }
 
     /**
      * Changes the deleted field to true (soft delete)
      *
-     * @param id the event ID
+     * @param eventId the event ID
+     * @return true on success and false otherwise
      */
-    public boolean removeById(final Long id) {
-        return id != null && this.eventDAO.setDeleted(id, true);
+    public boolean remove(final Long eventId) {
+        return eventId != null && this.eventDAO.setDeleted(eventId, true);
     }
 
     /**
      * Returns an event from database by event ID and null otherwise
      *
-     * @param id the event ID
+     * @param eventId the event ID
      * @return the event and null otherwise
      */
-    public Event getById(final Long id) {
-        return id == null ? null : this.eventDAO.read(id);
-    }
-
-    /**
-     * Returns an event from database by event ID and null otherwise.
-     * Also pulls the owner of the event
-     *
-     * @param id the event ID
-     * @return the event and null otherwise
-     */
-    public Event getByIdWithOwner(final Long id) {
-        return id == null ? null : this.eventDAO.getWithOwner(id);
+    public Event get(final Long eventId) {
+        return eventId == null ? null : this.eventDAO.read(eventId);
     }
 
     /**
      * Returns an event from database by event ID and null otherwise.
      * Also pulls the owner and accounts of the event
      *
-     * @param id the event ID
+     * @param eventId the event ID
      * @return the event and null otherwise
      */
-    public Event getByIdWithOwnerAndAccounts(final Long id) {
-        return id == null ? null : this.eventDAO.getWithOwnerAndAccounts(id);
+    public Event getWithAccounts(final Long eventId) {
+        return eventId == null ? null : this.eventDAO.getWithAccounts(eventId);
     }
 
     /**
@@ -171,11 +161,11 @@ public class EventService {
             return null;
         }
         // can't change the owner
-        if(this.eventDAO.isOwnerLoaded(event)) {
-            Event actual = getByIdWithOwner(event.getId());
-            if (actual == null || event.getOwner() == null || !Objects.equals(event.getOwner().getId(), actual.getOwner().getId())) {
-                return null;
-            }
+//        if(this.eventDAO.isOwnerLoaded(event)) {      // if the owner can be LAZY then use it
+        Event actual = get(event.getId());
+        if (actual == null || event.getOwner() == null ||
+                !Objects.equals(event.getOwner().getId(), actual.getOwner().getId())) {
+            return null;
         }
         return this.eventDAO.update(event);
     }

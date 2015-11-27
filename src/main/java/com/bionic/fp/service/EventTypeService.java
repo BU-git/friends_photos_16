@@ -27,7 +27,7 @@ public class EventTypeService {
         return this.eventTypeDAO.getPrivate();
     }
 
-    public EventType getById(final Integer id) {
-        return id == null ? null : this.eventTypeDAO.read(id);
+    public EventType get(final Integer eventTypeId) {
+        return eventTypeId == null ? null : this.eventTypeDAO.read(eventTypeId);
     }
 }

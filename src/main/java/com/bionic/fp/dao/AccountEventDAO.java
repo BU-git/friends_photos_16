@@ -11,18 +11,40 @@ import com.bionic.fp.domain.Role;
 public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
 
     /**
-     * Returns an account-group conn with its account and group by the specified id.
-     * Queries an account-group with setting EAGER for its account and group
+     * Returns an account-event with its account and event by the specified id.
+     * Queries an account-event with setting EAGER for its account and event
      *
      * @param id the unique identifier
-     * @return an account-group conn with its account and group by the specified id
+     * @return an account-event with its account and event by the specified id
      */
-    AccountEvent getWithAccountAndEvent(Long id);
+    AccountEvent getWithAccountEvent(Long id);
 
-    AccountEvent getByAccountAndEventId(Long accountId, Long eventId);
+    /**
+     * Returns an account-event by the specified account ID and event ID.
+     *
+     * @param accountId the account ID
+     * @param eventId the event ID
+     * @return an account-event by the specified account ID and event ID
+     */
+    AccountEvent get(Long accountId, Long eventId);
 
-    AccountEvent getByAccountAndEventIdWithAccountAndEvent(Long accountId, Long eventId);
+    /**
+     * Returns an account-event with its account and event by the specified account ID and event ID.
+     * Queries an account-event with setting EAGER for its account and event
+     *
+     * @param accountId the account ID
+     * @param eventId the event ID
+     * @return an account-event with its account and event by the specified account ID and event ID
+     */
+    AccountEvent getWithAccountEvent(Long accountId, Long eventId);
 
-    Role getRoleByAccountAndEventId(Long accountId, Long eventId);
+    /**
+     * Returns a role by the specified account ID and event ID.
+     *
+     * @param accountId the account ID
+     * @param eventId the event ID
+     * @return a role by the specified account ID and event ID.
+     */
+    Role getRole(Long accountId, Long eventId);
 
 }

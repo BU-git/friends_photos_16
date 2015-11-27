@@ -101,7 +101,7 @@ public class EventDAOIT {
         Long eventId = this.eventService.createEvent(ownerId, event);
         assertNotNull(eventId);
 
-        Event actual = this.eventDAO.getWithOwner(eventId);
+        Event actual = this.eventDAO.read(eventId);
         assertNotNull(actual);
 
         assertEquals(actual.getId(), event.getId());
@@ -143,7 +143,7 @@ public class EventDAOIT {
         Long eventId = this.eventService.createEvent(ownerId, event);
         assertNotNull(eventId);
 
-        Event actual = this.eventDAO.getWithOwnerAndAccounts(eventId);
+        Event actual = this.eventDAO.getWithAccounts(eventId);
         assertNotNull(actual);
 
         assertEquals(actual.getId(), event.getId());

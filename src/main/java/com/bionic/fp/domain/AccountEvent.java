@@ -8,10 +8,17 @@ import javax.persistence.*;
 @Entity
 @Table(name="accounts_events")
 @NamedQuery(
-        name="findConnByAccount&Event",
+        name= AccountEvent.GET_BY_ACCOUNT_AND_EVENT_ID,
         query="SELECT ae FROM AccountEvent ae WHERE ae.account.id = :accountId AND ae.event.id = :eventId"
 )
+@NamedEntityGraph(name = "AccountEvent.full", attributeNodes={
+                @NamedAttributeNode("account"),
+                @NamedAttributeNode("event"),
+                @NamedAttributeNode("role")}
+)
 public class AccountEvent {
+    @Transient
+    public static final String GET_BY_ACCOUNT_AND_EVENT_ID = "AccountEvent.getByAccountAndEventId";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

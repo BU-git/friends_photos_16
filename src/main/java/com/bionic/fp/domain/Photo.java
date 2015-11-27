@@ -10,6 +10,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "photos")
+@NamedEntityGraph(name = "Photo.comments",
+        attributeNodes = @NamedAttributeNode("comments")
+)
 public class Photo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

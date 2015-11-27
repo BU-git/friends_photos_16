@@ -2,7 +2,6 @@ package com.bionic.fp.dao.impl;
 
 import com.bionic.fp.dao.AccountEventDAO;
 import com.bionic.fp.domain.AccountEvent;
-import com.bionic.fp.domain.AccountEvent_;
 import com.bionic.fp.domain.Role;
 import org.springframework.stereotype.Repository;
 
@@ -50,29 +49,25 @@ public class AccountEventDaoImpl implements AccountEventDAO {
     }
 
     @Override
-    public AccountEvent getWithAccountAndEvent(final Long id) {
-        EntityGraph<AccountEvent> graph = this.entityManager.createEntityGraph(AccountEvent.class);
-        graph.addAttributeNodes(AccountEvent_.account);
-        graph.addAttributeNodes(AccountEvent_.event);
+    public AccountEvent getWithAccountEvent(final Long id) {
+        EntityGraph graph = this.entityManager.getEntityGraph("AccountEvent.full");
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
         return this.entityManager.find(AccountEvent.class, id, hints);
     }
 
     @Override
-    public AccountEvent getByAccountAndEventId(final Long accountId, final Long groupId) {
-        return this.entityManager.createNamedQuery("findConnByAccount&Event", AccountEvent.class)
+    public AccountEvent get(final Long accountId, final Long groupId) {
+        return this.entityManager.createNamedQuery(AccountEvent.GET_BY_ACCOUNT_AND_EVENT_ID, AccountEvent.class)
                 .setParameter("accountId", accountId)
                 .setParameter("eventId", groupId)
                 .getSingleResult();
     }
 
     @Override
-    public AccountEvent getByAccountAndEventIdWithAccountAndEvent(final Long accountId, final Long groupId) {
-        EntityGraph<AccountEvent> graph = this.entityManager.createEntityGraph(AccountEvent.class);
-        graph.addAttributeNodes(AccountEvent_.account);
-        graph.addAttributeNodes(AccountEvent_.event);
-        return this.entityManager.createNamedQuery("findConnByAccount&Event", AccountEvent.class)
+    public AccountEvent getWithAccountEvent(final Long accountId, final Long groupId) {
+        EntityGraph graph = this.entityManager.getEntityGraph("AccountEvent.full");
+        return this.entityManager.createNamedQuery(AccountEvent.GET_BY_ACCOUNT_AND_EVENT_ID, AccountEvent.class)
                 .setParameter("accountId", accountId)
                 .setParameter("eventId", groupId)
                 .setHint("javax.persistence.loadgraph", graph)
@@ -80,8 +75,8 @@ public class AccountEventDaoImpl implements AccountEventDAO {
     }
 
     @Override
-    public Role getRoleByAccountAndEventId(final Long accountId, final Long groupId) {
-        AccountEvent result = this.entityManager.createNamedQuery("findConnByAccount&Event", AccountEvent.class)
+    public Role getRole(final Long accountId, final Long groupId) {
+        AccountEvent result = this.entityManager.createNamedQuery(AccountEvent.GET_BY_ACCOUNT_AND_EVENT_ID, AccountEvent.class)
                 .setParameter("accountId", accountId)
                 .setParameter("eventId", groupId)
                 .getSingleResult();

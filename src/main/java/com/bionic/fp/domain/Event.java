@@ -10,6 +10,22 @@ import java.util.List;
 
 @Entity
 @Table(name = "events")
+@NamedEntityGraphs({
+        @NamedEntityGraph(name="Event.accounts", attributeNodes={
+                @NamedAttributeNode("accounts")}
+        ),
+        @NamedEntityGraph(name="Event.photos", attributeNodes={
+                @NamedAttributeNode("photos")}
+        ),
+        @NamedEntityGraph(name="Event.comments", attributeNodes={
+                @NamedAttributeNode("comments")}
+        ),
+        @NamedEntityGraph(name="Event.full", attributeNodes={
+                @NamedAttributeNode("accounts"),
+                @NamedAttributeNode("photos"),
+                @NamedAttributeNode("comments")}
+        )
+})
 public class Event implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +37,7 @@ public class Event implements Serializable {
     @ManyToOne
     @JoinColumn(name = "event_type")
     private EventType eventType;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     private Account owner;
     /**
      * Is this event visible in the general mode of search?

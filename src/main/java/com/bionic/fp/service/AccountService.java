@@ -180,11 +180,11 @@ public class AccountService {
         return account;
     }
 
-    public Account getById(final Long id) {
-        return id == null ? null : this.accountDAO.read(id);
+    public Account get(final Long accountId) {
+        return accountId == null ? null : this.accountDAO.read(accountId);
     }
 
-    public Account getByIdWithGroups(final Long id) {
-        return id == null ? null : this.accountDAO.getWithEvents(id);
+    public Account getWithEvents(final Long accountId) {
+        return accountId == null ? null : this.accountDAO.getWithEvents(accountId);
     }
 }

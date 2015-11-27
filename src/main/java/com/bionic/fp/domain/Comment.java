@@ -15,7 +15,7 @@ public class Comment implements Serializable {
     private String text;
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime date;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Account author;
 
     public Long getId() {

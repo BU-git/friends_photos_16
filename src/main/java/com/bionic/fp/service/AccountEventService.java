@@ -31,22 +31,22 @@ public class AccountEventService {
         }
     }
 
-    public AccountEvent getById(final Long id) {
+    public AccountEvent get(final Long id) {
         return id == null ? null : this.accountEventDAO.read(id);
     }
 
-    public AccountEvent getByAccountAndEventId(final Long accountId, final Long eventId) {
+    public AccountEvent get(final Long accountId, final Long eventId) {
         return (accountId == null || eventId == null) ? null :
-                this.accountEventDAO.getByAccountAndEventId(accountId, eventId);
+                this.accountEventDAO.get(accountId, eventId);
     }
 
-    public AccountEvent getByIdWithAccountAndEvent(final Long id) {
-        return id == null ? null : this.accountEventDAO.getWithAccountAndEvent(id);
+    public AccountEvent getWithAccountEvent(final Long id) {
+        return id == null ? null : this.accountEventDAO.getWithAccountEvent(id);
     }
 
-    public AccountEvent getByAccountAndEventIdWithAccountAndEvent(final Long accountId, final Long eventId) {
+    public AccountEvent getWithAccountEvent(final Long accountId, final Long eventId) {
         return (accountId == null || eventId == null) ? null :
-                this.accountEventDAO.getByAccountAndEventIdWithAccountAndEvent(accountId, eventId);
+                this.accountEventDAO.getWithAccountEvent(accountId, eventId);
     }
 
     public AccountEvent update(final AccountEvent accountEvent) {
