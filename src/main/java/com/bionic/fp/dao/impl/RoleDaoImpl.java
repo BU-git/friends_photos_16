@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 
 /**
@@ -13,6 +15,8 @@ import javax.persistence.PersistenceContext;
  */
 @Repository
 public class RoleDaoImpl implements RoleDAO {
+
+    public static final String SELECT_ALL_ROLES = "SELECT r FROM Role r";
 
     @PersistenceContext(unitName = "entityManager")
     private EntityManager entityManager;
@@ -50,5 +54,11 @@ public class RoleDaoImpl implements RoleDAO {
 
         // todo: use it
         return this.entityManager.find(Role.class, 1);
+    }
+
+    @Override
+    public List<Role> getAllRoles() {
+        TypedQuery<Role> allRolesQuery = entityManager.createQuery(SELECT_ALL_ROLES, Role.class);
+        return allRolesQuery.getResultList();
     }
 }
