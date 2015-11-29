@@ -3,12 +3,14 @@ package com.bionic.fp.dao.impl;
 import com.bionic.fp.dao.AccountDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
+import com.bionic.fp.domain.Event;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -74,11 +76,22 @@ public class AccountDaoImpl implements AccountDAO {
     }
 
     @Override
-    public Account getWithEvents(final Long id) {
+    public Account getWithEvents(final Long accountId) {
         EntityGraph graph = this.entityManager.getEntityGraph("Account.events");
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
-        return this.entityManager.find(Account.class, id, hints);
+        return this.entityManager.find(Account.class, accountId, hints);
+    }
+
+    @Override
+    public List<Event> getEvents(final Long accountId) {
+        Account account = getWithEvents(accountId);
+        return account == null ? null :
+                account.getEvents()
+                    .stream()
+                    .parallel()
+                    .map(AccountEvent::getEvent)
+                    .collect(Collectors.toList());
     }
 
     @Override

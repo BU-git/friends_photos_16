@@ -5,9 +5,7 @@ import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Role;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityGraph;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,28 +56,35 @@ public class AccountEventDaoImpl implements AccountEventDAO {
 
     @Override
     public AccountEvent get(final Long accountId, final Long groupId) {
-        return this.entityManager.createNamedQuery(AccountEvent.GET_BY_ACCOUNT_AND_EVENT_ID, AccountEvent.class)
+        return getSingleResult(
+                this.entityManager.createNamedQuery(AccountEvent.GET_BY_ACCOUNT_AND_EVENT_ID, AccountEvent.class)
                 .setParameter("accountId", accountId)
-                .setParameter("eventId", groupId)
-                .getSingleResult();
+                .setParameter("eventId", groupId));
     }
 
     @Override
     public AccountEvent getWithAccountEvent(final Long accountId, final Long groupId) {
         EntityGraph graph = this.entityManager.getEntityGraph("AccountEvent.full");
-        return this.entityManager.createNamedQuery(AccountEvent.GET_BY_ACCOUNT_AND_EVENT_ID, AccountEvent.class)
+        return getSingleResult(
+                this.entityManager.createNamedQuery(AccountEvent.GET_BY_ACCOUNT_AND_EVENT_ID, AccountEvent.class)
                 .setParameter("accountId", accountId)
                 .setParameter("eventId", groupId)
-                .setHint("javax.persistence.loadgraph", graph)
-                .getSingleResult();
+                .setHint("javax.persistence.loadgraph", graph));
     }
 
     @Override
     public Role getRole(final Long accountId, final Long groupId) {
-        AccountEvent result = this.entityManager.createNamedQuery(AccountEvent.GET_BY_ACCOUNT_AND_EVENT_ID, AccountEvent.class)
+        AccountEvent result = getSingleResult(
+                this.entityManager.createNamedQuery(AccountEvent.GET_BY_ACCOUNT_AND_EVENT_ID, AccountEvent.class)
                 .setParameter("accountId", accountId)
-                .setParameter("eventId", groupId)
-                .getSingleResult();
+                .setParameter("eventId", groupId));
         return result == null ? null : result.getRole();
+    }
+
+    private <T> T getSingleResult(TypedQuery<T> query) {
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException ignored) {}
+        return null;
     }
 }

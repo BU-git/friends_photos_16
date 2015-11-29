@@ -2,8 +2,10 @@ package com.bionic.fp.dao;
 
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
+import com.bionic.fp.domain.Event;
 
 import javax.persistence.NoResultException;
+import java.util.List;
 
 /**
  * Represents data access object of the account
@@ -31,13 +33,21 @@ public interface AccountDAO extends GenericDAO<Account, Long> {
     Account addAccountEvent(Account account, AccountEvent accountEvent);
 
     /**
-     * Returns an account with its groups by the specified id.
+     * Returns an account with its events by the account id.
      * Queries an account with setting EAGER for list of events
      *
-     * @param id the unique identifier
-     * @return an account with its events by the specified id
+     * @param accountId the account ID
+     * @return an account with its events by the account id
      */
-    Account getWithEvents(Long id);
+    Account getWithEvents(Long accountId);
+
+    /**
+     * Returns a list of the accounts of the event by the event ID
+     *
+     * @param accountId the event ID
+     * @return a list of the accounts of the event and null if the event isn't exist
+     */
+    List<Event> getEvents(Long accountId);
 
     /**
      * This method is used to get account by email if it exist.

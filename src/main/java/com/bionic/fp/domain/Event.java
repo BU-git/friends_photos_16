@@ -11,20 +11,13 @@ import java.util.List;
 @Entity
 @Table(name = "events")
 @NamedEntityGraphs({
-        @NamedEntityGraph(name="Event.accounts", attributeNodes={
-                @NamedAttributeNode("accounts")}
-        ),
+        @NamedEntityGraph(name = "Event.accounts",
+                attributeNodes = @NamedAttributeNode(value = "accounts", subgraph = "accounts"),
+                subgraphs = @NamedSubgraph(name = "accounts", attributeNodes = @NamedAttributeNode("account"))),
         @NamedEntityGraph(name="Event.photos", attributeNodes={
-                @NamedAttributeNode("photos")}
-        ),
+                @NamedAttributeNode("photos")}),
         @NamedEntityGraph(name="Event.comments", attributeNodes={
-                @NamedAttributeNode("comments")}
-        ),
-        @NamedEntityGraph(name="Event.full", attributeNodes={
-                @NamedAttributeNode("accounts"),
-                @NamedAttributeNode("photos"),
-                @NamedAttributeNode("comments")}
-        )
+                @NamedAttributeNode("comments")})
 })
 public class Event implements Serializable {
     @Id
@@ -198,6 +191,22 @@ public class Event implements Serializable {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Event event = (Event) o;
+
+        if (name != null ? !name.equals(event.name) : event.name != null) return false;
+        if (description != null ? !description.equals(event.description) : event.description != null) return false;
+        if (eventType != null ? !eventType.equals(event.eventType) : event.eventType != null) return false;
+        if (latitude != null ? !latitude.equals(event.latitude) : event.latitude != null) return false;
+        if (longitude != null ? !longitude.equals(event.longitude) : event.longitude != null) return false;
+        return !(radius != null ? !radius.equals(event.radius) : event.radius != null);
+
     }
 
     @Override

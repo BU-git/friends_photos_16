@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -39,7 +40,12 @@ public class EventService {
     public EventService() {}
 
     /**
-     * todo: test
+     * Adds or updates an account to the event
+     *
+     * @param accountId the account ID
+     * @param eventId the event ID
+     * @param role the role of this account in this event
+     * todo: make update test, when more roles
      */
     public void addOrUpdateAccountToEvent(final Long accountId, final Long eventId, final Role role) {
         if(accountId == null || eventId == null || role == null) {
@@ -62,9 +68,11 @@ public class EventService {
                 conn.setAccount(account);
                 conn.setEvent(event);
                 conn.setRole(role);
-
-                this.accountDAO.update(account);
-                this.eventDAO.update(event);
+                // the magic happens above!!! This is unnecessary (the account and event use CASCADE.ALL)
+//                this.accountEventDAO.create(conn);
+                // this block doesn't work !?!
+//                this.accountDAO.update(account);
+//                this.eventDAO.update(event);
             }
         }
     }
@@ -151,6 +159,16 @@ public class EventService {
     }
 
     /**
+     * Returns a list of the accounts of the event by the event ID
+     *
+     * @param eventId the event ID
+     * @return a list of the accounts of the event and null if the event isn't exist
+     */
+    public List<Account> getAccounts(final Long eventId) {
+        return eventId == null ? null : this.eventDAO.getAccounts(eventId);
+    }
+
+    /**
      * Updates an event and returns the current state of the event
      *
      * @param event the event
@@ -160,7 +178,7 @@ public class EventService {
         if(!isValid(event) || event.getId() == null) {
             return null;
         }
-        // can't change the owner
+        // can't change the owner!
 //        if(this.eventDAO.isOwnerLoaded(event)) {      // if the owner can be LAZY then use it
         Event actual = get(event.getId());
         if (actual == null || event.getOwner() == null ||

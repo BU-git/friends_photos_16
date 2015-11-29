@@ -1,10 +1,12 @@
 package com.bionic.fp.rest;
 
 import com.bionic.fp.domain.Account;
+import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
 import com.bionic.fp.rest.dto.EventCreateDTO;
 import com.bionic.fp.rest.dto.EventUpdateDTO;
+import com.bionic.fp.service.AccountEventService;
 import com.bionic.fp.service.AccountService;
 import com.bionic.fp.service.EventService;
 import com.bionic.fp.service.EventTypeService;
@@ -21,6 +23,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Random;
 
 import static com.jayway.restassured.http.ContentType.JSON;
@@ -29,8 +32,6 @@ import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.when;
 import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * This is an integration test that verifies {@link EventController}
@@ -47,6 +48,9 @@ public class EventControllerIT {
 
     @Autowired
     private EventService eventService;
+
+    @Autowired
+    private AccountEventService accountEventService;
 
     @Autowired
     private AccountService accountService;
@@ -77,13 +81,22 @@ public class EventControllerIT {
         .then()
             .statusCode(SC_CREATED);
 
-        Account account = this.accountService.getWithEvents(owner.getId());
-        assertNotNull(account);
-        Long eventId = account.getEvents().get(0).getId();
-        Event actual = this.eventService.get(eventId);
-        assertNotNull(actual);
+        List<Event> events = this.accountService.getEvents(owner.getId());
+        assertNotNull(events);
+        assertEquals(1, events.size());
+        Event actual = events.get(0);
+        // or
+//        Account account = this.accountService.getWithEvents(owner.getId());
+//        assertNotNull(account);
+//        Long accountEventId = account.getEvents().get(0).getId();
+//        assertNotNull(accountEventId);
+//        AccountEvent accountEvent = this.accountEventService.getWithAccountEvent(accountEventId);
+//        assertNotNull(accountEvent);
+//        Long eventId = accountEvent.getEvent().getId();
+//        assertNotNull(eventId);
+//        Event actual = this.eventService.get(eventId);
+//        assertNotNull(actual);
 
-        assertEquals(actual.getId(), eventId);
         assertEquals(actual.getName(), eventDto.getName());
         assertEquals(actual.getDescription(), eventDto.getDescription());
         assertEquals(actual.getEventType(), privateEvent);
@@ -200,7 +213,6 @@ public class EventControllerIT {
 
     @Test
     public void testSaveEventWithoutValidOwnerIdShouldReturnBadRequest() {
-        EventType privateEvent = getPrivateEventType();
         EventCreateDTO eventDto = new EventCreateDTO(getNewEventMin(), null);
 
         // without owner ID

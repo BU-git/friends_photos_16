@@ -2,6 +2,7 @@ package com.bionic.fp.service;
 
 import com.bionic.fp.dao.AccountDAO;
 import com.bionic.fp.domain.Account;
+import com.bionic.fp.domain.Event;
 import com.bionic.fp.exception.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.NoResultException;
+import java.util.List;
 
 /**
  * Created by boubdyk on 11.11.2015.
@@ -186,5 +188,9 @@ public class AccountService {
 
     public Account getWithEvents(final Long accountId) {
         return accountId == null ? null : this.accountDAO.getWithEvents(accountId);
+    }
+
+    public List<Event> getEvents(final Long accountId) {
+        return accountId == null ? null : this.accountDAO.getEvents(accountId);
     }
 }

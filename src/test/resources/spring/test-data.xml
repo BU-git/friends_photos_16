@@ -16,9 +16,12 @@
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="${url}"/>
-        <property name="username" value="${user}"/>
-        <property name="password" value="${password}"/>
+        <!--<property name="url" value="${url}"/>-->
+        <!--<property name="username" value="${user}"/>-->
+        <!--<property name="password" value="${password}"/>-->
+        <property name="url" value="jdbc:mysql://176.114.1.110:3306/friendsphotos"/>
+        <property name="username" value="fpuser"/>
+        <property name="password" value="fppass"/>
     </bean>
 
     <bean id="entityManager" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">

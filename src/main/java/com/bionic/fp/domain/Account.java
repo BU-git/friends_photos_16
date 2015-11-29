@@ -9,8 +9,8 @@ import java.util.List;
 @Entity
 @Table(name = "accounts")
 @NamedEntityGraph(name = "Account.events",
-        attributeNodes = @NamedAttributeNode("events")
-)
+        attributeNodes = @NamedAttributeNode(value = "events", subgraph = "events"),
+        subgraphs = @NamedSubgraph(name = "events", attributeNodes = @NamedAttributeNode("event")))
 public class Account implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -171,6 +171,21 @@ public class Account implements Serializable {
 
     public void setEvents(List<AccountEvent> events) {
         this.events = events;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Account account = (Account) o;
+
+        if (password != null ? !password.equals(account.password) : account.password != null) return false;
+        if (userName != null ? !userName.equals(account.userName) : account.userName != null) return false;
+        if (email != null ? !email.equals(account.email) : account.email != null) return false;
+        if (fbId != null ? !fbId.equals(account.fbId) : account.fbId != null) return false;
+        return !(vkId != null ? !vkId.equals(account.vkId) : account.vkId != null);
+
     }
 
     @Override
