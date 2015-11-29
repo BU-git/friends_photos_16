@@ -34,7 +34,7 @@ public class RoleController {
         return new ResponseEntity<>(allRolesDTO, OK);
     }
 
-    @RequestMapping(method = PUT, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/change", method = PUT, consumes = APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity setNewRole(@RequestBody final NewRoleDTO newRoleDTO) {
         boolean isNewRoleSetted = roleService.setNewRole(
                 newRoleDTO.getRoleId(),
@@ -46,7 +46,7 @@ public class RoleController {
         return isNewRoleSetted ? new ResponseEntity(OK) : new ResponseEntity(BAD_REQUEST);
     }
 
-    @RequestMapping(value = "for/{accountId:[\\d]+}/at/{eventId:[\\d]+}", method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/for/{accountId:[\\d]+}/at/{eventId:[\\d]+}", method = GET, produces = APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<RoleIdDTO> getRoleByAccountAndEvent(
             @PathVariable("accountId") final Long accountId,
             @PathVariable("eventId") final Long eventId
