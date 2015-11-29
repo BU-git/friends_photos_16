@@ -70,4 +70,9 @@ public class RoleService {
 
         return false;
     }
+
+    public Role getRoleByAccountAndEvent(Long accountId, Long eventId) {
+        AccountEvent accountEvent = accountEventDAO.getWithAccountEvent(accountId, eventId);
+        return accountEvent.getRole();
+    }
 }
