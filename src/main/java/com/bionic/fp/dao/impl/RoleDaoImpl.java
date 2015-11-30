@@ -44,7 +44,7 @@ public class RoleDaoImpl implements RoleDAO {
 
     @Override
     public void delete(Integer roleId) throws RoleNotFoundException {
-        entityManager.remove(read(roleId));
+        this.entityManager.remove(this.getOrThrow(roleId));
     }
 
     @Override
