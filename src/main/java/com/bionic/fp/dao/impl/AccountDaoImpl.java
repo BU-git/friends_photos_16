@@ -4,6 +4,7 @@ import com.bionic.fp.dao.AccountDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
+import com.bionic.fp.exception.app.logic.impl.AccountNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
@@ -11,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.Optional.ofNullable;
 
 /**
  *
@@ -48,28 +51,26 @@ public class AccountDaoImpl implements AccountDAO {
     }
 
     @Override
-    public void delete(Long persistentObjectID) {
-        entityManager.remove(read(persistentObjectID));
+    public void delete(final Long accountId) throws AccountNotFoundException {
+        this.entityManager.remove(this.getOrThrow(accountId));
     }
 
     @Override
-    public Account addAccountEvent(final Long accountId, final AccountEvent accountEvent) {
-        Account account = getWithEvents(accountId);
-        if(account != null) {
-            account.getEvents().add(accountEvent);
-        }
+    public Account addAccountEvent(final Long accountId, final AccountEvent accountEvent) throws AccountNotFoundException {
+        Account account = this.getOrThrow(accountId);
+        account.getEvents().add(accountEvent);
         return account;
     }
 
     @Override
-    public Account addAccountEvent(Account account, final AccountEvent accountEvent) {
+    public Account addAccountEvent(Account account, final AccountEvent accountEvent) throws AccountNotFoundException {
         if(account != null) {
             if (account.getId() == null) {
                 List<AccountEvent> accountEvents = account.getEvents();
                 accountEvents.add(accountEvent);
 //                account.setEvents(accountEvents);
             } else {
-                account = addAccountEvent(account.getId(), accountEvent);
+                account = this.addAccountEvent(account.getId(), accountEvent);
             }
         }
         return account;
@@ -84,10 +85,9 @@ public class AccountDaoImpl implements AccountDAO {
     }
 
     @Override
-    public List<Event> getEvents(final Long accountId) {
-        Account account = getWithEvents(accountId);
-        return account == null ? null :
-                account.getEvents()
+    public List<Event> getEvents(final Long accountId) throws AccountNotFoundException {
+        Account account = ofNullable(this.getWithEvents(accountId)).orElseThrow(() -> new AccountNotFoundException(accountId));
+        return account.getEvents()
                     .stream()
                     .parallel()
                     .map(AccountEvent::getEvent)
@@ -120,5 +120,9 @@ public class AccountDaoImpl implements AccountDAO {
         TypedQuery<Account> result = entityManager.createQuery(SELECT_ACCOUNT_BY_USERNAME_QUERY, Account.class);
         result.setParameter("userName", userName);
         return result.getSingleResult();
+    }
+
+    private Account getOrThrow(final Long accountId) throws AccountNotFoundException {
+        return ofNullable(this.read(accountId)).orElseThrow(() -> new AccountNotFoundException(accountId));
     }
 }

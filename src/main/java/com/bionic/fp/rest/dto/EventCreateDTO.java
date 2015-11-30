@@ -4,7 +4,7 @@ import com.bionic.fp.domain.Event;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Holds group for the client-server communication
+ * Holds event for the client-server communication
  *
  * @author Sergiy Gabriel
  */

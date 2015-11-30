@@ -1,23 +1,15 @@
 package com.bionic.fp.service;
 
+import com.bionic.fp.AbstractIT;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
-import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
-import org.junit.Before;
+import com.bionic.fp.exception.app.logic.InvalidParameterException;
+import com.bionic.fp.exception.app.logic.impl.AccountNotFoundException;
+import com.bionic.fp.exception.app.logic.impl.EventNotFoundException;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -26,30 +18,7 @@ import static org.junit.Assert.*;
  *
  * @author Sergiy Gabriel
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
-@ContextConfiguration("classpath:spring/test-root-context.xml")
-public class EventServiceIT {
-
-    @Autowired
-    private EventService eventService;
-
-    @Autowired
-    private AccountService accountService;
-
-    @Autowired
-    private EventTypeService eventTypeService;
-
-    @Autowired
-    private RoleService roleService;
-
-    @Autowired
-    private WebApplicationContext context;
-
-    @Before
-    public void setUp() {
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-    }
+public class EventServiceIT extends AbstractIT {
 
     @Test
     public void testCreateEventSuccess() {
@@ -95,7 +64,7 @@ public class EventServiceIT {
         assertEquals(actual.getOwner().getPassword(), owner.getPassword());
     }
 
-    @Test
+    @Test(expected = InvalidParameterException.class)
     public void testCreateEventEventInvalidFailure() {
         Account owner = getSavedAccount();
         EventType privateEvent = getPrivateEventType();
@@ -107,42 +76,60 @@ public class EventServiceIT {
         event.setDescription(null);
         event.setEventType(null);
 
-        assertNull(this.eventService.createEvent(owner.getId(), event));
+        try {
+            assertNull(this.eventService.createEvent(owner.getId(), event));
+            fail();
+        } catch (InvalidParameterException ignored) {}
 
         // without description, type
         event.setName("NY 2016");
         event.setDescription(null);
         event.setEventType(null);
 
-        assertNull(this.eventService.createEvent(owner.getId(), event));
+        try {
+            assertNull(this.eventService.createEvent(owner.getId(), event));
+            fail();
+        } catch (InvalidParameterException ignored) {}
 
         // without name, description
         event.setName(null);
         event.setDescription(null);
         event.setEventType(privateEvent);
 
-        assertNull(this.eventService.createEvent(owner.getId(), event));
+        try {
+            assertNull(this.eventService.createEvent(owner.getId(), event));
+            fail();
+        } catch (InvalidParameterException ignored) {}
 
         // without name, type
         event.setName(null);
         event.setDescription("Happy New Year!");
         event.setEventType(null);
 
-        assertNull(this.eventService.createEvent(owner.getId(), event));
+        try {
+            assertNull(this.eventService.createEvent(owner.getId(), event));
+            fail();
+        } catch (InvalidParameterException ignored) {}
 
         // without name
         event.setName(null);
         event.setDescription("Happy New Year!");
         event.setEventType(privateEvent);
 
-        assertNull(this.eventService.createEvent(owner.getId(), event));
+        try {
+            assertNull(this.eventService.createEvent(owner.getId(), event));
+            fail();
+        } catch (InvalidParameterException ignored) {}
 
         // without description
         event.setName("NY 2016");
         event.setDescription(null);
         event.setEventType(privateEvent);
 
-        assertNull(this.eventService.createEvent(owner.getId(), event));
+        try {
+            assertNull(this.eventService.createEvent(owner.getId(), event));
+            fail();
+        } catch (InvalidParameterException ignored) {}
 
         // without event type
         event.setName("NY 2016");
@@ -152,7 +139,7 @@ public class EventServiceIT {
         assertNull(this.eventService.createEvent(owner.getId(), event));
     }
 
-    @Test
+    @Test(expected = InvalidParameterException.class)
     public void testCreateEventOwnerIdNullFailure() {
         EventType privateEvent = getPrivateEventType();
 
@@ -165,7 +152,7 @@ public class EventServiceIT {
         assertNull(this.eventService.createEvent(null, event));
     }
 
-    @Test
+    @Test(expected = AccountNotFoundException.class)
     public void testCreateEventOwnerIdNotFoundFailure() {
         EventType privateEvent = getPrivateEventType();
 
@@ -186,7 +173,7 @@ public class EventServiceIT {
         assertNotNull(actual);
         assertFalse(actual.isDeleted());
 
-        assertTrue(this.eventService.remove(event.getId()));
+        this.eventService.remove(event.getId());
 
         assertFalse(event.isDeleted());
         actual = this.eventService.get(event.getId());
@@ -194,14 +181,14 @@ public class EventServiceIT {
         assertTrue(actual.isDeleted());
     }
 
-    @Test
+    @Test(expected = InvalidParameterException.class)
     public void testRemoveByIdEventIdNullFailure() {
-        assertFalse(this.eventService.remove(null));
+        this.eventService.remove(null);
     }
 
-    @Test
+    @Test(expected = EventNotFoundException.class)
     public void testRemoveByIdEventIdNotFoundFailure() {
-        assertFalse(this.eventService.remove(Long.MAX_VALUE));
+        this.eventService.remove(Long.MAX_VALUE);
     }
 
     @Test
@@ -374,12 +361,12 @@ public class EventServiceIT {
         assertEquals(newEvent.isGeoServicesEnabled(), updated.isGeoServicesEnabled());
     }
 
-    @Test
+    @Test(expected = InvalidParameterException.class)
     public void testUpdateByIdEventNullFailure() {
         assertNull(this.eventService.update(null));
     }
 
-    @Test
+    @Test(expected = InvalidParameterException.class)
     public void testUpdateByIdChangeOwnerFailure() {
         Account owner = getSavedAccount();
         Account newOwner = getSavedAccount();
@@ -431,7 +418,7 @@ public class EventServiceIT {
         assertNull(this.eventService.update(actual));
     }
 
-    @Test
+    @Test(expected = InvalidParameterException.class)
     public void testUpdateByIdChangeOwnerUsingNewEventFailure() {
         Account owner = getSavedAccount();
         Account newOwner = getSavedAccount();
@@ -462,7 +449,7 @@ public class EventServiceIT {
         assertNull(this.eventService.update(newEvent));
     }
 
-    @Test
+    @Test(expected = InvalidParameterException.class)
     public void testUpdateByIdUsingNewEventOwnerNullFailure() {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
@@ -562,7 +549,7 @@ public class EventServiceIT {
     }
 
     @Test
-    public void testAddAccountToEventSuccess() throws Exception {
+    public void testAddAccountToEventSuccess() {
         Account owner = getSavedAccount();
         Account user1 = getSavedAccount();
         Account user2 = getSavedAccount();
@@ -613,7 +600,7 @@ public class EventServiceIT {
     }
 
     @Test
-    public void testGetEventAccountsSuccess() throws Exception {
+    public void testGetEventAccountsSuccess() {
         Account owner = getSavedAccount();
         Account user1 = getSavedAccount();
         Account user2 = getSavedAccount();
@@ -648,90 +635,4 @@ public class EventServiceIT {
         assertTrue(accounts.contains(user2));
     }
 
-    private Account getSavedAccount() {
-        String s = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME);
-        Account account = new Account("yaya@gmail.com" + s, "Yaya" + s, "yaya" + s);
-        Long accountId = this.accountService.addAccount(account);
-        assertNotNull(accountId);
-        return account;
-    }
-
-    private EventType getPrivateEventType() {
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-        return privateEvent;
-    }
-
-    private Event getSavedEventMin(final Account owner) {
-        Event event = new Event();
-        event.setName("NY 2016");
-        event.setDescription("testRemoveByIdSuccess");
-        event.setEventType(getPrivateEventType());
-
-        assertFalse(event.isDeleted());
-        assertTrue(event.isVisible());
-        assertFalse(event.isGeoServicesEnabled());
-
-        Long eventId = this.eventService.createEvent(owner.getId(), event);
-
-        assertNotNull(eventId);
-        assertFalse(event.isDeleted());
-        assertTrue(event.isVisible());
-        assertFalse(event.isGeoServicesEnabled());
-
-        return event;
-    }
-
-    private Event getNewEventMax() {
-        Random random = new Random();
-
-        Event event = new Event();
-        LocalDateTime now = LocalDateTime.now();
-        event.setName("Nano is " + now.getNano());
-        event.setDescription("Today is " + now);
-        event.setEventType(getPrivateEventType());
-        event.setVisible(true);
-        event.setLatitude(random.nextDouble());
-        event.setLongitude(random.nextDouble());
-        event.setRadius(0.1f);
-        event.setGeoServicesEnabled(false);
-
-        assertFalse(event.isDeleted());
-
-        return event;
-    }
-
-    private Event getSavedEventMax(final Account owner) {
-        Event event = getNewEventMax();
-
-        Long eventId = this.eventService.createEvent(owner.getId(), event);
-
-        assertNotNull(eventId);
-        assertFalse(event.isDeleted());
-
-        return event;
-    }
-
-    private Event getSavedEventMaxReverse(final Account owner) {
-        Event event = updateEvent(getNewEventMax());
-
-        Long eventId = this.eventService.createEvent(owner.getId(), event);
-
-        assertNotNull(eventId);
-        assertFalse(event.isDeleted());
-
-        return event;
-    }
-
-    private Event updateEvent(final Event event) {
-        event.setName(event.getName() + "_up");
-        event.setDescription(event.getDescription() + "_up");
-        event.setLatitude(event.getLatitude() + 1);
-        event.setLongitude(event.getLongitude() + 1);
-        event.setRadius(event.getRadius() + 1);
-        event.setVisible(!event.isVisible());
-        event.setGeoServicesEnabled(!event.isGeoServicesEnabled());
-
-        return event;
-    }
 }

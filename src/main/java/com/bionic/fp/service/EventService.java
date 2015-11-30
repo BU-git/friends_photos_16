@@ -8,6 +8,11 @@ import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Role;
+import com.bionic.fp.exception.app.logic.EntityNotFoundException;
+import com.bionic.fp.exception.app.logic.impl.AccountNotFoundException;
+import com.bionic.fp.exception.app.logic.impl.EventNotFoundException;
+import com.bionic.fp.exception.app.logic.InvalidParameterException;
+import com.bionic.fp.exception.app.logic.impl.RoleNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -15,6 +20,9 @@ import javax.inject.Named;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+
+import static com.bionic.fp.util.Checks.check;
+import static java.util.Optional.ofNullable;
 
 /**
  * Entry point to perform operations over event entities
@@ -45,12 +53,14 @@ public class EventService {
      * @param accountId the account ID
      * @param eventId the event ID
      * @param role the role of this account in this event
+     * @throws InvalidParameterException if incoming parameters are not valid
+     * @throws EntityNotFoundException if the owner and its role doesn't exist or the event doesn't exist
      * todo: make update test, when more roles
      */
-    public void addOrUpdateAccountToEvent(final Long accountId, final Long eventId, final Role role) {
-        if(accountId == null || eventId == null || role == null) {
-            return;
-        }
+    public void addOrUpdateAccountToEvent(final Long accountId, final Long eventId, final Role role) throws InvalidParameterException, EntityNotFoundException {
+        check(accountId != null, "The account ID should not be null");
+        check(role != null, "The role should not be null");
+        this.validation(eventId);
 
         AccountEvent conn = this.accountEventDAO.get(accountId, eventId);
         if(conn != null) {
@@ -64,16 +74,15 @@ public class EventService {
             Account account = this.accountDAO.addAccountEvent(accountId, conn);
             Event event = this.eventDAO.addAccountEvent(eventId, conn);
 
-            if(account != null && event != null) {
-                conn.setAccount(account);
-                conn.setEvent(event);
-                conn.setRole(role);
-                // the magic happens above!!! This is unnecessary (the account and event use CASCADE.ALL)
+//            if(account != null && event != null) {
+            conn.setAccount(account);
+            conn.setEvent(event);
+            conn.setRole(role);
+            // the magic happens above!!! This is unnecessary (the account and event use CASCADE.ALL)
 //                this.accountEventDAO.create(conn);
-                // this block doesn't work !?!
+            // this block doesn't work !?!
 //                this.accountDAO.update(account);
 //                this.eventDAO.update(event);
-            }
         }
     }
 
@@ -83,26 +92,21 @@ public class EventService {
      * @param ownerId the owner ID
      * @param event the event
      * @return the event ID and null otherwise
+     * @throws InvalidParameterException if incoming parameters are not valid
+     * @throws EntityNotFoundException if the owner and its role doesn't exist
      */
-    public Long createEvent(final Long ownerId, Event event) {
-        if(ownerId == null || !isValid(event) || event.getId() != null) {
-            return null;
-        }
+    public Long createEvent(final Long ownerId, Event event) throws InvalidParameterException, EntityNotFoundException {
+        check(ownerId != null, "The owner ID should not be null");
+        check(event.getId() == null, "When creating an event it should not have ID");
+        this.validation(event);
 
         Role role = this.roleDAO.getOwner();
-        if(role == null) {
-            // how is that?
-            return null;
-        }
 
         // create empty connection (skeleton)
         AccountEvent conn = new AccountEvent();
 
         // add empty connection to owner and event
         Account owner = this.accountDAO.addAccountEvent(ownerId, conn);
-        if(owner == null) {
-            return null;
-        }
         event = this.eventDAO.addAccountEvent(event, conn);
 
         conn.setAccount(owner);
@@ -120,21 +124,24 @@ public class EventService {
      * Removes an event physically from database
      *
      * @param eventId the event ID
+     * @throws InvalidParameterException if the event ID is invalid
+     * @throws EventNotFoundException if the event doesn't exist
      */
-    public void removePhysically(final Long eventId) {
-        if(eventId != null) {
-            this.eventDAO.delete(eventId);
-        }
+    public void removePhysically(final Long eventId) throws InvalidParameterException, EventNotFoundException {
+        this.validation(eventId);
+        this.eventDAO.delete(eventId);
     }
 
     /**
      * Changes the deleted field to true (soft delete)
      *
      * @param eventId the event ID
-     * @return true on success and false otherwise
+     * @throws InvalidParameterException if the event ID is invalid
+     * @throws EventNotFoundException if the event doesn't exist
      */
-    public boolean remove(final Long eventId) {
-        return eventId != null && this.eventDAO.setDeleted(eventId, true);
+    public void remove(final Long eventId) throws InvalidParameterException, EventNotFoundException {
+        this.validation(eventId);
+        this.eventDAO.setDeleted(eventId, true);
     }
 
     /**
@@ -142,9 +149,11 @@ public class EventService {
      *
      * @param eventId the event ID
      * @return the event and null otherwise
+     * @throws InvalidParameterException if the event ID is invalid
      */
-    public Event get(final Long eventId) {
-        return eventId == null ? null : this.eventDAO.read(eventId);
+    public Event get(final Long eventId) throws InvalidParameterException {
+        this.validation(eventId);
+        return this.eventDAO.read(eventId);
     }
 
     /**
@@ -153,19 +162,24 @@ public class EventService {
      *
      * @param eventId the event ID
      * @return the event and null otherwise
+     * @throws InvalidParameterException if the event ID is invalid
      */
-    public Event getWithAccounts(final Long eventId) {
-        return eventId == null ? null : this.eventDAO.getWithAccounts(eventId);
+    public Event getWithAccounts(final Long eventId) throws InvalidParameterException {
+        this.validation(eventId);
+        return this.eventDAO.getWithAccounts(eventId);
     }
 
     /**
      * Returns a list of the accounts of the event by the event ID
      *
      * @param eventId the event ID
-     * @return a list of the accounts of the event and null if the event isn't exist
+     * @return a list of the accounts of the event
+     * @throws InvalidParameterException if the event ID is invalid
+     * @throws EventNotFoundException if the event doesn't exist
      */
-    public List<Account> getAccounts(final Long eventId) {
-        return eventId == null ? null : this.eventDAO.getAccounts(eventId);
+    public List<Account> getAccounts(final Long eventId) throws InvalidParameterException, EventNotFoundException {
+        this.validation(eventId);
+        return this.eventDAO.getAccounts(eventId);
     }
 
     /**
@@ -173,31 +187,40 @@ public class EventService {
      *
      * @param event the event
      * @return the current state of the event and null otherwise
+     * @throws InvalidParameterException if incoming parameters are not valid
+     * @throws EventNotFoundException if the event doesn't exist
      */
-    public Event update(final Event event) {
-        if(!isValid(event) || event.getId() == null) {
-            return null;
-        }
-        // can't change the owner!
+    public Event update(final Event event) throws InvalidParameterException, EventNotFoundException {
+        this.validation(event);
+        this.validation(event.getId());
 //        if(this.eventDAO.isOwnerLoaded(event)) {      // if the owner can be LAZY then use it
-        Event actual = get(event.getId());
-        if (actual == null || event.getOwner() == null ||
-                !Objects.equals(event.getOwner().getId(), actual.getOwner().getId())) {
-            return null;
-        }
+        Event actual = this.get(event.getId());
+        ofNullable(actual).orElseThrow(() -> new EventNotFoundException(event.getId()));
+        check(event.getOwner() != null && Objects.equals(event.getOwner().getId(), actual.getOwner().getId()),
+                "To change the owner is prohibited");
         return this.eventDAO.update(event);
     }
 
     /**
-     * Checks required parameters (should not be null) of an event
+     * Checks required parameters of an event
      *
      * @param event the event
-     * @return true if all required parameters are initialized and false otherwise
+     * @throws InvalidParameterException if incoming parameters are not valid
      */
-    private boolean isValid(final Event event) {
-        return event != null &&
-                event.getName() != null &&
-                event.getEventType() != null &&
-                event.getDescription() != null;
+    private void validation(final Event event) throws InvalidParameterException {
+        check(event != null, "The event should not be null");
+        check(event.getName() != null, "The name of the event should not be null");
+        check(event.getEventType() != null, "The type of the event should not be null");
+        check(event.getDescription() != null, "The description of the event should not be null");
+    }
+
+    /**
+     * Checks an event ID
+     *
+     * @param eventId the event ID
+     * @throws InvalidParameterException if the event ID is invalid
+     */
+    private void validation(final Long eventId) throws InvalidParameterException {
+        check(eventId != null, "The event ID should not be null");
     }
 }

@@ -2,10 +2,14 @@ package com.bionic.fp.dao.impl;
 
 import com.bionic.fp.dao.EventTypeDAO;
 import com.bionic.fp.domain.EventType;
+import com.bionic.fp.exception.app.logic.impl.EventTypeNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+import static com.bionic.fp.util.Checks.check;
+import static java.util.Optional.ofNullable;
 
 /**
  * This is implementation of {@link EventTypeDAO}
@@ -25,33 +29,27 @@ public class EventTypeDaoImpl implements EventTypeDAO {
     }
 
     @Override
-    public EventType read(final Integer id) {
-        return this.entityManager.find(EventType.class, id);
+    public EventType read(final Integer eventTypeId) {
+        return this.entityManager.find(EventType.class, eventTypeId);
     }
 
     @Override
     public EventType update(final EventType eventType) {
-        this.entityManager.merge(eventType);
-        return eventType;
+        return this.entityManager.merge(eventType);
     }
 
     @Override
-    public void delete(final Integer id) {
-        EventType eventType = read(id);
-        if(eventType != null) {
-            this.entityManager.remove(eventType);
-        }
+    public void delete(final Integer eventTypeId) throws EventTypeNotFoundException {
+        EventType eventType = this.getOrThrow(eventTypeId);
+        this.entityManager.remove(eventType);
     }
 
     @Override
-    public EventType getPrivate() {
-        // todo: delete this block
-//        EventType eventType = new EventType();
-//        eventType.setTypeName("PRIVATE");
-//        this.entityManager.persist(eventType);
-//        return this.entityManager.find(EventType.class, eventType.getId());
+    public EventType getPrivate() throws EventTypeNotFoundException {
+        return this.getOrThrow(1);
+    }
 
-        // todo: use it
-        return this.entityManager.find(EventType.class, 1);
+    private EventType getOrThrow(final Integer eventTypeId) throws EventTypeNotFoundException {
+        return ofNullable(this.read(eventTypeId)).orElseThrow(() -> new EventTypeNotFoundException(eventTypeId));
     }
 }

@@ -2,12 +2,15 @@ package com.bionic.fp.dao.impl;
 
 import com.bionic.fp.dao.RoleDAO;
 import com.bionic.fp.domain.Role;
+import com.bionic.fp.exception.app.logic.impl.RoleNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
+
+import static java.util.Optional.ofNullable;
 
 
 /**
@@ -40,25 +43,22 @@ public class RoleDaoImpl implements RoleDAO {
     }
 
     @Override
-    public void delete(Integer id) {
-        entityManager.remove(read(id));
+    public void delete(Integer roleId) throws RoleNotFoundException {
+        entityManager.remove(read(roleId));
     }
 
     @Override
-    public Role getOwner() {
-        // todo: delete this block
-//        Role role = new Role();
-//        role.setRole("OWNER");
-//        this.entityManager.persist(role);
-//        return this.entityManager.find(Role.class, role.getId());
-
-        // todo: use it
-        return this.entityManager.find(Role.class, 1);
+    public Role getOwner() throws RoleNotFoundException  {
+        return this.getOrThrow(1);
     }
 
     @Override
     public List<Role> getAllRoles() {
         TypedQuery<Role> allRolesQuery = entityManager.createQuery(SELECT_ALL_ROLES, Role.class);
         return allRolesQuery.getResultList();
+    }
+
+    private Role getOrThrow(final Integer roleId) throws RoleNotFoundException {
+        return ofNullable(this.read(roleId)).orElseThrow(() -> new RoleNotFoundException(roleId));
     }
 }

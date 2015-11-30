@@ -15,7 +15,7 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
      * Queries an account-event with setting EAGER for its account and event
      *
      * @param id the unique identifier
-     * @return an account-event with its account and event by the specified id
+     * @return an account-event with its account and null if the account-event doesn't exist
      */
     AccountEvent getWithAccountEvent(Long id);
 
@@ -24,7 +24,7 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
      *
      * @param accountId the account ID
      * @param eventId the event ID
-     * @return an account-event by the specified account ID and event ID
+     * @return an account-event and null if the account-event doesn't exist
      */
     AccountEvent get(Long accountId, Long eventId);
 
@@ -34,7 +34,7 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
      *
      * @param accountId the account ID
      * @param eventId the event ID
-     * @return an account-event with its account and event by the specified account ID and event ID
+     * @return an account-event with its account and null if the account-event doesn't exist
      */
     AccountEvent getWithAccountEvent(Long accountId, Long eventId);
 
@@ -43,7 +43,7 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
      *
      * @param accountId the account ID
      * @param eventId the event ID
-     * @return a role by the specified account ID and event ID.
+     * @return a role and null if the role doesn't exist
      */
     Role getRole(Long accountId, Long eventId);
 

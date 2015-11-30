@@ -1,30 +1,14 @@
 package com.bionic.fp.rest;
 
+import com.bionic.fp.AbstractIT;
 import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
 import com.bionic.fp.rest.dto.EventCreateDTO;
 import com.bionic.fp.rest.dto.EventUpdateDTO;
-import com.bionic.fp.service.AccountEventService;
-import com.bionic.fp.service.AccountService;
-import com.bionic.fp.service.EventService;
-import com.bionic.fp.service.EventTypeService;
-import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Random;
 
 import static com.jayway.restassured.http.ContentType.JSON;
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
@@ -38,33 +22,10 @@ import static org.junit.Assert.*;
  *
  * @author Sergiy Gabriel
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
-@ContextConfiguration("classpath:spring/test-root-context.xml")
-public class EventControllerIT {
+public class EventControllerIT extends AbstractIT {
 
     private static final String EVENTS = "/events";
     private static final String EVENTS_ID = "/events/{id}";
-
-    @Autowired
-    private EventService eventService;
-
-    @Autowired
-    private AccountEventService accountEventService;
-
-    @Autowired
-    private AccountService accountService;
-
-    @Autowired
-    private EventTypeService eventTypeService;
-
-    @Autowired
-    private WebApplicationContext context;
-
-    @Before
-    public void setUp() {
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-    }
 
     @Test
     public void testSaveEventSuccess() {
@@ -254,12 +215,14 @@ public class EventControllerIT {
             .delete(EVENTS_ID, "1abc")
         .then()
             .statusCode(SC_NOT_FOUND);
+    }
 
-        // todo: throw an exception inside and handle it
-        when()
-            .delete(EVENTS + "/{id}", "99999")
-        .then()
-            .statusCode(SC_BAD_REQUEST);
+    @Test
+    public void testRemoveEventByIdShouldReturnBadRequest() {
+         when()
+                .delete(EVENTS + "/{id}", Long.MAX_VALUE)
+                .then()
+                .statusCode(SC_BAD_REQUEST);
     }
 
     @Test
@@ -311,10 +274,13 @@ public class EventControllerIT {
 
     @Test
     public void testFindEventByIdShouldReturnNotFound() {
+        long id = Long.MAX_VALUE;
+
         when()
-            .get(EVENTS_ID, Long.MAX_VALUE)
+            .get(EVENTS_ID, id)
         .then()
             .statusCode(SC_NOT_FOUND);
+//            .body("error", is((new EventNotFoundException(id)).getMessage()));
     }
 
     @Test
@@ -398,102 +364,17 @@ public class EventControllerIT {
             .put(EVENTS_ID, "1abc")
         .then()
             .statusCode(SC_NOT_FOUND);
+    }
 
+    @Test
+    public void testUpdateEventShouldReturnBadRequest() {
+        EventUpdateDTO eventDto = new EventUpdateDTO();
         given()
             .body(eventDto)
             .contentType(JSON)
         .when()
             .put(EVENTS_ID, Long.MAX_VALUE)
         .then()
-            .statusCode(SC_NOT_FOUND);
-    }
-
-    private Account getSavedAccount() {
-        String s = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME);
-        Account account = new Account("yaya@gmail.com" + s, "Yaya" + s, "yaya" + s);
-        Long accountId = this.accountService.addAccount(account);
-        assertNotNull(accountId);
-        return account;
-    }
-
-    private EventType getPrivateEventType() {
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-        return privateEvent;
-    }
-
-    private Event getNewEventMin() {
-        Event event = new Event();
-        LocalDateTime now = LocalDateTime.now();
-        event.setName("Nano is " + now.getNano());
-        event.setDescription("Today is " + now);
-        event.setEventType(getPrivateEventType());
-
-        assertFalse(event.isDeleted());
-        assertTrue(event.isVisible());
-        assertFalse(event.isGeoServicesEnabled());
-
-        return event;
-    }
-
-    private Event getNewEventMax() {
-        Random random = new Random();
-        Event event = getNewEventMin();
-        event.setVisible(true);
-        event.setLatitude(random.nextDouble());
-        event.setLongitude(random.nextDouble());
-        event.setRadius(0.1f);
-        event.setGeoServicesEnabled(false);
-
-        assertFalse(event.isDeleted());
-
-        return event;
-    }
-
-    private Event getSavedEventMin(final Account owner) {
-        Event event = getNewEventMin();
-
-        Long eventId = this.eventService.createEvent(owner.getId(), event);
-
-        assertNotNull(eventId);
-        assertFalse(event.isDeleted());
-        assertTrue(event.isVisible());
-        assertFalse(event.isGeoServicesEnabled());
-
-        return event;
-    }
-
-    private Event getSavedEventMax(final Account owner) {
-        Event event = getNewEventMax();
-
-        Long eventId = this.eventService.createEvent(owner.getId(), event);
-
-        assertNotNull(eventId);
-        assertFalse(event.isDeleted());
-
-        return event;
-    }
-
-    private Event getSavedEventMaxReverse(final Account owner) {
-        Event event = updateEvent(getNewEventMax());
-
-        Long eventId = this.eventService.createEvent(owner.getId(), event);
-
-        assertNotNull(eventId);
-        assertFalse(event.isDeleted());
-
-        return event;
-    }
-
-    private Event updateEvent(final Event event) {
-        event.setName(event.getName() + "_up");
-        event.setDescription(event.getDescription() + "_up");
-        event.setLatitude(event.getLatitude() == null ? 0 : event.getLatitude() + 1);
-        event.setLongitude(event.getLongitude() == null ? 0 : event.getLongitude() + 1);
-        event.setRadius(event.getRadius() == null ? 0 : event.getRadius() + 1);
-        event.setVisible(!event.isVisible());
-        event.setGeoServicesEnabled(!event.isGeoServicesEnabled());
-
-        return event;
+            .statusCode(SC_BAD_REQUEST);
     }
 }

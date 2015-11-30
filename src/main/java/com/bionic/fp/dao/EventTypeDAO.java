@@ -1,6 +1,7 @@
 package com.bionic.fp.dao;
 
 import com.bionic.fp.domain.EventType;
+import com.bionic.fp.exception.app.logic.impl.EventTypeNotFoundException;
 
 /**
  * Represents data access object of the event type
@@ -9,5 +10,11 @@ import com.bionic.fp.domain.EventType;
  */
 public interface EventTypeDAO extends GenericDAO<EventType, Integer> {
 
-    EventType getPrivate();
+    /**
+     * Returns the private type of the event from database
+     *
+     * @return the private type of the event
+     * @throws EventTypeNotFoundException if the event type doesn't exist
+     */
+    EventType getPrivate() throws EventTypeNotFoundException;
 }

@@ -2,17 +2,20 @@ package com.bionic.fp.rest;
 
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
+import com.bionic.fp.exception.app.logic.impl.EventNotFoundException;
+import com.bionic.fp.exception.app.logic.impl.EventTypeNotFoundException;
+import com.bionic.fp.exception.app.rest.NotFoundException;
 import com.bionic.fp.rest.dto.EventCreateDTO;
 import com.bionic.fp.rest.dto.EventInfoDTO;
 import com.bionic.fp.rest.dto.EventUpdateDTO;
 import com.bionic.fp.rest.dto.IdInfoDTO;
 import com.bionic.fp.service.EventService;
 import com.bionic.fp.service.EventTypeService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 
+import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -33,12 +36,14 @@ public class EventController {
     private EventTypeService eventTypeService;
 
     @RequestMapping(method = POST, consumes = APPLICATION_JSON_VALUE)
-    public @ResponseBody ResponseEntity<IdInfoDTO> createEvent(@RequestBody final EventCreateDTO eventDto) {
+    @ResponseStatus(CREATED)
+    public @ResponseBody IdInfoDTO createEvent(@RequestBody final EventCreateDTO eventDto) {
         Event event = new Event();
         // required parameters (should not be null)
         event.setName(eventDto.getName());
         event.setDescription(eventDto.getDescription());
-        event.setEventType(this.eventTypeService.get(eventDto.getTypeId()));
+        EventType eventType = this.getEventTypeOrThrow(eventDto.getTypeId());
+        event.setEventType(eventType);
 
         // optional parameters (possible null)
         if(eventDto.getVisible() != null) {
@@ -53,37 +58,30 @@ public class EventController {
 
         Long eventId = this.eventService.createEvent(eventDto.getOwnerId(), event);
 
-        return eventId != null ? new ResponseEntity<>(new IdInfoDTO(eventId), CREATED) : new ResponseEntity<>(BAD_REQUEST);
+        return new IdInfoDTO(eventId);
     }
 
     @RequestMapping(value = "/{id:[\\d]+}", method = DELETE)
-    public @ResponseBody ResponseEntity deleteEventById(@PathVariable("id") final Long id) {
-        return this.eventService.remove(id) ? new ResponseEntity(NO_CONTENT) : new ResponseEntity(BAD_REQUEST);
+    @ResponseStatus(NO_CONTENT)
+    public void deleteEventById(@PathVariable("id") final Long id) {
+        this.eventService.remove(id);
     }
 
     @RequestMapping(value = "/{id:[\\d]+}", method = GET, produces = APPLICATION_JSON_VALUE)
-    public @ResponseBody ResponseEntity<EventInfoDTO> findEventById(@PathVariable("id") final Long id) {
-        Event event = this.eventService.get(id);
-        if(event == null) {
-            return new ResponseEntity<>(NOT_FOUND);
-        }
-        EventInfoDTO body = new EventInfoDTO(event);
-        return new ResponseEntity<>(body, OK);
+    @ResponseStatus(OK)
+    public @ResponseBody EventInfoDTO findEventById(@PathVariable("id") final Long id) {
+        Event event = this.findEventOrThrow(id);
+        return new EventInfoDTO(event);
     }
 
     @RequestMapping(value = "/{id:[\\d]+}",  method = PUT, consumes = APPLICATION_JSON_VALUE)
-    public @ResponseBody ResponseEntity updateEvent(@PathVariable("id") final Long eventId, @RequestBody final EventUpdateDTO eventDto) {
-        Event event = this.eventService.get(eventId);
-        if(event == null) {
-            return new ResponseEntity(NOT_FOUND);
-        }
+    @ResponseStatus(OK)
+    public void updateEvent(@PathVariable("id") final Long eventId, @RequestBody final EventUpdateDTO eventDto) {
+        Event event = this.getEventOrThrow(eventId);
 
         // required parameters (should not be null)
         if(eventDto.getTypeId() != null) {
-            EventType eventType = this.eventTypeService.get(eventDto.getTypeId());
-            if(eventType == null) {
-                return new ResponseEntity(BAD_REQUEST);
-            }
+            EventType eventType = this.getEventTypeOrThrow(eventDto.getTypeId());
             event.setEventType(eventType);
         }
         if(eventDto.getName() != null) {
@@ -111,8 +109,18 @@ public class EventController {
             event.setGeoServicesEnabled(eventDto.getGeo());
         }
 
-        Event actual = this.eventService.update(event);
+        this.eventService.update(event);
+    }
 
-        return actual != null ? new ResponseEntity(OK) : new ResponseEntity(BAD_REQUEST);
+    private EventType getEventTypeOrThrow(final Integer eventTypeId) {
+        return ofNullable(this.eventTypeService.get(eventTypeId)).orElseThrow(() -> new EventTypeNotFoundException(eventTypeId));
+    }
+
+    private Event getEventOrThrow(final Long eventId) {
+        return ofNullable(this.eventService.get(eventId)).orElseThrow(() -> new EventNotFoundException(eventId));
+    }
+
+    private Event findEventOrThrow(final Long eventId) {
+        return ofNullable(this.eventService.get(eventId)).orElseThrow(() -> new NotFoundException(eventId));
     }
 }

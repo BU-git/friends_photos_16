@@ -1,5 +1,7 @@
 package com.bionic.fp.dao;
 
+import com.bionic.fp.exception.app.logic.EntityNotFoundException;
+
 import java.io.Serializable;
 
 /**
@@ -22,6 +24,7 @@ public interface GenericDAO<T, PK extends Serializable> {
 
     /**
      * Delete object from DataBase
+     * @throws EntityNotFoundException if the entity ID doesn't exist
      */
-    void delete(PK persistentObjectID);
+    void delete(PK persistentObjectID) throws EntityNotFoundException;
 }

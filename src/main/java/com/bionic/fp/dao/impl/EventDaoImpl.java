@@ -4,14 +4,15 @@ import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
+import com.bionic.fp.exception.app.logic.impl.EventNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.bionic.fp.util.Checks.check;
+import static java.util.Optional.ofNullable;
 
 /**
  * This is implementation of {@link EventDAO}
@@ -28,7 +29,7 @@ public class EventDaoImpl implements EventDAO {
     }
 
     @Override
-    public Long create(Event event) {
+    public Long create(final Event event) {
         this.entityManager.persist(event);
         return event.getId();
     }
@@ -44,32 +45,26 @@ public class EventDaoImpl implements EventDAO {
     }
 
     @Override
-    public void delete(final Long eventId) {
-        Event event = read(eventId);
-        if(event != null) {
-            this.entityManager.remove(event);
-        }
+    public void delete(final Long eventId) throws EventNotFoundException {
+        Event event = this.getOrThrow(eventId);
+        this.entityManager.remove(event);
     }
 
     @Override
-    public Event addAccountEvent(final Long eventId, final AccountEvent accountEvent) {
-        Event event = read(eventId);
-        if(event != null) {
-            event.getAccounts().add(accountEvent);
-        }
+    public Event addAccountEvent(final Long eventId, final AccountEvent accountEvent) throws EventNotFoundException {
+        Event event = this.getOrThrow(eventId);
+        event.getAccounts().add(accountEvent);
         return event;
     }
 
     @Override
-    public Event addAccountEvent(Event event, final AccountEvent accountEvent) {
-        if(event != null) {
-            if (event.getId() == null) {
-                List<AccountEvent> accountEvents = event.getAccounts();
-                accountEvents.add(accountEvent);
-//                event.setAccounts(accountEvents);
-            } else {
-                event = addAccountEvent(event.getId(), accountEvent);
-            }
+    public Event addAccountEvent(Event event, final AccountEvent accountEvent) throws EventNotFoundException {
+        if (event.getId() == null) {
+            List<AccountEvent> accountEvents = event.getAccounts();
+            accountEvents.add(accountEvent);
+//            event.setAccounts(accountEvents);
+        } else {
+            event = this.addAccountEvent(event.getId(), accountEvent);
         }
         return event;
     }
@@ -83,10 +78,9 @@ public class EventDaoImpl implements EventDAO {
     }
 
     @Override
-    public List<Account> getAccounts(final Long eventId) {
-        Event event = getWithAccounts(eventId);
-        return event == null ? null :
-                event.getAccounts()
+    public List<Account> getAccounts(final Long eventId) throws EventNotFoundException {
+        Event event = ofNullable(this.getWithAccounts(eventId)).orElseThrow(() -> new EventNotFoundException(eventId));
+        return event.getAccounts()
                     .stream()
                     .parallel()
                     .map(AccountEvent::getAccount)
@@ -94,18 +88,18 @@ public class EventDaoImpl implements EventDAO {
     }
 
     @Override
-    public boolean setDeleted(final Long eventId, final boolean value) {
-        Event event = read(eventId);
-        if(event == null) {
-            return false;
-        }
+    public void setDeleted(final Long eventId, final boolean value) throws EventNotFoundException {
+        Event event = this.getOrThrow(eventId);
         event.setDeleted(value);
-        update(event);
-        return true;
+        this.update(event);
     }
 
     @Override
     public boolean isOwnerLoaded(final Event event) {
         return this.entityManager.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(event, "owner");
+    }
+
+    private Event getOrThrow(final Long eventId) throws EventNotFoundException {
+        return ofNullable(this.read(eventId)).orElseThrow(() -> new EventNotFoundException(eventId));
     }
 }

@@ -4,6 +4,8 @@ import com.bionic.fp.dao.AccountDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.exception.*;
+import com.bionic.fp.exception.app.logic.InvalidParameterException;
+import com.bionic.fp.exception.app.logic.impl.AccountNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +13,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.NoResultException;
 import java.util.List;
+
+import static com.bionic.fp.util.Checks.check;
 
 /**
  * Created by boubdyk on 11.11.2015.
@@ -182,15 +186,49 @@ public class AccountService {
         return account;
     }
 
-    public Account get(final Long accountId) {
-        return accountId == null ? null : this.accountDAO.read(accountId);
+    /**
+     * Returns an account by the account ID
+     *
+     * @param accountId the account ID
+     * @return the event and null otherwise
+     * @throws InvalidParameterException if the event ID is invalid
+     */
+    public Account get(final Long accountId) throws InvalidParameterException {
+        this.validation(accountId);
+        return this.accountDAO.read(accountId);
     }
 
-    public Account getWithEvents(final Long accountId) {
-        return accountId == null ? null : this.accountDAO.getWithEvents(accountId);
+    /**
+     * Returns an account with its events by the account ID.
+     *
+     * @param accountId the account ID
+     * @return an account with its events and null otherwise
+     * @throws InvalidParameterException if the account ID is invalid
+     */
+    public Account getWithEvents(final Long accountId) throws InvalidParameterException {
+        this.validation(accountId);
+        return this.accountDAO.getWithEvents(accountId);
     }
 
-    public List<Event> getEvents(final Long accountId) {
-        return accountId == null ? null : this.accountDAO.getEvents(accountId);
+    /**
+     * Returns a list of the events of the account by the account ID
+     *
+     * @param accountId the account ID
+     * @return a list of the events of the account
+     * @throws AccountNotFoundException if the account ID is invalid
+     */
+    public List<Event> getEvents(final Long accountId) throws InvalidParameterException, AccountNotFoundException {
+        this.validation(accountId);
+        return this.accountDAO.getEvents(accountId);
+    }
+
+    /**
+     * Checks an account ID
+     *
+     * @param accountId the account ID
+     * @throws InvalidParameterException if the account ID is invalid
+     */
+    private void validation(final Long accountId) throws InvalidParameterException {
+        check(accountId != null, "The account ID should not be null");
     }
 }

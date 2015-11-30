@@ -3,11 +3,14 @@ package com.bionic.fp.dao.impl;
 import com.bionic.fp.dao.AccountEventDAO;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Role;
+import com.bionic.fp.exception.app.logic.impl.AccountEventNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * This is implementation of {@link AccountEventDAO}
@@ -22,28 +25,26 @@ public class AccountEventDaoImpl implements AccountEventDAO {
 
 
     @Override
-    public Long create(AccountEvent accountGroupConnection) {
-        this.entityManager.persist(accountGroupConnection);
-        return accountGroupConnection.getId();
+    public Long create(AccountEvent accountEvent) {
+        this.entityManager.persist(accountEvent);
+        return accountEvent.getId();
     }
 
     @Override
-    public AccountEvent read(final Long id) {
-        return this.entityManager.find(AccountEvent.class, id);
+    public AccountEvent read(final Long accountEventId) {
+        return this.entityManager.find(AccountEvent.class, accountEventId);
     }
 
     @Override
-    public AccountEvent update(final AccountEvent accountGroupConnection) {
-        this.entityManager.merge(accountGroupConnection);
-        return accountGroupConnection;
+    public AccountEvent update(final AccountEvent accountEvent) {
+        this.entityManager.merge(accountEvent);
+        return accountEvent;
     }
 
     @Override
-    public void delete(final Long id) {
-        AccountEvent accountGroupConnection = read(id);
-        if(accountGroupConnection != null) {
-            this.entityManager.remove(accountGroupConnection);
-        }
+    public void delete(final Long accountEventId) throws AccountEventNotFoundException {
+        AccountEvent accountEvent = this.getOrThrow(accountEventId);
+        this.entityManager.remove(accountEvent);
     }
 
     @Override
@@ -56,28 +57,28 @@ public class AccountEventDaoImpl implements AccountEventDAO {
 
     @Override
     public AccountEvent get(final Long accountId, final Long groupId) {
-        return getSingleResult(
+        return this.getSingleResult(
                 this.entityManager.createNamedQuery(AccountEvent.GET_BY_ACCOUNT_AND_EVENT_ID, AccountEvent.class)
-                .setParameter("accountId", accountId)
-                .setParameter("eventId", groupId));
+                        .setParameter("accountId", accountId)
+                        .setParameter("eventId", groupId));
     }
 
     @Override
     public AccountEvent getWithAccountEvent(final Long accountId, final Long groupId) {
         EntityGraph graph = this.entityManager.getEntityGraph("AccountEvent.full");
-        return getSingleResult(
+        return this.getSingleResult(
                 this.entityManager.createNamedQuery(AccountEvent.GET_BY_ACCOUNT_AND_EVENT_ID, AccountEvent.class)
-                .setParameter("accountId", accountId)
-                .setParameter("eventId", groupId)
-                .setHint("javax.persistence.loadgraph", graph));
+                        .setParameter("accountId", accountId)
+                        .setParameter("eventId", groupId)
+                        .setHint("javax.persistence.loadgraph", graph));
     }
 
     @Override
     public Role getRole(final Long accountId, final Long groupId) {
-        AccountEvent result = getSingleResult(
+        AccountEvent result = this.getSingleResult(
                 this.entityManager.createNamedQuery(AccountEvent.GET_BY_ACCOUNT_AND_EVENT_ID, AccountEvent.class)
-                .setParameter("accountId", accountId)
-                .setParameter("eventId", groupId));
+                        .setParameter("accountId", accountId)
+                        .setParameter("eventId", groupId));
         return result == null ? null : result.getRole();
     }
 
@@ -86,5 +87,19 @@ public class AccountEventDaoImpl implements AccountEventDAO {
             return query.getSingleResult();
         } catch (NoResultException ignored) {}
         return null;
+    }
+
+    private AccountEvent getOrThrow(final Long accountEventId) throws AccountEventNotFoundException {
+        return ofNullable(this.read(accountEventId)).orElseThrow(() ->
+                new AccountEventNotFoundException(accountEventId));
+    }
+
+    private AccountEvent getOrThrow(final Long accountId, final Long eventId) throws AccountEventNotFoundException {
+        return ofNullable(this.get(accountId, eventId)).orElseThrow(() ->
+                new AccountEventNotFoundException(accountId, eventId));
+    }
+
+    private Role getRoleOrThrow(final Long accountId, final Long eventId) throws AccountEventNotFoundException {
+        return this.getOrThrow(accountId, eventId).getRole();
     }
 }
