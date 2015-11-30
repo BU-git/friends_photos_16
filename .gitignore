@@ -19,3 +19,5 @@ hs_err_pid*
 # Maven
 log/
 target/
+
+.DS_Store
