@@ -13,6 +13,6 @@
 <body>
 <h2>FriendsPhotos Start Page</h2>
 <p/>
-<h2>Welcome!</h2>
+<h2>Welcome ;)</h2>
 </body>
 </html>
