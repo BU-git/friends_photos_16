@@ -6,11 +6,13 @@ import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Role;
+import com.bionic.fp.exception.UserDoesNotExistException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Created by Yevhenii Semenov on 11/17/2015.
@@ -51,6 +53,10 @@ public class RoleService {
         AccountEvent accountEvent
                 = accountEventDAO.getWithAccountEvent(userId, eventId);
 
+        if (accountEvent == null) {
+            return false;
+        }
+
         // Can't downgrade owner
         if(accountEvent.getRole().getId().equals(OWNER_ROLE)) {
             return false;
@@ -71,8 +77,11 @@ public class RoleService {
         return false;
     }
 
-    public Role getRoleByAccountAndEvent(Long accountId, Long eventId) {
+    public Role getRoleByAccountAndEvent(Long accountId, Long eventId) throws UserDoesNotExistException {
         AccountEvent accountEvent = accountEventDAO.getWithAccountEvent(accountId, eventId);
+        if (accountEvent == null) {
+            throw new UserDoesNotExistException();
+        }
         return accountEvent.getRole();
     }
 }
