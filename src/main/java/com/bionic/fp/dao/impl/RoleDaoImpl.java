@@ -15,6 +15,7 @@ import static java.util.Optional.ofNullable;
 
 /**
  * Created by Yevhenii on 11/16/2015.
+ * Role impl
  */
 @Repository
 public class RoleDaoImpl implements RoleDAO {
