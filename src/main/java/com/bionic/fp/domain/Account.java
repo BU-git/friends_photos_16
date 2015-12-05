@@ -11,7 +11,7 @@ import java.util.List;
 @NamedEntityGraph(name = "Account.events",
         attributeNodes = @NamedAttributeNode(value = "events", subgraph = "events"),
         subgraphs = @NamedSubgraph(name = "events", attributeNodes = @NamedAttributeNode("event")))
-public class Account implements Serializable {
+public class Account implements Serializable
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
