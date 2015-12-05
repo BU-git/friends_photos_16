@@ -2,6 +2,8 @@ package com.bionic.fp.rest;
 
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
+import com.bionic.fp.domain.Role;
+import com.bionic.fp.exception.PermissionsDeniedException;
 import com.bionic.fp.exception.app.logic.impl.EventNotFoundException;
 import com.bionic.fp.exception.app.logic.impl.EventTypeNotFoundException;
 import com.bionic.fp.exception.app.rest.NotFoundException;
@@ -11,9 +13,11 @@ import com.bionic.fp.rest.dto.EventUpdateDTO;
 import com.bionic.fp.rest.dto.IdInfoDTO;
 import com.bionic.fp.service.EventService;
 import com.bionic.fp.service.EventTypeService;
+import com.bionic.fp.service.RoleService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpStatus.*;
@@ -34,6 +38,9 @@ public class EventController {
 
     @Inject
     private EventTypeService eventTypeService;
+
+    @Inject
+    private RoleService roleService;
 
     @RequestMapping(method = POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
@@ -63,8 +70,15 @@ public class EventController {
 
     @RequestMapping(value = "/{id:[\\d]+}", method = DELETE)
     @ResponseStatus(NO_CONTENT)
-    public void deleteEventById(@PathVariable("id") final Long id) {
-        this.eventService.remove(id);
+    public void deleteEventById(@PathVariable("id") final Long eventId, HttpSession session) {
+        Long ownerId = (Long) session.getAttribute("id");
+        Role role = roleService.getRoleByAccountAndEvent(ownerId, eventId);
+        if(role.isCanChangeSettings()) {
+            this.eventService.remove(eventId);
+        } else {
+            throw new PermissionsDeniedException();
+        }
+
     }
 
     @RequestMapping(value = "/{id:[\\d]+}", method = GET, produces = APPLICATION_JSON_VALUE)

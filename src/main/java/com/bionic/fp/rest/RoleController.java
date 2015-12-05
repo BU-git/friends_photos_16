@@ -54,13 +54,9 @@ public class RoleController {
             @PathVariable("eventId") final Long eventId
     ) {
         Role roleByAccountAndEvent = null;
-        try {
-            roleByAccountAndEvent = roleService.getRoleByAccountAndEvent(accountId, eventId);
-            RoleIdDTO roleId = new RoleIdDTO(roleByAccountAndEvent.getId());
-            return new ResponseEntity<>(roleId, OK);
-        } catch (UserDoesNotExistException e) {
-            return new ResponseEntity<>(NOT_FOUND);
-        }
+        roleByAccountAndEvent = roleService.getRoleByAccountAndEvent(accountId, eventId);
+        RoleIdDTO roleId = new RoleIdDTO(roleByAccountAndEvent.getId());
+        return new ResponseEntity<>(roleId, OK);
     }
 
 
