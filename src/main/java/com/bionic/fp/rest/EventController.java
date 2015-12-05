@@ -71,8 +71,8 @@ public class EventController {
     @RequestMapping(value = "/{id:[\\d]+}", method = DELETE)
     @ResponseStatus(NO_CONTENT)
     public void deleteEventById(@PathVariable("id") final Long eventId, HttpSession session) {
-        Long ownerId = (Long) session.getAttribute("id");
-        Role role = roleService.getRoleByAccountAndEvent(ownerId, eventId);
+        Long userId = (Long) session.getAttribute("id");
+        Role role = roleService.getRoleByAccountAndEvent(userId, eventId);
         if(role.isCanChangeSettings()) {
             this.eventService.remove(eventId);
         } else {
@@ -90,7 +90,14 @@ public class EventController {
 
     @RequestMapping(value = "/{id:[\\d]+}",  method = PUT, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public void updateEvent(@PathVariable("id") final Long eventId, @RequestBody final EventUpdateDTO eventDto) {
+    public void updateEvent(@PathVariable("id") final Long eventId, @RequestBody final EventUpdateDTO eventDto, HttpSession session) {
+        Long userId = (Long) session.getAttribute("id");
+        Role role = roleService.getRoleByAccountAndEvent(userId, eventId);
+
+        if(!role.isCanChangeSettings()) {
+            throw new PermissionsDeniedException();
+        }
+
         Event event = this.getEventOrThrow(eventId);
 
         // required parameters (should not be null)
