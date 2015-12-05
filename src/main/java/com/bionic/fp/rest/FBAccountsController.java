@@ -1,6 +1,7 @@
 package com.bionic.fp.rest;
 
 import com.bionic.fp.domain.Account;
+import com.bionic.fp.exception.app.logic.InvalidParameterException;
 import com.bionic.fp.rest.dto.FBUserInfoResponse;
 import com.bionic.fp.rest.dto.AuthResponse;
 import com.bionic.fp.rest.dto.FBUserTokenInfo;
@@ -39,7 +40,7 @@ public class FBAccountsController {
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public AuthResponse loginViaFacebook(@RequestParam(name = "fbId") String fbId,
-                                         @RequestParam(name = "fbToken") String token) {
+                                         @RequestParam(name = "fbToken") String token) throws InvalidParameterException {
 
         AuthResponse authResponse = new AuthResponse();
 
@@ -50,15 +51,12 @@ public class FBAccountsController {
         } catch (RestClientException ignored) {}
 
         if (fbUserTokenInfo == null) {
-            authResponse.setCode(AuthResponse.SERVER_PROBLEM);
-            authResponse.setMessage("Unable to verify token.");
-            return authResponse;
+            throw new InvalidParameterException("Unable to verify token.");
         }
 
         if (fbUserTokenInfo.hasError()) {
-            authResponse.setCode(AuthResponse.BAD_FB_TOKEN);
-            authResponse.setMessage(fbUserTokenInfo.getData().getError().getMessage());
-            return authResponse;
+            // Bad FB token
+            throw new InvalidParameterException(fbUserTokenInfo.getData().getError().getMessage());
         }
 
         FBUserInfoResponse userInfo = null;
@@ -67,13 +65,10 @@ public class FBAccountsController {
         } catch (RestClientException ignored) {}
 
         if (userInfo == null) {
-            authResponse.setCode(AuthResponse.SERVER_PROBLEM);
-            authResponse.setMessage("Unable to get user info from facebook.");
-            return authResponse;
+            throw new InvalidParameterException("Unable to get user info from facebook.");
         } else if (userInfo.hasError()) {
-            authResponse.setCode(AuthResponse.BAD_FB_TOKEN);
-            authResponse.setMessage(userInfo.getError().getMessage());
-            return authResponse;
+            // Bad FB token
+            throw new InvalidParameterException(fbUserTokenInfo.getData().getError().getMessage());
         }
 
         Account account = accountService.getOrCreateAccountForFBId(userInfo.getId(),
