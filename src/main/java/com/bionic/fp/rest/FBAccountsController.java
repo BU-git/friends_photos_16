@@ -44,6 +44,9 @@ public class FBAccountsController {
 
         AuthResponse authResponse = new AuthResponse();
 
+        if(fbId == null || fbId.equals("")) { throw new InvalidParameterException("BF id is empty"); }
+        if(token == null || token.equals("")) { throw new InvalidParameterException("token is empty"); }
+
         FBUserTokenInfo fbUserTokenInfo = null;
         try {
             fbUserTokenInfo =
