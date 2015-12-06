@@ -1,10 +1,12 @@
 package com.bionic.fp.rest;
 
-import com.bionic.fp.exception.PermissionsDeniedException;
-import com.bionic.fp.exception.UserDoesNotExistException;
-import com.bionic.fp.exception.app.logic.EntityNotFoundException;
-import com.bionic.fp.exception.app.logic.InvalidParameterException;
-import com.bionic.fp.exception.app.rest.NotFoundException;
+import com.bionic.fp.exception.AppException;
+import com.bionic.fp.exception.permission.PermissionsDeniedException;
+import com.bionic.fp.exception.permission.UserDoesNotExistException;
+import com.bionic.fp.exception.auth.impl.InvalidSessionException;
+import com.bionic.fp.exception.logic.EntityNotFoundException;
+import com.bionic.fp.exception.logic.InvalidParameterException;
+import com.bionic.fp.exception.rest.NotFoundException;
 import com.bionic.fp.rest.dto.ErrorInfoDTO;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,24 +16,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 /**
- * todo: comment
+ * Global exception handler of the application
  *
  * @author Sergiy Gabriel
  */
 @ControllerAdvice
 public class GlobalControllerAdvice {
 
-    @ExceptionHandler(EntityNotFoundException.class)
+    @ExceptionHandler({InvalidParameterException.class, EntityNotFoundException.class})
     @ResponseStatus(BAD_REQUEST)
-    public @ResponseBody ErrorInfoDTO entityNotFoundExceptionHandler(EntityNotFoundException e) {
-        return new ErrorInfoDTO(e.getMessage());
-    }
-
-    @ExceptionHandler(InvalidParameterException.class)
-    @ResponseStatus(BAD_REQUEST)
-    public @ResponseBody ErrorInfoDTO badRequestExceptionHandler(InvalidParameterException e) {
+    public @ResponseBody ErrorInfoDTO badRequestExceptionHandler(AppException e) {
         return new ErrorInfoDTO(e.getMessage());
     }
 
@@ -49,6 +46,12 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(PermissionsDeniedException.class)
     @ResponseStatus(FORBIDDEN)
     public @ResponseBody ErrorInfoDTO permissionsDenied(PermissionsDeniedException e){
+        return new ErrorInfoDTO(e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidSessionException.class)
+    @ResponseStatus(UNAUTHORIZED)
+    public @ResponseBody ErrorInfoDTO unauthorizedExceptionHandler(InvalidSessionException e){
         return new ErrorInfoDTO(e.getMessage());
     }
 }

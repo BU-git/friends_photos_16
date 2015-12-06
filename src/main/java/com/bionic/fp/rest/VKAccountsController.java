@@ -4,6 +4,7 @@ import com.bionic.fp.domain.Account;
 import com.bionic.fp.rest.dto.AuthResponse;
 import com.bionic.fp.rest.dto.VKAccessTokenResponse;
 import com.bionic.fp.rest.dto.VKCheckTokenResponse;
+import com.bionic.fp.security.SessionUtils;
 import com.bionic.fp.service.AccountService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -18,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @RestController
@@ -43,8 +45,9 @@ public class VKAccountsController {
     private String vkAccessToken;
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public AuthResponse loginViaFacebook(@RequestParam(name = "vkId") String vkId,
-                                         @RequestParam(name = "vkToken") String token) {
+    public AuthResponse loginViaFacebook(@RequestParam(name = "vkId") final String vkId,
+                                         @RequestParam(name = "vkToken") final String token,
+                                         final HttpSession session) {
 
         AuthResponse authResponse = new AuthResponse();
 
@@ -71,6 +74,8 @@ public class VKAccountsController {
         authResponse.setCode(AuthResponse.AUTHENTICATED);
         authResponse.setUserId(String.valueOf(account.getId()));
         authResponse.setToken("");//TODO: set valid access token here
+
+        SessionUtils.setUserId(session, account);
 
         return authResponse;
     }

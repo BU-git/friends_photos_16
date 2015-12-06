@@ -1,6 +1,6 @@
 package com.bionic.fp.dao;
 
-import com.bionic.fp.exception.app.logic.EntityNotFoundException;
+import com.bionic.fp.exception.logic.EntityNotFoundException;
 
 import java.io.Serializable;
 

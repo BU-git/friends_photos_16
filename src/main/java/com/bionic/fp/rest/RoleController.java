@@ -1,7 +1,6 @@
 package com.bionic.fp.rest;
 
 import com.bionic.fp.domain.Role;
-import com.bionic.fp.exception.UserDoesNotExistException;
 import com.bionic.fp.rest.dto.*;
 import com.bionic.fp.service.RoleService;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,6 @@ import javax.inject.Inject;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;

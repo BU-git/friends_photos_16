@@ -1,11 +1,14 @@
 package com.bionic.fp.rest;
 
 import com.bionic.fp.domain.Account;
-import com.bionic.fp.exception.app.logic.InvalidParameterException;
+import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.rest.dto.FBUserInfoResponse;
 import com.bionic.fp.rest.dto.AuthResponse;
 import com.bionic.fp.rest.dto.FBUserTokenInfo;
+import com.bionic.fp.security.SessionUtils;
 import com.bionic.fp.service.AccountService;
+import com.bionic.fp.util.Checks;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpResponse;
@@ -16,7 +19,14 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+
+import static com.bionic.fp.util.Checks.check;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping("/account/fb")
@@ -38,14 +48,14 @@ public class FBAccountsController {
     @Value("${fb.secret}")
     private String appSecret;
 
-    @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public AuthResponse loginViaFacebook(@RequestParam(name = "fbId") String fbId,
-                                         @RequestParam(name = "fbToken") String token) throws InvalidParameterException {
+    @RequestMapping(method = POST, produces = APPLICATION_JSON_VALUE)
+    public AuthResponse loginViaFacebook(@RequestParam(name = "fbId") final String fbId,
+                                         @RequestParam(name = "fbToken") final String token,
+                                         final HttpSession session) throws InvalidParameterException {
+        check(isNotEmpty(fbId), "BF id is empty");
+        check(isNotEmpty(token), "token is empty");
 
         AuthResponse authResponse = new AuthResponse();
-
-        if(fbId == null || fbId.equals("")) { throw new InvalidParameterException("BF id is empty"); }
-        if(token == null || token.equals("")) { throw new InvalidParameterException("token is empty"); }
 
         FBUserTokenInfo fbUserTokenInfo = null;
         try {
@@ -80,6 +90,8 @@ public class FBAccountsController {
         authResponse.setCode(AuthResponse.AUTHENTICATED);
         authResponse.setUserId(String.valueOf(account.getId()));
         authResponse.setToken("");//TODO: set valid access token here
+
+        SessionUtils.setUserId(session, account);
 
         return authResponse;
     }

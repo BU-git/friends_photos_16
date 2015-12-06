@@ -3,14 +3,15 @@ package com.bionic.fp.rest;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
 import com.bionic.fp.domain.Role;
-import com.bionic.fp.exception.PermissionsDeniedException;
-import com.bionic.fp.exception.app.logic.impl.EventNotFoundException;
-import com.bionic.fp.exception.app.logic.impl.EventTypeNotFoundException;
-import com.bionic.fp.exception.app.rest.NotFoundException;
+import com.bionic.fp.exception.permission.PermissionsDeniedException;
+import com.bionic.fp.exception.logic.impl.EventNotFoundException;
+import com.bionic.fp.exception.logic.impl.EventTypeNotFoundException;
+import com.bionic.fp.exception.rest.NotFoundException;
 import com.bionic.fp.rest.dto.EventCreateDTO;
 import com.bionic.fp.rest.dto.EventInfoDTO;
 import com.bionic.fp.rest.dto.EventUpdateDTO;
 import com.bionic.fp.rest.dto.IdInfoDTO;
+import com.bionic.fp.security.SessionUtils;
 import com.bionic.fp.service.EventService;
 import com.bionic.fp.service.EventTypeService;
 import com.bionic.fp.service.RoleService;
@@ -70,8 +71,8 @@ public class EventController {
 
     @RequestMapping(value = "/{id:[\\d]+}", method = DELETE)
     @ResponseStatus(NO_CONTENT)
-    public void deleteEventById(@PathVariable("id") final Long eventId, HttpSession session) {
-        Long userId = (Long) session.getAttribute("id");
+    public void deleteEventById(@PathVariable("id") final Long eventId, final HttpSession session) {
+        Long userId = SessionUtils.getUserId(session);
         Role role = roleService.getRoleByAccountAndEvent(userId, eventId);
         if(role.isCanChangeSettings()) {
             this.eventService.remove(eventId);
@@ -90,8 +91,9 @@ public class EventController {
 
     @RequestMapping(value = "/{id:[\\d]+}",  method = PUT, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public void updateEvent(@PathVariable("id") final Long eventId, @RequestBody final EventUpdateDTO eventDto, HttpSession session) {
-        Long userId = (Long) session.getAttribute("id");
+    public void updateEvent(@PathVariable("id") final Long eventId, @RequestBody final EventUpdateDTO eventDto,
+                            final HttpSession session) {
+        Long userId = SessionUtils.getUserId(session);
         Role role = roleService.getRoleByAccountAndEvent(userId, eventId);
 
         if(!role.isCanChangeSettings()) {

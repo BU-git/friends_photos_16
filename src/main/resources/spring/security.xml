@@ -2,7 +2,27 @@
 <beans:beans xmlns="http://www.springframework.org/schema/security"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:beans="http://www.springframework.org/schema/beans"
-             xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+             xsi:schemaLocation="http://www.springframework.org/schema/security
+                                http://www.springframework.org/schema/security/spring-security.xsd
+		                        http://www.springframework.org/schema/beans
+                                http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <beans:bean id="authFilter" class="com.bionic.fp.security.filter.AuthFilter">
+        <beans:property name="secureRoots">
+            <beans:list>
+                <beans:value>/account/register</beans:value>
+                <beans:value>/account/login</beans:value>
+                <beans:value>/account/logout</beans:value>
+                <beans:value>/account/fb</beans:value>
+                <beans:value>/account/vk</beans:value>
+                <beans:value></beans:value>
+            </beans:list>
+        </beans:property>
+        <beans:property name="accountService" ref="accountService"/>
+    </beans:bean>
+
+    <beans:bean id="sessionUtils" class="com.bionic.fp.security.SessionUtils" lazy-init="true">
+        <beans:constructor-arg ref="accountService"/>
+    </beans:bean>
 
 </beans:beans>

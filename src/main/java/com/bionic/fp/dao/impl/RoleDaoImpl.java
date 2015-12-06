@@ -2,7 +2,7 @@ package com.bionic.fp.dao.impl;
 
 import com.bionic.fp.dao.RoleDAO;
 import com.bionic.fp.domain.Role;
-import com.bionic.fp.exception.app.logic.impl.RoleNotFoundException;
+import com.bionic.fp.exception.logic.impl.RoleNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

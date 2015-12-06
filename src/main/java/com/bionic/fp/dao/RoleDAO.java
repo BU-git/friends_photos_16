@@ -1,7 +1,7 @@
 package com.bionic.fp.dao;
 
 import com.bionic.fp.domain.Role;
-import com.bionic.fp.exception.app.logic.impl.RoleNotFoundException;
+import com.bionic.fp.exception.logic.impl.RoleNotFoundException;
 
 import java.util.List;
 

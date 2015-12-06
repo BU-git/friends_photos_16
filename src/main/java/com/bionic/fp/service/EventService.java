@@ -8,11 +8,9 @@ import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Role;
-import com.bionic.fp.exception.app.logic.EntityNotFoundException;
-import com.bionic.fp.exception.app.logic.impl.AccountNotFoundException;
-import com.bionic.fp.exception.app.logic.impl.EventNotFoundException;
-import com.bionic.fp.exception.app.logic.InvalidParameterException;
-import com.bionic.fp.exception.app.logic.impl.RoleNotFoundException;
+import com.bionic.fp.exception.logic.EntityNotFoundException;
+import com.bionic.fp.exception.logic.impl.EventNotFoundException;
+import com.bionic.fp.exception.logic.InvalidParameterException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;

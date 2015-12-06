@@ -3,9 +3,12 @@ package com.bionic.fp.service;
 import com.bionic.fp.dao.AccountDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
-import com.bionic.fp.exception.*;
-import com.bionic.fp.exception.app.logic.InvalidParameterException;
-import com.bionic.fp.exception.app.logic.impl.AccountNotFoundException;
+import com.bionic.fp.exception.auth.impl.EmailAlreadyExistException;
+import com.bionic.fp.exception.auth.impl.EmptyPasswordException;
+import com.bionic.fp.exception.auth.impl.IncorrectPasswordException;
+import com.bionic.fp.exception.logic.InvalidParameterException;
+import com.bionic.fp.exception.auth.impl.UserNameAlreadyExistException;
+import com.bionic.fp.exception.logic.impl.AccountNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -113,10 +116,10 @@ public class AccountService {
      * @param password user password in FP.
      * @return user unique identifier.
      * @throws EmptyPasswordException if password is empty.
-     * @throws UserDoesntExistException if user doesn't exist in DB.
+     * @throws AccountNotFoundException if user doesn't exist in DB.
      * @throws IncorrectPasswordException if password for such user is incorrect.
      */
-    public Long loginByFP(String userName, String password) throws UserDoesntExistException,
+    public Long loginByFP(String userName, String password) throws AccountNotFoundException,
             IncorrectPasswordException, EmptyPasswordException {
         if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(password)) {
             throw new EmptyPasswordException();
@@ -128,7 +131,7 @@ public class AccountService {
             account = null;
         }
         if (account == null) {
-            throw new UserDoesntExistException();
+            throw new AccountNotFoundException(userName);
         }
         if (!(account.getPassword().intern() == password.intern())) {
             throw new IncorrectPasswordException();

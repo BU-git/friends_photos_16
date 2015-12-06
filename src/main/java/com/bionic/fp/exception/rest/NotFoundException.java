@@ -1,6 +1,6 @@
-package com.bionic.fp.exception.app.rest;
+package com.bionic.fp.exception.rest;
 
-import com.bionic.fp.exception.app.AppException;
+import com.bionic.fp.exception.AppException;
 
 /**
  * todo: comment

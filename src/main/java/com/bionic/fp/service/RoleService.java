@@ -6,13 +6,12 @@ import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Role;
-import com.bionic.fp.exception.UserDoesNotExistException;
+import com.bionic.fp.exception.permission.UserDoesNotExistException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 /**
  * Created by Yevhenii Semenov on 11/17/2015.

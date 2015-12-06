@@ -2,8 +2,8 @@ package com.bionic.fp.service;
 
 import com.bionic.fp.dao.EventTypeDAO;
 import com.bionic.fp.domain.EventType;
-import com.bionic.fp.exception.app.logic.impl.EventTypeNotFoundException;
-import com.bionic.fp.exception.app.logic.InvalidParameterException;
+import com.bionic.fp.exception.logic.impl.EventTypeNotFoundException;
+import com.bionic.fp.exception.logic.InvalidParameterException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;

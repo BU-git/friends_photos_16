@@ -1,7 +1,7 @@
 package com.bionic.fp.dao;
 
 import com.bionic.fp.domain.EventType;
-import com.bionic.fp.exception.app.logic.impl.EventTypeNotFoundException;
+import com.bionic.fp.exception.logic.impl.EventTypeNotFoundException;
 
 /**
  * Represents data access object of the event type

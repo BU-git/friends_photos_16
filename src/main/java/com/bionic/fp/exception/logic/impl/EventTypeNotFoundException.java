@@ -1,9 +1,9 @@
-package com.bionic.fp.exception.app.logic.impl;
+package com.bionic.fp.exception.logic.impl;
 
-import com.bionic.fp.exception.app.logic.EntityNotFoundException;
+import com.bionic.fp.exception.logic.EntityNotFoundException;
 
 /**
- * todo: comment
+ * Signals that has not been found the event type, without which the subsequent business logic is not possible
  *
  * @author Sergiy Gabriel
  */

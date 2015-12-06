@@ -3,7 +3,7 @@ package com.bionic.fp.dao.impl;
 import com.bionic.fp.dao.AccountEventDAO;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Role;
-import com.bionic.fp.exception.app.logic.impl.AccountEventNotFoundException;
+import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;

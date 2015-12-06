@@ -1,6 +1,6 @@
-package com.bionic.fp.exception.app.logic;
+package com.bionic.fp.exception.logic;
 
-import com.bionic.fp.exception.app.AppException;
+import com.bionic.fp.exception.AppException;
 
 /**
  * Signals that incorrect parameter was passed to method/constructor

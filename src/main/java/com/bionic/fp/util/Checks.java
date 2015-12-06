@@ -1,6 +1,6 @@
 package com.bionic.fp.util;
 
-import com.bionic.fp.exception.app.logic.InvalidParameterException;
+import com.bionic.fp.exception.logic.InvalidParameterException;
 
 /**
  * Contains common check routines

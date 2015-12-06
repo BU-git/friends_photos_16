@@ -3,7 +3,7 @@ package com.bionic.fp.dao;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
-import com.bionic.fp.exception.app.logic.impl.AccountNotFoundException;
+import com.bionic.fp.exception.logic.impl.AccountNotFoundException;
 
 import javax.persistence.NoResultException;
 import java.util.List;

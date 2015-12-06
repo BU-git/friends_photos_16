@@ -4,7 +4,7 @@ import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
-import com.bionic.fp.exception.app.logic.impl.EventNotFoundException;
+import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;

@@ -1,4 +1,4 @@
-package com.bionic.fp.exception;
+package com.bionic.fp.exception.permission;
 
 /**
  * Created by Yevhenii on 12/5/2015.

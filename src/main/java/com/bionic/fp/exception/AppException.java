@@ -1,4 +1,4 @@
-package com.bionic.fp.exception.app;
+package com.bionic.fp.exception;
 
 /**
  * Base class for all application-specific exceptions.
