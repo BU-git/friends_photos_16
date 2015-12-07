@@ -125,4 +125,12 @@ public class AccountDaoImpl implements AccountDAO {
     private Account getOrThrow(final Long accountId) throws AccountNotFoundException {
         return ofNullable(this.read(accountId)).orElseThrow(() -> new AccountNotFoundException(accountId));
     }
+
+    private <T> T getSingleResult(TypedQuery<T> query) {
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException ignored) {
+            return null;
+        }
+    }
 }

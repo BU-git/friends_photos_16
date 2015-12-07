@@ -17,7 +17,7 @@ import static java.util.Optional.ofNullable;
  */
 public class SessionUtils {
 
-    public static final String USER_ID = "id";
+    private static final String USER_ID = "id";
 
     private final AccountService accountService;
 
@@ -80,6 +80,36 @@ public class SessionUtils {
 //    }
 
     /**
+     * Invalidates this session
+     *
+     * @param session the session
+     * @throws InvalidParameterException if the session is not initialized
+     */
+    public static void logout(final HttpSession session) throws InvalidParameterException {
+        check(session != null, "The session shouldn't be null");
+        session.invalidate();
+    }
+
+    /**
+     * Returns the user for this session
+     *
+     * @param session the session
+     * @param accountService the account service
+     * @return an user
+     * @throws InvalidParameterException if the session or the account service are not initialized
+     * @throws InvalidSessionException if not found the attribute of the user id or the attribute value is incorrect
+     */
+    public static Account getUser(final HttpSession session, final AccountService accountService)
+            throws InvalidParameterException, InvalidSessionException {
+        Long userId = getUserId(session);
+        check(accountService != null, "The account service shouldn't be null");
+        return ofNullable(accountService.get(userId)).orElseGet(() -> {
+            session.invalidate();
+            throw new InvalidSessionException();
+        });
+    }
+
+    /**
      * Returns the user for this session
      *
      * @param session the session
@@ -88,10 +118,6 @@ public class SessionUtils {
      * @throws InvalidSessionException if not found the attribute of the user id or the attribute value is incorrect
      */
     public Account getUser(final HttpSession session) throws InvalidParameterException, InvalidSessionException {
-        Long userId = getUserId(session);
-        return ofNullable(this.accountService.get(userId)).orElseGet(() -> {
-            session.invalidate();
-            throw new InvalidSessionException();
-        });
+        return getUser(session, this.accountService);
     }
 }

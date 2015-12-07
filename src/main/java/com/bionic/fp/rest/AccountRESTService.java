@@ -96,6 +96,6 @@ public class AccountRESTService {
     @RequestMapping(value = "/logout", method = PUT)
     @ResponseStatus(OK)
     public final void logout(final HttpSession session) {
-        session.invalidate();
+        SessionUtils.logout(session);
     }
 }
