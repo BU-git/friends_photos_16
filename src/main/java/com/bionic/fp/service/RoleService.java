@@ -6,12 +6,16 @@ import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Role;
+import com.bionic.fp.exception.logic.InvalidParameterException;
+import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
 import com.bionic.fp.exception.permission.UserDoesNotExistException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
+
+import static com.bionic.fp.util.Checks.check;
 
 /**
  * Created by Yevhenii Semenov on 11/17/2015.
@@ -76,10 +80,22 @@ public class RoleService {
         return false;
     }
 
-    public Role getRoleByAccountAndEvent(Long accountId, Long eventId) throws UserDoesNotExistException {
+    /**
+     * returns the user's role in the event by id of the user and the events, respectively
+     *
+     * @param accountId the account id
+     * @param eventId the event id
+     * @return the user's role in the event
+     * @throws InvalidParameterException if the account id or the event id are not initialized
+     * @throws AccountEventNotFoundException if the relationship between the user and the event is not found
+     */
+    public Role getRoleByAccountAndEvent(final Long accountId, final Long eventId)
+                                                    throws InvalidParameterException, AccountEventNotFoundException {
+        check(accountId != null, "The account ID should not be null");
+        check(eventId != null, "The event ID should not be null");
         AccountEvent accountEvent = accountEventDAO.getWithAccountEvent(accountId, eventId);
         if (accountEvent == null) {
-            throw new UserDoesNotExistException();
+            throw new AccountEventNotFoundException(accountId, eventId);
         }
         return accountEvent.getRole();
     }

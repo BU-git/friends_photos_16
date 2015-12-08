@@ -3,6 +3,7 @@ package com.bionic.fp;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
+import com.bionic.fp.security.SessionUtils;
 import com.bionic.fp.service.AccountService;
 import com.bionic.fp.service.EventService;
 import com.bionic.fp.service.EventTypeService;
@@ -17,6 +18,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
@@ -142,5 +146,21 @@ public abstract class AbstractIT {
         event.setGeoServicesEnabled(!event.isGeoServicesEnabled());
 
         return event;
+    }
+
+    protected Filter getFilter(final Long accountId) {
+        return new Filter() {
+            @Override
+            public void init(FilterConfig filterConfig) throws ServletException {}
+
+            @Override
+            public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+                SessionUtils.setUserId(((HttpServletRequest) request).getSession(), accountId);
+                chain.doFilter(request, response);
+            }
+
+            @Override
+            public void destroy() {}
+        };
     }
 }

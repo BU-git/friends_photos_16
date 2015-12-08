@@ -3,6 +3,7 @@ package com.bionic.fp.rest;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
 import com.bionic.fp.domain.Role;
+import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
 import com.bionic.fp.exception.permission.PermissionsDeniedException;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import com.bionic.fp.exception.logic.impl.EventTypeNotFoundException;
@@ -73,10 +74,14 @@ public class EventController {
     @ResponseStatus(NO_CONTENT)
     public void deleteEventById(@PathVariable("id") final Long eventId, final HttpSession session) {
         Long userId = SessionUtils.getUserId(session);
-        Role role = roleService.getRoleByAccountAndEvent(userId, eventId);
-        if(role.isCanChangeSettings()) {
-            this.eventService.remove(eventId);
-        } else {
+        try {
+            Role role = roleService.getRoleByAccountAndEvent(userId, eventId);
+            if(role.isCanChangeSettings()) {
+                this.eventService.remove(eventId);
+            } else {
+                throw new PermissionsDeniedException();
+            }
+        } catch (AccountEventNotFoundException e) {
             throw new PermissionsDeniedException();
         }
 
@@ -94,9 +99,12 @@ public class EventController {
     public void updateEvent(@PathVariable("id") final Long eventId, @RequestBody final EventUpdateDTO eventDto,
                             final HttpSession session) {
         Long userId = SessionUtils.getUserId(session);
-        Role role = roleService.getRoleByAccountAndEvent(userId, eventId);
-
-        if(!role.isCanChangeSettings()) {
+        try {
+            Role role = roleService.getRoleByAccountAndEvent(userId, eventId);
+            if(!role.isCanChangeSettings()) {
+                throw new PermissionsDeniedException();
+            }
+        } catch (AccountEventNotFoundException e) {
             throw new PermissionsDeniedException();
         }
 
