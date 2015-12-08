@@ -5,6 +5,7 @@ import com.bionic.fp.exception.auth.impl.EmailAlreadyExistException;
 import com.bionic.fp.exception.auth.impl.EmptyPasswordException;
 import com.bionic.fp.exception.auth.impl.UserNameAlreadyExistException;
 import com.bionic.fp.jsonhelper.FromJSONParser;
+import com.bionic.fp.rest.dto.EventsIDsList;
 import com.bionic.fp.rest.dto.EventsList;
 import com.bionic.fp.security.SessionUtils;
 import com.bionic.fp.service.AccountService;
@@ -111,9 +112,10 @@ public class AccountRESTService {
      * @return - List of IDs events where the user is involved
      */
     @RequestMapping(value = "/events/{accountId:[\\d]+}", method = GET)
-    public final ResponseEntity<List<Long>> getUserEvents(@PathVariable("accountId") final Long accountId) {
+    public final ResponseEntity<EventsIDsList> getUserEvents(@PathVariable("accountId") final Long accountId) {
         List<Long> events = accountService.getEventsIDs(accountId);
-        return new ResponseEntity<>(events, OK);
+        EventsIDsList eventsIDsList = new EventsIDsList(events);
+        return new ResponseEntity<>(eventsIDsList, OK);
     }
 
     /**
@@ -123,8 +125,9 @@ public class AccountRESTService {
      * @return - List of IDs events where the user is owner
      */
     @RequestMapping(value = "/events/{accountId:[\\d]+}/owner", method = GET)
-    public final ResponseEntity<List<Long>> getUserEventsWhereRoleOwner(@PathVariable("accountId") final Long accountId) {
+    public final ResponseEntity<EventsIDsList> getUserEventsWhereRoleOwner(@PathVariable("accountId") final Long accountId) {
         List<Long> events = accountService.getEventsIDsWhereRoleOwner(accountId);
-        return new ResponseEntity<>(events, OK);
+        EventsIDsList eventsIDsList = new EventsIDsList(events);
+        return new ResponseEntity<>(eventsIDsList, OK);
     }
 }
