@@ -20,7 +20,7 @@ import java.util.List;
 @Transactional
 public class RoleService {
 
-    private static final Integer OWNER_ROLE = 1;
+    public static final Integer OWNER_ROLE = 1;
 
     @Inject
     private RoleDAO roleDAO;

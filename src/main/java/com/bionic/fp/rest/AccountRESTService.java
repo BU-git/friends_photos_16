@@ -117,4 +117,18 @@ public class AccountRESTService {
         eventsList.setAllEvents(events);
         return new ResponseEntity<>(eventsList, OK);
     }
+
+    /**
+     * All events where the user is owner
+     *
+     * @param accountId - account ID
+     * @return - All events where the user is owner
+     */
+    @RequestMapping(value = "/events/{accountId:[\\d]+}/owner", method = GET)
+    public final ResponseEntity<EventsList> getUserEventsWhereRoleOwner(@PathVariable("accountId") final Long accountId) {
+        List<Event> events = accountService.getEventsWhereRoleOwner(accountId);
+        EventsList eventsList = new EventsList();
+        eventsList.setAllEvents(events);
+        return new ResponseEntity<>(eventsList, OK);
+    }
 }

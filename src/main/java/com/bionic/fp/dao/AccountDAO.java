@@ -80,4 +80,11 @@ public interface AccountDAO extends GenericDAO<Account, Long> {
      * @return instance of Account by requested user name.
      */
     Account getByUserName(String userName) throws NoResultException;
+
+    /**
+     * Used to get all events where this account is owner
+     * @param accountId
+     * @return list of events
+     */
+    List<Event> getWhereOwner(Long accountId) throws AccountNotFoundException;
 }
