@@ -1,9 +1,11 @@
 package com.bionic.fp.rest;
 
+import com.bionic.fp.domain.Event;
 import com.bionic.fp.exception.auth.impl.EmailAlreadyExistException;
 import com.bionic.fp.exception.auth.impl.EmptyPasswordException;
 import com.bionic.fp.exception.auth.impl.UserNameAlreadyExistException;
 import com.bionic.fp.jsonhelper.FromJSONParser;
+import com.bionic.fp.rest.dto.EventsList;
 import com.bionic.fp.security.SessionUtils;
 import com.bionic.fp.service.AccountService;
 import org.json.simple.JSONObject;
@@ -13,9 +15,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
+import java.util.List;
+
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
@@ -97,5 +102,33 @@ public class AccountRESTService {
     @ResponseStatus(OK)
     public final void logout(final HttpSession session) {
         SessionUtils.logout(session);
+    }
+
+    /**
+     * All events where the user is involved
+     *
+     * @param accountId - account ID
+     * @return - All events where the user is involved
+     */
+    @RequestMapping(value = "/events/{accountId:[\\d]+}", method = GET)
+    public final ResponseEntity<EventsList> getUserEvents(@PathVariable("accountId") final Long accountId) {
+        List<Event> events = accountService.getEvents(accountId);
+        EventsList eventsList = new EventsList();
+        eventsList.setAllEvents(events);
+        return new ResponseEntity<>(eventsList, OK);
+    }
+
+    /**
+     * All events where the user is owner
+     *
+     * @param accountId - account ID
+     * @return - All events where the user is owner
+     */
+    @RequestMapping(value = "/events/{accountId:[\\d]+}/owner", method = GET)
+    public final ResponseEntity<EventsList> getUserEventsWhereRoleOwner(@PathVariable("accountId") final Long accountId) {
+        List<Event> events = accountService.getEventsWhereRoleOwner(accountId);
+        EventsList eventsList = new EventsList();
+        eventsList.setAllEvents(events);
+        return new ResponseEntity<>(eventsList, OK);
     }
 }

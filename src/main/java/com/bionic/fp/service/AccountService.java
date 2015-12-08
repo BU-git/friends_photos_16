@@ -225,6 +225,11 @@ public class AccountService {
         return this.accountDAO.getEvents(accountId);
     }
 
+    public List<Event> getEventsWhereRoleOwner(Long accountId) {
+        this.validation(accountId);
+        return accountDAO.getWhereOwner(accountId);
+    }
+
     /**
      * Checks an account ID
      *

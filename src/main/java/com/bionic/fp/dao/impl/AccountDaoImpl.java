@@ -1,13 +1,17 @@
 package com.bionic.fp.dao.impl;
 
 import com.bionic.fp.dao.AccountDAO;
+import com.bionic.fp.dao.RoleDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
+import com.bionic.fp.domain.Role;
 import com.bionic.fp.exception.logic.impl.AccountNotFoundException;
+import com.bionic.fp.service.RoleService;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,6 +124,19 @@ public class AccountDaoImpl implements AccountDAO {
         TypedQuery<Account> result = entityManager.createQuery(SELECT_ACCOUNT_BY_USERNAME_QUERY, Account.class);
         result.setParameter("userName", userName);
         return result.getSingleResult();
+    }
+
+    @Override
+    public List<Event> getWhereOwner(Long accountId) throws AccountNotFoundException {
+        Account account = ofNullable(this.getWithEvents(accountId)).orElseThrow(() -> new AccountNotFoundException(accountId));
+        List<AccountEvent> events = account.getEvents();
+        List<Event> eventsWhereRoleOwner = new ArrayList<>();
+        for (AccountEvent event : events) {
+            if(RoleService.OWNER_ROLE.equals(event.getRole().getId())) {
+                eventsWhereRoleOwner.add(event.getEvent());
+            }
+        }
+        return eventsWhereRoleOwner;
     }
 
     private Account getOrThrow(final Long accountId) throws AccountNotFoundException {

@@ -24,7 +24,7 @@ import static com.bionic.fp.util.Checks.check;
 @Transactional
 public class RoleService {
 
-    private static final Integer OWNER_ROLE = 1;
+    public static final Integer OWNER_ROLE = 1;
 
     @Inject
     private RoleDAO roleDAO;
