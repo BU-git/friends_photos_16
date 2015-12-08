@@ -108,27 +108,23 @@ public class AccountRESTService {
      * All events where the user is involved
      *
      * @param accountId - account ID
-     * @return - All events where the user is involved
+     * @return - List of IDs events where the user is involved
      */
     @RequestMapping(value = "/events/{accountId:[\\d]+}", method = GET)
-    public final ResponseEntity<EventsList> getUserEvents(@PathVariable("accountId") final Long accountId) {
-        List<Event> events = accountService.getEvents(accountId);
-        EventsList eventsList = new EventsList();
-        eventsList.setAllEvents(events);
-        return new ResponseEntity<>(eventsList, OK);
+    public final ResponseEntity<List<Long>> getUserEvents(@PathVariable("accountId") final Long accountId) {
+        List<Long> events = accountService.getEventsIDs(accountId);
+        return new ResponseEntity<>(events, OK);
     }
 
     /**
      * All events where the user is owner
      *
      * @param accountId - account ID
-     * @return - All events where the user is owner
+     * @return - List of IDs events where the user is owner
      */
     @RequestMapping(value = "/events/{accountId:[\\d]+}/owner", method = GET)
-    public final ResponseEntity<EventsList> getUserEventsWhereRoleOwner(@PathVariable("accountId") final Long accountId) {
-        List<Event> events = accountService.getEventsWhereRoleOwner(accountId);
-        EventsList eventsList = new EventsList();
-        eventsList.setAllEvents(events);
-        return new ResponseEntity<>(eventsList, OK);
+    public final ResponseEntity<List<Long>> getUserEventsWhereRoleOwner(@PathVariable("accountId") final Long accountId) {
+        List<Long> events = accountService.getEventsIDsWhereRoleOwner(accountId);
+        return new ResponseEntity<>(events, OK);
     }
 }

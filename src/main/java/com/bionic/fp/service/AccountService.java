@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.NoResultException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.bionic.fp.util.Checks.check;
@@ -229,6 +230,27 @@ public class AccountService {
         this.validation(accountId);
         return accountDAO.getWhereOwner(accountId);
     }
+
+    public List<Long> getEventsIDs(final Long accountId) {
+        List<Event> events = this.getEvents(accountId);
+        List<Long> eventsIDs = new ArrayList<>();
+
+        for (Event event : events) {
+            eventsIDs.add(event.getId());
+        }
+        return eventsIDs;
+    }
+
+    public List<Long> getEventsIDsWhereRoleOwner(Long accountId) {
+        List<Event> eventsWhereRoleOwner = this.getEventsWhereRoleOwner(accountId);
+        List<Long> eventsIDs = new ArrayList<>();
+
+        for (Event event : eventsWhereRoleOwner) {
+            eventsIDs.add(event.getId());
+        }
+        return eventsIDs;
+    }
+
 
     /**
      * Checks an account ID
