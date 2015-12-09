@@ -29,6 +29,7 @@ public class AuthFilter implements Filter {
 
     private List<String> secureRoots;
     private AccountService accountService;
+	private boolean isActive;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -37,23 +38,25 @@ public class AuthFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest)servletRequest;
-        HttpServletResponse httpResponse = (HttpServletResponse)servletResponse;
+		if (isActive) {
+			HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
+			HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
 
-        String target = httpRequest.getRequestURI();
+			String target = httpRequest.getRequestURI();
 
-        Optional<String> optional = this.secureRoots.stream().parallel()
-                .filter(s -> target.matches(String.format("^%s%s[/]?$", httpRequest.getContextPath(), s)))
-                .findFirst();
+			Optional<String> optional = this.secureRoots.stream().parallel()
+					.filter(s -> target.matches(String.format("^%s%s[/]?$", httpRequest.getContextPath(), s)))
+					.findFirst();
 
-        if(!optional.isPresent()) {
-            HttpSession session = httpRequest.getSession(false);
-            if(session == null) {
-                httpResponse.setStatus(SC_UNAUTHORIZED);
-                return;
-            }
-            SessionUtils.getUserId(session);
-        }
+			if (!optional.isPresent()) {
+				HttpSession session = httpRequest.getSession(false);
+				if (session == null) {
+					httpResponse.setStatus(SC_UNAUTHORIZED);
+					return;
+				}
+				SessionUtils.getUserId(session);
+			}
+		}
 
         filterChain.doFilter(servletRequest, servletResponse);
 
@@ -71,5 +74,9 @@ public class AuthFilter implements Filter {
     public void setAccountService(AccountService accountService) {
         this.accountService = accountService;
     }
+
+	public void setIsActive(boolean isActive) {
+		this.isActive = isActive;
+	}
 
 }

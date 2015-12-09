@@ -17,6 +17,8 @@ public class Photo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+	@Column(name = "name")
+	private String name;
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime date;
     private String url;
@@ -39,51 +41,45 @@ public class Photo implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
     public LocalDateTime getDate() {
         return date;
     }
-
-    public void setDate(LocalDateTime date) {
+	public void setDate(LocalDateTime date) {
         this.date = date;
     }
-
     public String getUrl() {
         return url;
     }
-
     public void setUrl(String url) {
         this.url = url;
     }
-
     public String getPreviewUrl() {
         return previewUrl;
     }
-
     public void setPreviewUrl(String previewUrl) {
         this.previewUrl = previewUrl;
     }
-
     public Event getEvent() {
         return event;
     }
-
     public void setEvent(Event event) {
         this.event = event;
     }
-
     public Account getOwner() {
         return owner;
     }
-
     public void setOwner(Account owner) {
         this.owner = owner;
     }
-
     public List<Comment> getComments() {
         return comments;
     }
-
     public void addComment(Comment comment) {
         comments.add(comment);
     }
