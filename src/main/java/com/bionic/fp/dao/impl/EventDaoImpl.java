@@ -53,19 +53,12 @@ public class EventDaoImpl implements EventDAO {
     @Override
     public Event addAccountEvent(final Long eventId, final AccountEvent accountEvent) throws EventNotFoundException {
         Event event = this.getOrThrow(eventId);
-        event.getAccounts().add(accountEvent);
-        return event;
+        return addAccountEvent(event, accountEvent);
     }
 
     @Override
-    public Event addAccountEvent(Event event, final AccountEvent accountEvent) throws EventNotFoundException {
-        if (event.getId() == null) {
-            List<AccountEvent> accountEvents = event.getAccounts();
-            accountEvents.add(accountEvent);
-//            event.setAccounts(accountEvents);
-        } else {
-            event = this.addAccountEvent(event.getId(), accountEvent);
-        }
+    public Event addAccountEvent(final Event event, final AccountEvent accountEvent) {
+        event.getAccounts().add(accountEvent);
         return event;
     }
 
@@ -99,7 +92,8 @@ public class EventDaoImpl implements EventDAO {
         return this.entityManager.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(event, "owner");
     }
 
-    private Event getOrThrow(final Long eventId) throws EventNotFoundException {
+    @Override
+    public Event getOrThrow(final Long eventId) throws EventNotFoundException {
         return ofNullable(this.read(eventId)).orElseThrow(() -> new EventNotFoundException(eventId));
     }
 }

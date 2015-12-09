@@ -11,6 +11,7 @@ import com.bionic.fp.domain.Role;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
+import com.bionic.fp.exception.logic.impl.RoleNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -55,7 +56,8 @@ public class EventService {
      * @throws EntityNotFoundException if the owner and its role doesn't exist or the event doesn't exist
      * todo: make update test, when more roles
      */
-    public void addOrUpdateAccountToEvent(final Long accountId, final Long eventId, final Role role) throws InvalidParameterException, EntityNotFoundException {
+    public void addOrUpdateAccountToEvent(final Long accountId, final Long eventId, final Role role,
+                                          final String password) throws InvalidParameterException, EntityNotFoundException {
         check(accountId != null, "The account ID should not be null");
         check(role != null, "The role should not be null");
         this.validation(eventId);
@@ -65,12 +67,16 @@ public class EventService {
             conn.setRole(role);
             this.accountEventDAO.update(conn);
         } else {
+            Event event = this.eventDAO.getOrThrow(eventId);
+            if(event.isPrivate() && event.getPassword() != null && !event.getPassword().equals(password)) {
+                throw new InvalidParameterException("Incorrect event password");
+            }
             // create empty connection (skeleton)
             conn = new AccountEvent();
 
             // add empty connection to owner and event
             Account account = this.accountDAO.addAccountEvent(accountId, conn);
-            Event event = this.eventDAO.addAccountEvent(eventId, conn);
+            event = this.eventDAO.addAccountEvent(event, conn);
 
 //            if(account != null && event != null) {
             conn.setAccount(account);
@@ -82,6 +88,26 @@ public class EventService {
 //                this.accountDAO.update(account);
 //                this.eventDAO.update(event);
         }
+    }
+
+    /**
+     * Adds or updates an account to the event
+     *
+     * @param accountId the account ID
+     * @param eventId the event ID
+     * @param roleId the role id of this account in this event
+     * @throws InvalidParameterException if incoming parameters are not valid
+     * @throws EntityNotFoundException if the owner and its role doesn't exist or the event doesn't exist
+     * todo: make update test, when more roles
+     */
+    public void addOrUpdateAccountToEvent(final Long accountId, final Long eventId, final Integer roleId,
+                                          final String password) throws InvalidParameterException, EntityNotFoundException {
+        check(roleId != null, "The role id should not be null");
+        Role role = this.roleDAO.read(roleId);
+        if(role == null) {
+            throw new RoleNotFoundException(roleId);
+        }
+        this.addOrUpdateAccountToEvent(accountId, eventId, role, password);
     }
 
     /**

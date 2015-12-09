@@ -4,7 +4,7 @@ import com.bionic.fp.domain.Event;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Holds group for the client-server communication
+ * Holds event for the client-server communication
  *
  * @author Sergiy Gabriel
  */
@@ -20,6 +20,9 @@ public class EventUpdateDTO {
     private Double longitude;
     private Float radius;
     private Boolean geo;
+    @JsonProperty("private")
+    private Boolean isPrivate;
+    private String password;
 
     public EventUpdateDTO() {
     }
@@ -33,6 +36,8 @@ public class EventUpdateDTO {
         this.longitude = event.getLongitude();
         this.radius = event.getRadius();
         this.geo = event.isGeoServicesEnabled();
+        this.isPrivate = event.isPrivate();
+        this.password = event.getPassword();
     }
 
     public String getName() {
@@ -97,5 +102,21 @@ public class EventUpdateDTO {
 
     public void setGeo(Boolean geo) {
         this.geo = geo;
+    }
+
+    public Boolean getIsPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(Boolean isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

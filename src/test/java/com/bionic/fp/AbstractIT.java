@@ -101,6 +101,12 @@ public abstract class AbstractIT {
         return event;
     }
 
+    protected Event setPrivate(final Event event) {
+        event.setIsPrivate(true);
+        event.setPassword("secret");
+        return event;
+    }
+
     protected Event getSavedEventMin(final Account owner) {
         Event event = getNewEventMin();
 
@@ -117,6 +123,15 @@ public abstract class AbstractIT {
     protected Event getSavedEventMax(final Account owner) {
         Event event = getNewEventMax();
 
+        Long eventId = this.eventService.createEvent(owner.getId(), event);
+
+        assertNotNull(eventId);
+        assertFalse(event.isDeleted());
+
+        return event;
+    }
+
+    protected Event getSaved(final Event event, final Account owner) {
         Long eventId = this.eventService.createEvent(owner.getId(), event);
 
         assertNotNull(eventId);

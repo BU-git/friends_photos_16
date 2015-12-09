@@ -4,6 +4,7 @@ import com.bionic.fp.AbstractIT;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
+import com.bionic.fp.domain.Role;
 import com.bionic.fp.rest.dto.EventCreateDTO;
 import com.bionic.fp.rest.dto.EventUpdateDTO;
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -21,7 +22,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 /**
- * This is an integration test that verifies {@link EventController}
+ * This is an integration test that verifies {@link EventRestController}
  *
  * @author Sergiy Gabriel
  */
@@ -29,6 +30,8 @@ public class EventControllerIT extends AbstractIT {
 
     private static final String EVENTS = "/events";
     private static final String EVENTS_ID = "/events/{id}";
+    private static final String EVENTS_ID_ACCOUNT_ID_ROLE_ID = "/events/{eventId}/account/{accountId}/role/{roleId}";
+    private static final String PASSWORD = "password";
 
     @Test
     public void testSaveEventSuccess() {
@@ -470,4 +473,177 @@ public class EventControllerIT extends AbstractIT {
         .then()
             .statusCode(SC_FORBIDDEN);
     }
+
+    @Test
+    public void testAddAccountToEventSuccess() {
+        Account owner = getSavedAccount();
+        Account user1 = getSavedAccount();
+        Account user2 = getSavedAccount();
+        Event event = getSaved(getNewEventMax(), owner);
+        Role role = this.roleService.getOwner();
+
+        assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
+        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
+        assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
+        assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+
+        when()
+            .put(EVENTS_ID_ACCOUNT_ID_ROLE_ID, event.getId(), user1.getId(), role.getId())
+        .then()
+            .statusCode(SC_OK);
+
+        assertEquals(2, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
+        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
+        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
+        assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+
+        when()
+            .put(EVENTS_ID_ACCOUNT_ID_ROLE_ID, event.getId(), user2.getId(), role.getId())
+        .then()
+            .statusCode(SC_OK);
+
+        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
+        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
+        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
+        assertEquals(1, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+
+        Event newEvent = getSaved(getNewEventMax(), user2);
+
+        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
+        assertEquals(1, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
+        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
+        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
+        assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+
+        when()
+            .put(EVENTS_ID_ACCOUNT_ID_ROLE_ID, newEvent.getId(), owner.getId(), role.getId())
+        .then()
+            .statusCode(SC_OK);
+
+        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
+        assertEquals(2, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
+        assertEquals(2, this.accountService.getWithEvents(owner.getId()).getEvents().size());
+        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
+        assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+
+        when()
+            .put(EVENTS_ID_ACCOUNT_ID_ROLE_ID, newEvent.getId(), user1.getId(), role.getId())
+        .then()
+            .statusCode(SC_OK);
+
+        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
+        assertEquals(3, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
+        assertEquals(2, this.accountService.getWithEvents(owner.getId()).getEvents().size());
+        assertEquals(2, this.accountService.getWithEvents(user1.getId()).getEvents().size());
+        assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+    }
+
+    @Test
+    public void testAddAccountToPrivateEventSuccess() {
+        Account owner = getSavedAccount();
+        Account user1 = getSavedAccount();
+        Account user2 = getSavedAccount();
+        Event event = getSaved(setPrivate(getNewEventMax()), owner);
+        Role role = this.roleService.getOwner();
+
+        assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
+        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
+        assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
+        assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        given().
+            queryParam(PASSWORD, event.getPassword()).
+        when().
+            put(EVENTS_ID_ACCOUNT_ID_ROLE_ID, event.getId(), user1.getId(), role.getId()).
+        then().
+            statusCode(SC_OK);
+
+        assertEquals(2, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
+        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
+        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
+        assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+
+        given().
+            queryParam(PASSWORD, event.getPassword()).
+        when().
+            put(EVENTS_ID_ACCOUNT_ID_ROLE_ID, event.getId(), user2.getId(), role.getId()).
+        then().
+            statusCode(SC_OK);
+
+        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
+        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
+        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
+        assertEquals(1, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+
+        Event newEvent = getSaved(setPrivate(getNewEventMax()), user2);
+
+        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
+        assertEquals(1, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
+        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
+        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
+        assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+
+        given().
+            queryParam(PASSWORD, event.getPassword()).
+        when().
+            put(EVENTS_ID_ACCOUNT_ID_ROLE_ID, newEvent.getId(), owner.getId(), role.getId()).
+        then().
+            statusCode(SC_OK);
+
+        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
+        assertEquals(2, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
+        assertEquals(2, this.accountService.getWithEvents(owner.getId()).getEvents().size());
+        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
+        assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+
+        given().
+            queryParam(PASSWORD, event.getPassword()).
+        when().
+            put(EVENTS_ID_ACCOUNT_ID_ROLE_ID, newEvent.getId(), user1.getId(), role.getId()).
+        then().
+            statusCode(SC_OK);
+
+        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
+        assertEquals(3, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
+        assertEquals(2, this.accountService.getWithEvents(owner.getId()).getEvents().size());
+        assertEquals(2, this.accountService.getWithEvents(user1.getId()).getEvents().size());
+        assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+    }
+
+    @Test
+    public void testAddAccountToPrivateEventShouldReturnBadRequest() {
+        Account owner = getSavedAccount();
+        Account user1 = getSavedAccount();
+        Event event = getSaved(setPrivate(getNewEventMax()), owner);
+        Role role = this.roleService.getOwner();
+
+        assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
+        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
+        assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
+
+        // no password
+
+        when().
+            put(EVENTS_ID_ACCOUNT_ID_ROLE_ID, event.getId(), user1.getId(), role.getId()).
+        then().
+            statusCode(SC_BAD_REQUEST);
+
+        assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
+        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
+        assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
+
+        // incorrect password
+
+        given().
+            queryParam(PASSWORD, event.getPassword() + "!").
+        when().
+            put(EVENTS_ID_ACCOUNT_ID_ROLE_ID, event.getId(), user1.getId(), role.getId()).
+        then().
+            statusCode(SC_BAD_REQUEST);
+
+        assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
+        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
+        assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
+    }
+
+
 }

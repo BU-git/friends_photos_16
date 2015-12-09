@@ -40,8 +40,4 @@
         </property>
     </bean>
 
-	<bean id="authFilter" class="com.bionic.fp.security.filter.AuthFilter">
-		<property name="isActive" value="true"/>
-	</bean>
-
 </beans>

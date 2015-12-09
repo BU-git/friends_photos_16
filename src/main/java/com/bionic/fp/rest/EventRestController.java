@@ -8,10 +8,7 @@ import com.bionic.fp.exception.permission.PermissionsDeniedException;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import com.bionic.fp.exception.logic.impl.EventTypeNotFoundException;
 import com.bionic.fp.exception.rest.NotFoundException;
-import com.bionic.fp.rest.dto.EventCreateDTO;
-import com.bionic.fp.rest.dto.EventInfoDTO;
-import com.bionic.fp.rest.dto.EventUpdateDTO;
-import com.bionic.fp.rest.dto.IdInfoDTO;
+import com.bionic.fp.rest.dto.*;
 import com.bionic.fp.security.SessionUtils;
 import com.bionic.fp.service.EventService;
 import com.bionic.fp.service.EventTypeService;
@@ -33,7 +30,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  */
 @RestController
 @RequestMapping("/events")
-public class EventController {
+public class EventRestController {
 
     @Inject
     private EventService eventService;
@@ -64,6 +61,10 @@ public class EventController {
         if(eventDto.getGeo() != null) {
             event.setGeoServicesEnabled(eventDto.getGeo());
         }
+        if(eventDto.getIsPrivate() != null) {
+            event.setIsPrivate(eventDto.getIsPrivate());
+        }
+        event.setPassword(eventDto.getPassword());
 
         Long eventId = this.eventService.createEvent(eventDto.getOwnerId(), event);
 
@@ -139,8 +140,23 @@ public class EventController {
         if(eventDto.getGeo() != null) {
             event.setGeoServicesEnabled(eventDto.getGeo());
         }
+        if(eventDto.getIsPrivate() != null) {
+            event.setIsPrivate(eventDto.getIsPrivate());
+        }
+        if(eventDto.getPassword() != null) {
+            event.setPassword(eventDto.getPassword());
+        }
 
         this.eventService.update(event);
+    }
+
+    @RequestMapping(value = "/{eventId:[\\d]+}/account/{accountId:[\\d]+}/role/{roleId:[\\d]+}", method = PUT)
+    @ResponseStatus(OK)
+    public void addOrUpdateAccountToEvent(@PathVariable("eventId") final Long eventId,
+                                          @PathVariable("accountId") final Long accountId,
+                                          @PathVariable("roleId") final Integer roleId,
+                                          @RequestParam(value = "password", required = false) final String password) {
+        this.eventService.addOrUpdateAccountToEvent(accountId, eventId, roleId, password);
     }
 
     private EventType getEventTypeOrThrow(final Integer eventTypeId) {

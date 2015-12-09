@@ -22,6 +22,9 @@ public class EventCreateDTO {
     private Double longitude;
     private Float radius;
     private Boolean geo;
+    @JsonProperty("private")
+    private Boolean isPrivate;
+    private String password;
 
     public EventCreateDTO() {
     }
@@ -35,6 +38,8 @@ public class EventCreateDTO {
         this.longitude = event.getLongitude();
         this.radius = event.getRadius();
         this.geo = event.isGeoServicesEnabled();
+        this.isPrivate = event.isPrivate();
+        this.password = event.getPassword();
         this.ownerId = ownerId;
     }
 
@@ -108,5 +113,21 @@ public class EventCreateDTO {
 
     public void setGeo(Boolean geo) {
         this.geo = geo;
+    }
+
+    public Boolean getIsPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(Boolean isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

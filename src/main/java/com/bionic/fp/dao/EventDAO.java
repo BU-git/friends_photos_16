@@ -30,9 +30,8 @@ public interface EventDAO extends GenericDAO<Event, Long> {
      * @param event the event
      * @param accountEvent the account-event
      * @return an updated event
-     * @throws EventNotFoundException if the event doesn't exist
      */
-    Event addAccountEvent(Event event, AccountEvent accountEvent) throws EventNotFoundException;
+    Event addAccountEvent(Event event, AccountEvent accountEvent);
 
     /**
      * Returns an event with its accounts by the specified id.
@@ -70,4 +69,13 @@ public interface EventDAO extends GenericDAO<Event, Long> {
      *         its owner state has not been loaded, else true
      */
     boolean isOwnerLoaded(Event event);
+
+    /**
+     * Returns an event by the specified id and throws the exception otherwise
+     *
+     * @param eventId the event ID
+     * @return an event
+     * @throws EventNotFoundException if the event doesn't exist
+     */
+    Event getOrThrow(Long eventId) throws EventNotFoundException;
 }
