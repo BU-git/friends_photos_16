@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
  *
  * @author Sergiy Gabriel
  */
-public class EventControllerIT extends AbstractIT {
+public class EventRestControllerIT extends AbstractIT {
 
     private static final String EVENTS = "/events";
     private static final String EVENTS_ID = "/events/{id}";
@@ -470,6 +470,32 @@ public class EventControllerIT extends AbstractIT {
             .contentType(JSON)
         .when()
             .put(EVENTS_ID, Long.MAX_VALUE)
+        .then()
+            .statusCode(SC_FORBIDDEN);
+
+        // no permission
+
+        Account user = getSavedAccount();
+
+        assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
+        assertEquals(1, this.accountService.getWithEvents(event.getOwner().getId()).getEvents().size());
+        assertEquals(0, this.accountService.getWithEvents(user.getId()).getEvents().size());
+
+        // todo: exchange "3"
+        this.eventService.addOrUpdateAccountToEvent(user.getId(), event.getId(), 3, null);
+
+        assertEquals(2, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
+        assertEquals(1, this.accountService.getWithEvents(event.getOwner().getId()).getEvents().size());
+        assertEquals(1, this.accountService.getWithEvents(user.getId()).getEvents().size());
+
+        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .addFilter(getFilter(user.getId())).build();
+
+        given()
+            .body(eventDto)
+            .contentType(JSON)
+        .when()
+            .put(EVENTS_ID, event.getId())
         .then()
             .statusCode(SC_FORBIDDEN);
     }

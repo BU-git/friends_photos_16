@@ -16,8 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.ArrayUtils.isNotEmpty;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -73,18 +77,8 @@ public class EventRestController {
     @RequestMapping(value = "/{id:[\\d]+}", method = DELETE)
     @ResponseStatus(NO_CONTENT)
     public void deleteEventById(@PathVariable("id") final Long eventId, final HttpSession session) {
-        Long userId = SessionUtils.getUserId(session);
-        try {
-            Role role = roleService.getRoleByAccountAndEvent(userId, eventId);
-            if(role.isCanChangeSettings()) {
-                this.eventService.remove(eventId);
-            } else {
-                throw new PermissionsDeniedException();
-            }
-        } catch (AccountEventNotFoundException e) {
-            throw new PermissionsDeniedException();
-        }
-
+        checkPermission(session, eventId, Role::isCanChangeSettings);
+        this.eventService.remove(eventId);
     }
 
     @RequestMapping(value = "/{id:[\\d]+}", method = GET, produces = APPLICATION_JSON_VALUE)
@@ -98,15 +92,7 @@ public class EventRestController {
     @ResponseStatus(OK)
     public void updateEvent(@PathVariable("id") final Long eventId, @RequestBody final EventUpdateDTO eventDto,
                             final HttpSession session) {
-        Long userId = SessionUtils.getUserId(session);
-        try {
-            Role role = roleService.getRoleByAccountAndEvent(userId, eventId);
-            if(!role.isCanChangeSettings()) {
-                throw new PermissionsDeniedException();
-            }
-        } catch (AccountEventNotFoundException e) {
-            throw new PermissionsDeniedException();
-        }
+        checkPermission(session, eventId, Role::isCanChangeSettings);
 
         Event event = this.getEventOrThrow(eventId);
 
@@ -195,5 +181,19 @@ public class EventRestController {
 
     private Event findEventOrThrow(final Long eventId) {
         return ofNullable(this.eventService.get(eventId)).orElseThrow(() -> new NotFoundException(eventId));
+    }
+
+    private void checkPermission(final HttpSession session, final Long eventId, final Predicate<Role> ... predicates) {
+        if(isNotEmpty(predicates)) {
+            Long userId = SessionUtils.getUserId(session);
+            try {
+                Role role = roleService.getRole(userId, eventId);
+                if(Stream.of(predicates).anyMatch(p -> p.negate().test(role))) {
+                    throw new PermissionsDeniedException();
+                }
+            } catch (AccountEventNotFoundException e) {
+                throw new PermissionsDeniedException();
+            }
+        }
     }
 }
