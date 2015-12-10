@@ -48,6 +48,36 @@ public class PhotoRESTService {
 
 	private SecureRandom random = new SecureRandom();
 
+	// @GET
+	@RequestMapping(value = "/{photo_id:[\\d]+}", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<PhotoInfoDTO> getPhotoInfo(@PathVariable("photo_id") Long photoId) {
+		Photo photo = photoService.getById(photoId);
+		if (photo == null) {
+			return new ResponseEntity<PhotoInfoDTO>(HttpStatus.NOT_FOUND);
+		}
+		PhotoInfoDTO photoInfoDTO = new PhotoInfoDTO();
+		photoInfoDTO.setName(photo.getName());
+		photoInfoDTO.setOwnerID(photo.getOwner() == null ? null : photo.getOwner().getId());
+		photoInfoDTO.setUrl(photo.getUrl());
+
+		return new ResponseEntity<PhotoInfoDTO>(photoInfoDTO, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/file/{photo_id:[\\d]+}", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<PhotoInfoDTO> getPhotoFile(@PathVariable("photo_id") Long photoId) {
+		Photo photo = photoService.getById(photoId);
+		if (photo == null) {
+			return new ResponseEntity<PhotoInfoDTO>(HttpStatus.NOT_FOUND);
+		}
+		String url = photo.getUrl();
+
+		return null;
+	}
+
+
+
 
     @RequestMapping(value = "/event/{event_id:[\\d]+}", method = RequestMethod.GET)
 	@ResponseBody
