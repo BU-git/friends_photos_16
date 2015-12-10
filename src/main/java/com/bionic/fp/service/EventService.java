@@ -4,10 +4,7 @@ import com.bionic.fp.dao.AccountDAO;
 import com.bionic.fp.dao.AccountEventDAO;
 import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.dao.RoleDAO;
-import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.AccountEvent;
-import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.Role;
+import com.bionic.fp.domain.*;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
@@ -204,6 +201,32 @@ public class EventService {
     public List<Account> getAccounts(final Long eventId) throws InvalidParameterException, EventNotFoundException {
         this.validation(eventId);
         return this.eventDAO.getAccounts(eventId);
+    }
+
+    /**
+     * Returns a list of the photos of the event by the event ID
+     *
+     * @param eventId the event ID
+     * @return a list of the photos of the event
+     * @throws InvalidParameterException if the event ID is invalid
+     * @throws EventNotFoundException if the event doesn't exist
+     */
+    public List<Photo> getPhotos(final Long eventId) throws InvalidParameterException, EventNotFoundException {
+        this.validation(eventId);
+        return this.eventDAO.getPhotos(eventId);
+    }
+
+    /**
+     * Returns a list of the comments of the event by the event ID
+     *
+     * @param eventId the event ID
+     * @return a list of the comments of the event
+     * @throws InvalidParameterException if the event ID is invalid
+     * @throws EventNotFoundException if the event doesn't exist
+     */
+    public List<Comment> getComments(final Long eventId) throws InvalidParameterException, EventNotFoundException {
+        this.validation(eventId);
+        return this.eventDAO.getComments(eventId);
     }
 
     /**

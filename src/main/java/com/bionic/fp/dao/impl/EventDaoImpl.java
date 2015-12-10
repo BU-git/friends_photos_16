@@ -1,9 +1,7 @@
 package com.bionic.fp.dao.impl;
 
 import com.bionic.fp.dao.EventDAO;
-import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.AccountEvent;
-import com.bionic.fp.domain.Event;
+import com.bionic.fp.domain.*;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import org.springframework.stereotype.Repository;
 
@@ -78,6 +76,24 @@ public class EventDaoImpl implements EventDAO {
                     .parallel()
                     .map(AccountEvent::getAccount)
                     .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Photo> getPhotos(final Long eventId) throws EventNotFoundException {
+        EntityGraph graph = this.entityManager.getEntityGraph("Event.photos");
+        Map<String, Object> hints = new HashMap<>();
+        hints.put("javax.persistence.loadgraph", graph);
+        return ofNullable(this.entityManager.find(Event.class, eventId, hints)).
+                orElseThrow(() -> new EventNotFoundException(eventId)).getPhotos();
+    }
+
+    @Override
+    public List<Comment> getComments(final Long eventId) throws EventNotFoundException {
+        EntityGraph graph = this.entityManager.getEntityGraph("Event.comments");
+        Map<String, Object> hints = new HashMap<>();
+        hints.put("javax.persistence.loadgraph", graph);
+        return ofNullable(this.entityManager.find(Event.class, eventId, hints)).
+                orElseThrow(() -> new EventNotFoundException(eventId)).getComments();
     }
 
     @Override

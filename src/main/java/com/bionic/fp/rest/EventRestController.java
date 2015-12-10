@@ -1,8 +1,6 @@
 package com.bionic.fp.rest;
 
-import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.EventType;
-import com.bionic.fp.domain.Role;
+import com.bionic.fp.domain.*;
 import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
 import com.bionic.fp.exception.permission.PermissionsDeniedException;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
@@ -19,6 +17,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -157,6 +156,33 @@ public class EventRestController {
                                           @PathVariable("roleId") final Integer roleId,
                                           @RequestParam(value = "password", required = false) final String password) {
         this.eventService.addOrUpdateAccountToEvent(accountId, eventId, roleId, password);
+    }
+
+    @RequestMapping(value = "/{id:[\\d]+}/accounts", method = GET)
+    @ResponseStatus(OK)
+    public @ResponseBody IdListsDTO getAccounts(@PathVariable("id") final Long eventId) {
+        IdListsDTO body = new IdListsDTO();
+        body.setAccounts(this.eventService.getAccounts(eventId).stream().parallel()
+                .map(Account::getId).collect(toList()));
+        return body;
+    }
+
+    @RequestMapping(value = "/{id:[\\d]+}/photos", method = GET)
+    @ResponseStatus(OK)
+    public @ResponseBody IdListsDTO getPhotos(@PathVariable("id") final Long eventId) {
+        IdListsDTO body = new IdListsDTO();
+        body.setPhotos(this.eventService.getPhotos(eventId).stream().parallel()
+                .map(Photo::getId).collect(toList()));
+        return body;
+    }
+
+    @RequestMapping(value = "/{id:[\\d]+}/comments", method = GET)
+    @ResponseStatus(OK)
+    public @ResponseBody IdListsDTO getComments(@PathVariable("id") final Long eventId) {
+        IdListsDTO body = new IdListsDTO();
+        body.setComments(this.eventService.getComments(eventId).stream().parallel()
+                .map(Comment::getId).collect(toList()));
+        return body;
     }
 
     private EventType getEventTypeOrThrow(final Integer eventTypeId) {
