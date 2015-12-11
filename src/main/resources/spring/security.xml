@@ -7,7 +7,7 @@
 		                        http://www.springframework.org/schema/beans
                                 http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <beans:bean id="authFilter" class="com.bionic.fp.security.filter.AuthFilter">
+    <beans:bean id="authFilter" class="com.bionic.fp.web.security.filter.AuthFilter">
         <beans:property name="secureRoots">
             <beans:list>
                 <beans:value>/account/register</beans:value>
@@ -22,7 +22,7 @@
         <beans:property name="isActive" value="true"/>
     </beans:bean>
 
-    <beans:bean id="sessionUtils" class="com.bionic.fp.security.SessionUtils" lazy-init="true">
+    <beans:bean id="sessionUtils" class="com.bionic.fp.web.security.SessionUtils" lazy-init="true">
         <beans:constructor-arg ref="accountService"/>
     </beans:bean>
 

@@ -3,7 +3,7 @@ package com.bionic.fp;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
-import com.bionic.fp.security.SessionUtils;
+import com.bionic.fp.web.security.SessionUtils;
 import com.bionic.fp.service.AccountService;
 import com.bionic.fp.service.EventService;
 import com.bionic.fp.service.EventTypeService;

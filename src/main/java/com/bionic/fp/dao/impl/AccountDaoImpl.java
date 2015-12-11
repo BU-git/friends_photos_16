@@ -38,20 +38,20 @@ public class AccountDaoImpl implements AccountDAO {
     public AccountDaoImpl() {}
 
     @Override
-    public Long create(Account newInstance) {
-        entityManager.persist(newInstance);
-        return newInstance.getId();
+    public Long create(Account account) {
+        entityManager.persist(account);
+        return account.getId();
     }
 
     @Override
-    public Account read(Long id) {
-        return entityManager.find(Account.class, id);
+    public Account read(Long accountId) {
+        return entityManager.find(Account.class, accountId);
     }
 
     @Override
-    public Account update(Account transientObject) {
-        entityManager.merge(transientObject);
-        return transientObject;
+    public Account update(Account account) {
+        entityManager.merge(account);
+        return account;
     }
 
     @Override
