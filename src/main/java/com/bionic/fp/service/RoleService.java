@@ -81,7 +81,7 @@ public class RoleService {
     }
 
     /**
-     * returns the user's role in the event by id of the user and the events, respectively
+     * Returns the user's role in the event by id of the user and the events, respectively
      *
      * @param accountId the account id
      * @param eventId the event id
@@ -89,11 +89,11 @@ public class RoleService {
      * @throws InvalidParameterException if the account id or the event id are not initialized
      * @throws AccountEventNotFoundException if the relationship between the user and the event is not found
      */
-    public Role getRoleByAccountAndEvent(final Long accountId, final Long eventId)
+    public Role getRole(final Long accountId, final Long eventId)
                                                     throws InvalidParameterException, AccountEventNotFoundException {
         check(accountId != null, "The account ID should not be null");
         check(eventId != null, "The event ID should not be null");
-        AccountEvent accountEvent = accountEventDAO.getWithAccountEvent(accountId, eventId);
+        AccountEvent accountEvent = accountEventDAO.get(accountId, eventId);
         if (accountEvent == null) {
             throw new AccountEventNotFoundException(accountId, eventId);
         }

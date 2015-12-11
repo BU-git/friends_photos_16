@@ -48,6 +48,9 @@ public class Event implements Serializable {
     private Float radius;
     @Column(name = "geo")
     private boolean geoServicesEnabled = false;
+    @Column(name = "private")
+    private boolean isPrivate = false;
+    private String password;
     /**
      * Is this event deleted? Because the event is not deleted physically
      */
@@ -191,6 +194,22 @@ public class Event implements Serializable {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(boolean isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

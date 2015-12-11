@@ -39,6 +39,7 @@ public class EventInfoDTO {
     private Float radius;
     private Boolean geo;
     private Boolean visible;
+    private Boolean isPrivate;
 
     public EventInfoDTO() {
     }
@@ -56,6 +57,7 @@ public class EventInfoDTO {
         this.radius = event.getRadius();
         this.geo = event.isGeoServicesEnabled();
         this.visible = event.isVisible();
+        this.isPrivate = event.isPrivate();
     }
 
     public Long getId() {
@@ -152,5 +154,13 @@ public class EventInfoDTO {
 
     public void setVisible(Boolean visible) {
         this.visible = visible;
+    }
+
+    public Boolean getIsPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(Boolean isPrivate) {
+        this.isPrivate = isPrivate;
     }
 }

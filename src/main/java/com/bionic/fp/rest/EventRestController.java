@@ -1,17 +1,12 @@
 package com.bionic.fp.rest;
 
-import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.EventType;
-import com.bionic.fp.domain.Role;
+import com.bionic.fp.domain.*;
 import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
 import com.bionic.fp.exception.permission.PermissionsDeniedException;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import com.bionic.fp.exception.logic.impl.EventTypeNotFoundException;
 import com.bionic.fp.exception.rest.NotFoundException;
-import com.bionic.fp.rest.dto.EventCreateDTO;
-import com.bionic.fp.rest.dto.EventInfoDTO;
-import com.bionic.fp.rest.dto.EventUpdateDTO;
-import com.bionic.fp.rest.dto.IdInfoDTO;
+import com.bionic.fp.rest.dto.*;
 import com.bionic.fp.security.SessionUtils;
 import com.bionic.fp.service.EventService;
 import com.bionic.fp.service.EventTypeService;
@@ -21,7 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.ArrayUtils.isNotEmpty;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -33,7 +33,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  */
 @RestController
 @RequestMapping("/events")
-public class EventController {
+public class EventRestController {
 
     @Inject
     private EventService eventService;
@@ -64,6 +64,10 @@ public class EventController {
         if(eventDto.getGeo() != null) {
             event.setGeoServicesEnabled(eventDto.getGeo());
         }
+        if(eventDto.getIsPrivate() != null) {
+            event.setIsPrivate(eventDto.getIsPrivate());
+        }
+        event.setPassword(eventDto.getPassword());
 
         Long eventId = this.eventService.createEvent(eventDto.getOwnerId(), event);
 
@@ -73,18 +77,8 @@ public class EventController {
     @RequestMapping(value = "/{id:[\\d]+}", method = DELETE)
     @ResponseStatus(NO_CONTENT)
     public void deleteEventById(@PathVariable("id") final Long eventId, final HttpSession session) {
-        Long userId = SessionUtils.getUserId(session);
-        try {
-            Role role = roleService.getRoleByAccountAndEvent(userId, eventId);
-            if(role.isCanChangeSettings()) {
-                this.eventService.remove(eventId);
-            } else {
-                throw new PermissionsDeniedException();
-            }
-        } catch (AccountEventNotFoundException e) {
-            throw new PermissionsDeniedException();
-        }
-
+        checkPermission(session, eventId, Role::isCanChangeSettings);
+        this.eventService.remove(eventId);
     }
 
     @RequestMapping(value = "/{id:[\\d]+}", method = GET, produces = APPLICATION_JSON_VALUE)
@@ -98,15 +92,7 @@ public class EventController {
     @ResponseStatus(OK)
     public void updateEvent(@PathVariable("id") final Long eventId, @RequestBody final EventUpdateDTO eventDto,
                             final HttpSession session) {
-        Long userId = SessionUtils.getUserId(session);
-        try {
-            Role role = roleService.getRoleByAccountAndEvent(userId, eventId);
-            if(!role.isCanChangeSettings()) {
-                throw new PermissionsDeniedException();
-            }
-        } catch (AccountEventNotFoundException e) {
-            throw new PermissionsDeniedException();
-        }
+        checkPermission(session, eventId, Role::isCanChangeSettings);
 
         Event event = this.getEventOrThrow(eventId);
 
@@ -139,8 +125,50 @@ public class EventController {
         if(eventDto.getGeo() != null) {
             event.setGeoServicesEnabled(eventDto.getGeo());
         }
+        if(eventDto.getIsPrivate() != null) {
+            event.setIsPrivate(eventDto.getIsPrivate());
+        }
+        if(eventDto.getPassword() != null) {
+            event.setPassword(eventDto.getPassword());
+        }
 
         this.eventService.update(event);
+    }
+
+    @RequestMapping(value = "/{eventId:[\\d]+}/account/{accountId:[\\d]+}/role/{roleId:[\\d]+}", method = PUT)
+    @ResponseStatus(OK)
+    public void addOrUpdateAccountToEvent(@PathVariable("eventId") final Long eventId,
+                                          @PathVariable("accountId") final Long accountId,
+                                          @PathVariable("roleId") final Integer roleId,
+                                          @RequestParam(value = "password", required = false) final String password) {
+        this.eventService.addOrUpdateAccountToEvent(accountId, eventId, roleId, password);
+    }
+
+    @RequestMapping(value = "/{id:[\\d]+}/accounts", method = GET)
+    @ResponseStatus(OK)
+    public @ResponseBody IdListsDTO getAccounts(@PathVariable("id") final Long eventId) {
+        IdListsDTO body = new IdListsDTO();
+        body.setAccounts(this.eventService.getAccounts(eventId).stream().parallel()
+                .map(Account::getId).collect(toList()));
+        return body;
+    }
+
+    @RequestMapping(value = "/{id:[\\d]+}/photos", method = GET)
+    @ResponseStatus(OK)
+    public @ResponseBody IdListsDTO getPhotos(@PathVariable("id") final Long eventId) {
+        IdListsDTO body = new IdListsDTO();
+        body.setPhotos(this.eventService.getPhotos(eventId).stream().parallel()
+                .map(Photo::getId).collect(toList()));
+        return body;
+    }
+
+    @RequestMapping(value = "/{id:[\\d]+}/comments", method = GET)
+    @ResponseStatus(OK)
+    public @ResponseBody IdListsDTO getComments(@PathVariable("id") final Long eventId) {
+        IdListsDTO body = new IdListsDTO();
+        body.setComments(this.eventService.getComments(eventId).stream().parallel()
+                .map(Comment::getId).collect(toList()));
+        return body;
     }
 
     private EventType getEventTypeOrThrow(final Integer eventTypeId) {
@@ -153,5 +181,19 @@ public class EventController {
 
     private Event findEventOrThrow(final Long eventId) {
         return ofNullable(this.eventService.get(eventId)).orElseThrow(() -> new NotFoundException(eventId));
+    }
+
+    private void checkPermission(final HttpSession session, final Long eventId, final Predicate<Role> ... predicates) {
+        if(isNotEmpty(predicates)) {
+            Long userId = SessionUtils.getUserId(session);
+            try {
+                Role role = roleService.getRole(userId, eventId);
+                if(Stream.of(predicates).anyMatch(p -> p.negate().test(role))) {
+                    throw new PermissionsDeniedException();
+                }
+            } catch (AccountEventNotFoundException e) {
+                throw new PermissionsDeniedException();
+            }
+        }
     }
 }

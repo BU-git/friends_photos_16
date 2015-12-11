@@ -52,7 +52,7 @@ public class RoleController {
             @PathVariable("eventId") final Long eventId
     ) {
         Role roleByAccountAndEvent = null;
-        roleByAccountAndEvent = roleService.getRoleByAccountAndEvent(accountId, eventId);
+        roleByAccountAndEvent = roleService.getRole(accountId, eventId);
         RoleIdDTO roleId = new RoleIdDTO(roleByAccountAndEvent.getId());
         return new ResponseEntity<>(roleId, OK);
     }
