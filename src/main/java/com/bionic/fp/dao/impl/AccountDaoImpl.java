@@ -1,11 +1,9 @@
 package com.bionic.fp.dao.impl;
 
 import com.bionic.fp.dao.AccountDAO;
-import com.bionic.fp.dao.RoleDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.Role;
 import com.bionic.fp.exception.logic.impl.AccountNotFoundException;
 import com.bionic.fp.service.RoleService;
 import org.springframework.stereotype.Repository;
@@ -33,30 +31,30 @@ public class AccountDaoImpl implements AccountDAO {
     public static final String SELECT_ACCOUNT_BY_USERNAME_QUERY = "SELECT a FROM Account a WHERE a.userName=:userName";
 
     @PersistenceContext(unitName = "entityManager")
-    private EntityManager entityManager;
+    private EntityManager em;
 
     public AccountDaoImpl() {}
 
     @Override
     public Long create(Account account) {
-        entityManager.persist(account);
+        em.persist(account);
         return account.getId();
     }
 
     @Override
     public Account read(Long accountId) {
-        return entityManager.find(Account.class, accountId);
+        return em.find(Account.class, accountId);
     }
 
     @Override
     public Account update(Account account) {
-        entityManager.merge(account);
+        em.merge(account);
         return account;
     }
 
     @Override
     public void delete(final Long accountId) throws AccountNotFoundException {
-        this.entityManager.remove(this.getOrThrow(accountId));
+        this.em.remove(this.getOrThrow(accountId));
     }
 
     @Override
@@ -82,10 +80,10 @@ public class AccountDaoImpl implements AccountDAO {
 
     @Override
     public Account getWithEvents(final Long accountId) {
-        EntityGraph graph = this.entityManager.getEntityGraph("Account.events");
+        EntityGraph graph = this.em.getEntityGraph("Account.events");
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
-        return this.entityManager.find(Account.class, accountId, hints);
+        return this.em.find(Account.class, accountId, hints);
     }
 
     @Override
@@ -100,28 +98,28 @@ public class AccountDaoImpl implements AccountDAO {
 
     @Override
     public Account getByEmail(String email) throws NoResultException {
-        TypedQuery<Account> result = entityManager.createQuery(SELECT_ACCOUNT_BY_EMAIL_QUERY, Account.class);
+        TypedQuery<Account> result = em.createQuery(SELECT_ACCOUNT_BY_EMAIL_QUERY, Account.class);
         result.setParameter("email", email);
         return result.getSingleResult();
     }
 
     @Override
     public Account getByFBId(String fbId) throws NoResultException {
-        TypedQuery<Account> result = entityManager.createQuery(SELECT_ACCOUNT_BY_FBID_QUERY, Account.class);
+        TypedQuery<Account> result = em.createQuery(SELECT_ACCOUNT_BY_FBID_QUERY, Account.class);
         result.setParameter("fbId", fbId);
         return result.getSingleResult();
     }
 
     @Override
     public Account getByVKId(String vkId) throws NoResultException {
-        TypedQuery<Account> result = entityManager.createQuery(SELECT_ACCOUNT_BY_VKID_QUERY, Account.class);
+        TypedQuery<Account> result = em.createQuery(SELECT_ACCOUNT_BY_VKID_QUERY, Account.class);
         result.setParameter("vkId", vkId);
         return result.getSingleResult();
     }
 
     @Override
     public Account getByUserName(String userName) throws NoResultException {
-        TypedQuery<Account> result = entityManager.createQuery(SELECT_ACCOUNT_BY_USERNAME_QUERY, Account.class);
+        TypedQuery<Account> result = em.createQuery(SELECT_ACCOUNT_BY_USERNAME_QUERY, Account.class);
         result.setParameter("userName", userName);
         return result.getSingleResult();
     }

@@ -20,28 +20,28 @@ import static java.util.Optional.ofNullable;
 public class EventTypeDaoImpl implements EventTypeDAO {
 
     @PersistenceContext(unitName = "entityManager")
-    private EntityManager entityManager;
+    private EntityManager em;
 
     @Override
     public Integer create(final EventType eventType) {
-        this.entityManager.persist(eventType);
+        this.em.persist(eventType);
         return eventType.getId();
     }
 
     @Override
     public EventType read(final Integer eventTypeId) {
-        return this.entityManager.find(EventType.class, eventTypeId);
+        return this.em.find(EventType.class, eventTypeId);
     }
 
     @Override
     public EventType update(final EventType eventType) {
-        return this.entityManager.merge(eventType);
+        return this.em.merge(eventType);
     }
 
     @Override
     public void delete(final Integer eventTypeId) throws EventTypeNotFoundException {
         EventType eventType = this.getOrThrow(eventTypeId);
-        this.entityManager.remove(eventType);
+        this.em.remove(eventType);
     }
 
     @Override

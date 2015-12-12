@@ -22,29 +22,29 @@ public class RoleDaoImpl implements RoleDAO {
     public static final String SELECT_ALL_ROLES = "SELECT r FROM Role r";
 
     @PersistenceContext(unitName = "entityManager")
-    private EntityManager entityManager;
+    private EntityManager em;
 
 
     @Override
     public Integer create(Role role) {
-        entityManager.persist(role);
+        em.persist(role);
         return role.getId();
     }
 
     @Override
     public Role read(Integer id) {
-        return entityManager.find(Role.class, id);
+        return em.find(Role.class, id);
     }
 
     @Override
     public Role update(Role role) {
-        entityManager.merge(role);
+        em.merge(role);
         return role;
     }
 
     @Override
     public void delete(Integer roleId) throws RoleNotFoundException {
-        this.entityManager.remove(this.getOrThrow(roleId));
+        this.em.remove(this.getOrThrow(roleId));
     }
 
     @Override
@@ -54,7 +54,7 @@ public class RoleDaoImpl implements RoleDAO {
 
     @Override
     public List<Role> getAllRoles() {
-        TypedQuery<Role> allRolesQuery = entityManager.createQuery(SELECT_ALL_ROLES, Role.class);
+        TypedQuery<Role> allRolesQuery = em.createQuery(SELECT_ALL_ROLES, Role.class);
         return allRolesQuery.getResultList();
     }
 

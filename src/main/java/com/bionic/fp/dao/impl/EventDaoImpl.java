@@ -21,31 +21,31 @@ import static java.util.Optional.ofNullable;
 public class EventDaoImpl implements EventDAO {
 
     @PersistenceContext(unitName = "entityManager")
-    private EntityManager entityManager;
+    private EntityManager em;
 
     public EventDaoImpl(){
     }
 
     @Override
     public Long create(final Event event) {
-        this.entityManager.persist(event);
+        this.em.persist(event);
         return event.getId();
     }
 
     @Override
     public Event read(final Long eventId) {
-        return this.entityManager.find(Event.class, eventId);
+        return this.em.find(Event.class, eventId);
     }
 
     @Override
     public Event update(final Event event) {
-        return this.entityManager.merge(event);
+        return this.em.merge(event);
     }
 
     @Override
     public void delete(final Long eventId) throws EventNotFoundException {
         Event event = this.getOrThrow(eventId);
-        this.entityManager.remove(event);
+        this.em.remove(event);
     }
 
     @Override
@@ -62,10 +62,10 @@ public class EventDaoImpl implements EventDAO {
 
     @Override
     public Event getWithAccounts(final Long eventId) {
-        EntityGraph graph = this.entityManager.getEntityGraph("Event.accounts");
+        EntityGraph graph = this.em.getEntityGraph("Event.accounts");
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
-        return this.entityManager.find(Event.class, eventId, hints);
+        return this.em.find(Event.class, eventId, hints);
     }
 
     @Override
@@ -80,19 +80,19 @@ public class EventDaoImpl implements EventDAO {
 
     @Override
     public List<Photo> getPhotos(final Long eventId) throws EventNotFoundException {
-        EntityGraph graph = this.entityManager.getEntityGraph("Event.photos");
+        EntityGraph graph = this.em.getEntityGraph("Event.photos");
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
-        return ofNullable(this.entityManager.find(Event.class, eventId, hints)).
+        return ofNullable(this.em.find(Event.class, eventId, hints)).
                 orElseThrow(() -> new EventNotFoundException(eventId)).getPhotos();
     }
 
     @Override
     public List<Comment> getComments(final Long eventId) throws EventNotFoundException {
-        EntityGraph graph = this.entityManager.getEntityGraph("Event.comments");
+        EntityGraph graph = this.em.getEntityGraph("Event.comments");
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
-        return ofNullable(this.entityManager.find(Event.class, eventId, hints)).
+        return ofNullable(this.em.find(Event.class, eventId, hints)).
                 orElseThrow(() -> new EventNotFoundException(eventId)).getComments();
     }
 
@@ -105,7 +105,7 @@ public class EventDaoImpl implements EventDAO {
 
     @Override
     public boolean isOwnerLoaded(final Event event) {
-        return this.entityManager.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(event, "owner");
+        return this.em.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(event, "owner");
     }
 
     @Override
