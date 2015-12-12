@@ -2,6 +2,7 @@ package com.bionic.fp.service;
 
 import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.dao.PhotoDAO;
+import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
@@ -44,18 +45,9 @@ public class PhotoService {
 		return photoDAO.read(id);
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
+	public List<Photo> getPhotosList(Account account) {
+		return photoDAO.getPhotosList(account);
+	}
 
 
 
@@ -98,6 +90,7 @@ public class PhotoService {
     /**
      * The method allows to find out which files belong to the event
      *
+     * @param event Group entity
      * @return List that contains the entities with all the photos in this event
      */
 	// TODO refactor this method!

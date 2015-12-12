@@ -1,5 +1,6 @@
 package com.bionic.fp.web.rest;
 
+import com.bionic.fp.Constants;
 import com.bionic.fp.dao.RoleDAO;
 import com.bionic.fp.domain.*;
 import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
@@ -144,7 +145,7 @@ public class EventController {
                                      @RequestParam(value = "role_id", required = false) Integer roleId,
                                      @RequestParam(value = "password", required = false) final String password) {
         if(roleId == null) {
-            roleId = RoleDAO.MEMBER;
+            roleId = Constants.RoleConstants.MEMBER;
         }
         this.eventService.addOrUpdateAccountToEvent(accountId, eventId, roleId, password);
     }
@@ -156,7 +157,7 @@ public class EventController {
                                      @RequestParam(value = "role_id", required = false) Integer roleId,
                                      @RequestParam(value = "password", required = false) final String password) {
         if(roleId == null) {
-            roleId = RoleDAO.MEMBER;
+            roleId = Constants.RoleConstants.MEMBER;
         }
         this.eventService.addOrUpdateAccountToEvent(accountId, eventId, roleId, password);
     }

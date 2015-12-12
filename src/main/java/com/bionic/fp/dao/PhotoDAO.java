@@ -1,5 +1,6 @@
 package com.bionic.fp.dao;
 
+import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 
@@ -24,5 +25,7 @@ public interface PhotoDAO extends GenericDAO<Photo, Long> {
 	 * @return list of all photo objects for current event.
 	 */
 	List<Photo> getPhotosByEvent(Event event);
+
+	List<Photo> getPhotosList(Account owner);
 
 }

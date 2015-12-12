@@ -1,6 +1,7 @@
 package com.bionic.fp.dao.impl;
 
 import com.bionic.fp.dao.PhotoDAO;
+import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 import org.springframework.stereotype.Repository;
@@ -50,6 +51,12 @@ public class PhotoDaoImpl implements PhotoDAO {
 		return query.getResultList();
 	}
 
+	@Override
+	public List<Photo> getPhotosList(Account owner) {
+		Query query = em.createQuery("from Photo where owner = :owner");
+		query.setParameter("owner", owner);
+		return query.getResultList();
+	}
 //    @Override
 //    public Photo getSingleInfoByHash(String hash){
 //        Query query = em.createQuery("from Photo where hash = :md5");

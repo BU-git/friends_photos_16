@@ -116,11 +116,29 @@ public class PhotoController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<PhotoInfoDTO>> getPhotoList(
+			@RequestParam("owner") Long ownerId) {
+
+		Account owner = accountService.get(ownerId);
+		List<Photo> photos = photoService.getPhotosList(owner);
+		if (photos != null) {
+			List<PhotoInfoDTO> photosDto = photos.stream().parallel().map(photo -> {
+				PhotoInfoDTO dto = new PhotoInfoDTO();
+				dto.setName(photo.getName());
+				dto.setOwnerID(photo.getOwner().getId());
+				dto.setUrl(photo.getUrl());
+				return dto;
+			}).collect(Collectors.toList());
+			return new ResponseEntity<>(photosDto, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 
 	//***************************************
 	//                 @POST
 	//***************************************
-
 	/**
 	 * Save photo image to filesystem
 	 * and save photo info to DB.
@@ -162,13 +180,13 @@ public class PhotoController {
 			byte[] bytes = file.getBytes();
 			// FIXME set correct path to file
 			BufferedOutputStream stream =
-					new BufferedOutputStream(new FileOutputStream(new File("C:\\" + resultFileName)));
+					new BufferedOutputStream(new FileOutputStream(new File("/friendsphotos/" + resultFileName)));
 			stream.write(bytes);
 			stream.close();
 
 			Photo photo = new Photo();
 			photo.setName(name == null ? file.getOriginalFilename() : name);
-			photo.setUrl("C:\\" + resultFileName);
+			photo.setUrl("/friendsphotos/" + resultFileName);
 			photo.setOwner(owner);
 			photo = photoService.create(photo);
 			PhotoInfoDTO photoInfoDTO = new PhotoInfoDTO();
@@ -181,6 +199,9 @@ public class PhotoController {
 		}
 	}
 
+	//***************************************
+	//                 @PUT
+	//***************************************
 	/**
 	 * Update photo info
 	 *
@@ -206,7 +227,7 @@ public class PhotoController {
 		photoInfoDTO.setName(photo.getName());
 		photoInfoDTO.setOwnerID(photo.getOwner().getId());
 		photoInfoDTO.setUrl(photo.getUrl());
-		return new ResponseEntity<PhotoInfoDTO>(photoInfoDTO, HttpStatus.CREATED);
+		return new ResponseEntity<PhotoInfoDTO>(photoInfoDTO, HttpStatus.OK);
 	}
 
 

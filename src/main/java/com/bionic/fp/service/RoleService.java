@@ -1,5 +1,6 @@
 package com.bionic.fp.service;
 
+import com.bionic.fp.Constants;
 import com.bionic.fp.dao.AccountEventDAO;
 import com.bionic.fp.dao.RoleDAO;
 import com.bionic.fp.domain.Account;
@@ -59,12 +60,12 @@ public class RoleService {
         }
 
         // Can't downgrade owner
-        if(accountEvent.getRole().getId().equals(RoleDAO.OWNER)) {
+        if(accountEvent.getRole().getId().equals(Constants.RoleConstants.OWNER)) {
             return false;
         }
 
         // Can't make more than one owner
-        if(newRoleId.equals(RoleDAO.OWNER)) {
+        if(newRoleId.equals(Constants.RoleConstants.OWNER)) {
             return false;
         }
 
