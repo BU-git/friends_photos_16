@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/photo")
-public class PhotoControlle {
+public class PhotoController {
 
     @Autowired
     private PhotoService photoService;
