@@ -19,6 +19,8 @@ import static java.util.Optional.ofNullable;
 @Repository
 public class RoleDaoImpl implements RoleDAO {
 
+
+
     public static final String SELECT_ALL_ROLES = "SELECT r FROM Role r";
 
     @PersistenceContext(unitName = "entityManager")

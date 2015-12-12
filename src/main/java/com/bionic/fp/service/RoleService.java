@@ -24,8 +24,6 @@ import static com.bionic.fp.util.Checks.check;
 @Transactional
 public class RoleService {
 
-    public static final Integer OWNER_ROLE = 1;
-
     @Inject
     private RoleDAO roleDAO;
 
@@ -61,12 +59,12 @@ public class RoleService {
         }
 
         // Can't downgrade owner
-        if(accountEvent.getRole().getId().equals(OWNER_ROLE)) {
+        if(accountEvent.getRole().getId().equals(RoleDAO.OWNER)) {
             return false;
         }
 
         // Can't make more than one owner
-        if(newRoleId.equals(OWNER_ROLE)) {
+        if(newRoleId.equals(RoleDAO.OWNER)) {
             return false;
         }
 
