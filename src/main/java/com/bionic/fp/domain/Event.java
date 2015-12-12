@@ -19,8 +19,30 @@ import java.util.List;
         @NamedEntityGraph(name="Event.comments", attributeNodes={
                 @NamedAttributeNode("comments")})
 })
+@NamedQueries({
+        @NamedQuery(
+                name = Event.FIND_BY_NAME_AND_DESCRIPTION,
+                query = "SELECT e FROM Event e WHERE e.visible = TRUE AND e.name LIKE :name AND e.description LIKE :description"
+        ),
+        @NamedQuery(
+                name = Event.FIND_BY_NAME,
+                query = "SELECT e FROM Event e WHERE e.visible = TRUE AND e.name LIKE :name "
+        ),
+        @NamedQuery(
+                name = Event.FIND_BY_DESCRIPTION,
+                query = "SELECT e FROM Event e WHERE e.visible = TRUE AND e.description LIKE :description"
+        ),
+        @NamedQuery(
+                name = Event.FIND_ALL,
+                query = "SELECT e FROM Event e WHERE e.visible = TRUE"
+        )
+})
 public class Event implements Serializable {
-    @Id
+    public static final String FIND_BY_NAME_AND_DESCRIPTION = "Event.findByNameAndDescription";
+    public static final String FIND_BY_NAME = "Event.findByName";
+    public static final String FIND_BY_DESCRIPTION = "Event.findByDescription";
+    public static final String FIND_ALL = "Event.findAll";
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)

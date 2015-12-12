@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import static com.bionic.fp.util.Checks.check;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * This is implementation of {@link EventDAO}
@@ -21,31 +22,31 @@ import static java.util.Optional.ofNullable;
 public class EventDaoImpl implements EventDAO {
 
     @PersistenceContext(unitName = "entityManager")
-    private EntityManager entityManager;
+    private EntityManager em;
 
     public EventDaoImpl(){
     }
 
     @Override
     public Long create(final Event event) {
-        this.entityManager.persist(event);
+        this.em.persist(event);
         return event.getId();
     }
 
     @Override
     public Event read(final Long eventId) {
-        return this.entityManager.find(Event.class, eventId);
+        return this.em.find(Event.class, eventId);
     }
 
     @Override
     public Event update(final Event event) {
-        return this.entityManager.merge(event);
+        return this.em.merge(event);
     }
 
     @Override
     public void delete(final Long eventId) throws EventNotFoundException {
         Event event = this.getOrThrow(eventId);
-        this.entityManager.remove(event);
+        this.em.remove(event);
     }
 
     @Override
@@ -62,10 +63,10 @@ public class EventDaoImpl implements EventDAO {
 
     @Override
     public Event getWithAccounts(final Long eventId) {
-        EntityGraph graph = this.entityManager.getEntityGraph("Event.accounts");
+        EntityGraph graph = this.em.getEntityGraph("Event.accounts");
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
-        return this.entityManager.find(Event.class, eventId, hints);
+        return this.em.find(Event.class, eventId, hints);
     }
 
     @Override
@@ -80,19 +81,19 @@ public class EventDaoImpl implements EventDAO {
 
     @Override
     public List<Photo> getPhotos(final Long eventId) throws EventNotFoundException {
-        EntityGraph graph = this.entityManager.getEntityGraph("Event.photos");
+        EntityGraph graph = this.em.getEntityGraph("Event.photos");
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
-        return ofNullable(this.entityManager.find(Event.class, eventId, hints)).
+        return ofNullable(this.em.find(Event.class, eventId, hints)).
                 orElseThrow(() -> new EventNotFoundException(eventId)).getPhotos();
     }
 
     @Override
     public List<Comment> getComments(final Long eventId) throws EventNotFoundException {
-        EntityGraph graph = this.entityManager.getEntityGraph("Event.comments");
+        EntityGraph graph = this.em.getEntityGraph("Event.comments");
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
-        return ofNullable(this.entityManager.find(Event.class, eventId, hints)).
+        return ofNullable(this.em.find(Event.class, eventId, hints)).
                 orElseThrow(() -> new EventNotFoundException(eventId)).getComments();
     }
 
@@ -105,11 +106,32 @@ public class EventDaoImpl implements EventDAO {
 
     @Override
     public boolean isOwnerLoaded(final Event event) {
-        return this.entityManager.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(event, "owner");
+        return this.em.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(event, "owner");
     }
 
     @Override
     public Event getOrThrow(final Long eventId) throws EventNotFoundException {
         return ofNullable(this.read(eventId)).orElseThrow(() -> new EventNotFoundException(eventId));
+    }
+
+    @Override
+    public List<Event> get(final String name, final String description) {
+        if(isNotEmpty(name) && isNotEmpty(description)) {
+            return this.em.createNamedQuery(Event.FIND_BY_NAME_AND_DESCRIPTION, Event.class)
+                    .setParameter("name", name)
+                    .setParameter("description", description)
+                    .getResultList();
+        }
+        if(isNotEmpty(name)) {
+            return this.em.createNamedQuery(Event.FIND_BY_NAME, Event.class)
+                    .setParameter("name", name)
+                    .getResultList();
+        }
+        if(isNotEmpty(description)) {
+            return this.em.createNamedQuery(Event.FIND_BY_DESCRIPTION, Event.class)
+                    .setParameter("description", description)
+                    .getResultList();
+        }
+        return this.em.createNamedQuery(Event.FIND_ALL, Event.class).getResultList();
     }
 }

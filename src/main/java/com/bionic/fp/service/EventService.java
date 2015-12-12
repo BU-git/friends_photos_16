@@ -9,11 +9,13 @@ import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.RoleNotFoundException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -270,4 +272,16 @@ public class EventService {
     private void validation(final Long eventId) throws InvalidParameterException {
         check(eventId != null, "The event ID should not be null");
     }
+
+    /**
+     * todo
+     * @param name
+     * @param description
+     * @return
+     */
+    public List<Event> get(final String name, final String description) {
+        return this.eventDAO.get(name, description);
+    }
+
+
 }

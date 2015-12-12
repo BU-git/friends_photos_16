@@ -94,4 +94,12 @@ public interface EventDAO extends GenericDAO<Event, Long> {
      * @throws EventNotFoundException if the event doesn't exist
      */
     Event getOrThrow(Long eventId) throws EventNotFoundException;
+
+    /**
+     * todo
+     * @param name
+     * @param description
+     * @return
+     */
+    List<Event> get(String name, String description);
 }

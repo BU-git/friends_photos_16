@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -168,6 +169,16 @@ public class EventController {
         IdListsDTO body = new IdListsDTO();
         body.setComments(this.eventService.getComments(eventId).stream().parallel()
                 .map(Comment::getId).collect(toList()));
+        return body;
+    }
+
+    @RequestMapping(method = GET)
+    @ResponseStatus(OK)
+    public @ResponseBody IdListsDTO findEventById(@RequestParam("name") final String name,
+                                                  @RequestParam("description") final String description) {
+        IdListsDTO body = new IdListsDTO();
+        body.setEvents(this.eventService.get(name, description).stream().parallel()
+                .map(Event::getId).collect(toList()));
         return body;
     }
 
