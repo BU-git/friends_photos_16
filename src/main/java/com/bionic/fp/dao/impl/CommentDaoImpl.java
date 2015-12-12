@@ -13,30 +13,30 @@ import javax.persistence.PersistenceContext;
 @Repository
 public class CommentDaoImpl implements CommentDAO {
 
-    @PersistenceContext(unitName = "entityManager")
-    private EntityManager entityManager;
+    @PersistenceContext(unitName = "em")
+    private EntityManager em;
 
     public CommentDaoImpl() {}
 
     @Override
     public Long create(Comment newInstance) {
-        entityManager.persist(newInstance);
+        em.persist(newInstance);
         return newInstance.getId();
     }
 
     @Override
     public Comment read(Long id) {
-        return entityManager.find(Comment.class, id);
+        return em.find(Comment.class, id);
     }
 
     @Override
     public Comment update(Comment transientObject) {
-        entityManager.merge(transientObject);
+        em.merge(transientObject);
         return transientObject;
     }
 
     @Override
     public void delete(Long persistentObjectID) {
-        entityManager.remove(read(persistentObjectID));
+        em.remove(read(persistentObjectID));
     }
 }

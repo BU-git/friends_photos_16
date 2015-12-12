@@ -17,42 +17,42 @@ import java.util.List;
 public class PhotoDaoImpl implements PhotoDAO {
 
     @PersistenceContext(unitName = "entityManager")
-    private EntityManager entityManager;
+    private EntityManager em;
 
     public PhotoDaoImpl() {}
 
     @Override
     public Long create(Photo newInstance) {
-        entityManager.persist(newInstance);
+        em.persist(newInstance);
         return newInstance.getId();
     }
 
     @Override
     public Photo read(Long id) {
-        return entityManager.find(Photo.class, id);
+        return em.find(Photo.class, id);
     }
 
     @Override
     public Photo update(Photo photo) {
-        entityManager.merge(photo);
+        em.merge(photo);
         return photo;
     }
 
     @Override
     public void delete(Long persistentObjectID) {
-        entityManager.remove(read(persistentObjectID));
+        em.remove(read(persistentObjectID));
     }
 
 	@Override
 	public List<Photo> getPhotosByEvent(Event event) {
-		Query query = entityManager.createQuery("from Photo where event = :event");
+		Query query = em.createQuery("from Photo where event = :event");
 		query.setParameter("event", event);
 		return query.getResultList();
 	}
 
 //    @Override
 //    public Photo getSingleInfoByHash(String hash){
-//        Query query = entityManager.createQuery("from Photo where hash = :md5");
+//        Query query = em.createQuery("from Photo where hash = :md5");
 //        query.setParameter("md5", hash);
 //        List<Photo> list  = query.getResultList();
 //
