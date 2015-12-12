@@ -10,6 +10,10 @@ import java.util.List;
  */
 public interface RoleDAO extends GenericDAO<Role, Integer> {
 
+    Integer OWNER = 1;
+    Integer ADMIN = 2;
+    Integer MEMBER = 3;
+
     Role getOwner() throws RoleNotFoundException;
     List<Role> getAllRoles();
 

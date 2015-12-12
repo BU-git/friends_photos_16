@@ -1,5 +1,6 @@
 package com.bionic.fp.web.rest;
 
+import com.bionic.fp.dao.RoleDAO;
 import com.bionic.fp.domain.*;
 import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
 import com.bionic.fp.exception.permission.PermissionsDeniedException;
@@ -135,14 +136,31 @@ public class EventController {
         this.eventService.update(event);
     }
 
-    @RequestMapping(value = "/{eventId:[\\d]+}/account/{accountId:[\\d]+}/role/{roleId:[\\d]+}", method = PUT)
+    @RequestMapping(value = "/{event_id:[\\d]+}/account/{account_id:[\\d]+}", method = PUT)
     @ResponseStatus(OK)
-    public void addOrUpdateAccountToEvent(@PathVariable("eventId") final Long eventId,
-                                          @PathVariable("accountId") final Long accountId,
-                                          @PathVariable("roleId") final Integer roleId,
-                                          @RequestParam(value = "password", required = false) final String password) {
+    public void updateAccountToEvent(@PathVariable("event_id") final Long eventId,
+                                     @PathVariable("account_id") final Long accountId,
+                                     @RequestParam(value = "role_id", required = false) Integer roleId,
+                                     @RequestParam(value = "password", required = false) final String password) {
+        if(roleId == null) {
+            roleId = RoleDAO.MEMBER;
+        }
         this.eventService.addOrUpdateAccountToEvent(accountId, eventId, roleId, password);
     }
+
+    @RequestMapping(value = "/{event_id:[\\d]+}/account/{account_id:[\\d]+}", method = POST)
+    @ResponseStatus(OK)
+    public void createAccountToEvent(@PathVariable("event_id") final Long eventId,
+                                     @PathVariable("account_id") final Long accountId,
+                                     @RequestParam(value = "role_id", required = false) Integer roleId,
+                                     @RequestParam(value = "password", required = false) final String password) {
+        if(roleId == null) {
+            roleId = RoleDAO.MEMBER;
+        }
+        this.eventService.addOrUpdateAccountToEvent(accountId, eventId, roleId, password);
+    }
+
+
 
     @RequestMapping(value = "/{id:[\\d]+}/accounts", method = GET)
     @ResponseStatus(OK)

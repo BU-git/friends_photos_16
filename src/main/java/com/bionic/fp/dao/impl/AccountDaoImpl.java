@@ -130,7 +130,7 @@ public class AccountDaoImpl implements AccountDAO {
         List<AccountEvent> events = account.getEvents();
         List<Event> eventsWhereRoleOwner = new ArrayList<>();
         for (AccountEvent event : events) {
-            if(RoleService.OWNER_ROLE.equals(event.getRole().getId())) {
+            if(RoleDAO.OWNER.equals(event.getRole().getId())) {
                 eventsWhereRoleOwner.add(event.getEvent());
             }
         }
