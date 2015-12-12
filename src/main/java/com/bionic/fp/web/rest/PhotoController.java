@@ -180,13 +180,13 @@ public class PhotoController {
 			byte[] bytes = file.getBytes();
 			// FIXME set correct path to file
 			BufferedOutputStream stream =
-					new BufferedOutputStream(new FileOutputStream(new File("/friendsphotos/" + resultFileName)));
+					new BufferedOutputStream(new FileOutputStream(new File("/home/artem/ff/" + resultFileName)));
 			stream.write(bytes);
 			stream.close();
 
 			Photo photo = new Photo();
 			photo.setName(name == null ? file.getOriginalFilename() : name);
-			photo.setUrl("/friendsphotos/" + resultFileName);
+			photo.setUrl("/home/artem/ff/" + resultFileName);
 			photo.setOwner(owner);
 			photo = photoService.create(photo);
 			PhotoInfoDTO photoInfoDTO = new PhotoInfoDTO();
