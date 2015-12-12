@@ -136,7 +136,7 @@ public class EventController {
         this.eventService.update(event);
     }
 
-    @RequestMapping(value = "/{eventId:[\\d]+}/account/{accountId:[\\d]+}", method = PUT)
+    @RequestMapping(value = "/{event_id:[\\d]+}/account/{account_id:[\\d]+}", method = PUT)
     @ResponseStatus(OK)
     public void updateAccountToEvent(@PathVariable("event_id") final Long eventId,
                                      @PathVariable("account_id") final Long accountId,
@@ -148,7 +148,7 @@ public class EventController {
         this.eventService.addOrUpdateAccountToEvent(accountId, eventId, roleId, password);
     }
 
-    @RequestMapping(value = "/{eventId:[\\d]+}/account/{accountId:[\\d]+}", method = POST)
+    @RequestMapping(value = "/{event_id:[\\d]+}/account/{account_id:[\\d]+}", method = POST)
     @ResponseStatus(OK)
     public void createAccountToEvent(@PathVariable("event_id") final Long eventId,
                                      @PathVariable("account_id") final Long accountId,
