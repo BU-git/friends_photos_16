@@ -38,11 +38,16 @@ import java.util.List;
         )
 })
 public class Event implements Serializable {
+    @Transient
     public static final String FIND_BY_NAME_AND_DESCRIPTION = "Event.findByNameAndDescription";
+    @Transient
     public static final String FIND_BY_NAME = "Event.findByName";
+    @Transient
     public static final String FIND_BY_DESCRIPTION = "Event.findByDescription";
+    @Transient
     public static final String FIND_ALL = "Event.findAll";
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
