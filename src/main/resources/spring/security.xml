@@ -19,7 +19,7 @@
             </beans:list>
         </beans:property>
         <beans:property name="accountService" ref="accountService"/>
-        <beans:property name="isActive" value="false"/>
+        <beans:property name="isActive" value="true"/>
     </beans:bean>
 
     <beans:bean id="sessionUtils" class="com.bionic.fp.web.security.SessionUtils" lazy-init="true">
