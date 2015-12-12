@@ -192,8 +192,8 @@ public class EventController {
 
     @RequestMapping(method = GET)
     @ResponseStatus(OK)
-    public @ResponseBody IdListsDTO findEventById(@RequestParam("name") final String name,
-                                                  @RequestParam("description") final String description) {
+    public @ResponseBody IdListsDTO findEvent(@RequestParam(value = "name", required = false) final String name,
+                                              @RequestParam(value = "description", required = false) final String description) {
         IdListsDTO body = new IdListsDTO();
         body.setEvents(this.eventService.get(name, description).stream().parallel()
                 .map(Event::getId).collect(toList()));

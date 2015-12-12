@@ -118,18 +118,18 @@ public class EventDaoImpl implements EventDAO {
     public List<Event> get(final String name, final String description) {
         if(isNotEmpty(name) && isNotEmpty(description)) {
             return this.em.createNamedQuery(Event.FIND_BY_NAME_AND_DESCRIPTION, Event.class)
-                    .setParameter("name", name)
-                    .setParameter("description", description)
+                    .setParameter("name", "%"+name+"%")
+                    .setParameter("description", "%"+description+"%")
                     .getResultList();
         }
         if(isNotEmpty(name)) {
             return this.em.createNamedQuery(Event.FIND_BY_NAME, Event.class)
-                    .setParameter("name", name)
+                    .setParameter("name", "%"+name+"%")
                     .getResultList();
         }
         if(isNotEmpty(description)) {
             return this.em.createNamedQuery(Event.FIND_BY_DESCRIPTION, Event.class)
-                    .setParameter("description", description)
+                    .setParameter("description", "%" + description+"%")
                     .getResultList();
         }
         return this.em.createNamedQuery(Event.FIND_ALL, Event.class).getResultList();

@@ -2,6 +2,7 @@ package com.bionic.fp.dao.impl;
 
 import com.bionic.fp.Constants;
 import com.bionic.fp.dao.AccountDAO;
+import com.bionic.fp.dao.RoleDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;

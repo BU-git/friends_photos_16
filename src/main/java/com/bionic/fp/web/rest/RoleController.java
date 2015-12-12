@@ -20,13 +20,13 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  */
 
 @RestController
-@RequestMapping("/roles")
+@RequestMapping("/role")
 public class RoleController {
 
     @Inject
     private RoleService roleService;
 
-    @RequestMapping(method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/list", method = GET, produces = APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<AllRolesDTO> getAllRoles() {
         List<Role> allRoles = roleService.getAllRoles();
         AllRolesDTO allRolesDTO = new AllRolesDTO(allRoles);
@@ -46,10 +46,10 @@ public class RoleController {
         return isNewRoleSetted ? new ResponseEntity(OK) : new ResponseEntity(BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/for/{accountId:[\\d]+}/at/{eventId:[\\d]+}", method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/account/{account_id:[\\d]+}/event/{event_id:[\\d]+}", method = GET, produces = APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<RoleIdDTO> getRoleByAccountAndEvent(
-            @PathVariable("accountId") final Long accountId,
-            @PathVariable("eventId") final Long eventId
+            @PathVariable("account_id") final Long accountId,
+            @PathVariable("event_id") final Long eventId
     ) {
         Role roleByAccountAndEvent = null;
         roleByAccountAndEvent = roleService.getRole(accountId, eventId);
