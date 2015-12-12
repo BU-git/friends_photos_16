@@ -43,6 +43,7 @@ public class Event implements Serializable {
     public static final String FIND_BY_DESCRIPTION = "Event.findByDescription";
     public static final String FIND_ALL = "Event.findAll";
 
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)

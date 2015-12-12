@@ -34,17 +34,35 @@ public class PhotoService {
 
     public PhotoService(){}
 
-	public Photo createPhoto(Photo photo) {
+	public Photo create(Photo photo) {
 		Long newPhotoId = photoDAO.create(photo);
 		return photoDAO.read(newPhotoId);
 	}
 
+	public Photo update(Photo photo) {
+		Long id = photoDAO.create(photo);
+		return photoDAO.read(id);
+	}
 
 
-    public Long saveSinglePhoto(Photo photo, InputStream uploadedInputStream) {
-        return photoDAO.create(saveToFileSystemStream(photo, uploadedInputStream));
-        //photoDao.create(saveToFileSystem(photo, uploadedInputStream));
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    public Long saveSinglePhoto(Photo photo, InputStream uploadedInputStream) {
+//        return photoDAO.create(saveToFileSystemStream(photo, uploadedInputStream));
+//        //photoDao.create(saveToFileSystem(photo, uploadedInputStream));
+//    }
 
     /**
      * Pulls out a photo from the file system
@@ -52,9 +70,9 @@ public class PhotoService {
      * @param photo Photo entity
      * @return File object for REST
      * */
-    public File getSingleFile(Photo photo) {
-        return new File(DIRECTORY + photo.getEvent().getId() + System.getProperty("file.separator") + photo.getName());
-    }
+//    public File getSingleFile(Photo photo) {
+//        return new File(DIRECTORY + photo.getEvent().getId() + System.getProperty("file.separator") + photo.getName());
+//    }
 
 	// TODO refactor this
 //    public List<Photo> getPhotos(Long eventId){
@@ -80,13 +98,12 @@ public class PhotoService {
     /**
      * The method allows to find out which files belong to the event
      *
-     * @param event Group entity
      * @return List that contains the entities with all the photos in this event
      */
 	// TODO refactor this method!
-    public List<Photo> getEventInfo(Event event) {
-        return event == null ? Collections.emptyList() : photoDAO.getPhotosByEvent(event);
-    }
+//    public List<Photo> getEventInfo(Event event) {
+//        return event == null ? Collections.emptyList() : photoDAO.getPhotosByEvent(event);
+//    }
 
     /* Private methods */
 

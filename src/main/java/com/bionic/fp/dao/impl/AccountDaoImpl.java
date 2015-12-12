@@ -1,14 +1,18 @@
 package com.bionic.fp.dao.impl;
 
+import com.bionic.fp.Constants;
 import com.bionic.fp.dao.AccountDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.exception.logic.impl.AccountNotFoundException;
-import com.bionic.fp.service.RoleService;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.*;
+import javax.persistence.EntityGraph;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -130,7 +134,7 @@ public class AccountDaoImpl implements AccountDAO {
         List<AccountEvent> events = account.getEvents();
         List<Event> eventsWhereRoleOwner = new ArrayList<>();
         for (AccountEvent event : events) {
-            if(RoleDAO.OWNER.equals(event.getRole().getId())) {
+            if(Constants.RoleConstants.OWNER.equals(event.getRole().getId())) {
                 eventsWhereRoleOwner.add(event.getEvent());
             }
         }

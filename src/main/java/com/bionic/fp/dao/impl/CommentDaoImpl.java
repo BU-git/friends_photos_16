@@ -13,7 +13,7 @@ import javax.persistence.PersistenceContext;
 @Repository
 public class CommentDaoImpl implements CommentDAO {
 
-    @PersistenceContext(unitName = "em")
+    @PersistenceContext(unitName = "entityManager")
     private EntityManager em;
 
     public CommentDaoImpl() {}
