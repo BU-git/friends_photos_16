@@ -9,6 +9,7 @@ import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Role;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
+import com.bionic.fp.exception.permission.PermissionsDeniedException;
 import com.bionic.fp.exception.permission.UserDoesNotExistException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,17 +57,17 @@ public class RoleService {
                 = accountEventDAO.getWithAccountEvent(userId, eventId);
 
         if (accountEvent == null) {
-            return false;
+            throw new AccountEventNotFoundException(userId, eventId);
         }
 
         // Can't downgrade owner
         if(accountEvent.getRole().getId().equals(Constants.RoleConstants.OWNER)) {
-            return false;
+            throw new PermissionsDeniedException();
         }
 
         // Can't make more than one owner
         if(newRoleId.equals(Constants.RoleConstants.OWNER)) {
-            return false;
+            throw new PermissionsDeniedException();
         }
 
         if(accountEvent.getEvent().getOwner().getId().equals(ownerId)) {
@@ -76,7 +77,7 @@ public class RoleService {
             return true;
         }
 
-        return false;
+        throw new PermissionsDeniedException();
     }
 
     /**

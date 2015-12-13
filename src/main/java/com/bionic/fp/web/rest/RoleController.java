@@ -1,12 +1,15 @@
 package com.bionic.fp.web.rest;
 
 import com.bionic.fp.domain.Role;
+import com.bionic.fp.service.AccountService;
 import com.bionic.fp.web.rest.dto.*;
 import com.bionic.fp.service.RoleService;
+import com.bionic.fp.web.security.SessionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 import java.util.List;
 
@@ -35,15 +38,20 @@ public class RoleController {
     }
 
     @RequestMapping(value = "/change", method = PUT, consumes = APPLICATION_JSON_VALUE)
-    public @ResponseBody ResponseEntity setNewRole(@RequestBody final NewRoleDTO newRoleDTO) {
+    @ResponseStatus(OK)
+    public void setNewRole(
+            @RequestParam("account_id") final Long accountId,
+            @RequestParam("event_id") final Long eventId,
+            @RequestParam("role_id") final Integer roleId,
+            final HttpSession session
+    ) {
+        Long userId = SessionUtils.getUserId(session);
         boolean isNewRoleSetted = roleService.setNewRole(
-                newRoleDTO.getRoleId(),
-                newRoleDTO.getAccountId(),
-                newRoleDTO.getEventId(),
-                newRoleDTO.getOwnerId()
+                roleId,
+                accountId,
+                eventId,
+                userId
         );
-
-        return isNewRoleSetted ? new ResponseEntity(OK) : new ResponseEntity(BAD_REQUEST);
     }
 
     @RequestMapping(value = "/account/{account_id:[\\d]+}/event/{event_id:[\\d]+}", method = GET, produces = APPLICATION_JSON_VALUE)
