@@ -9,8 +9,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class NewRoleDTO {
 
-    @JsonProperty("owner_id")
-    private Long ownerId;
     @JsonProperty("account_id")
     private Long accountId;
     @JsonProperty("event_id")
@@ -21,20 +19,6 @@ public class NewRoleDTO {
     public NewRoleDTO() {
     }
 
-    public NewRoleDTO(Long ownerId, Long accountId, Long eventId, Integer roleId) {
-        this.ownerId = ownerId;
-        this.accountId = accountId;
-        this.eventId = eventId;
-        this.roleId = roleId;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
-    }
 
     public Long getAccountId() {
         return accountId;

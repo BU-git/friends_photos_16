@@ -39,17 +39,12 @@ public class RoleController {
 
     @RequestMapping(value = "/change", method = PUT, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public void setNewRole(
-            @RequestParam("account_id") final Long accountId,
-            @RequestParam("event_id") final Long eventId,
-            @RequestParam("role_id") final Integer roleId,
-            final HttpSession session
-    ) {
+    public void setNewRole(@RequestBody final NewRoleDTO newRoleDTO, final HttpSession session) {
         Long userId = SessionUtils.getUserId(session);
         boolean isNewRoleSetted = roleService.setNewRole(
-                roleId,
-                accountId,
-                eventId,
+                newRoleDTO.getRoleId(),
+                newRoleDTO.getAccountId(),
+                newRoleDTO.getEventId(),
                 userId
         );
     }
