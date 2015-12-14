@@ -7,8 +7,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.function.Consumer;
+
+import static java.util.Arrays.asList;
 
 /**
  * Holds group info for the client-server communication
@@ -18,6 +23,7 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EventInfoDTO {
 
+    @JsonProperty("event_id")
     private Long id;
     private String name;
     private String description;
@@ -39,12 +45,17 @@ public class EventInfoDTO {
     private Float radius;
     private Boolean geo;
     private Boolean visible;
+    @JsonProperty("private")
     private Boolean isPrivate;
 
     public EventInfoDTO() {
     }
 
     public EventInfoDTO(final Event event) {
+        build(event);
+    }
+
+    public void build(final Event event) {
         this.id = event.getId();
         this.name = event.getName();
         this.description = event.getDescription();
@@ -58,6 +69,63 @@ public class EventInfoDTO {
         this.geo = event.isGeoServicesEnabled();
         this.visible = event.isVisible();
         this.isPrivate = event.isPrivate();
+    }
+
+    public Consumer<Event> getConsumer(final String fields) {
+        Consumer<Event> result = addConsumer(fields, "event_id", null, e -> this.setId(e.getId()));
+        result = addConsumer(fields, "name", result, e -> this.setName(e.getName()));
+        result = addConsumer(fields, "description", result, e -> this.setDescription(e.getDescription()));
+        result = addConsumer(fields, "date", result, e -> this.setDate(e.getDate()));
+        result = addConsumer(fields, "expire_date", result, e -> this.setExpireDate(e.getExpireDate()));
+        result = addConsumer(fields, "type_id", result, e -> this.setTypeId(e.getEventType().getId()));
+        result = addConsumer(fields, "owner_id", result, e -> this.setOwnerId(e.getOwner().getId()));
+        result = addConsumer(fields, "lat", result, e -> this.setLatitude(e.getLatitude()));
+        result = addConsumer(fields, "lng", result, e -> this.setLongitude(e.getLongitude()));
+        result = addConsumer(fields, "radius", result, e -> this.setRadius(e.getRadius()));
+        result = addConsumer(fields, "geo", result, e -> this.setGeo(e.isGeoServicesEnabled()));
+        result = addConsumer(fields, "visible", result, e -> this.setVisible(e.isVisible()));
+        result = addConsumer(fields, "private", result, e -> this.setIsPrivate(e.isPrivate()));
+
+        return result;
+    }
+
+    public Consumer<Event> getConsumer(final String... fields) {
+        if(ArrayUtils.isNotEmpty(fields)) {
+            List<String> list = asList(fields);
+
+            Consumer<Event> result = addConsumer(list, "event_id", null, e -> this.setId(e.getId()));
+            result = addConsumer(list, "name", result, e -> this.setName(e.getName()));
+            result = addConsumer(list, "description", result, e -> this.setDescription(e.getDescription()));
+            result = addConsumer(list, "date", result, e -> this.setDate(e.getDate()));
+            result = addConsumer(list, "expire_date", result, e -> this.setExpireDate(e.getExpireDate()));
+            result = addConsumer(list, "type_id", result, e -> this.setTypeId(e.getEventType().getId()));
+            result = addConsumer(list, "owner_id", result, e -> this.setOwnerId(e.getOwner().getId()));
+            result = addConsumer(list, "lat", result, e -> this.setLatitude(e.getLatitude()));
+            result = addConsumer(list, "lng", result, e -> this.setLongitude(e.getLongitude()));
+            result = addConsumer(list, "radius", result, e -> this.setRadius(e.getRadius()));
+            result = addConsumer(list, "geo", result, e -> this.setGeo(e.isGeoServicesEnabled()));
+            result = addConsumer(list, "visible", result, e -> this.setVisible(e.isVisible()));
+            result = addConsumer(list, "private", result, e -> this.setIsPrivate(e.isPrivate()));
+
+            return result;
+        }
+        return null;
+    }
+
+    private Consumer<Event> addConsumer(final String fields, final String field,
+                                        final Consumer<Event> result, final Consumer<Event> consumer) {
+        if(fields.matches("(.*[,\\s]+?|^)" + field +"([,\\s].*|$)")) {
+            return result == null ? consumer : result.andThen(consumer);
+        }
+        return result;
+    }
+
+    private Consumer<Event> addConsumer(final List<String> fields, final String field,
+                                        final Consumer<Event> result, final Consumer<Event> consumer) {
+        if(fields.stream().parallel().filter(s -> s.equalsIgnoreCase(field)).findAny().isPresent()) {
+            return result == null ? consumer : result.andThen(consumer);
+        }
+        return result;
     }
 
     public Long getId() {

@@ -1,7 +1,6 @@
 package com.bionic.fp.web.rest;
 
 import com.bionic.fp.Constants;
-import com.bionic.fp.dao.RoleDAO;
 import com.bionic.fp.domain.*;
 import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
 import com.bionic.fp.exception.permission.PermissionsDeniedException;
@@ -13,12 +12,13 @@ import com.bionic.fp.web.security.SessionUtils;
 import com.bionic.fp.service.EventService;
 import com.bionic.fp.service.EventTypeService;
 import com.bionic.fp.service.RoleService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
-import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -86,10 +86,23 @@ public class EventController {
 
     @RequestMapping(value = "/{id:[\\d]+}", method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public @ResponseBody EventInfoDTO findEventById(@PathVariable("id") final Long id) {
+    public @ResponseBody EventInfoDTO findEventById(@PathVariable("id") final Long id,
+                                                    @RequestParam(value = "fields", required = false) final String fields) {
         Event event = this.findEventOrThrow(id);
-        return new EventInfoDTO(event);
+
+        EventInfoDTO eventInfoDto = new EventInfoDTO();
+        if(StringUtils.isNotEmpty(fields)) {
+            Consumer<Event> consumer = eventInfoDto.getConsumer(fields);
+            if(consumer != null) {
+                consumer.accept(event);
+                return eventInfoDto;
+            }
+        }
+        eventInfoDto.build(event);
+        return eventInfoDto;
     }
+
+
 
     @RequestMapping(value = "/{id:[\\d]+}",  method = PUT, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
