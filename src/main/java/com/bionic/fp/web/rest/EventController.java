@@ -12,16 +12,15 @@ import com.bionic.fp.web.security.SessionUtils;
 import com.bionic.fp.service.EventService;
 import com.bionic.fp.service.EventTypeService;
 import com.bionic.fp.service.RoleService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static com.bionic.fp.web.rest.RestConstants.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ArrayUtils.isNotEmpty;
@@ -35,7 +34,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  * @author Sergiy Gabriel
  */
 @RestController
-@RequestMapping("/events")
+@RequestMapping(EVENT)
 public class EventController {
 
     @Inject
@@ -87,19 +86,9 @@ public class EventController {
     @RequestMapping(value = "/{id:[\\d]+}", method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public @ResponseBody EventInfoDTO findEventById(@PathVariable("id") final Long id,
-                                                    @RequestParam(value = "fields", required = false) final String fields) {
+                                                    @RequestParam(value = FIELDS, required = false) final String fields) {
         Event event = this.findEventOrThrow(id);
-
-        EventInfoDTO eventInfoDto = new EventInfoDTO();
-        if(StringUtils.isNotEmpty(fields)) {
-            Consumer<Event> consumer = eventInfoDto.getConsumer(fields);
-            if(consumer != null) {
-                consumer.accept(event);
-                return eventInfoDto;
-            }
-        }
-        eventInfoDto.build(event);
-        return eventInfoDto;
+        return EventInfoDTO.Transformer.transform(event, fields);
     }
 
 
@@ -151,24 +140,24 @@ public class EventController {
         this.eventService.update(event);
     }
 
-    @RequestMapping(value = "/{event_id:[\\d]+}/account/{account_id:[\\d]+}", method = PUT)
+    @RequestMapping(value = "/{event_id:[\\d]+}"+ACCOUNT+"/{account_id:[\\d]+}", method = PUT)
     @ResponseStatus(OK)
     public void updateAccountToEvent(@PathVariable("event_id") final Long eventId,
                                      @PathVariable("account_id") final Long accountId,
-                                     @RequestParam(value = "role_id", required = false) Integer roleId,
-                                     @RequestParam(value = "password", required = false) final String password) {
+                                     @RequestParam(value = ROLE_ID, required = false) Integer roleId,
+                                     @RequestParam(value = EVENT_PASSWORD, required = false) final String password) {
         if(roleId == null) {
             roleId = Constants.RoleConstants.MEMBER;
         }
         this.eventService.addOrUpdateAccountToEvent(accountId, eventId, roleId, password);
     }
 
-    @RequestMapping(value = "/{event_id:[\\d]+}/account/{account_id:[\\d]+}", method = POST)
-    @ResponseStatus(OK)
-    public void createAccountToEvent(@PathVariable("event_id") final Long eventId,
-                                     @PathVariable("account_id") final Long accountId,
-                                     @RequestParam(value = "role_id", required = false) Integer roleId,
-                                     @RequestParam(value = "password", required = false) final String password) {
+    @RequestMapping(value = "/{event_id:[\\d]+}"+ACCOUNT+"/{account_id:[\\d]+}", method = POST)
+    @ResponseStatus(CREATED)
+    public void addAccountToEvent(@PathVariable("event_id") final Long eventId,
+                                  @PathVariable("account_id") final Long accountId,
+                                  @RequestParam(value = ROLE_ID, required = false) Integer roleId,
+                                  @RequestParam(value = EVENT_PASSWORD, required = false) final String password) {
         if(roleId == null) {
             roleId = Constants.RoleConstants.MEMBER;
         }
@@ -177,7 +166,7 @@ public class EventController {
 
 
 
-    @RequestMapping(value = "/{id:[\\d]+}/accounts", method = GET)
+    @RequestMapping(value = "/{id:[\\d]+}"+ACCOUNT+LIST, method = GET)
     @ResponseStatus(OK)
     public @ResponseBody IdListsDTO getAccounts(@PathVariable("id") final Long eventId) {
         IdListsDTO body = new IdListsDTO();
@@ -186,7 +175,7 @@ public class EventController {
         return body;
     }
 
-    @RequestMapping(value = "/{id:[\\d]+}/photos", method = GET)
+    @RequestMapping(value = "/{id:[\\d]+}"+PHOTO+LIST, method = GET)
     @ResponseStatus(OK)
     public @ResponseBody IdListsDTO getPhotos(@PathVariable("id") final Long eventId) {
         IdListsDTO body = new IdListsDTO();
@@ -195,7 +184,7 @@ public class EventController {
         return body;
     }
 
-    @RequestMapping(value = "/{id:[\\d]+}/comments", method = GET)
+    @RequestMapping(value = "/{id:[\\d]+}"+COMMENT+LIST, method = GET)
     @ResponseStatus(OK)
     public @ResponseBody IdListsDTO getComments(@PathVariable("id") final Long eventId) {
         IdListsDTO body = new IdListsDTO();
@@ -204,13 +193,24 @@ public class EventController {
         return body;
     }
 
+    @RequestMapping(value = "/{id:[\\d]+}"+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    public @ResponseBody IdInfoDTO getEventOwnerById(@PathVariable("id") final Long eventId) {
+        Event event = this.getEventOrThrow(eventId);
+        return new IdInfoDTO(event.getOwner().getId());
+    }
+
     @RequestMapping(method = GET)
     @ResponseStatus(OK)
-    public @ResponseBody IdListsDTO findEvent(@RequestParam(value = "name", required = false) final String name,
-                                              @RequestParam(value = "description", required = false) final String description) {
-        IdListsDTO body = new IdListsDTO();
-        body.setEvents(this.eventService.get(name, description).stream().parallel()
-                .map(Event::getId).collect(toList()));
+    public @ResponseBody EntityInfoListsDTO findEvent(@RequestParam(value = EVENT_NAME, required = false) final String name,
+                                              @RequestParam(value = EVENT_DESCRIPTION, required = false) final String description,
+                                              @RequestParam(value = FIELDS, required = false) final String fields) {
+//        IdListsDTO body = new IdListsDTO();
+//        body.setEvents(this.eventService.get(name, description).stream().parallel()
+//                .map(Event::getId).collect(toList()));
+//        return body;
+        EntityInfoListsDTO body = new EntityInfoListsDTO();
+        body.setEvents(EventInfoDTO.Transformer.transform(this.eventService.get(name, description), fields));
         return body;
     }
 

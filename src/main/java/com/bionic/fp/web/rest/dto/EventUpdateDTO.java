@@ -3,26 +3,25 @@ package com.bionic.fp.web.rest.dto;
 import com.bionic.fp.domain.Event;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import static com.bionic.fp.web.rest.RestConstants.*;
+
 /**
  * Holds event for the client-server communication
  *
  * @author Sergiy Gabriel
  */
 public class EventUpdateDTO {
-    private String name;
-    private String description;
-    @JsonProperty("type_id")
-    private Integer typeId;
-    private Boolean visible;
-    @JsonProperty("lat")
-    private Double latitude;
-    @JsonProperty("lng")
-    private Double longitude;
-    private Float radius;
-    private Boolean geo;
-    @JsonProperty("private")
-    private Boolean isPrivate;
-    private String password;
+
+    @JsonProperty(EVENT_NAME)           private String name;
+    @JsonProperty(EVENT_DESCRIPTION)    private String description;
+    @JsonProperty(EVENT_TYPE_ID)        private Integer typeId;
+    @JsonProperty(EVENT_LATITUDE)       private Double latitude;
+    @JsonProperty(EVENT_LONGITUDE)      private Double longitude;
+    @JsonProperty(EVENT_RADIUS)         private Float radius;
+    @JsonProperty(EVENT_GEO)            private Boolean geo;
+    @JsonProperty(EVENT_VISIBLE)        private Boolean visible;
+    @JsonProperty(EVENT_PRIVATE)        private Boolean isPrivate;
+    @JsonProperty(EVENT_PASSWORD)       private String password;
 
     public EventUpdateDTO() {
     }
