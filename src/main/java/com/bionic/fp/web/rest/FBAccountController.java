@@ -2,6 +2,8 @@ package com.bionic.fp.web.rest;
 
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.exception.logic.InvalidParameterException;
+import com.bionic.fp.web.rest.RestConstants.PARAM;
+import com.bionic.fp.web.rest.RestConstants.PATH;
 import com.bionic.fp.web.rest.dto.FBUserInfoResponse;
 import com.bionic.fp.web.rest.dto.AuthResponse;
 import com.bionic.fp.web.rest.dto.FBUserTokenInfo;
@@ -25,7 +27,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping("/account/fb")
+@RequestMapping(PATH.ACCOUNT+ PATH.FB)
 public class FBAccountController {
     private static final String DEBUG_TOKEN_URL =
             "https://graph.facebook.com/debug_token?input_token=%s&access_token=%s|%s";
@@ -44,12 +46,18 @@ public class FBAccountController {
     @Value("${fb.secret}")
     private String appSecret;
 
+
+    //***************************************
+    //                 @POST
+    //***************************************
+
+
     @RequestMapping(method = POST, produces = APPLICATION_JSON_VALUE)
-    public AuthResponse loginViaFacebook(@RequestParam(name = "fbId") final String fbId,
-                                         @RequestParam(name = "fbToken") final String token,
+    public AuthResponse loginViaFacebook(@RequestParam(name = PARAM.FB_ID) final String fbId,
+                                         @RequestParam(name = PARAM.FB_TOKEN) final String token,
                                          final HttpSession session) throws InvalidParameterException {
-        check(isNotEmpty(fbId), "BF id is empty");
-        check(isNotEmpty(token), "token is empty");
+        check(isNotEmpty(fbId), "FB id is empty");
+        check(isNotEmpty(token), "FB token is empty");
 
         AuthResponse authResponse = new AuthResponse();
 

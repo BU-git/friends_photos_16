@@ -1,5 +1,6 @@
 package com.bionic.fp.web.rest.dto;
 
+import com.bionic.fp.web.rest.RestConstants.PARAM;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -13,7 +14,7 @@ public class PhotoInfoDTO {
     private String name;
     private String url;
 
-    @JsonProperty("owner_id")
+    @JsonProperty(PARAM.OWNER_ID)
     private Long ownerID;
 
     public String getName() {

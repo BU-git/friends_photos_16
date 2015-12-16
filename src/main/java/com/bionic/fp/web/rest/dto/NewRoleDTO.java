@@ -1,5 +1,8 @@
 package com.bionic.fp.web.rest.dto;
 
+import com.bionic.fp.web.rest.RestConstants.ACCOUNT;
+import com.bionic.fp.web.rest.RestConstants.EVENT;
+import com.bionic.fp.web.rest.RestConstants.ROLE;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -9,11 +12,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class NewRoleDTO {
 
-    @JsonProperty("account_id")
+    @JsonProperty(ACCOUNT.ID)
     private Long accountId;
-    @JsonProperty("event_id")
+    @JsonProperty(EVENT.ID)
     private Long eventId;
-    @JsonProperty("role_id")
+    @JsonProperty(ROLE.ID)
     private Integer roleId;
 
     public NewRoleDTO() {

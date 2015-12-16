@@ -12,17 +12,17 @@ import static com.bionic.fp.web.rest.RestConstants.*;
  */
 public class EventCreateDTO {
 
-    @JsonProperty(OWNER_ID)             private Long ownerId;
-    @JsonProperty(EVENT_NAME)           private String name;
-    @JsonProperty(EVENT_DESCRIPTION)    private String description;
-    @JsonProperty(EVENT_TYPE_ID)        private Integer typeId;
-    @JsonProperty(EVENT_LATITUDE)       private Double latitude;
-    @JsonProperty(EVENT_LONGITUDE)      private Double longitude;
-    @JsonProperty(EVENT_RADIUS)         private Float radius;
-    @JsonProperty(EVENT_GEO)            private Boolean geo;
-    @JsonProperty(EVENT_VISIBLE)        private Boolean visible;
-    @JsonProperty(EVENT_PRIVATE)        private Boolean isPrivate;
-    @JsonProperty(EVENT_PASSWORD)       private String password;
+    @JsonProperty(PARAM.OWNER_ID)       private Long ownerId;
+    @JsonProperty(EVENT.NAME)           private String name;
+    @JsonProperty(EVENT.DESCRIPTION)    private String description;
+    @JsonProperty(EVENT.TYPE_ID)        private Integer typeId;
+    @JsonProperty(EVENT.LATITUDE)       private Double latitude;
+    @JsonProperty(EVENT.LONGITUDE)      private Double longitude;
+    @JsonProperty(EVENT.RADIUS)         private Float radius;
+    @JsonProperty(EVENT.GEO)            private Boolean geo;
+    @JsonProperty(EVENT.VISIBLE)        private Boolean visible;
+    @JsonProperty(EVENT.PRIVATE)        private Boolean isPrivate;
+    @JsonProperty(EVENT.PASSWORD)       private String password;
 
     public EventCreateDTO() {
     }

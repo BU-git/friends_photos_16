@@ -7,6 +7,7 @@ import com.bionic.fp.exception.permission.PermissionsDeniedException;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import com.bionic.fp.exception.logic.impl.EventTypeNotFoundException;
 import com.bionic.fp.exception.rest.NotFoundException;
+import com.bionic.fp.web.rest.RestConstants.*;
 import com.bionic.fp.web.rest.dto.*;
 import com.bionic.fp.web.security.SessionUtils;
 import com.bionic.fp.service.EventService;
@@ -20,7 +21,6 @@ import javax.servlet.http.HttpSession;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static com.bionic.fp.web.rest.RestConstants.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ArrayUtils.isNotEmpty;
@@ -34,7 +34,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  * @author Sergiy Gabriel
  */
 @RestController
-@RequestMapping(EVENT)
+@RequestMapping(PATH.EVENT)
 public class EventController {
 
     @Inject
@@ -45,6 +45,75 @@ public class EventController {
 
     @Inject
     private RoleService roleService;
+
+
+    //***************************************
+    //                 @GET
+    //***************************************
+
+
+    @RequestMapping(value = PATH.EVENT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    public @ResponseBody EventInfoDTO findEventById(@PathVariable(EVENT.ID) final Long id,
+                                                    @RequestParam(value = PARAM.FIELDS, required = false) final String fields) {
+        Event event = this.findEventOrThrow(id);
+        return EventInfoDTO.Transformer.transform(event, fields);
+    }
+
+    @RequestMapping(method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    public @ResponseBody EntityInfoListsDTO findEvent(
+            @RequestParam(value = EVENT.NAME, required = false)         final String name,
+            @RequestParam(value = EVENT.DESCRIPTION, required = false)  final String description,
+            @RequestParam(value = PARAM.FIELDS, required = false)       final String fields) {
+//        IdListsDTO body = new IdListsDTO();
+//        body.setEvents(this.eventService.get(name, description).stream().parallel()
+//                .map(Event::getId).collect(toList()));
+//        return body;
+        EntityInfoListsDTO body = new EntityInfoListsDTO();
+        body.setEvents(EventInfoDTO.Transformer.transform(this.eventService.get(name, description), fields));
+        return body;
+    }
+
+    @RequestMapping(value = PATH.EVENT_ID+PATH.ACCOUNT+PATH.LIST, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    public @ResponseBody IdListsDTO getAccounts(@PathVariable(EVENT.ID) final Long eventId) {
+        IdListsDTO body = new IdListsDTO();
+        body.setAccounts(this.eventService.getAccounts(eventId).stream().parallel()
+                .map(Account::getId).collect(toList()));
+        return body;
+    }
+
+    @RequestMapping(value = PATH.EVENT_ID+PATH.PHOTO, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    public @ResponseBody IdListsDTO getPhotos(@PathVariable(EVENT.ID) final Long eventId) {
+        IdListsDTO body = new IdListsDTO();
+        body.setPhotos(this.eventService.getPhotos(eventId).stream().parallel()
+                .map(Photo::getId).collect(toList()));
+        return body;
+    }
+
+    @RequestMapping(value = PATH.EVENT_ID+PATH.COMMENT, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    public @ResponseBody IdListsDTO getComments(@PathVariable(EVENT.ID) final Long eventId) {
+        IdListsDTO body = new IdListsDTO();
+        body.setComments(this.eventService.getComments(eventId).stream().parallel()
+                .map(Comment::getId).collect(toList()));
+        return body;
+    }
+
+    @RequestMapping(value = PATH.EVENT_ID+PATH.OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    public @ResponseBody IdInfoDTO getEventOwner(@PathVariable(EVENT.ID) final Long eventId) {
+        Event event = this.getEventOrThrow(eventId);
+        return new IdInfoDTO(event.getOwner().getId());
+    }
+
+
+    //***************************************
+    //                 @POST
+    //***************************************
+
 
     @RequestMapping(method = POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
@@ -76,26 +145,27 @@ public class EventController {
         return new IdInfoDTO(eventId);
     }
 
-    @RequestMapping(value = "/{id:[\\d]+}", method = DELETE)
-    @ResponseStatus(NO_CONTENT)
-    public void deleteEventById(@PathVariable("id") final Long eventId, final HttpSession session) {
-        checkPermission(session, eventId, Role::isCanChangeSettings);
-        this.eventService.remove(eventId);
-    }
-
-    @RequestMapping(value = "/{id:[\\d]+}", method = GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(OK)
-    public @ResponseBody EventInfoDTO findEventById(@PathVariable("id") final Long id,
-                                                    @RequestParam(value = FIELDS, required = false) final String fields) {
-        Event event = this.findEventOrThrow(id);
-        return EventInfoDTO.Transformer.transform(event, fields);
+    @RequestMapping(value = PATH.EVENT_ID+PATH.ACCOUNT+PATH.ACCOUNT_ID, method = POST)
+    @ResponseStatus(CREATED)
+    public void addAccountToEvent(@PathVariable(EVENT.ID) final Long eventId,
+                                  @PathVariable(ACCOUNT.ID) final Long accountId,
+                                  @RequestParam(value = ROLE.ID, required = false) Integer roleId,
+                                  @RequestParam(value = EVENT.PASSWORD, required = false) final String password) {
+        if(roleId == null) {
+            roleId = Constants.RoleConstants.MEMBER;
+        }
+        this.eventService.addOrUpdateAccountToEvent(accountId, eventId, roleId, password);
     }
 
 
+    //***************************************
+    //                 @PUT
+    //***************************************
 
-    @RequestMapping(value = "/{id:[\\d]+}",  method = PUT, consumes = APPLICATION_JSON_VALUE)
+
+    @RequestMapping(value = PATH.EVENT_ID,  method = PUT, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public void updateEvent(@PathVariable("id") final Long eventId, @RequestBody final EventUpdateDTO eventDto,
+    public void updateEvent(@PathVariable(EVENT.ID) final Long eventId, @RequestBody final EventUpdateDTO eventDto,
                             final HttpSession session) {
         checkPermission(session, eventId, Role::isCanChangeSettings);
 
@@ -140,24 +210,12 @@ public class EventController {
         this.eventService.update(event);
     }
 
-    @RequestMapping(value = "/{event_id:[\\d]+}"+ACCOUNT+"/{account_id:[\\d]+}", method = PUT)
+    @RequestMapping(value = PATH.EVENT_ID+PATH.ACCOUNT+PATH.ACCOUNT_ID, method = PUT)
     @ResponseStatus(OK)
-    public void updateAccountToEvent(@PathVariable("event_id") final Long eventId,
-                                     @PathVariable("account_id") final Long accountId,
-                                     @RequestParam(value = ROLE_ID, required = false) Integer roleId,
-                                     @RequestParam(value = EVENT_PASSWORD, required = false) final String password) {
-        if(roleId == null) {
-            roleId = Constants.RoleConstants.MEMBER;
-        }
-        this.eventService.addOrUpdateAccountToEvent(accountId, eventId, roleId, password);
-    }
-
-    @RequestMapping(value = "/{event_id:[\\d]+}"+ACCOUNT+"/{account_id:[\\d]+}", method = POST)
-    @ResponseStatus(CREATED)
-    public void addAccountToEvent(@PathVariable("event_id") final Long eventId,
-                                  @PathVariable("account_id") final Long accountId,
-                                  @RequestParam(value = ROLE_ID, required = false) Integer roleId,
-                                  @RequestParam(value = EVENT_PASSWORD, required = false) final String password) {
+    public void updateAccountToEvent(@PathVariable(EVENT.ID) final Long eventId,
+                                     @PathVariable(ACCOUNT.ID) final Long accountId,
+                                     @RequestParam(value = ROLE.ID, required = false) Integer roleId,
+                                     @RequestParam(value = EVENT.PASSWORD, required = false) final String password) {
         if(roleId == null) {
             roleId = Constants.RoleConstants.MEMBER;
         }
@@ -165,54 +223,23 @@ public class EventController {
     }
 
 
+    //***************************************
+    //                 @DELETE
+    //***************************************
 
-    @RequestMapping(value = "/{id:[\\d]+}"+ACCOUNT+LIST, method = GET)
-    @ResponseStatus(OK)
-    public @ResponseBody IdListsDTO getAccounts(@PathVariable("id") final Long eventId) {
-        IdListsDTO body = new IdListsDTO();
-        body.setAccounts(this.eventService.getAccounts(eventId).stream().parallel()
-                .map(Account::getId).collect(toList()));
-        return body;
+
+    @RequestMapping(value = PATH.EVENT_ID, method = DELETE)
+    @ResponseStatus(NO_CONTENT)
+    public void deleteEventById(@PathVariable(EVENT.ID) final Long eventId, final HttpSession session) {
+        checkPermission(session, eventId, Role::isCanChangeSettings);
+        this.eventService.remove(eventId);
     }
 
-    @RequestMapping(value = "/{id:[\\d]+}"+PHOTO+LIST, method = GET)
-    @ResponseStatus(OK)
-    public @ResponseBody IdListsDTO getPhotos(@PathVariable("id") final Long eventId) {
-        IdListsDTO body = new IdListsDTO();
-        body.setPhotos(this.eventService.getPhotos(eventId).stream().parallel()
-                .map(Photo::getId).collect(toList()));
-        return body;
-    }
 
-    @RequestMapping(value = "/{id:[\\d]+}"+COMMENT+LIST, method = GET)
-    @ResponseStatus(OK)
-    public @ResponseBody IdListsDTO getComments(@PathVariable("id") final Long eventId) {
-        IdListsDTO body = new IdListsDTO();
-        body.setComments(this.eventService.getComments(eventId).stream().parallel()
-                .map(Comment::getId).collect(toList()));
-        return body;
-    }
+    //***************************************
+    //                 PRIVATE
+    //***************************************
 
-    @RequestMapping(value = "/{id:[\\d]+}"+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(OK)
-    public @ResponseBody IdInfoDTO getEventOwnerById(@PathVariable("id") final Long eventId) {
-        Event event = this.getEventOrThrow(eventId);
-        return new IdInfoDTO(event.getOwner().getId());
-    }
-
-    @RequestMapping(method = GET)
-    @ResponseStatus(OK)
-    public @ResponseBody EntityInfoListsDTO findEvent(@RequestParam(value = EVENT_NAME, required = false) final String name,
-                                              @RequestParam(value = EVENT_DESCRIPTION, required = false) final String description,
-                                              @RequestParam(value = FIELDS, required = false) final String fields) {
-//        IdListsDTO body = new IdListsDTO();
-//        body.setEvents(this.eventService.get(name, description).stream().parallel()
-//                .map(Event::getId).collect(toList()));
-//        return body;
-        EntityInfoListsDTO body = new EntityInfoListsDTO();
-        body.setEvents(EventInfoDTO.Transformer.transform(this.eventService.get(name, description), fields));
-        return body;
-    }
 
     private EventType getEventTypeOrThrow(final Integer eventTypeId) {
         return ofNullable(this.eventTypeService.get(eventTypeId)).orElseThrow(() -> new EventTypeNotFoundException(eventTypeId));

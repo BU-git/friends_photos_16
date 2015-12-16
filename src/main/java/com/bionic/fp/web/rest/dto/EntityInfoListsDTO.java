@@ -1,11 +1,10 @@
 package com.bionic.fp.web.rest.dto;
 
+import com.bionic.fp.web.rest.RestConstants.EVENT;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
-
-import static com.bionic.fp.web.rest.RestConstants.EVENTS;
 
 /**
  * Holds list of entities for the client-server communication
@@ -16,7 +15,7 @@ import static com.bionic.fp.web.rest.RestConstants.EVENTS;
 public class EntityInfoListsDTO {
 
 //    private List<AccountInfoDTO> accounts;
-    @JsonProperty(EVENTS)       private List<EventInfoDTO> events;
+    @JsonProperty(EVENT.LIST)       private List<EventInfoDTO> events;
 //    private List<PhotoInfoDTO> photos;
 //    private List<CommentInfoDTO> comments;
 //    private List<TypeInfoDTO> types;

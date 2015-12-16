@@ -3,6 +3,8 @@ package com.bionic.fp.web.rest.dto;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.util.LocalDateTimeJsonDeserializer;
 import com.bionic.fp.util.LocalDateTimeJsonSerializer;
+import com.bionic.fp.web.rest.RestConstants.EVENT;
+import com.bionic.fp.web.rest.RestConstants.PARAM;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -17,7 +19,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static com.bionic.fp.util.Checks.check;
-import static com.bionic.fp.web.rest.RestConstants.*;
 import static java.util.Arrays.asList;
 
 /**
@@ -28,23 +29,23 @@ import static java.util.Arrays.asList;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EventInfoDTO {
 
-    @JsonProperty(EVENT_ID)                 private Long id;
-    @JsonProperty(EVENT_NAME)               private String name;
-    @JsonProperty(EVENT_DESCRIPTION)        private String description;
+    @JsonProperty(EVENT.ID)                 private Long id;
+    @JsonProperty(EVENT.NAME)               private String name;
+    @JsonProperty(EVENT.DESCRIPTION)        private String description;
     @JsonSerialize(using = LocalDateTimeJsonSerializer.class)
     @JsonDeserialize(using = LocalDateTimeJsonDeserializer.class)
-    @JsonProperty(EVENT_DATE)               private LocalDateTime date;
+    @JsonProperty(EVENT.DATE)               private LocalDateTime date;
     @JsonSerialize(using = LocalDateTimeJsonSerializer.class)
     @JsonDeserialize(using = LocalDateTimeJsonDeserializer.class)
-    @JsonProperty(EVENT_EXPIRE_DATE)        private LocalDateTime expireDate;
-    @JsonProperty(EVENT_TYPE_ID)            private Integer typeId;
-    @JsonProperty(OWNER_ID)                 private Long ownerId;
-    @JsonProperty(EVENT_LATITUDE)           private Double latitude;
-    @JsonProperty(EVENT_LONGITUDE)          private Double longitude;
-    @JsonProperty(EVENT_RADIUS)             private Float radius;
-    @JsonProperty(EVENT_GEO)                private Boolean geo;
-    @JsonProperty(EVENT_VISIBLE)            private Boolean visible;
-    @JsonProperty(EVENT_PRIVATE)            private Boolean isPrivate;
+    @JsonProperty(EVENT.EXPIRE_DATE)        private LocalDateTime expireDate;
+    @JsonProperty(EVENT.TYPE_ID)            private Integer typeId;
+    @JsonProperty(PARAM.OWNER_ID)           private Long ownerId;
+    @JsonProperty(EVENT.LATITUDE)           private Double latitude;
+    @JsonProperty(EVENT.LONGITUDE)          private Double longitude;
+    @JsonProperty(EVENT.RADIUS)             private Float radius;
+    @JsonProperty(EVENT.GEO)                private Boolean geo;
+    @JsonProperty(EVENT.VISIBLE)            private Boolean visible;
+    @JsonProperty(EVENT.PRIVATE)            private Boolean isPrivate;
 
     public EventInfoDTO() {
     }
@@ -128,19 +129,19 @@ public class EventInfoDTO {
 
         public static Consumer<Transformer> getConsumer(final String fields) {
             if(StringUtils.isNotEmpty(fields)) {
-                Consumer<Transformer> result = addConsumer(fields, EVENT_ID, null, t -> t.getDto().setId(t.getEvent().getId()));
-                result = addConsumer(fields, EVENT_NAME, result, t -> t.getDto().setName(t.getEvent().getName()));
-                result = addConsumer(fields, EVENT_DESCRIPTION, result, t -> t.getDto().setDescription(t.getEvent().getDescription()));
-                result = addConsumer(fields, EVENT_DATE, result, t -> t.getDto().setDate(t.getEvent().getDate()));
-                result = addConsumer(fields, EVENT_EXPIRE_DATE, result, t -> t.getDto().setExpireDate(t.getEvent().getExpireDate()));
-                result = addConsumer(fields, EVENT_TYPE_ID, result, t -> t.getDto().setTypeId(t.getEvent().getEventType().getId()));
-                result = addConsumer(fields, OWNER_ID, result, t -> t.getDto().setOwnerId(t.getEvent().getOwner().getId()));
-                result = addConsumer(fields, EVENT_LATITUDE, result, t -> t.getDto().setLatitude(t.getEvent().getLatitude()));
-                result = addConsumer(fields, EVENT_LONGITUDE, result, t -> t.getDto().setLongitude(t.getEvent().getLongitude()));
-                result = addConsumer(fields, EVENT_RADIUS, result, t -> t.getDto().setRadius(t.getEvent().getRadius()));
-                result = addConsumer(fields, EVENT_GEO, result, t -> t.getDto().setGeo(t.getEvent().isGeoServicesEnabled()));
-                result = addConsumer(fields, EVENT_VISIBLE, result, t -> t.getDto().setVisible(t.getEvent().isVisible()));
-                result = addConsumer(fields, EVENT_PRIVATE, result, t -> t.getDto().setIsPrivate(t.getEvent().isPrivate()));
+                Consumer<Transformer> result = addConsumer(fields, EVENT.ID, null, t -> t.getDto().setId(t.getEvent().getId()));
+                result = addConsumer(fields, EVENT.NAME, result, t -> t.getDto().setName(t.getEvent().getName()));
+                result = addConsumer(fields, EVENT.DESCRIPTION, result, t -> t.getDto().setDescription(t.getEvent().getDescription()));
+                result = addConsumer(fields, EVENT.DATE, result, t -> t.getDto().setDate(t.getEvent().getDate()));
+                result = addConsumer(fields, EVENT.EXPIRE_DATE, result, t -> t.getDto().setExpireDate(t.getEvent().getExpireDate()));
+                result = addConsumer(fields, EVENT.TYPE_ID, result, t -> t.getDto().setTypeId(t.getEvent().getEventType().getId()));
+                result = addConsumer(fields, PARAM.OWNER_ID, result, t -> t.getDto().setOwnerId(t.getEvent().getOwner().getId()));
+                result = addConsumer(fields, EVENT.LATITUDE, result, t -> t.getDto().setLatitude(t.getEvent().getLatitude()));
+                result = addConsumer(fields, EVENT.LONGITUDE, result, t -> t.getDto().setLongitude(t.getEvent().getLongitude()));
+                result = addConsumer(fields, EVENT.RADIUS, result, t -> t.getDto().setRadius(t.getEvent().getRadius()));
+                result = addConsumer(fields, EVENT.GEO, result, t -> t.getDto().setGeo(t.getEvent().isGeoServicesEnabled()));
+                result = addConsumer(fields, EVENT.VISIBLE, result, t -> t.getDto().setVisible(t.getEvent().isVisible()));
+                result = addConsumer(fields, EVENT.PRIVATE, result, t -> t.getDto().setIsPrivate(t.getEvent().isPrivate()));
 
                 return result;
             }
@@ -151,19 +152,19 @@ public class EventInfoDTO {
             if(ArrayUtils.isNotEmpty(fields)) {
                 List<String> list = asList(fields);
 
-                Consumer<Transformer> result = addConsumer(list, EVENT_ID, null, t -> t.getDto().setId(t.getEvent().getId()));
-                result = addConsumer(list, EVENT_NAME, result, t -> t.getDto().setName(t.getEvent().getName()));
-                result = addConsumer(list, EVENT_DESCRIPTION, result, t -> t.getDto().setDescription(t.getEvent().getDescription()));
-                result = addConsumer(list, EVENT_DATE, result, t -> t.getDto().setDate(t.getEvent().getDate()));
-                result = addConsumer(list, EVENT_EXPIRE_DATE, result, t -> t.getDto().setExpireDate(t.getEvent().getExpireDate()));
-                result = addConsumer(list, EVENT_TYPE_ID, result, t -> t.getDto().setTypeId(t.getEvent().getEventType().getId()));
-                result = addConsumer(list, OWNER_ID, result, t -> t.getDto().setOwnerId(t.getEvent().getOwner().getId()));
-                result = addConsumer(list, EVENT_LATITUDE, result, t -> t.getDto().setLatitude(t.getEvent().getLatitude()));
-                result = addConsumer(list, EVENT_LONGITUDE, result, t -> t.getDto().setLongitude(t.getEvent().getLongitude()));
-                result = addConsumer(list, EVENT_RADIUS, result, t -> t.getDto().setRadius(t.getEvent().getRadius()));
-                result = addConsumer(list, EVENT_GEO, result, t -> t.getDto().setGeo(t.getEvent().isGeoServicesEnabled()));
-                result = addConsumer(list, EVENT_VISIBLE, result, t -> t.getDto().setVisible(t.getEvent().isVisible()));
-                result = addConsumer(list, EVENT_PRIVATE, result, t -> t.getDto().setIsPrivate(t.getEvent().isPrivate()));
+                Consumer<Transformer> result = addConsumer(list, EVENT.ID, null, t -> t.getDto().setId(t.getEvent().getId()));
+                result = addConsumer(list, EVENT.NAME, result, t -> t.getDto().setName(t.getEvent().getName()));
+                result = addConsumer(list, EVENT.DESCRIPTION, result, t -> t.getDto().setDescription(t.getEvent().getDescription()));
+                result = addConsumer(list, EVENT.DATE, result, t -> t.getDto().setDate(t.getEvent().getDate()));
+                result = addConsumer(list, EVENT.EXPIRE_DATE, result, t -> t.getDto().setExpireDate(t.getEvent().getExpireDate()));
+                result = addConsumer(list, EVENT.TYPE_ID, result, t -> t.getDto().setTypeId(t.getEvent().getEventType().getId()));
+                result = addConsumer(list, PARAM.OWNER_ID, result, t -> t.getDto().setOwnerId(t.getEvent().getOwner().getId()));
+                result = addConsumer(list, EVENT.LATITUDE, result, t -> t.getDto().setLatitude(t.getEvent().getLatitude()));
+                result = addConsumer(list, EVENT.LONGITUDE, result, t -> t.getDto().setLongitude(t.getEvent().getLongitude()));
+                result = addConsumer(list, EVENT.RADIUS, result, t -> t.getDto().setRadius(t.getEvent().getRadius()));
+                result = addConsumer(list, EVENT.GEO, result, t -> t.getDto().setGeo(t.getEvent().isGeoServicesEnabled()));
+                result = addConsumer(list, EVENT.VISIBLE, result, t -> t.getDto().setVisible(t.getEvent().isVisible()));
+                result = addConsumer(list, EVENT.PRIVATE, result, t -> t.getDto().setIsPrivate(t.getEvent().isPrivate()));
 
                 return result;
             }

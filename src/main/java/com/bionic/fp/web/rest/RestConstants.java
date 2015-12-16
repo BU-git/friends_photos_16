@@ -5,45 +5,75 @@ package com.bionic.fp.web.rest;
  *
  * @author Sergiy Gabriel
  */
-public interface RestConstants {
+public final class RestConstants {
 
-    //----------------------------------------
-    //---------------  PATHS  ----------------
-    //----------------------------------------
+    public interface PATH {
+        String ACCOUNT = "/account";
+        String ACCOUNT_ID = "/{"+ RestConstants.ACCOUNT.ID + ":[\\d]+}";
+        String EVENT = "/event";
+        String EVENT_ID = "/{"+ RestConstants.EVENT.ID + ":[\\d]+}";
+        String COMMENT = "/comment";
+        String COMMENT_ID = "/{"+ RestConstants.COMMENT.ID + ":[\\d]+}";
+        String PHOTO = "/photo";
+        String PHOTO_ID = "/{"+ RestConstants.PHOTO.ID + ":[\\d]+}";
+        String ROLE = "/role";
+        String ROLE_ID = "/{"+ RestConstants.ROLE.ID + ":[\\d]+}";
 
-    String ACCOUNT = "/account";
-    String EVENT = "/event";
-    String COMMENT = "/comment";
-//    String EVENT_TYPE = "type";
-    String PHOTO = "/photo";
-    String ROLE = "/role";
-    String OWNER = "/owner";
-    String LIST = "/list";
+        String OWNER = "/owner";
+        String LIST = "/list";
+        String LOGIN = "/login";
+        String LOGOUT = "/logout";
+        String REGISTER = "/register";
+        String FB = "/fb";
+        String VK = "/vk";
+        String FILE = "/file";
+    }
 
-    //----------------------------------------
-    //------  ATTRIBUTES (snake_case)  -------
-    //----------------------------------------
+    public interface PARAM {
+        String FIELDS = "fields";
+        String OWNER_ID = "owner_id";
+        String USER_ID = "user_id";
+        String FB_ID = "fbId";
+        String FB_TOKEN = "fbToken";
+        String VK_ID = "vkId";
+        String VK_TOKEN = "vkToken";
+    }
 
-    String FIELDS = "fields";
-    // ID
-    String ACCOUNT_ID = "account_id";
-    String OWNER_ID = "owner_id";
-    String USER_ID = "user_id";
-    String ROLE_ID = "role_id";
-    String EVENT_ID = "event_id";
-    // EVENT
-    String EVENTS = "events";
-    String EVENT_NAME = "name";
-    String EVENT_DESCRIPTION = "description";
-    String EVENT_DATE = "date";
-    String EVENT_EXPIRE_DATE = "expire_date";
-    String EVENT_TYPE_ID = "type_id";
-    String EVENT_LATITUDE = "lat";
-    String EVENT_LONGITUDE = "lng";
-    String EVENT_RADIUS = "radius";
-    String EVENT_GEO = "geo";
-    String EVENT_VISIBLE = "visible";
-    String EVENT_PRIVATE = "private";
-    String EVENT_PASSWORD = "password";
+    public interface EVENT {
+        String ID = "event_id";
+        String NAME = "name";
+        String DESCRIPTION = "description";
+        String DATE = "date";
+        String EXPIRE_DATE = "expire_date";
+        String TYPE_ID = "type_id";
+        String LATITUDE = "lat";
+        String LONGITUDE = "lng";
+        String RADIUS = "radius";
+        String GEO = "geo";
+        String VISIBLE = "visible";
+        String PRIVATE = "private";
+        String PASSWORD = "password";
+        String LIST = "events";
+    }
+
+    public interface ACCOUNT {
+        String ID = "account_id";
+    }
+
+    public interface ROLE {
+        String ID = "role_id";
+    }
+
+    public interface PHOTO {
+        String ID = "photo_id";
+        String FILE = "file";
+        String NAME = "name";
+        String DESCRIPTION = "description";
+
+    }
+
+    public interface COMMENT {
+        String ID = "comment_id";
+    }
 
 }

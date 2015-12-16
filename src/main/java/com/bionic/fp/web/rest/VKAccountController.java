@@ -1,16 +1,16 @@
 package com.bionic.fp.web.rest;
 
 import com.bionic.fp.domain.Account;
+import com.bionic.fp.web.rest.RestConstants.PARAM;
+import com.bionic.fp.web.rest.RestConstants.PATH;
 import com.bionic.fp.web.rest.dto.AuthResponse;
 import com.bionic.fp.web.rest.dto.VKAccessTokenResponse;
 import com.bionic.fp.web.rest.dto.VKCheckTokenResponse;
 import com.bionic.fp.web.security.SessionUtils;
 import com.bionic.fp.service.AccountService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.ResponseErrorHandler;
@@ -22,8 +22,11 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 @RestController
-@RequestMapping("/account/vk")
+@RequestMapping(PATH.ACCOUNT+ PATH.VK)
 public class VKAccountController {
     private static final String APP_TOKEN_URL =
             "https://oauth.vk.com/access_token?client_id=%s&client_secret=%s&v=5.40&grant_type=client_credentials";
@@ -44,9 +47,15 @@ public class VKAccountController {
 
     private String vkAccessToken;
 
-    @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public AuthResponse loginViaFacebook(@RequestParam(name = "vkId") final String vkId,
-                                         @RequestParam(name = "vkToken") final String token,
+
+    //***************************************
+    //                 @POST
+    //***************************************
+
+
+    @RequestMapping(method = POST, produces = APPLICATION_JSON_VALUE)
+    public AuthResponse loginViaFacebook(@RequestParam(name = PARAM.VK_ID) final String vkId,
+                                         @RequestParam(name = PARAM.VK_TOKEN) final String token,
                                          final HttpSession session) {
 
         AuthResponse authResponse = new AuthResponse();

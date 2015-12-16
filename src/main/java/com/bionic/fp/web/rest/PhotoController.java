@@ -3,8 +3,8 @@ package com.bionic.fp.web.rest;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
-import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
+import com.bionic.fp.exception.logic.impl.PhotoNotFoundException;
 import com.bionic.fp.web.rest.dto.PhotoInfoDTO;
 import com.bionic.fp.service.AccountService;
 import com.bionic.fp.service.EventService;
@@ -13,13 +13,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,12 +29,20 @@ import java.security.SecureRandom;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.bionic.fp.web.rest.RestConstants.*;
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+
 /**
  * Created by franky_str on 26.11.15.
  */
 
 @Controller
-@RequestMapping("/photo")
+@RequestMapping(PATH.PHOTO)
 public class PhotoController {
 
 	@Autowired
@@ -49,22 +54,25 @@ public class PhotoController {
 
 	private SecureRandom random = new SecureRandom();
 
+
 	//***************************************
 	//                 @GET
 	//***************************************
-	@RequestMapping(value = "/{photo_id:[\\d]+}", method = RequestMethod.GET)
+
+
+	@RequestMapping(value = PATH.PHOTO_ID, method = GET)
 	@ResponseBody
-	public ResponseEntity<PhotoInfoDTO> getPhotoInfo(@PathVariable("photo_id") Long photoId) {
+	public ResponseEntity<PhotoInfoDTO> getPhotoInfo(@PathVariable(PHOTO.ID) Long photoId) {
 		Photo photo = photoService.getById(photoId);
 		if (photo == null) {
-			return new ResponseEntity<PhotoInfoDTO>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(NOT_FOUND);
 		}
 		PhotoInfoDTO photoInfoDTO = new PhotoInfoDTO();
 		photoInfoDTO.setName(photo.getName());
 		photoInfoDTO.setOwnerID(photo.getOwner() == null ? null : photo.getOwner().getId());
 		photoInfoDTO.setUrl(photo.getUrl());
 
-		return new ResponseEntity<PhotoInfoDTO>(photoInfoDTO, HttpStatus.OK);
+		return new ResponseEntity<>(photoInfoDTO, OK);
 	}
 
 	/**
@@ -73,33 +81,30 @@ public class PhotoController {
 	 * @param photoId id of the photo
 	 * @return file
 	 */
-	@RequestMapping(
-			value = "/file/{photo_id:[\\d]+}",
-			method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	@RequestMapping(value = PATH.PHOTO_ID+PATH.FILE, method = GET, produces = APPLICATION_OCTET_STREAM_VALUE)
 	@ResponseBody
-	public ResponseEntity<FileSystemResource> getPhotoFile(@PathVariable("photo_id") Long photoId) {
+	public ResponseEntity<FileSystemResource> getPhotoFile(@PathVariable(PHOTO.ID) Long photoId) {
 		Photo photo = photoService.getById(photoId);
 		if (photo == null) {
-			return new ResponseEntity<FileSystemResource>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(NOT_FOUND);
 		}
 		String url = photo.getUrl();
 		File photoFile = new File(url);
 		if (!photoFile.exists() || photoFile.isDirectory()) {
-			return new ResponseEntity<FileSystemResource>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(NOT_FOUND);
 		}
-		return new ResponseEntity<FileSystemResource>(new FileSystemResource(url), HttpStatus.OK);
+		return new ResponseEntity<>(new FileSystemResource(url), OK);
 	}
 
 
-	@RequestMapping(value = "/event/{event_id:[\\d]+}", method = RequestMethod.GET)
+	@RequestMapping(value = PATH.EVENT+PATH.EVENT_ID, method = GET)
 	@ResponseBody
-	public ResponseEntity<List<PhotoInfoDTO>> getPhotosInfoByEvent(@PathVariable("event_id") Long eventId) {
+	public ResponseEntity<List<PhotoInfoDTO>> getPhotosInfoByEvent(@PathVariable(EVENT.ID) Long eventId) {
 
 		Event event = eventService.get(eventId);
 		if (event == null) {
 			// TODO add message 'event was not found'
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(BAD_REQUEST);
 		}
 
 		List<Photo> photos = photoService.getPhotosByEvent(event);
@@ -111,16 +116,14 @@ public class PhotoController {
 				dto.setUrl(photo.getUrl());
 				return dto;
 			}).collect(Collectors.toList());
-			return new ResponseEntity<>(photosDto, HttpStatus.OK);
+			return new ResponseEntity<>(photosDto, OK);
 		} else
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
 	}
 
-	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@RequestMapping(value = PATH.LIST, method = GET)
 	@ResponseBody
-	public ResponseEntity<List<PhotoInfoDTO>> getPhotoList(
-			@RequestParam("owner") Long ownerId) {
-
+	public ResponseEntity<List<PhotoInfoDTO>> getPhotoList(@RequestParam(PARAM.OWNER_ID) Long ownerId) {
 		Account owner = accountService.get(ownerId);
 		List<Photo> photos = photoService.getPhotosList(owner);
 		if (photos != null) {
@@ -131,14 +134,17 @@ public class PhotoController {
 				dto.setUrl(photo.getUrl());
 				return dto;
 			}).collect(Collectors.toList());
-			return new ResponseEntity<>(photosDto, HttpStatus.OK);
+			return new ResponseEntity<>(photosDto, OK);
 		}
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(OK);
 	}
+
 
 	//***************************************
 	//                 @POST
 	//***************************************
+
+
 	/**
 	 * Save photo image to filesystem
 	 * and save photo info to DB.
@@ -149,21 +155,21 @@ public class PhotoController {
 	 * @param description
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@RequestMapping(method = POST, consumes = MULTIPART_FORM_DATA_VALUE)
 	@ResponseBody
 	public ResponseEntity<PhotoInfoDTO> createPhoto(
-			@RequestParam("file") MultipartFile file,
-			@RequestParam("owner_id") Long ownerId,
-			@RequestParam(value = "name", required = false) String name,
-			@RequestParam(value = "description", required = false) String description
+			@RequestParam(PHOTO.FILE) MultipartFile file,
+			@RequestParam(PARAM.OWNER_ID) Long ownerId,
+			@RequestParam(value = PHOTO.NAME, required = false) String name,
+			@RequestParam(value = PHOTO.DESCRIPTION, required = false) String description
 	) {
 		// FIXME add messages to errors
 		if (file.isEmpty()) {
-			return new ResponseEntity<PhotoInfoDTO>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(BAD_REQUEST);
 		}
 		Account owner = accountService.get(ownerId);
 		if (owner == null) {
-			return new ResponseEntity<PhotoInfoDTO>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(BAD_REQUEST);
 		}
 		try {
 			String fileName = file.getOriginalFilename();
@@ -193,33 +199,36 @@ public class PhotoController {
 			photoInfoDTO.setName(photo.getName());
 			photoInfoDTO.setOwnerID(photo.getOwner().getId());
 			photoInfoDTO.setUrl(photo.getUrl());
-			return new ResponseEntity<PhotoInfoDTO>(photoInfoDTO, HttpStatus.CREATED);
+			return new ResponseEntity<>(photoInfoDTO, CREATED);
 		} catch (Exception e) {
-			return new ResponseEntity<PhotoInfoDTO>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
 		}
 	}
+
 
 	//***************************************
 	//                 @PUT
 	//***************************************
+
+
 	/**
 	 * Update photo info
 	 *
 	 * @param name
 	 * @return
 	 */
-	@RequestMapping(value = "/{photo_id:[\\d]+}", method = RequestMethod.PUT)
+	@RequestMapping(value = PATH.PHOTO_ID, method = PUT)
 	@ResponseBody
 	public ResponseEntity<PhotoInfoDTO> updatePhoto(
-			@PathVariable("photo_id") Long photoId,
-			@RequestParam(value = "name") String name
+			@PathVariable(PHOTO.ID) Long photoId,
+			@RequestParam(value = PHOTO.NAME) String name
 	) {
 		if (StringUtils.isEmpty(name)) {
 			throw new InvalidParameterException("Param 'name' is null or empty string");
 		}
 		Photo photo = photoService.getById(photoId);
 		if (photo == null) {
-			throw new EntityNotFoundException("photo", photoId);
+			throw new PhotoNotFoundException(photoId);
 		}
 		photo.setName(name);
 		photo = photoService.update(photo);
@@ -227,7 +236,7 @@ public class PhotoController {
 		photoInfoDTO.setName(photo.getName());
 		photoInfoDTO.setOwnerID(photo.getOwner().getId());
 		photoInfoDTO.setUrl(photo.getUrl());
-		return new ResponseEntity<PhotoInfoDTO>(photoInfoDTO, HttpStatus.OK);
+		return new ResponseEntity<>(photoInfoDTO, OK);
 	}
 
 
