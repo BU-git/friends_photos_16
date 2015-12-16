@@ -145,16 +145,13 @@ public class EventController {
         return new IdInfoDTO(eventId);
     }
 
-    @RequestMapping(value = PATH.EVENT_ID+PATH.ACCOUNT+PATH.ACCOUNT_ID, method = POST)
+    @RequestMapping(value = PATH.EVENT_ID+PATH.ACCOUNT, method = POST)
     @ResponseStatus(CREATED)
     public void addAccountToEvent(@PathVariable(EVENT.ID) final Long eventId,
-                                  @PathVariable(ACCOUNT.ID) final Long accountId,
-                                  @RequestParam(value = ROLE.ID, required = false) Integer roleId,
-                                  @RequestParam(value = EVENT.PASSWORD, required = false) final String password) {
-        if(roleId == null) {
-            roleId = Constants.RoleConstants.MEMBER;
-        }
-        this.eventService.addOrUpdateAccountToEvent(accountId, eventId, roleId, password);
+                                  @RequestParam(value = EVENT.PASSWORD, required = false) final String password,
+                                  final HttpSession session) {
+        Long userId = SessionUtils.getUserId(session);
+        this.eventService.addOrUpdateAccountToEvent(userId, eventId, Constants.RoleConstants.MEMBER, password);
     }
 
 

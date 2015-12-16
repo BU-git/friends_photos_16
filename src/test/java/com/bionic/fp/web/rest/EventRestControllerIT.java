@@ -4,7 +4,6 @@ import com.bionic.fp.AbstractIT;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
-import com.bionic.fp.domain.Role;
 import com.bionic.fp.web.rest.dto.EventCreateDTO;
 import com.bionic.fp.web.rest.dto.EventUpdateDTO;
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -503,17 +502,18 @@ public class EventRestControllerIT extends AbstractIT {
         Account user1 = getSavedAccount();
         Account user2 = getSavedAccount();
         Event event = getSaved(getNewEventMax(), owner);
-        Role role = this.roleService.getOwner();
 
         assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
         assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
         assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
         assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
 
+        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .addFilter(getFilter(user1.getId())).build();
+
         given()
-            .queryParam(ROLE.ID, role.getId())
         .when()
-            .post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT + PATH.ACCOUNT_ID, event.getId(), user1.getId())
+            .post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, event.getId())
         .then()
             .statusCode(SC_CREATED);
 
@@ -522,10 +522,12 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
         assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
 
+        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .addFilter(getFilter(user2.getId())).build();
+
         given()
-            .queryParam(ROLE.ID, role.getId())
         .when()
-            .post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT + PATH.ACCOUNT_ID, event.getId(), user2.getId())
+            .post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, event.getId())
         .then()
             .statusCode(SC_CREATED);
 
@@ -542,10 +544,12 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
         assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
 
+        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .addFilter(getFilter(owner.getId())).build();
+
         given()
-            .queryParam(ROLE.ID, role.getId())
         .when()
-            .post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT + PATH.ACCOUNT_ID, newEvent.getId(), owner.getId())
+            .post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, newEvent.getId())
         .then()
             .statusCode(SC_CREATED);
 
@@ -555,10 +559,12 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
         assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
 
+        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .addFilter(getFilter(user1.getId())).build();
+
         given()
-            .queryParam(ROLE.ID, role.getId())
         .when()
-            .post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT + PATH.ACCOUNT_ID, newEvent.getId(), user1.getId())
+            .post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, newEvent.getId())
         .then()
             .statusCode(SC_CREATED);
 
@@ -575,32 +581,36 @@ public class EventRestControllerIT extends AbstractIT {
         Account user1 = getSavedAccount();
         Account user2 = getSavedAccount();
         Event event = getSaved(setPrivate(getNewEventMax()), owner);
-        Role role = this.roleService.getOwner();
 
         assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
         assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
         assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
         assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+
+        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .addFilter(getFilter(user1.getId())).build();
+
         given().
-            queryParam(ROLE.ID, role.getId()).
             queryParam(EVENT.PASSWORD, event.getPassword()).
         when().
-            put(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT + PATH.ACCOUNT_ID, event.getId(), user1.getId()).
+            post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, event.getId()).
         then().
-            statusCode(SC_OK);
+            statusCode(SC_CREATED);
 
         assertEquals(2, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
         assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
         assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
         assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
 
+        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .addFilter(getFilter(user2.getId())).build();
+
         given().
-            queryParam(ROLE.ID, role.getId()).
             queryParam(EVENT.PASSWORD, event.getPassword()).
         when().
-            put(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT + PATH.ACCOUNT_ID, event.getId(), user2.getId()).
+            post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, event.getId()).
         then().
-            statusCode(SC_OK);
+            statusCode(SC_CREATED);
 
         assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
         assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
@@ -615,13 +625,15 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
         assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
 
+        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .addFilter(getFilter(owner.getId())).build();
+
         given().
-            queryParam(ROLE.ID, role.getId()).
             queryParam(EVENT.PASSWORD, event.getPassword()).
         when().
-            put(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT + PATH.ACCOUNT_ID, newEvent.getId(), owner.getId()).
+            post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, newEvent.getId()).
         then().
-            statusCode(SC_OK);
+            statusCode(SC_CREATED);
 
         assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
         assertEquals(2, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
@@ -629,13 +641,15 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
         assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
 
+        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .addFilter(getFilter(user1.getId())).build();
+
         given().
-            queryParam(ROLE.ID, role.getId()).
             queryParam(EVENT.PASSWORD, event.getPassword()).
         when().
-            put(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT + PATH.ACCOUNT_ID, newEvent.getId(), user1.getId()).
+            post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, newEvent.getId(), user1.getId()).
         then().
-            statusCode(SC_OK);
+            statusCode(SC_CREATED);
 
         assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
         assertEquals(3, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
@@ -649,7 +663,6 @@ public class EventRestControllerIT extends AbstractIT {
         Account owner = getSavedAccount();
         Account user1 = getSavedAccount();
         Event event = getSaved(setPrivate(getNewEventMax()), owner);
-        Role role = this.roleService.getOwner();
 
         assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
         assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
@@ -657,10 +670,12 @@ public class EventRestControllerIT extends AbstractIT {
 
         // no password
 
+        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .addFilter(getFilter(user1.getId())).build();
+
         given().
-            queryParam(ROLE.ID, role.getId()).
         when().
-            put(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT + PATH.ACCOUNT_ID, event.getId(), user1.getId()).
+            post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, event.getId()).
         then().
             statusCode(SC_BAD_REQUEST);
 
@@ -670,11 +685,13 @@ public class EventRestControllerIT extends AbstractIT {
 
         // incorrect password
 
+        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .addFilter(getFilter(user1.getId())).build();
+
         given().
-            queryParam(ROLE.ID, role.getId()).
             queryParam(EVENT.PASSWORD, event.getPassword() + "!").
         when().
-            put(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT + PATH.ACCOUNT_ID, event.getId(), user1.getId()).
+            post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, event.getId()).
         then().
             statusCode(SC_BAD_REQUEST);
 
