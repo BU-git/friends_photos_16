@@ -64,16 +64,23 @@ public class EventController {
 
     @RequestMapping(method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public @ResponseBody EntityInfoListsDTO findEvent(
+    public @ResponseBody EntityInfoListsDTO findEvents(
             @RequestParam(value = EVENT.NAME, required = false)         final String name,
             @RequestParam(value = EVENT.DESCRIPTION, required = false)  final String description,
             @RequestParam(value = FIELDS, required = false)             final String fields) {
-//        IdListsDTO body = new IdListsDTO();
-//        body.setEvents(this.eventService.get(name, description).stream().parallel()
-//                .map(Event::getId).collect(toList()));
-//        return body;
         EntityInfoListsDTO body = new EntityInfoListsDTO();
         body.setEvents(EventInfoDTO.Transformer.transform(this.eventService.get(name, description), fields));
+        return body;
+    }
+
+    @RequestMapping(value = ID, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    public @ResponseBody IdListsDTO findEventIds(
+            @RequestParam(value = EVENT.NAME, required = false)         final String name,
+            @RequestParam(value = EVENT.DESCRIPTION, required = false)  final String description) {
+        IdListsDTO body = new IdListsDTO();
+        body.setEvents(this.eventService.get(name, description).stream().parallel()
+                .map(Event::getId).collect(toList()));
         return body;
     }
 
@@ -88,7 +95,16 @@ public class EventController {
 
     @RequestMapping(value = EVENT_ID+PHOTOS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public @ResponseBody IdListsDTO getPhotos(@PathVariable(EVENT.ID) final Long eventId) {
+    public @ResponseBody EntityInfoListsDTO getPhotos(@PathVariable(EVENT.ID) final Long eventId) {
+        EntityInfoListsDTO body = new EntityInfoListsDTO();
+        body.setPhotos(this.eventService.getPhotos(eventId).stream().parallel()
+                .map(PhotoInfoDTO::new).collect(toList()));
+        return body;
+    }
+
+    @RequestMapping(value = EVENT_ID+PHOTOS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    public @ResponseBody IdListsDTO getPhotoIds(@PathVariable(EVENT.ID) final Long eventId) {
         IdListsDTO body = new IdListsDTO();
         body.setPhotos(this.eventService.getPhotos(eventId).stream().parallel()
                 .map(Photo::getId).collect(toList()));

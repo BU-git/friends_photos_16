@@ -1,7 +1,6 @@
 package com.bionic.fp.web.rest;
 
 import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.PhotoNotFoundException;
@@ -26,8 +25,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.bionic.fp.web.rest.RestConstants.*;
 import static com.bionic.fp.web.rest.RestConstants.PATH.*;
@@ -95,50 +92,6 @@ public class PhotoController {
 			return new ResponseEntity<>(NOT_FOUND);
 		}
 		return new ResponseEntity<>(new FileSystemResource(url), OK);
-	}
-
-	// todo: move to EventController (GET events/123/photos)
-	@RequestMapping(value = EVENTS+EVENT_ID, method = GET)
-	@ResponseBody
-	public ResponseEntity<List<PhotoInfoDTO>> getPhotosInfoByEvent(@PathVariable(EVENT.ID) Long eventId) {
-
-		Event event = eventService.get(eventId);
-		if (event == null) {
-			// TODO add message 'event was not found'
-			return new ResponseEntity<>(BAD_REQUEST);
-		}
-
-		List<Photo> photos = photoService.getPhotosByEvent(event);
-		if (photos != null) {
-			List<PhotoInfoDTO> photosDto = photos.stream().parallel().map(photo -> {
-				PhotoInfoDTO dto = new PhotoInfoDTO();
-				dto.setName(photo.getName());
-				dto.setOwnerID(photo.getOwner().getId());
-				dto.setUrl(photo.getUrl());
-				return dto;
-			}).collect(Collectors.toList());
-			return new ResponseEntity<>(photosDto, OK);
-		} else
-			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
-	}
-
-	// todo: move to AccountController (GET accounts/123/photos) and exchange owner to ownerId in photoService
-	@RequestMapping(value = OWNER, method = GET)
-	@ResponseBody
-	public ResponseEntity<List<PhotoInfoDTO>> getPhotoList(@RequestParam(PARAM.OWNER_ID) Long ownerId) {
-		Account owner = accountService.get(ownerId);
-		List<Photo> photos = photoService.getPhotosList(owner);
-		if (photos != null) {
-			List<PhotoInfoDTO> photosDto = photos.stream().parallel().map(photo -> {
-				PhotoInfoDTO dto = new PhotoInfoDTO();
-				dto.setName(photo.getName());
-				dto.setOwnerID(photo.getOwner().getId());
-				dto.setUrl(photo.getUrl());
-				return dto;
-			}).collect(Collectors.toList());
-			return new ResponseEntity<>(photosDto, OK);
-		}
-		return new ResponseEntity<>(OK);
 	}
 
 

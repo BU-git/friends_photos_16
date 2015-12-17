@@ -45,8 +45,8 @@ public class PhotoService {
 		return photoDAO.read(id);
 	}
 
-	public List<Photo> getPhotosList(Account account) {
-		return photoDAO.getPhotosList(account);
+	public List<Photo> getPhotosByOwnerId(final Long ownerId) {
+		return ownerId == null ? Collections.emptyList() : photoDAO.getPhotosByOwnerId(ownerId);
 	}
 
 
@@ -67,7 +67,7 @@ public class PhotoService {
 //    }
 
 	// TODO refactor this
-//    public List<Photo> getPhotos(Long eventId){
+//    public List<Photo> getPhotosByOwnerId(Long eventId){
 //         return photoDAO.getPhotosByEvent(eventId);
 //    }
     /**
@@ -135,22 +135,6 @@ public class PhotoService {
 
         return photo;
     }
-
-
-    public List<Photo> getPhotosByEvent(Event event){
-		if (event == null) {
-			throw new NullPointerException("Event param is null");
-		}
-        return photoDAO.getPhotosByEvent(event);
-	}
-
-	public List<Photo> getPhotosByEventId(Long eventId){
-		Event event = eventDAO.read(eventId);
-		if (event == null) {
-			throw new EntityNotFoundException("event", eventId);
-		}
-		return photoDAO.getPhotosByEvent(event);
-	}
 
     /**
      * Add counter to the beginning of the name

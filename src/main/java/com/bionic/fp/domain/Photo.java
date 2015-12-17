@@ -13,7 +13,22 @@ import java.util.List;
 @NamedEntityGraph(name = "Photo.comments",
         attributeNodes = @NamedAttributeNode("comments")
 )
+@NamedQueries({
+        @NamedQuery(
+                name = Photo.FIND_BY_OWNER_ID,
+                query = "SELECT p FROM Photo p WHERE p.owner.id = :ownerId"
+        ),
+        @NamedQuery(
+                name = Photo.FIND_BY_EVENT_ID,
+                query = "SELECT p FROM Photo p WHERE p.event.id = :eventId"
+        )
+})
 public class Photo implements Serializable {
+    @Transient
+    public static final String FIND_BY_OWNER_ID = "Photo.findByOwnerId";
+    @Transient
+    public static final String FIND_BY_EVENT_ID = "Photo.findByEventId";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

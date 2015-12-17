@@ -21,11 +21,11 @@ public interface PhotoDAO extends GenericDAO<Photo, Long> {
 
 	/**
 	 *
-	 * @param event event object we want to get photos for.
+	 * @param eventId the event id  we want to get photos for.
 	 * @return list of all photo objects for current event.
 	 */
-	List<Photo> getPhotosByEvent(Event event);
+	List<Photo> getPhotosByEventId(Long eventId);
 
-	List<Photo> getPhotosList(Account owner);
+	List<Photo> getPhotosByOwnerId(Long ownerId);
 
 }

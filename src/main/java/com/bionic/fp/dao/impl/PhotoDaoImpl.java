@@ -45,17 +45,17 @@ public class PhotoDaoImpl implements PhotoDAO {
     }
 
 	@Override
-	public List<Photo> getPhotosByEvent(Event event) {
-		Query query = em.createQuery("from Photo where event = :event");
-		query.setParameter("event", event);
-		return query.getResultList();
+	public List<Photo> getPhotosByEventId(final Long eventId) {
+        return this.em.createNamedQuery(Photo.FIND_BY_EVENT_ID, Photo.class)
+                .setParameter("eventId", eventId)
+                .getResultList();
 	}
 
-	@Override
-	public List<Photo> getPhotosList(Account owner) {
-		Query query = em.createQuery("from Photo where owner = :owner");
-		query.setParameter("owner", owner);
-		return query.getResultList();
+    @Override
+	public List<Photo> getPhotosByOwnerId(final Long ownerId) {
+        return this.em.createNamedQuery(Photo.FIND_BY_OWNER_ID, Photo.class)
+                .setParameter("ownerId", ownerId)
+                .getResultList();
 	}
 //    @Override
 //    public Photo getSingleInfoByHash(String hash){

@@ -4,7 +4,10 @@ import com.bionic.fp.exception.auth.impl.EmailAlreadyExistException;
 import com.bionic.fp.exception.auth.impl.EmptyPasswordException;
 import com.bionic.fp.exception.auth.impl.UserNameAlreadyExistException;
 import com.bionic.fp.jsonhelper.FromJSONParser;
+import com.bionic.fp.service.PhotoService;
+import com.bionic.fp.web.rest.dto.EntityInfoListsDTO;
 import com.bionic.fp.web.rest.dto.EventsIDsList;
+import com.bionic.fp.web.rest.dto.PhotoInfoDTO;
 import com.bionic.fp.web.security.SessionUtils;
 import com.bionic.fp.service.AccountService;
 import org.json.simple.JSONObject;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.bionic.fp.web.rest.RestConstants.*;
 import static com.bionic.fp.web.rest.RestConstants.PATH.*;
@@ -34,6 +38,8 @@ public class AccountController {
 
 	@Autowired
     private AccountService accountService;
+    @Autowired
+    private PhotoService photoService;
 	@Autowired
     private FromJSONParser parser;
 
@@ -67,6 +73,16 @@ public class AccountController {
         List<Long> events = accountService.getEventsIDsWhereRoleOwner(accountId);
         EventsIDsList eventsIDsList = new EventsIDsList(events);
         return new ResponseEntity<>(eventsIDsList, OK);
+    }
+
+    @RequestMapping(value = ACCOUNT_ID+PHOTOS, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    public @ResponseBody EntityInfoListsDTO getPhotosByOwnerId(@PathVariable(ACCOUNT.ID) final Long ownerId) {
+        EntityInfoListsDTO body = new EntityInfoListsDTO();
+        body.setPhotos(this.photoService.getPhotosByOwnerId(ownerId).stream().parallel()
+                .map(PhotoInfoDTO::new)
+                .collect(Collectors.toList()));
+        return body;
     }
 
 

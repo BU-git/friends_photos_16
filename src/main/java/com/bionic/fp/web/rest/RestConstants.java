@@ -26,6 +26,7 @@ public final class RestConstants {
         String FB = "/fb";
         String VK = "/vk";
         String FILE = "/file";
+        String ID = "/id";
     }
 
     public interface PARAM {
@@ -68,7 +69,7 @@ public final class RestConstants {
         String FILE = "file";
         String NAME = "name";
         String DESCRIPTION = "description";
-
+        String LIST = "photos";
     }
 
     public interface COMMENT {
