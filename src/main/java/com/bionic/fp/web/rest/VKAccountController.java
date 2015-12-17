@@ -1,8 +1,6 @@
 package com.bionic.fp.web.rest;
 
 import com.bionic.fp.domain.Account;
-import com.bionic.fp.web.rest.RestConstants.PARAM;
-import com.bionic.fp.web.rest.RestConstants.PATH;
 import com.bionic.fp.web.rest.dto.AuthResponse;
 import com.bionic.fp.web.rest.dto.VKAccessTokenResponse;
 import com.bionic.fp.web.rest.dto.VKCheckTokenResponse;
@@ -22,11 +20,15 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+import static com.bionic.fp.web.rest.RestConstants.PARAM.VK_ID;
+import static com.bionic.fp.web.rest.RestConstants.PARAM.VK_TOKEN;
+import static com.bionic.fp.web.rest.RestConstants.PATH.ACCOUNTS;
+import static com.bionic.fp.web.rest.RestConstants.PATH.VK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping(PATH.ACCOUNT+ PATH.VK)
+@RequestMapping(ACCOUNTS+VK)
 public class VKAccountController {
     private static final String APP_TOKEN_URL =
             "https://oauth.vk.com/access_token?client_id=%s&client_secret=%s&v=5.40&grant_type=client_credentials";
@@ -54,8 +56,8 @@ public class VKAccountController {
 
 
     @RequestMapping(method = POST, produces = APPLICATION_JSON_VALUE)
-    public AuthResponse loginViaFacebook(@RequestParam(name = PARAM.VK_ID) final String vkId,
-                                         @RequestParam(name = PARAM.VK_TOKEN) final String token,
+    public AuthResponse loginViaFacebook(@RequestParam(name = VK_ID) final String vkId,
+                                         @RequestParam(name = VK_TOKEN) final String token,
                                          final HttpSession session) {
 
         AuthResponse authResponse = new AuthResponse();

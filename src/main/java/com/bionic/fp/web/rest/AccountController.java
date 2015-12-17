@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 import static com.bionic.fp.web.rest.RestConstants.*;
+import static com.bionic.fp.web.rest.RestConstants.PATH.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -28,7 +29,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  * Created by boubdyk on 15.11.2015.
  */
 @RestController
-@RequestMapping(PATH.ACCOUNT)
+@RequestMapping(ACCOUNTS)
 public class AccountController {
 
 	@Autowired
@@ -48,7 +49,7 @@ public class AccountController {
      * @param accountId - account ID
      * @return - List of IDs events where the user is involved
      */
-    @RequestMapping(value = PATH.ACCOUNT_ID+PATH.EVENT, method = GET)
+    @RequestMapping(value = ACCOUNT_ID+EVENTS, method = GET)
     public final ResponseEntity<EventsIDsList> getUserEvents(@PathVariable(ACCOUNT.ID) final Long accountId) {
         List<Long> events = accountService.getEventsIDs(accountId);
         EventsIDsList eventsIDsList = new EventsIDsList(events);
@@ -61,7 +62,7 @@ public class AccountController {
      * @param accountId - account ID
      * @return - List of IDs events where the user is owner
      */
-    @RequestMapping(value = PATH.ACCOUNT_ID+PATH.EVENT+PATH.OWNER, method = GET)
+    @RequestMapping(value = ACCOUNT_ID+EVENTS+OWNER, method = GET)
     public final ResponseEntity<EventsIDsList> getUserEventsWhereRoleOwner(@PathVariable(ACCOUNT.ID) final Long accountId) {
         List<Long> events = accountService.getEventsIDsWhereRoleOwner(accountId);
         EventsIDsList eventsIDsList = new EventsIDsList(events);
@@ -79,7 +80,7 @@ public class AccountController {
      * @param input input JSON.
      * @return error code and JSON.
      */
-    @RequestMapping(value = PATH.REGISTER, method = POST, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = REGISTER, method = POST, consumes = APPLICATION_JSON_VALUE)
     public final ResponseEntity<String> registerByFP(@RequestBody final String input, final HttpSession session) {
         JSONObject inputObject = parser.parse(input);
         JSONObject returnObject;
@@ -107,7 +108,7 @@ public class AccountController {
      * @param password password.
      * @return error code and JSON.
      */
-	@RequestMapping(value = PATH.LOGIN, method = POST, consumes = APPLICATION_JSON_VALUE)
+	@RequestMapping(value = LOGIN, method = POST, consumes = APPLICATION_JSON_VALUE)
     public final ResponseEntity<String> loginByFP(@RequestParam("userName") final String userName,
                                                   @RequestParam("password") final String password,
                                                   final HttpSession session) {
@@ -123,7 +124,7 @@ public class AccountController {
         }
     }
 
-    @RequestMapping(value = PATH.LOGOUT, method = POST)
+    @RequestMapping(value = LOGOUT, method = POST)
     @ResponseStatus(OK)
     public final void logout(final HttpSession session) {
         SessionUtils.logout(session);

@@ -8,19 +8,18 @@ package com.bionic.fp.web.rest;
 public final class RestConstants {
 
     public interface PATH {
-        String ACCOUNT = "/account";
+        String ACCOUNTS = "/accounts";
         String ACCOUNT_ID = "/{"+ RestConstants.ACCOUNT.ID + ":[\\d]+}";
-        String EVENT = "/event";
+        String EVENTS = "/events";
         String EVENT_ID = "/{"+ RestConstants.EVENT.ID + ":[\\d]+}";
-        String COMMENT = "/comment";
+        String COMMENTS = "/comments";
         String COMMENT_ID = "/{"+ RestConstants.COMMENT.ID + ":[\\d]+}";
-        String PHOTO = "/photo";
+        String PHOTOS = "/photos";
         String PHOTO_ID = "/{"+ RestConstants.PHOTO.ID + ":[\\d]+}";
-        String ROLE = "/role";
+        String ROLES = "/roles";
         String ROLE_ID = "/{"+ RestConstants.ROLE.ID + ":[\\d]+}";
 
         String OWNER = "/owner";
-        String LIST = "/list";
         String LOGIN = "/login";
         String LOGOUT = "/logout";
         String REGISTER = "/register";

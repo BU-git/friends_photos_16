@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.bionic.fp.web.rest.RestConstants.*;
+import static com.bionic.fp.web.rest.RestConstants.PATH.*;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
@@ -42,7 +43,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
  */
 
 @Controller
-@RequestMapping(PATH.PHOTO)
+@RequestMapping(PHOTOS)
 public class PhotoController {
 
 	@Autowired
@@ -60,7 +61,7 @@ public class PhotoController {
 	//***************************************
 
 
-	@RequestMapping(value = PATH.PHOTO_ID, method = GET)
+	@RequestMapping(value = PHOTO_ID, method = GET)
 	@ResponseBody
 	public ResponseEntity<PhotoInfoDTO> getPhotoInfo(@PathVariable(PHOTO.ID) Long photoId) {
 		Photo photo = photoService.getById(photoId);
@@ -81,7 +82,7 @@ public class PhotoController {
 	 * @param photoId id of the photo
 	 * @return file
 	 */
-	@RequestMapping(value = PATH.PHOTO_ID+PATH.FILE, method = GET, produces = APPLICATION_OCTET_STREAM_VALUE)
+	@RequestMapping(value = PHOTO_ID+FILE, method = GET, produces = APPLICATION_OCTET_STREAM_VALUE)
 	@ResponseBody
 	public ResponseEntity<FileSystemResource> getPhotoFile(@PathVariable(PHOTO.ID) Long photoId) {
 		Photo photo = photoService.getById(photoId);
@@ -96,8 +97,8 @@ public class PhotoController {
 		return new ResponseEntity<>(new FileSystemResource(url), OK);
 	}
 
-
-	@RequestMapping(value = PATH.EVENT+PATH.EVENT_ID, method = GET)
+	// todo: move to EventController (GET events/123/photos)
+	@RequestMapping(value = EVENTS+EVENT_ID, method = GET)
 	@ResponseBody
 	public ResponseEntity<List<PhotoInfoDTO>> getPhotosInfoByEvent(@PathVariable(EVENT.ID) Long eventId) {
 
@@ -121,7 +122,8 @@ public class PhotoController {
 			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
 	}
 
-	@RequestMapping(value = PATH.LIST, method = GET)
+	// todo: move to AccountController (GET accounts/123/photos) and exchange owner to ownerId in photoService
+	@RequestMapping(value = OWNER, method = GET)
 	@ResponseBody
 	public ResponseEntity<List<PhotoInfoDTO>> getPhotoList(@RequestParam(PARAM.OWNER_ID) Long ownerId) {
 		Account owner = accountService.get(ownerId);
@@ -217,7 +219,7 @@ public class PhotoController {
 	 * @param name
 	 * @return
 	 */
-	@RequestMapping(value = PATH.PHOTO_ID, method = PUT)
+	@RequestMapping(value = PHOTO_ID, method = PUT)
 	@ResponseBody
 	public ResponseEntity<PhotoInfoDTO> updatePhoto(
 			@PathVariable(PHOTO.ID) Long photoId,

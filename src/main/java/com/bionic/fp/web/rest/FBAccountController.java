@@ -2,8 +2,6 @@ package com.bionic.fp.web.rest;
 
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.exception.logic.InvalidParameterException;
-import com.bionic.fp.web.rest.RestConstants.PARAM;
-import com.bionic.fp.web.rest.RestConstants.PATH;
 import com.bionic.fp.web.rest.dto.FBUserInfoResponse;
 import com.bionic.fp.web.rest.dto.AuthResponse;
 import com.bionic.fp.web.rest.dto.FBUserTokenInfo;
@@ -22,12 +20,16 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static com.bionic.fp.util.Checks.check;
+import static com.bionic.fp.web.rest.RestConstants.PARAM.FB_ID;
+import static com.bionic.fp.web.rest.RestConstants.PARAM.FB_TOKEN;
+import static com.bionic.fp.web.rest.RestConstants.PATH.ACCOUNTS;
+import static com.bionic.fp.web.rest.RestConstants.PATH.FB;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping(PATH.ACCOUNT+ PATH.FB)
+@RequestMapping(ACCOUNTS+FB)
 public class FBAccountController {
     private static final String DEBUG_TOKEN_URL =
             "https://graph.facebook.com/debug_token?input_token=%s&access_token=%s|%s";
@@ -53,8 +55,8 @@ public class FBAccountController {
 
 
     @RequestMapping(method = POST, produces = APPLICATION_JSON_VALUE)
-    public AuthResponse loginViaFacebook(@RequestParam(name = PARAM.FB_ID) final String fbId,
-                                         @RequestParam(name = PARAM.FB_TOKEN) final String token,
+    public AuthResponse loginViaFacebook(@RequestParam(name = FB_ID) final String fbId,
+                                         @RequestParam(name = FB_TOKEN) final String token,
                                          final HttpSession session) throws InvalidParameterException {
         check(isNotEmpty(fbId), "FB id is empty");
         check(isNotEmpty(token), "FB token is empty");

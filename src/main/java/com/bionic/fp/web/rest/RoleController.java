@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 import static com.bionic.fp.web.rest.RestConstants.*;
+import static com.bionic.fp.web.rest.RestConstants.PATH.*;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -22,7 +23,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  */
 
 @RestController
-@RequestMapping(PATH.ROLE)
+@RequestMapping(ROLES)
 public class RoleController {
 
     @Inject
@@ -34,7 +35,7 @@ public class RoleController {
     //***************************************
 
 
-    @RequestMapping(value = PATH.LIST, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(method = GET, produces = APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<AllRolesDTO> getAllRoles() {
         List<Role> allRoles = roleService.getAllRoles();
         AllRolesDTO allRolesDTO = new AllRolesDTO(allRoles);
@@ -42,7 +43,7 @@ public class RoleController {
         return new ResponseEntity<>(allRolesDTO, OK);
     }
 
-    @RequestMapping(value = PATH.ACCOUNT+PATH.ACCOUNT_ID+PATH.EVENT+PATH.EVENT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ACCOUNTS+ACCOUNT_ID+EVENTS+EVENT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<RoleIdDTO> getRoleByAccountAndEvent(
             @PathVariable(ACCOUNT.ID) final Long accountId,
             @PathVariable(EVENT.ID) final Long eventId

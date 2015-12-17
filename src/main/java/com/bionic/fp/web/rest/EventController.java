@@ -21,6 +21,8 @@ import javax.servlet.http.HttpSession;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static com.bionic.fp.web.rest.RestConstants.PARAM.FIELDS;
+import static com.bionic.fp.web.rest.RestConstants.PATH.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ArrayUtils.isNotEmpty;
@@ -34,7 +36,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  * @author Sergiy Gabriel
  */
 @RestController
-@RequestMapping(PATH.EVENT)
+@RequestMapping(EVENTS)
 public class EventController {
 
     @Inject
@@ -52,10 +54,10 @@ public class EventController {
     //***************************************
 
 
-    @RequestMapping(value = PATH.EVENT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = EVENT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public @ResponseBody EventInfoDTO findEventById(@PathVariable(EVENT.ID) final Long id,
-                                                    @RequestParam(value = PARAM.FIELDS, required = false) final String fields) {
+                                                    @RequestParam(value = FIELDS, required = false) final String fields) {
         Event event = this.findEventOrThrow(id);
         return EventInfoDTO.Transformer.transform(event, fields);
     }
@@ -65,7 +67,7 @@ public class EventController {
     public @ResponseBody EntityInfoListsDTO findEvent(
             @RequestParam(value = EVENT.NAME, required = false)         final String name,
             @RequestParam(value = EVENT.DESCRIPTION, required = false)  final String description,
-            @RequestParam(value = PARAM.FIELDS, required = false)       final String fields) {
+            @RequestParam(value = FIELDS, required = false)             final String fields) {
 //        IdListsDTO body = new IdListsDTO();
 //        body.setEvents(this.eventService.get(name, description).stream().parallel()
 //                .map(Event::getId).collect(toList()));
@@ -75,7 +77,7 @@ public class EventController {
         return body;
     }
 
-    @RequestMapping(value = PATH.EVENT_ID+PATH.ACCOUNT+PATH.LIST, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = EVENT_ID+ACCOUNTS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public @ResponseBody IdListsDTO getAccounts(@PathVariable(EVENT.ID) final Long eventId) {
         IdListsDTO body = new IdListsDTO();
@@ -84,7 +86,7 @@ public class EventController {
         return body;
     }
 
-    @RequestMapping(value = PATH.EVENT_ID+PATH.PHOTO, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = EVENT_ID+PHOTOS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public @ResponseBody IdListsDTO getPhotos(@PathVariable(EVENT.ID) final Long eventId) {
         IdListsDTO body = new IdListsDTO();
@@ -93,7 +95,7 @@ public class EventController {
         return body;
     }
 
-    @RequestMapping(value = PATH.EVENT_ID+PATH.COMMENT, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = EVENT_ID+COMMENTS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public @ResponseBody IdListsDTO getComments(@PathVariable(EVENT.ID) final Long eventId) {
         IdListsDTO body = new IdListsDTO();
@@ -102,7 +104,7 @@ public class EventController {
         return body;
     }
 
-    @RequestMapping(value = PATH.EVENT_ID+PATH.OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = EVENT_ID+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public @ResponseBody IdInfoDTO getEventOwner(@PathVariable(EVENT.ID) final Long eventId) {
         Event event = this.getEventOrThrow(eventId);
@@ -145,7 +147,7 @@ public class EventController {
         return new IdInfoDTO(eventId);
     }
 
-    @RequestMapping(value = PATH.EVENT_ID+PATH.ACCOUNT, method = POST)
+    @RequestMapping(value = EVENT_ID+ACCOUNTS, method = POST)
     @ResponseStatus(CREATED)
     public void addAccountToEvent(@PathVariable(EVENT.ID) final Long eventId,
                                   @RequestParam(value = EVENT.PASSWORD, required = false) final String password,
@@ -160,7 +162,7 @@ public class EventController {
     //***************************************
 
 
-    @RequestMapping(value = PATH.EVENT_ID,  method = PUT, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = EVENT_ID,  method = PUT, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public void updateEvent(@PathVariable(EVENT.ID) final Long eventId, @RequestBody final EventUpdateDTO eventDto,
                             final HttpSession session) {
@@ -207,7 +209,7 @@ public class EventController {
         this.eventService.update(event);
     }
 
-    @RequestMapping(value = PATH.EVENT_ID+PATH.ACCOUNT+PATH.ACCOUNT_ID, method = PUT)
+    @RequestMapping(value = EVENT_ID+ACCOUNTS+ACCOUNT_ID, method = PUT)
     @ResponseStatus(OK)
     public void updateAccountToEvent(@PathVariable(EVENT.ID) final Long eventId,
                                      @PathVariable(ACCOUNT.ID) final Long accountId,
@@ -225,7 +227,7 @@ public class EventController {
     //***************************************
 
 
-    @RequestMapping(value = PATH.EVENT_ID, method = DELETE)
+    @RequestMapping(value = EVENT_ID, method = DELETE)
     @ResponseStatus(NO_CONTENT)
     public void deleteEventById(@PathVariable(EVENT.ID) final Long eventId, final HttpSession session) {
         checkPermission(session, eventId, Role::isCanChangeSettings);

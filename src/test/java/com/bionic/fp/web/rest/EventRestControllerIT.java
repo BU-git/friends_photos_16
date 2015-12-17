@@ -14,6 +14,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.List;
 
 import static com.bionic.fp.web.rest.RestConstants.*;
+import static com.bionic.fp.web.rest.RestConstants.PATH.ACCOUNTS;
+import static com.bionic.fp.web.rest.RestConstants.PATH.EVENTS;
+import static com.bionic.fp.web.rest.RestConstants.PATH.EVENT_ID;
 import static com.jayway.restassured.http.ContentType.JSON;
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.when;
@@ -28,6 +31,8 @@ import static org.junit.Assert.*;
  */
 public class EventRestControllerIT extends AbstractIT {
 
+    public static final String TO_STRING = ".toString()";
+
     @Test
     public void testSaveEventSuccess() {
         Account owner = getSavedAccount();
@@ -39,7 +44,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(PATH.EVENT)
+            .post(EVENTS)
         .then()
             .statusCode(SC_CREATED);
 
@@ -90,7 +95,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(PATH.EVENT)
+            .post(EVENTS)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -103,7 +108,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(PATH.EVENT)
+            .post(EVENTS)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -116,7 +121,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(PATH.EVENT)
+            .post(EVENTS)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -129,7 +134,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(PATH.EVENT)
+            .post(EVENTS)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -142,7 +147,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(PATH.EVENT)
+            .post(EVENTS)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -155,7 +160,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(PATH.EVENT)
+            .post(EVENTS)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -168,7 +173,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(PATH.EVENT)
+            .post(EVENTS)
         .then()
             .statusCode(SC_BAD_REQUEST);
     }
@@ -184,7 +189,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(PATH.EVENT)
+            .post(EVENTS)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -195,7 +200,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(PATH.EVENT)
+            .post(EVENTS)
         .then()
             .statusCode(SC_BAD_REQUEST);
     }
@@ -208,7 +213,7 @@ public class EventRestControllerIT extends AbstractIT {
                 .addFilter(getFilter(event.getOwner().getId())).build();
 
         when()
-            .delete(PATH.EVENT + PATH.EVENT_ID, event.getId())
+            .delete(EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_NO_CONTENT);
     }
@@ -220,7 +225,7 @@ public class EventRestControllerIT extends AbstractIT {
         // no session
 
         when()
-            .delete(PATH.EVENT + PATH.EVENT_ID, event.getId())
+            .delete(EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_UNAUTHORIZED);
     }
@@ -235,7 +240,7 @@ public class EventRestControllerIT extends AbstractIT {
                 .addFilter(getFilter(Long.MAX_VALUE)).build();
 
         when()
-            .delete(PATH.EVENT + PATH.EVENT_ID, event.getId())
+            .delete(EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_FORBIDDEN);
 
@@ -245,7 +250,7 @@ public class EventRestControllerIT extends AbstractIT {
                 .addFilter(getFilter(event.getOwner().getId())).build();
 
         when()
-            .delete(PATH.EVENT + PATH.EVENT_ID, Long.MAX_VALUE)
+            .delete(EVENTS + EVENT_ID, Long.MAX_VALUE)
         .then()
             .statusCode(SC_FORBIDDEN);
     }
@@ -253,7 +258,7 @@ public class EventRestControllerIT extends AbstractIT {
     @Test
     public void testRemoveEventByIdShouldReturnNotFound() {
         when()
-            .delete(PATH.EVENT + PATH.EVENT_ID, "1abc")
+            .delete(EVENTS + EVENT_ID, "1abc")
         .then()
             .statusCode(SC_NOT_FOUND);
     }
@@ -261,7 +266,7 @@ public class EventRestControllerIT extends AbstractIT {
     @Test @Ignore // todo: there is no necessary role
     public void testRemoveEventByIdShouldReturnBadRequest() {
          when()
-            .delete(PATH.EVENT + PATH.EVENT_ID, Long.MAX_VALUE)
+            .delete(EVENTS + EVENT_ID, Long.MAX_VALUE)
         .then()
             .statusCode(SC_BAD_REQUEST);
     }
@@ -272,12 +277,12 @@ public class EventRestControllerIT extends AbstractIT {
         Event event = getSavedEventMin(owner);
 
         when()
-            .get(PATH.EVENT + PATH.EVENT_ID, event.getId())
+            .get(EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_OK)
-            .body(EVENT.ID + ".toString()", is(event.getId().toString()))
+            .body(EVENT.ID + TO_STRING, is(event.getId().toString()))
             .body(EVENT.NAME, is(event.getName()))
-            .body(EVENT.TYPE_ID + ".toString()", is(event.getEventType().getId().toString()))
+            .body(EVENT.TYPE_ID + TO_STRING, is(event.getEventType().getId().toString()))
             .body(EVENT.DESCRIPTION, is(event.getDescription()))
             // sometimes failure 2015-11-24 16:51:53 == 2015-11-24 16:51:53.213
             // but 2015-11-24 16:51:53 != 2015-11-24 16:51:53.599
@@ -288,17 +293,17 @@ public class EventRestControllerIT extends AbstractIT {
             .body(EVENT.RADIUS, is(event.getRadius()))
             .body(EVENT.GEO, is(event.isGeoServicesEnabled()))
             .body(EVENT.VISIBLE, is(event.isVisible()))
-            .body(PARAM.OWNER_ID + ".toString()", is(event.getOwner().getId().toString()));
+            .body(PARAM.OWNER_ID + TO_STRING, is(event.getOwner().getId().toString()));
 
         event = getSavedEventMax(owner);
 
         when()
-            .get(PATH.EVENT + PATH.EVENT_ID, event.getId())
+            .get(EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_OK)
-            .body(EVENT.ID + ".toString()", is(event.getId().toString()))
+            .body(EVENT.ID + TO_STRING, is(event.getId().toString()))
             .body(EVENT.NAME, is(event.getName()))
-            .body(EVENT.TYPE_ID + ".toString()", is(event.getEventType().getId().toString()))
+            .body(EVENT.TYPE_ID + TO_STRING, is(event.getEventType().getId().toString()))
             .body(EVENT.DESCRIPTION, is(event.getDescription()))
             // sometimes failure 2015-11-24 16:51:53 == 2015-11-24 16:51:53.213
             // but 2015-11-24 16:51:53 != 2015-11-24 16:51:53.599
@@ -310,7 +315,7 @@ public class EventRestControllerIT extends AbstractIT {
 //            .body("radius.toString()", is(event.getRadius().toString()))
             .body(EVENT.GEO, is(event.isGeoServicesEnabled()))
             .body(EVENT.VISIBLE, is(event.isVisible()))
-            .body(PARAM.OWNER_ID + ".toString()", is(event.getOwner().getId().toString()));
+            .body(PARAM.OWNER_ID + TO_STRING, is(event.getOwner().getId().toString()));
 
     }
 
@@ -319,7 +324,7 @@ public class EventRestControllerIT extends AbstractIT {
         long id = Long.MAX_VALUE;
 
         when()
-            .get(PATH.EVENT + PATH.EVENT_ID, id)
+            .get(EVENTS + EVENT_ID, id)
         .then()
             .statusCode(SC_NOT_FOUND);
 //            .body("error", is((new EventNotFoundException(id)).getMessage()));
@@ -348,7 +353,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .put(PATH.EVENT + PATH.EVENT_ID, event.getId())
+            .put(EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_OK);
 
@@ -381,7 +386,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .put(PATH.EVENT + PATH.EVENT_ID, event.getId())
+            .put(EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_OK);
 
@@ -405,7 +410,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .put(PATH.EVENT + PATH.EVENT_ID, "1abc")
+            .put(EVENTS + EVENT_ID, "1abc")
         .then()
             .statusCode(SC_NOT_FOUND);
     }
@@ -417,7 +422,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .put(PATH.EVENT + PATH.EVENT_ID, Long.MAX_VALUE)
+            .put(EVENTS + EVENT_ID, Long.MAX_VALUE)
         .then()
             .statusCode(SC_BAD_REQUEST);
     }
@@ -433,7 +438,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .put(PATH.EVENT + PATH.EVENT_ID, event.getId())
+            .put(EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_UNAUTHORIZED);
     }
@@ -452,7 +457,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .put(PATH.EVENT + PATH.EVENT_ID, event.getId())
+            .put(EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_FORBIDDEN);
 
@@ -465,7 +470,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .put(PATH.EVENT + PATH.EVENT_ID, Long.MAX_VALUE)
+            .put(EVENTS + EVENT_ID, Long.MAX_VALUE)
         .then()
             .statusCode(SC_FORBIDDEN);
 
@@ -491,7 +496,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .put(PATH.EVENT + PATH.EVENT_ID, event.getId())
+            .put(EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_FORBIDDEN);
     }
@@ -513,7 +518,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         given()
         .when()
-            .post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, event.getId())
+            .post(EVENTS + EVENT_ID + ACCOUNTS, event.getId())
         .then()
             .statusCode(SC_CREATED);
 
@@ -527,7 +532,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         given()
         .when()
-            .post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, event.getId())
+            .post(EVENTS + EVENT_ID + ACCOUNTS, event.getId())
         .then()
             .statusCode(SC_CREATED);
 
@@ -549,7 +554,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         given()
         .when()
-            .post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, newEvent.getId())
+            .post(EVENTS + EVENT_ID + ACCOUNTS, newEvent.getId())
         .then()
             .statusCode(SC_CREATED);
 
@@ -564,7 +569,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         given()
         .when()
-            .post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, newEvent.getId())
+            .post(EVENTS + EVENT_ID + ACCOUNTS, newEvent.getId())
         .then()
             .statusCode(SC_CREATED);
 
@@ -593,7 +598,7 @@ public class EventRestControllerIT extends AbstractIT {
         given().
             queryParam(EVENT.PASSWORD, event.getPassword()).
         when().
-            post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, event.getId()).
+            post(EVENTS + EVENT_ID + ACCOUNTS, event.getId()).
         then().
             statusCode(SC_CREATED);
 
@@ -608,7 +613,7 @@ public class EventRestControllerIT extends AbstractIT {
         given().
             queryParam(EVENT.PASSWORD, event.getPassword()).
         when().
-            post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, event.getId()).
+            post(EVENTS + EVENT_ID + ACCOUNTS, event.getId()).
         then().
             statusCode(SC_CREATED);
 
@@ -631,7 +636,7 @@ public class EventRestControllerIT extends AbstractIT {
         given().
             queryParam(EVENT.PASSWORD, event.getPassword()).
         when().
-            post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, newEvent.getId()).
+            post(EVENTS + EVENT_ID + ACCOUNTS, newEvent.getId()).
         then().
             statusCode(SC_CREATED);
 
@@ -647,7 +652,7 @@ public class EventRestControllerIT extends AbstractIT {
         given().
             queryParam(EVENT.PASSWORD, event.getPassword()).
         when().
-            post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, newEvent.getId(), user1.getId()).
+            post(EVENTS + EVENT_ID + ACCOUNTS, newEvent.getId(), user1.getId()).
         then().
             statusCode(SC_CREATED);
 
@@ -675,7 +680,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         given().
         when().
-            post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, event.getId()).
+            post(EVENTS + EVENT_ID + ACCOUNTS, event.getId()).
         then().
             statusCode(SC_BAD_REQUEST);
 
@@ -691,7 +696,7 @@ public class EventRestControllerIT extends AbstractIT {
         given().
             queryParam(EVENT.PASSWORD, event.getPassword() + "!").
         when().
-            post(PATH.EVENT + PATH.EVENT_ID + PATH.ACCOUNT, event.getId()).
+            post(EVENTS + EVENT_ID + ACCOUNTS, event.getId()).
         then().
             statusCode(SC_BAD_REQUEST);
 
