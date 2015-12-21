@@ -12,15 +12,19 @@
         // export public properties and functions
         angular.extend(service, {
             getList: getList,
-            create: create
+            save: save
         });
 
         function getList() {
 
         }
 
-        function create() {
-
+        function save(event) {
+            // TODO
+            event.typeId = parseInt(event.typeId);
+            $http.post('events', event).then(function (res) {
+                debugger
+            });
         }
     }
 

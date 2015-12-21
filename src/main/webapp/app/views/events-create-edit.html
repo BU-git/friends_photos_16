@@ -1,0 +1,50 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            <form name="eventForm" ng-submit="eventsCtrl.save(event)">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <md-input-container class="md-block">
+                            <label>Name</label>
+                            <input ng-model="event.name" type="text">
+                        </md-input-container>
+                    </div>
+                    <div class="col-lg-4 md-datepicker-container">
+                        <md-datepicker ng-model="event.date" md-placeholder="Enter date" class="pull-right">
+                        </md-datepicker>
+                    </div>
+                </div>
+
+                <md-input-container class="md-block">
+                    <label>Description</label>
+                    <input ng-model="event.description" type="text">
+                </md-input-container>
+
+                <div layout="row">
+                    <md-input-container class="md-block" flex>
+                        <label>Lat</label>
+                        <input ng-model="event.lat" type="text">
+                    </md-input-container>
+
+                    <md-input-container class="md-block" flex>
+                        <label>Lng</label>
+                        <input ng-model="event.lng" type="text">
+                    </md-input-container>
+
+                    <md-input-container>
+                        <label>Type</label>
+                        <md-select ng-model="event.typeId">
+                            <md-option ng-repeat="type in [1, 2]" value="{{type}}">
+                                {{type}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+
+                <div>
+                    <md-button class="md-raised md-primary pull-right" type="submit">Save</md-button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

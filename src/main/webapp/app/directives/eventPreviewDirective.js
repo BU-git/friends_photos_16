@@ -13,7 +13,7 @@
         };
         return directive;
 
-        function link(scope, elem, attrs) { debugger
+        function link(scope, elem, attrs) {
 
         }
     }

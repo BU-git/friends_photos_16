@@ -5,10 +5,13 @@
         .module('friends_photos')
         .controller('EventsController', EventsController);
 
-    EventsController.$inject = [];
+    EventsController.$inject = ['events'];
 
-    function EventsController() {
-
+    function EventsController(events) {
+        var ctrl = this;
+        angular.extend(ctrl, {
+            save: events.save
+        });
     }
 
 })();

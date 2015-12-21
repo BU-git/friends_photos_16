@@ -20,6 +20,10 @@
 }
 
 /* navbar */
+.navbar-container {
+    height: 73px;
+}
+
 [ui-view="header"] .navbar {
     background-color: #437246;
     border: none;

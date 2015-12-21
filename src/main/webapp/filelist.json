@@ -2,6 +2,7 @@
   "app/friends-photos.module.js",
   "app/components/account.js",
   "app/components/events.js",
+  "app/components/eventsCreateEdir.js",
   "app/components/login.js",
   "app/config/decorator.js",
   "app/config/states.js",

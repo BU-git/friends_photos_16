@@ -10,7 +10,7 @@
     function config($urlRouterProvider, $stateProvider) {
         $urlRouterProvider.when('', '/events');
 
-        // Events states
+        // home state
         $stateProvider
             .state('home', {
                 url: '',
@@ -19,10 +19,9 @@
                         templateUrl: 'app/views/header.html'
                     }
                 }
-            });
+            })
 
-        // Account states
-        $stateProvider
+            // Account states
             .state('account', {
                 url: '/account',
                 views: {
@@ -52,10 +51,9 @@
                         template: '<login>'
                     }
                 }
-            });
+            })
 
-        // navbar states
-        $stateProvider
+            // event states
             .state('home.events', {
                 url: '/events',
                 views: {
@@ -64,6 +62,16 @@
                     }
                 }
             })
+            .state('home.events.create', {
+                url: '/create',
+                views: {
+                    'content@': {
+                        template: '<events-create-edit>'
+                    }
+                }
+            })
+
+            // search state
             .state('home.search', {
                 url: '/search',
                 views: {
