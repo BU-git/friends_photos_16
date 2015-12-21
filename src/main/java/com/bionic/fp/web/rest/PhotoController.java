@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -120,9 +121,13 @@ public class PhotoController {
 			@RequestParam(EVENT.ID) Long eventId,
 			@RequestParam(value = PHOTO.NAME, required = false) String name,
 			@RequestParam(value = PHOTO.DESCRIPTION, required = false) String description,
-			HttpSession session
+			HttpServletRequest servletRequest
 	) {
 		// FIXME add messages to errors
+		HttpSession session = servletRequest.getSession(false);
+		if (session == null) {
+			return new ResponseEntity<>(UNAUTHORIZED);
+		}
 		Long ownerId = SessionUtils.getUserId(session);
 		if (file.isEmpty() || ownerId == null) {
 			return new ResponseEntity<>(BAD_REQUEST);
