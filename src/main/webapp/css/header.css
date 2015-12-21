@@ -1,0 +1,50 @@
+/* logo */
+[ui-view="header"] .container-header {
+    height: 62px;
+}
+
+[ui-view="header"] .container-header-underline {
+    height: 2px;
+    border-bottom: solid 1px #437246;
+    margin-bottom: 1px;
+}
+
+.logo-image, .logo-image img {
+    height: inherit;
+}
+
+/* user */
+.user-box {
+    line-height: 62px;
+    font-weight: 600;
+}
+
+/* navbar */
+[ui-view="header"] .navbar {
+    background-color: #437246;
+    border: none;
+    border-radius: 0;
+    box-shadow: 0 3px 8px #7c7c7c;
+    border-bottom: solid 1px #375F39;
+}
+
+[ui-view="header"] .navbar-inverse .navbar-nav > a {
+    color: #C0E0C2;
+}
+
+[ui-view="header"] .navbar-inverse .navbar-nav > .active > a,
+[ui-view="header"] .navbar-inverse .navbar-nav > .active > a:hover,
+[ui-view="header"] .navbar-inverse .navbar-nav > .active > a:focus {
+    color: #fff;
+    background-color: #568059;
+    border-bottom: solid 2px #242424;
+}
+
+[ui-view="header"] .navbar-inverse .navbar-nav > li > a {
+    color: #ffffff;
+}
+
+[ui-view="header"] .md-button {
+    margin: 0;
+    border-radius: 0;
+}

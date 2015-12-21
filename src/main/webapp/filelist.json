@@ -1,0 +1,15 @@
+[
+  "app/friends-photos.module.js",
+  "app/components/account.js",
+  "app/components/events.js",
+  "app/components/login.js",
+  "app/config/decorator.js",
+  "app/config/states.js",
+  "app/controllers/AuthController.js",
+  "app/controllers/EventsController.js",
+  "app/directives/eventPreviewDirective.js",
+  "app/directives/navbarDirective.js",
+  "app/services/authService.js",
+  "app/services/eventsService.js",
+  "app/services/facebookService.js"
+]

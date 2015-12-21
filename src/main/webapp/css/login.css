@@ -1,0 +1,16 @@
+.login-box h3 {
+    font-weight: 400;
+    margin: 3px 0;
+    color: white;
+    padding: 15px;
+}
+
+.login-form {
+    background-color: white;
+    border: solid 1px lightgrey;
+    padding: 15px;
+}
+
+.login-form .md-input-container {
+    margin-bottom: 0;
+}
