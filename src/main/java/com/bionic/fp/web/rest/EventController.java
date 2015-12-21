@@ -2,8 +2,6 @@ package com.bionic.fp.web.rest;
 
 import com.bionic.fp.Constants;
 import com.bionic.fp.domain.*;
-import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
-import com.bionic.fp.exception.permission.PermissionsDeniedException;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import com.bionic.fp.exception.logic.impl.EventTypeNotFoundException;
 import com.bionic.fp.exception.rest.NotFoundException;
@@ -18,14 +16,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-
 import static com.bionic.fp.web.rest.RestConstants.PARAM.FIELDS;
 import static com.bionic.fp.web.rest.RestConstants.PATH.*;
+import static com.bionic.fp.web.security.SessionUtils.checkPermission;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.ArrayUtils.isNotEmpty;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -123,8 +118,7 @@ public class EventController {
     @RequestMapping(value = EVENT_ID+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public @ResponseBody IdInfoDTO getEventOwner(@PathVariable(EVENT.ID) final Long eventId) {
-        Event event = this.getEventOrThrow(eventId);
-        return new IdInfoDTO(event.getOwner().getId());
+        return new IdInfoDTO(this.eventService.getOwner(eventId).getId());
     }
 
 
@@ -135,7 +129,9 @@ public class EventController {
 
     @RequestMapping(method = POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
-    public @ResponseBody IdInfoDTO createEvent(@RequestBody final EventCreateDTO eventDto) {
+    public @ResponseBody IdInfoDTO createEvent(@RequestBody final EventCreateDTO eventDto, final HttpSession session) {
+        Long userId = SessionUtils.getUserId(session);
+
         Event event = new Event();
         // required parameters (should not be null)
         event.setName(eventDto.getName());
@@ -158,7 +154,7 @@ public class EventController {
         }
         event.setPassword(eventDto.getPassword());
 
-        Long eventId = this.eventService.createEvent(eventDto.getOwnerId(), event);
+        Long eventId = this.eventService.createEvent(userId, event);
 
         return new IdInfoDTO(eventId);
     }
@@ -182,7 +178,7 @@ public class EventController {
     @ResponseStatus(OK)
     public void updateEvent(@PathVariable(EVENT.ID) final Long eventId, @RequestBody final EventUpdateDTO eventDto,
                             final HttpSession session) {
-        checkPermission(session, eventId, Role::isCanChangeSettings);
+        checkPermission(session, this.roleService, eventId, Role::isCanChangeSettings);
 
         Event event = this.getEventOrThrow(eventId);
 
@@ -230,10 +226,10 @@ public class EventController {
     public void updateAccountToEvent(@PathVariable(EVENT.ID) final Long eventId,
                                      @PathVariable(ACCOUNT.ID) final Long accountId,
                                      @RequestParam(value = ROLE.ID, required = false) Integer roleId,
-                                     @RequestParam(value = EVENT.PASSWORD, required = false) final String password) {
-        if(roleId == null) {
-            roleId = Constants.RoleConstants.MEMBER;
-        }
+                                     @RequestParam(value = EVENT.PASSWORD, required = false) final String password,
+                                     final HttpSession session) {
+        // todo: test and is this roles valid?
+        checkPermission(session, this.roleService, eventId, Role::isCanChangeSettings, Role::isCanAssignRoles);
         this.eventService.addOrUpdateAccountToEvent(accountId, eventId, roleId, password);
     }
 
@@ -246,7 +242,7 @@ public class EventController {
     @RequestMapping(value = EVENT_ID, method = DELETE)
     @ResponseStatus(NO_CONTENT)
     public void deleteEventById(@PathVariable(EVENT.ID) final Long eventId, final HttpSession session) {
-        checkPermission(session, eventId, Role::isCanChangeSettings);
+        checkPermission(session, this.roleService, eventId, Role::isCanChangeSettings);
         this.eventService.remove(eventId);
     }
 
@@ -266,19 +262,5 @@ public class EventController {
 
     private Event findEventOrThrow(final Long eventId) {
         return ofNullable(this.eventService.get(eventId)).orElseThrow(() -> new NotFoundException(eventId));
-    }
-
-    private void checkPermission(final HttpSession session, final Long eventId, final Predicate<Role> ... predicates) {
-        if(isNotEmpty(predicates)) {
-            Long userId = SessionUtils.getUserId(session);
-            try {
-                Role role = roleService.getRole(userId, eventId);
-                if(Stream.of(predicates).anyMatch(p -> p.negate().test(role))) {
-                    throw new PermissionsDeniedException();
-                }
-            } catch (AccountEventNotFoundException e) {
-                throw new PermissionsDeniedException();
-            }
-        }
     }
 }

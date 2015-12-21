@@ -52,6 +52,9 @@ public class RoleService {
         return roleDAO.getAllRoles();
     }
 
+    /**
+     * todo: delete it or fixed, see {@link EventService} method addOrUpdateAccountToEvent()
+     */
     public boolean setNewRole(Integer newRoleId, Long userId, Long eventId, Long ownerId) {
         AccountEvent accountEvent
                 = accountEventDAO.getWithAccountEvent(userId, eventId);
@@ -70,12 +73,13 @@ public class RoleService {
             throw new PermissionsDeniedException();
         }
 
-        if(accountEvent.getEvent().getOwner().getId().equals(ownerId)) {
-            Role newRole = roleDAO.read(newRoleId);
-            accountEvent.setRole(newRole);
-            accountEventDAO.update(accountEvent);
-            return true;
-        }
+        //todo: fixme
+//        if(accountEvent.getEvent().getOwner().getId().equals(ownerId)) {
+//            Role newRole = roleDAO.read(newRoleId);
+//            accountEvent.setRole(newRole);
+//            accountEventDAO.update(accountEvent);
+//            return true;
+//        }
 
         throw new PermissionsDeniedException();
     }

@@ -31,7 +31,7 @@
         <property name="jpaProperties">
             <props>
                 <prop key="hibernate.hbm2ddl.auto">validate</prop>
-                <prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+                <!--<prop key="hibernate.enable_lazy_load_no_trans">true</prop>-->
             </props>
         </property>
         <property name="jpaVendorAdapter">

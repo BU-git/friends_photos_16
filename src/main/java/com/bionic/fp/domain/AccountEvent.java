@@ -7,18 +7,25 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="accounts_events")
-@NamedQuery(
-        name= AccountEvent.GET_BY_ACCOUNT_AND_EVENT_ID,
-        query="SELECT ae FROM AccountEvent ae WHERE ae.account.id = :accountId AND ae.event.id = :eventId"
-)
-@NamedEntityGraph(name = "AccountEvent.full", attributeNodes={
-                @NamedAttributeNode("account"),
-                @NamedAttributeNode("event"),
-                @NamedAttributeNode("role")}
-)
+@NamedQueries({
+        @NamedQuery(
+                name= AccountEvent.GET_BY_ACCOUNT_ID_AND_EVENT_ID,
+                query="SELECT ae FROM AccountEvent ae WHERE ae.account.id = :accountId AND ae.event.id = :eventId"),
+        @NamedQuery(
+                name= AccountEvent.FIND_BY_EVENT_ID_AND_ROLE_ID,
+                query="SELECT ae FROM AccountEvent ae WHERE ae.event.id = :eventId AND ae.role.id = :roleId"),
+        @NamedQuery(
+                name= AccountEvent.FIND_BY_ACCOUNT_ID_AND_ROLE_ID,
+                query="SELECT ae FROM AccountEvent ae WHERE ae.account.id = :accountId AND ae.role.id = :roleId")
+})
+//@NamedEntityGraph(name = "AccountEvent.full", attributeNodes={
+//                @NamedAttributeNode("account"),
+//                @NamedAttributeNode("event"),
+//                @NamedAttributeNode("role")})
 public class AccountEvent {
-    @Transient
-    public static final String GET_BY_ACCOUNT_AND_EVENT_ID = "AccountEvent.getByAccountAndEventId";
+    @Transient public static final String GET_BY_ACCOUNT_ID_AND_EVENT_ID = "AccountEvent.findByAccountIdAndEventId";
+    @Transient public static final String FIND_BY_EVENT_ID_AND_ROLE_ID = "AccountEvent.findByEventIdAndRoleId";
+    @Transient public static final String FIND_BY_ACCOUNT_ID_AND_ROLE_ID = "AccountEvent.findByAccountIdAndRoleId";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -78,15 +78,6 @@ public interface EventDAO extends GenericDAO<Event, Long> {
     void setDeleted(Long eventId, boolean value) throws EventNotFoundException;
 
     /**
-     * Checks that the event is loaded with its owner
-     *
-     * @param event the event
-     * @return false if event's state has not been loaded or if
-     *         its owner state has not been loaded, else true
-     */
-    boolean isOwnerLoaded(Event event);
-
-    /**
      * Returns an event by the specified id and throws the exception otherwise
      *
      * @param eventId the event ID
@@ -96,10 +87,11 @@ public interface EventDAO extends GenericDAO<Event, Long> {
     Event getOrThrow(Long eventId) throws EventNotFoundException;
 
     /**
-     * todo
-     * @param name
-     * @param description
-     * @return
+     * Returns a list of events as the result of searching by name and description
+     *
+     * @param name the name of the event
+     * @param description the description of the event
+     * @return a list of events
      */
     List<Event> get(String name, String description);
 }

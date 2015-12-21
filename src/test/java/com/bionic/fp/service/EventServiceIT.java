@@ -8,6 +8,7 @@ import com.bionic.fp.domain.Role;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.AccountNotFoundException;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -55,14 +56,12 @@ public class EventServiceIT extends AbstractIT {
 //        assertEquals(actual.getExpireDate(), event.getExpireDate());
         assertEquals(actual.isVisible(), event.isVisible());
         assertEquals(actual.isGeoServicesEnabled(), event.isGeoServicesEnabled());
-        assertEquals(actual.getOwner().getId(), event.getOwner().getId());
-        assertEquals(actual.getOwner().getEmail(), event.getOwner().getEmail());
-        assertEquals(actual.getOwner().getUserName(), event.getOwner().getUserName());
-        assertEquals(actual.getOwner().getPassword(), event.getOwner().getPassword());
-        assertEquals(actual.getOwner().getId(), owner.getId());
-        assertEquals(actual.getOwner().getEmail(), owner.getEmail());
-        assertEquals(actual.getOwner().getUserName(), owner.getUserName());
-        assertEquals(actual.getOwner().getPassword(), owner.getPassword());
+
+        Account actualOwner = getEventOwner(actual.getId());
+        assertEquals(actualOwner.getId(), owner.getId());
+        assertEquals(actualOwner.getEmail(), owner.getEmail());
+        assertEquals(actualOwner.getUserName(), owner.getUserName());
+        assertEquals(actualOwner.getPassword(), owner.getPassword());
     }
 
     @Test(expected = InvalidParameterException.class)
@@ -324,7 +323,6 @@ public class EventServiceIT extends AbstractIT {
         Event newEvent = updateEvent(getNewEventMax());
 
         newEvent.setId(event.getId());
-        newEvent.setOwner(owner);
 
         assertEquals(newEvent.getId(), event.getId());
         assertNotEquals(newEvent.getName(), event.getName());
@@ -367,109 +365,6 @@ public class EventServiceIT extends AbstractIT {
         assertNull(this.eventService.update(null));
     }
 
-    @Test(expected = InvalidParameterException.class)
-    public void testUpdateByIdChangeOwnerFailure() {
-        Account owner = getSavedAccount();
-        Account newOwner = getSavedAccount();
-        Event event = getSavedEventMax(owner);
-
-        Event actual = this.eventService.get(event.getId());
-        assertNotNull(actual);
-
-        assertEquals(actual.getId(), event.getId());
-        assertEquals(actual.getName(), event.getName());
-        assertEquals(actual.getDescription(), event.getDescription());
-        assertEquals(actual.getEventType(), event.getEventType());
-        assertEquals(actual.getLatitude(), event.getLatitude());
-        assertEquals(actual.getLongitude(), event.getLongitude());
-        assertEquals(actual.getRadius(), event.getRadius());
-        assertEquals(actual.isVisible(), event.isVisible());
-        assertEquals(actual.isGeoServicesEnabled(), event.isGeoServicesEnabled());
-
-        assertEquals(actual.getOwner().getId(), event.getOwner().getId());
-        assertEquals(actual.getOwner().getEmail(), event.getOwner().getEmail());
-        assertEquals(actual.getOwner().getUserName(), event.getOwner().getUserName());
-        assertEquals(actual.getOwner().getPassword(), event.getOwner().getPassword());
-        assertEquals(actual.getOwner().getId(), owner.getId());
-        assertEquals(actual.getOwner().getEmail(), owner.getEmail());
-        assertEquals(actual.getOwner().getUserName(), owner.getUserName());
-        assertEquals(actual.getOwner().getPassword(), owner.getPassword());
-
-        updateEvent(actual);
-        actual.setOwner(newOwner);
-
-        assertEquals(actual.getId(), event.getId());
-        assertNotEquals(actual.getName(), event.getName());
-        assertNotEquals(actual.getDescription(), event.getDescription());
-        assertNotEquals(actual.getLatitude(), event.getLatitude());
-        assertNotEquals(actual.getLongitude(), event.getLongitude());
-        assertNotEquals(actual.getRadius(), event.getRadius());
-        assertNotEquals(actual.isVisible(), event.isVisible());
-        assertNotEquals(actual.isGeoServicesEnabled(), event.isGeoServicesEnabled());
-
-        assertNotEquals(actual.getOwner().getId(), event.getOwner().getId());
-        assertNotEquals(actual.getOwner().getEmail(), event.getOwner().getEmail());
-        assertNotEquals(actual.getOwner().getUserName(), event.getOwner().getUserName());
-        assertNotEquals(actual.getOwner().getPassword(), event.getOwner().getPassword());
-        assertNotEquals(actual.getOwner().getId(), owner.getId());
-        assertNotEquals(actual.getOwner().getEmail(), owner.getEmail());
-        assertNotEquals(actual.getOwner().getUserName(), owner.getUserName());
-        assertNotEquals(actual.getOwner().getPassword(), owner.getPassword());
-
-        assertNull(this.eventService.update(actual));
-    }
-
-    @Test(expected = InvalidParameterException.class)
-    public void testUpdateByIdChangeOwnerUsingNewEventFailure() {
-        Account owner = getSavedAccount();
-        Account newOwner = getSavedAccount();
-        Event event = getSavedEventMax(owner);
-
-        Event newEvent = updateEvent(getNewEventMax());
-        newEvent.setId(event.getId());
-        newEvent.setOwner(newOwner);
-
-        assertEquals(newEvent.getId(), event.getId());
-        assertNotEquals(newEvent.getName(), event.getName());
-        assertNotEquals(newEvent.getDescription(), event.getDescription());
-        assertNotEquals(newEvent.getLatitude(), event.getLatitude());
-        assertNotEquals(newEvent.getLongitude(), event.getLongitude());
-        assertNotEquals(newEvent.getRadius(), event.getRadius());
-        assertNotEquals(newEvent.isVisible(), event.isVisible());
-        assertNotEquals(newEvent.isGeoServicesEnabled(), event.isGeoServicesEnabled());
-
-        assertNotEquals(newEvent.getOwner().getId(), event.getOwner().getId());
-        assertNotEquals(newEvent.getOwner().getEmail(), event.getOwner().getEmail());
-        assertNotEquals(newEvent.getOwner().getUserName(), event.getOwner().getUserName());
-        assertNotEquals(newEvent.getOwner().getPassword(), event.getOwner().getPassword());
-        assertNotEquals(newEvent.getOwner().getId(), owner.getId());
-        assertNotEquals(newEvent.getOwner().getEmail(), owner.getEmail());
-        assertNotEquals(newEvent.getOwner().getUserName(), owner.getUserName());
-        assertNotEquals(newEvent.getOwner().getPassword(), owner.getPassword());
-
-        assertNull(this.eventService.update(newEvent));
-    }
-
-    @Test(expected = InvalidParameterException.class)
-    public void testUpdateByIdUsingNewEventOwnerNullFailure() {
-        Account owner = getSavedAccount();
-        Event event = getSavedEventMax(owner);
-
-        Event newEvent = updateEvent(getNewEventMax());
-        newEvent.setId(event.getId());
-
-        assertEquals(newEvent.getId(), event.getId());
-        assertNotEquals(newEvent.getName(), event.getName());
-        assertNotEquals(newEvent.getDescription(), event.getDescription());
-        assertNotEquals(newEvent.getLatitude(), event.getLatitude());
-        assertNotEquals(newEvent.getLongitude(), event.getLongitude());
-        assertNotEquals(newEvent.getRadius(), event.getRadius());
-        assertNotEquals(newEvent.isVisible(), event.isVisible());
-        assertNotEquals(newEvent.isGeoServicesEnabled(), event.isGeoServicesEnabled());
-
-        assertNull(this.eventService.update(newEvent));
-    }
-
     @Test
     public void testGetByIdSuccess() {
         Account owner = getSavedAccount();
@@ -490,35 +385,7 @@ public class EventServiceIT extends AbstractIT {
     }
 
     @Test
-    public void testGetByIdWithOwnerSuccess() {
-        Account owner = getSavedAccount();
-        Event event = getSavedEventMax(owner);
-
-        Event actual = this.eventService.get(event.getId());
-        assertNotNull(actual);
-
-        assertEquals(actual.getId(), event.getId());
-        assertEquals(actual.getName(), event.getName());
-        assertEquals(actual.getDescription(), event.getDescription());
-        assertEquals(actual.getEventType(), event.getEventType());
-        assertEquals(actual.getLatitude(), event.getLatitude());
-        assertEquals(actual.getLongitude(), event.getLongitude());
-        assertEquals(actual.getRadius(), event.getRadius());
-        assertEquals(actual.isVisible(), event.isVisible());
-        assertEquals(actual.isGeoServicesEnabled(), event.isGeoServicesEnabled());
-
-        assertEquals(actual.getOwner().getId(), event.getOwner().getId());
-        assertEquals(actual.getOwner().getEmail(), event.getOwner().getEmail());
-        assertEquals(actual.getOwner().getUserName(), event.getOwner().getUserName());
-        assertEquals(actual.getOwner().getPassword(), event.getOwner().getPassword());
-        assertEquals(actual.getOwner().getId(), owner.getId());
-        assertEquals(actual.getOwner().getEmail(), owner.getEmail());
-        assertEquals(actual.getOwner().getUserName(), owner.getUserName());
-        assertEquals(actual.getOwner().getPassword(), owner.getPassword());
-    }
-
-    @Test
-    public void testGetByIdWithOwnerAndAccountsSuccess() {
+    public void testGetByIdWithAccountsSuccess() {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
 
@@ -534,15 +401,6 @@ public class EventServiceIT extends AbstractIT {
         assertEquals(actual.getRadius(), event.getRadius());
         assertEquals(actual.isVisible(), event.isVisible());
         assertEquals(actual.isGeoServicesEnabled(), event.isGeoServicesEnabled());
-
-        assertEquals(actual.getOwner().getId(), event.getOwner().getId());
-        assertEquals(actual.getOwner().getEmail(), event.getOwner().getEmail());
-        assertEquals(actual.getOwner().getUserName(), event.getOwner().getUserName());
-        assertEquals(actual.getOwner().getPassword(), event.getOwner().getPassword());
-        assertEquals(actual.getOwner().getId(), owner.getId());
-        assertEquals(actual.getOwner().getEmail(), owner.getEmail());
-        assertEquals(actual.getOwner().getUserName(), owner.getUserName());
-        assertEquals(actual.getOwner().getPassword(), owner.getPassword());
 
         assertFalse(actual.getAccounts().isEmpty());
         assertFalse(event.getAccounts().isEmpty());

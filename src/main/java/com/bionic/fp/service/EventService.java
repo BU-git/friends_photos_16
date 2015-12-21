@@ -6,19 +6,18 @@ import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.dao.RoleDAO;
 import com.bionic.fp.domain.*;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
+import com.bionic.fp.exception.logic.critical.NonUniqueResultException;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.RoleNotFoundException;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
+import static com.bionic.fp.Constants.RoleConstants.OWNER;
 import static com.bionic.fp.util.Checks.check;
 import static java.util.Optional.ofNullable;
 
@@ -63,6 +62,9 @@ public class EventService {
 
         AccountEvent conn = this.accountEventDAO.get(accountId, eventId);
         if(conn != null) {
+            if(OWNER.equals(conn.getRole().getId()) || OWNER.equals(role.getId())) {
+                throw new InvalidParameterException("Not allowed to change the role for owner and setting the role of owner to someone else in the current event");
+            }
             conn.setRole(role);
             this.accountEventDAO.update(conn);
         } else {
@@ -135,7 +137,6 @@ public class EventService {
         conn.setAccount(owner);
         conn.setEvent(event);
         conn.setRole(role);
-        event.setOwner(owner);
         event.setDate(LocalDateTime.now());
 
         Long groupId = this.eventDAO.create(event);
@@ -242,12 +243,26 @@ public class EventService {
     public Event update(final Event event) throws InvalidParameterException, EventNotFoundException {
         this.validation(event);
         this.validation(event.getId());
-//        if(this.eventDAO.isOwnerLoaded(event)) {      // if the owner can be LAZY then use it
         Event actual = this.get(event.getId());
         ofNullable(actual).orElseThrow(() -> new EventNotFoundException(event.getId()));
-        check(event.getOwner() != null && Objects.equals(event.getOwner().getId(), actual.getOwner().getId()),
-                "To change the owner is prohibited");
         return this.eventDAO.update(event);
+    }
+
+    /**
+     * Returns the owner of the event
+     *
+     * @param eventId the event ID
+     * @return the owner of the event
+     * @throws InvalidParameterException if the event ID is invalid
+     * @throws EventNotFoundException if the event doesn't exist
+     * @throws NonUniqueResultException if the event has too many owners
+     */
+    public Account getOwner(final Long eventId) throws InvalidParameterException, EventNotFoundException, NonUniqueResultException {
+        check(eventId != null, "The event ID should not be null");
+        List<Account> accounts = this.accountEventDAO.getAccounts(eventId, OWNER);
+        check(!accounts.isEmpty(), new EventNotFoundException(eventId));
+        check(accounts.size() == 1, new NonUniqueResultException("Broken business logic of the application (the event has too many owners)"));
+        return accounts.get(0);
     }
 
     /**
@@ -274,10 +289,11 @@ public class EventService {
     }
 
     /**
-     * todo
-     * @param name
-     * @param description
-     * @return
+     * Returns a list of events as the result of searching by name and description
+     *
+     * @param name the name of the event
+     * @param description the description of the event
+     * @return a list of events
      */
     public List<Event> get(final String name, final String description) {
         return this.eventDAO.get(name, description);

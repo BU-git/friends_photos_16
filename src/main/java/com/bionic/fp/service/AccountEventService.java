@@ -1,11 +1,16 @@
 package com.bionic.fp.service;
 
+import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.dao.AccountEventDAO;
+import com.bionic.fp.domain.Event;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.List;
+
+import static com.bionic.fp.util.Checks.check;
 
 /**
  * Entry point to perform operations over account-event connection entities
@@ -51,5 +56,31 @@ public class AccountEventService {
 
     public AccountEvent update(final AccountEvent accountEvent) {
         return accountEvent == null ? null : this.accountEventDAO.update(accountEvent);
+    }
+
+    /**
+     * Returns a list of accounts as the result of searching by event ID and role ID
+     *
+     * @param eventId the event ID
+     * @param roleId the role ID
+     * @return a list of accounts
+     */
+    public List<Account> getAccounts(final Long eventId, final Integer roleId) {
+        check(eventId != null, "The event ID should not be null");
+        check(roleId != null, "The role ID should not be null");
+        return this.accountEventDAO.getAccounts(eventId, roleId);
+    }
+
+    /**
+     * Returns a list of events as the result of searching by account ID and role ID
+     *
+     * @param accountId the account ID
+     * @param roleId the role ID
+     * @return a list of events
+     */
+    public List<Event> getEvents(final Long accountId, final Integer roleId) {
+        check(accountId != null, "The account ID should not be null");
+        check(roleId != null, "The role ID should not be null");
+        return this.accountEventDAO.getEvents(accountId, roleId);
     }
 }
