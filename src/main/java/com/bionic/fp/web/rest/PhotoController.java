@@ -1,6 +1,7 @@
 package com.bionic.fp.web.rest;
 
 import com.bionic.fp.domain.Account;
+import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.PhotoNotFoundException;
@@ -8,6 +9,7 @@ import com.bionic.fp.web.rest.dto.PhotoInfoDTO;
 import com.bionic.fp.service.AccountService;
 import com.bionic.fp.service.EventService;
 import com.bionic.fp.service.PhotoService;
+import com.bionic.fp.web.security.SessionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -67,7 +70,7 @@ public class PhotoController {
 		}
 		PhotoInfoDTO photoInfoDTO = new PhotoInfoDTO();
 		photoInfoDTO.setName(photo.getName());
-		photoInfoDTO.setOwnerID(photo.getOwner() == null ? null : photo.getOwner().getId());
+		photoInfoDTO.setOwnerId(photo.getOwner() == null ? null : photo.getOwner().getId());
 		photoInfoDTO.setUrl(photo.getUrl());
 
 		return new ResponseEntity<>(photoInfoDTO, OK);
@@ -105,7 +108,7 @@ public class PhotoController {
 	 * and save photo info to DB.
 	 *
 	 * @param file
-	 * @param ownerId
+	 * @param eventId
 	 * @param name
 	 * @param description
 	 * @return
@@ -114,16 +117,19 @@ public class PhotoController {
 	@ResponseBody
 	public ResponseEntity<PhotoInfoDTO> createPhoto(
 			@RequestParam(PHOTO.FILE) MultipartFile file,
-			@RequestParam(PARAM.OWNER_ID) Long ownerId,
+			@RequestParam(EVENT.ID) Long eventId,
 			@RequestParam(value = PHOTO.NAME, required = false) String name,
-			@RequestParam(value = PHOTO.DESCRIPTION, required = false) String description
+			@RequestParam(value = PHOTO.DESCRIPTION, required = false) String description,
+			HttpSession session
 	) {
 		// FIXME add messages to errors
-		if (file.isEmpty()) {
+		Long ownerId = SessionUtils.getUserId(session);
+		if (file.isEmpty() || ownerId == null) {
 			return new ResponseEntity<>(BAD_REQUEST);
 		}
 		Account owner = accountService.get(ownerId);
-		if (owner == null) {
+		Event event = eventService.get(eventId);
+		if (owner == null || event == null) {
 			return new ResponseEntity<>(BAD_REQUEST);
 		}
 		try {
@@ -140,20 +146,28 @@ public class PhotoController {
 
 			byte[] bytes = file.getBytes();
 			// FIXME set correct path to file
+			String fullPath = new StringBuilder("/home/artem/ff/")
+					.append(eventId.toString())
+					.append('/')
+					.append(ownerId.toString())
+					.append('/')
+					.append(resultFileName)
+					.toString();
 			BufferedOutputStream stream =
-					new BufferedOutputStream(new FileOutputStream(new File("/home/artem/ff/" + resultFileName)));
+					new BufferedOutputStream(new FileOutputStream(new File(fullPath)));
 			stream.write(bytes);
 			stream.close();
 
 			Photo photo = new Photo();
 			photo.setName(name == null ? file.getOriginalFilename() : name);
-			photo.setUrl("/home/artem/ff/" + resultFileName);
+			photo.setUrl(fullPath);
 			photo.setOwner(owner);
+			photo.setEvent(event);
 			photo = photoService.create(photo);
 			PhotoInfoDTO photoInfoDTO = new PhotoInfoDTO();
 			photoInfoDTO.setName(photo.getName());
-			photoInfoDTO.setOwnerID(photo.getOwner().getId());
-			photoInfoDTO.setUrl(photo.getUrl());
+			photoInfoDTO.setOwnerId(photo.getOwner().getId());
+			photoInfoDTO.setEventId(photo.getEvent().getId());
 			return new ResponseEntity<>(photoInfoDTO, CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
@@ -189,7 +203,7 @@ public class PhotoController {
 		photo = photoService.update(photo);
 		PhotoInfoDTO photoInfoDTO = new PhotoInfoDTO();
 		photoInfoDTO.setName(photo.getName());
-		photoInfoDTO.setOwnerID(photo.getOwner().getId());
+		photoInfoDTO.setOwnerId(photo.getOwner().getId());
 		photoInfoDTO.setUrl(photo.getUrl());
 		return new ResponseEntity<>(photoInfoDTO, OK);
 	}
