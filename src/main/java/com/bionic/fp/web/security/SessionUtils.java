@@ -1,14 +1,22 @@
 package com.bionic.fp.web.security;
 
 import com.bionic.fp.domain.Account;
+import com.bionic.fp.domain.Role;
 import com.bionic.fp.exception.auth.impl.InvalidSessionException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
+import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
+import com.bionic.fp.exception.permission.PermissionsDeniedException;
 import com.bionic.fp.service.AccountService;
+import com.bionic.fp.service.RoleService;
 
 import javax.servlet.http.HttpSession;
 
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
 import static com.bionic.fp.util.Checks.check;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.ArrayUtils.isNotEmpty;
 
 /**
  * Contains session utils for security
@@ -21,12 +29,16 @@ public class SessionUtils {
 
     private final AccountService accountService;
 
+    private final RoleService roleService;
+
     /**
      * @throws InvalidParameterException if the injection of the account service is not going to happen
      */
-    public SessionUtils(final AccountService accountService) throws InvalidParameterException {
+    public SessionUtils(final AccountService accountService, final RoleService roleService) throws InvalidParameterException {
         check(accountService != null, "The injection of the account service did not happen");
+        check(roleService != null, "The injection of the role service did not happen");
         this.accountService = accountService;
+        this.roleService = roleService;
     }
 
     /**
@@ -99,14 +111,40 @@ public class SessionUtils {
      * @throws InvalidParameterException if the session or the account service are not initialized
      * @throws InvalidSessionException if not found the attribute of the user id or the attribute value is incorrect
      */
-    public static Account getUser(final HttpSession session, final AccountService accountService)
-            throws InvalidParameterException, InvalidSessionException {
+    public static Account getUser(final HttpSession session, final AccountService accountService) throws InvalidParameterException, InvalidSessionException {
         Long userId = getUserId(session);
         check(accountService != null, "The account service shouldn't be null");
         return ofNullable(accountService.get(userId)).orElseGet(() -> {
-            session.invalidate();
+            logout(session);
             throw new InvalidSessionException();
         });
+    }
+
+    /**
+     * Checks the permissions for operations within the event
+     *
+     * @param session the session
+     * @param roleService the role service
+     * @param eventId the event id
+     * @param predicates the predicates
+     * @throws InvalidParameterException if the arguments are not initialized
+     * @throws PermissionsDeniedException if no permission to perform operations
+     */
+    @SafeVarargs
+    public static void checkPermission(final HttpSession session, final RoleService roleService,
+                                       final Long eventId, final Predicate<Role>... predicates) throws InvalidParameterException, PermissionsDeniedException {
+        check(roleService != null, "The role service shouldn't be null");
+        if(isNotEmpty(predicates)) {
+            Long userId = getUserId(session);
+            try {
+                Role role = roleService.getRole(userId, eventId);
+                if(Stream.of(predicates).anyMatch(p -> p.negate().test(role))) {
+                    throw new PermissionsDeniedException();
+                }
+            } catch (AccountEventNotFoundException e) {
+                throw new PermissionsDeniedException();
+            }
+        }
     }
 
     /**
@@ -117,7 +155,21 @@ public class SessionUtils {
      * @throws InvalidParameterException if the session is not initialized
      * @throws InvalidSessionException if not found the attribute of the user id or the attribute value is incorrect
      */
-    public Account getUser(final HttpSession session) throws InvalidParameterException, InvalidSessionException {
+    public final Account getUser(final HttpSession session) throws InvalidParameterException, InvalidSessionException {
         return getUser(session, this.accountService);
+    }
+
+    /**
+     * Checks the permissions for operations within the event
+     *
+     * @param session the session
+     * @param eventId the event id
+     * @param predicates the predicates
+     * @throws InvalidParameterException if the arguments are not initialized
+     * @throws PermissionsDeniedException if no permission to perform operations
+     */
+    @SafeVarargs
+    public final void checkPermission(final HttpSession session, final Long eventId, final Predicate<Role>... predicates) throws InvalidParameterException, PermissionsDeniedException {
+        checkPermission(session, this.roleService, eventId, predicates);
     }
 }

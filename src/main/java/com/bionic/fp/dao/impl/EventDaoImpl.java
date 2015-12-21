@@ -9,7 +9,6 @@ import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.bionic.fp.util.Checks.check;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -105,11 +104,6 @@ public class EventDaoImpl implements EventDAO {
     }
 
     @Override
-    public boolean isOwnerLoaded(final Event event) {
-        return this.em.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(event, "owner");
-    }
-
-    @Override
     public Event getOrThrow(final Long eventId) throws EventNotFoundException {
         return ofNullable(this.read(eventId)).orElseThrow(() -> new EventNotFoundException(eventId));
     }
@@ -129,7 +123,7 @@ public class EventDaoImpl implements EventDAO {
         }
         if(isNotEmpty(description)) {
             return this.em.createNamedQuery(Event.FIND_BY_DESCRIPTION, Event.class)
-                    .setParameter("description", "%" + description+"%")
+                    .setParameter("description", "%"+description+"%")
                     .getResultList();
         }
         return this.em.createNamedQuery(Event.FIND_ALL, Event.class).getResultList();

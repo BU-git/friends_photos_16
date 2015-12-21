@@ -12,7 +12,6 @@ import static com.bionic.fp.web.rest.RestConstants.*;
  */
 public class EventCreateDTO {
 
-    @JsonProperty(PARAM.OWNER_ID)       private Long ownerId;
     @JsonProperty(EVENT.NAME)           private String name;
     @JsonProperty(EVENT.DESCRIPTION)    private String description;
     @JsonProperty(EVENT.TYPE_ID)        private Integer typeId;
@@ -27,7 +26,7 @@ public class EventCreateDTO {
     public EventCreateDTO() {
     }
 
-    public EventCreateDTO(final Event event, final Long ownerId) {
+    public EventCreateDTO(final Event event) {
         this.name = event.getName();
         this.description = event.getDescription();
         this.typeId = event.getEventType().getId();
@@ -38,7 +37,6 @@ public class EventCreateDTO {
         this.geo = event.isGeoServicesEnabled();
         this.isPrivate = event.isPrivate();
         this.password = event.getPassword();
-        this.ownerId = ownerId;
     }
 
     public String getName() {
@@ -63,14 +61,6 @@ public class EventCreateDTO {
 
     public void setTypeId(Integer typeId) {
         this.typeId = typeId;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
     }
 
     public Boolean getVisible() {
