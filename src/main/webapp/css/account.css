@@ -1,0 +1,21 @@
+.account-container {
+    background-color: #EFEFEF;
+    padding-top: 19px;
+}
+
+.account-box {
+    background: url('../images/account.png') no-repeat;
+    margin: 0 auto;
+    width: 300px;
+    box-shadow: 0 0 15px gray;
+    padding-top: 197px;
+}
+
+.account-btn-box {
+    padding: 76px 12px 12px;
+}
+
+.account-box .md-button {
+    width: 100%;
+    line-height: 50px;
+}
