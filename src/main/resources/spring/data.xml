@@ -21,7 +21,7 @@
         <property name="password" value="${db.password}"/>
     </bean>
 
-    <bean id="em" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+    <bean id="entityManager" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="packagesToScan" value="com.bionic.fp.domain"/>
         <property name="dataSource" ref="dataSource"/>
         <property name="persistenceUnitName" value="entityManager" />
@@ -45,7 +45,7 @@
     </bean>
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="em"/>
+        <property name="entityManagerFactory" ref="entityManager"/>
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
