@@ -1,7 +1,11 @@
 package com.bionic.fp.dao;
 
+import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
+import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Role;
+
+import java.util.List;
 
 /**
  * Represents data access object of the account-event
@@ -47,4 +51,39 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
      */
     Role getRole(Long accountId, Long eventId);
 
+    /**
+     * Returns a list of account-events as the result of searching by event ID and role ID
+     *
+     * @param eventId the event ID
+     * @param roleId the role ID
+     * @return a list of account-events
+     */
+    List<AccountEvent> getByEventAndRole(Long eventId, Integer roleId);
+
+    /**
+     * Returns a list of account-events as the result of searching by account ID and role ID
+     *
+     * @param accountId the account ID
+     * @param roleId the role ID
+     * @return a list of account-events
+     */
+    List<AccountEvent> getByAccountAndRole(Long accountId, Integer roleId);
+
+    /**
+     * Returns a list of accounts as the result of searching by event ID and role ID
+     *
+     * @param eventId the event ID
+     * @param roleId the role ID
+     * @return a list of accounts
+     */
+    List<Account> getAccounts(Long eventId, Integer roleId);
+
+    /**
+     * Returns a list of events as the result of searching by account ID and role ID
+     *
+     * @param accountId the account ID
+     * @param roleId the role ID
+     * @return a list of events
+     */
+    List<Event> getEvents(Long accountId, Integer roleId);
 }

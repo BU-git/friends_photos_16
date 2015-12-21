@@ -1,6 +1,7 @@
 package com.bionic.fp.web.rest;
 
 import com.bionic.fp.exception.AppException;
+import com.bionic.fp.exception.logic.critical.NonUniqueResultException;
 import com.bionic.fp.exception.permission.PermissionsDeniedException;
 import com.bionic.fp.exception.permission.UserDoesNotExistException;
 import com.bionic.fp.exception.auth.impl.InvalidSessionException;
@@ -17,6 +18,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.CONFLICT;
 
 /**
  * Global exception handler of the application
@@ -52,6 +54,12 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(InvalidSessionException.class)
     @ResponseStatus(UNAUTHORIZED)
     public @ResponseBody ErrorInfoDTO unauthorizedExceptionHandler(InvalidSessionException e){
+        return new ErrorInfoDTO(e.getMessage());
+    }
+
+    @ExceptionHandler(NonUniqueResultException.class)
+    @ResponseStatus(CONFLICT)
+    public @ResponseBody ErrorInfoDTO nonUniqueResultExceptionHandler(NonUniqueResultException e){
         return new ErrorInfoDTO(e.getMessage());
     }
 }

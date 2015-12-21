@@ -23,7 +23,8 @@
     </beans:bean>
 
     <beans:bean id="sessionUtils" class="com.bionic.fp.web.security.SessionUtils" lazy-init="true">
-        <beans:constructor-arg ref="accountService"/>
+        <beans:constructor-arg index="0" ref="accountService"/>
+        <beans:constructor-arg index="1" ref="roleService"/>
     </beans:bean>
 
 </beans:beans>

@@ -1,5 +1,6 @@
 package com.bionic.fp;
 
+import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
@@ -38,6 +39,9 @@ import static org.junit.Assert.assertTrue;
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/test-root-context.xml")
 public abstract class AbstractIT {
+
+    @Autowired
+    protected EventDAO eventDAO;
 
     @Autowired
     protected EventService eventService;
@@ -177,5 +181,13 @@ public abstract class AbstractIT {
             @Override
             public void destroy() {}
         };
+    }
+
+    protected Long getEventOwnerId(final Long eventId) {
+        return getEventOwner(eventId).getId();
+    }
+
+    protected Account getEventOwner(final Long eventId) {
+        return this.eventService.getOwner(eventId);
     }
 }

@@ -38,7 +38,10 @@ public class EventRestControllerIT extends AbstractIT {
         Account owner = getSavedAccount();
         EventType privateEvent = getPrivateEventType();
 
-        EventCreateDTO eventDto = new EventCreateDTO(getNewEventMax(), owner.getId());
+        EventCreateDTO eventDto = new EventCreateDTO(getNewEventMax());
+
+        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .addFilter(getFilter(owner.getId())).build();
 
         given()
             .body(eventDto)
@@ -73,10 +76,12 @@ public class EventRestControllerIT extends AbstractIT {
         // by default
         assertEquals(actual.isVisible(), true);
         assertEquals(actual.isGeoServicesEnabled(), false);
-        assertEquals(actual.getOwner().getId(), owner.getId());
-        assertEquals(actual.getOwner().getEmail(), owner.getEmail());
-        assertEquals(actual.getOwner().getUserName(), owner.getUserName());
-        assertEquals(actual.getOwner().getPassword(), owner.getPassword());
+
+        Account actualOwner = getEventOwner(actual.getId());
+        assertEquals(actualOwner.getId(), owner.getId());
+        assertEquals(actualOwner.getEmail(), owner.getEmail());
+        assertEquals(actualOwner.getUserName(), owner.getUserName());
+        assertEquals(actualOwner.getPassword(), owner.getPassword());
     }
 
     @Test
@@ -84,7 +89,10 @@ public class EventRestControllerIT extends AbstractIT {
         Account owner = getSavedAccount();
         EventType privateEvent = getPrivateEventType();
 
-        EventCreateDTO eventDto = new EventCreateDTO(getNewEventMax(), owner.getId());
+        EventCreateDTO eventDto = new EventCreateDTO(getNewEventMax());
+
+        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .addFilter(getFilter(owner.getId())).build();
 
         // without name, description, type
         eventDto.setName(null);
@@ -179,11 +187,10 @@ public class EventRestControllerIT extends AbstractIT {
     }
 
     @Test
-    public void testSaveEventWithoutValidOwnerIdShouldReturnBadRequest() {
-        EventCreateDTO eventDto = new EventCreateDTO(getNewEventMin(), null);
+    public void testSaveEventWithoutValidOwnerIdShouldReturnUnautorized() {
+        EventCreateDTO eventDto = new EventCreateDTO(getNewEventMin());
 
         // without owner ID
-        eventDto.setOwnerId(null);
 
         given()
             .body(eventDto)
@@ -191,10 +198,11 @@ public class EventRestControllerIT extends AbstractIT {
         .when()
             .post(EVENTS)
         .then()
-            .statusCode(SC_BAD_REQUEST);
+            .statusCode(SC_UNAUTHORIZED);
 
         // with a non-existent ID
-        eventDto.setOwnerId(Long.MAX_VALUE);
+        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .addFilter(getFilter(Long.MAX_VALUE)).build();
 
         given()
             .body(eventDto)
@@ -202,15 +210,17 @@ public class EventRestControllerIT extends AbstractIT {
         .when()
             .post(EVENTS)
         .then()
+//            .statusCode(SC_UNAUTHORIZED); // todo: fixme
             .statusCode(SC_BAD_REQUEST);
     }
 
     @Test
     public void testRemoveEventByIdSuccess() {
-        Event event = getSavedEventMin(getSavedAccount());
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMin(owner);
 
         RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(event.getOwner().getId())).build();
+                .addFilter(getFilter(owner.getId())).build();
 
         when()
             .delete(EVENTS + EVENT_ID, event.getId())
@@ -232,7 +242,8 @@ public class EventRestControllerIT extends AbstractIT {
 
     @Test
     public void testRemoveEventByIdShouldReturnForbidden() {
-        Event event = getSavedEventMin(getSavedAccount());
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMin(owner);
 
         // invalid session (user id does not exist)
 
@@ -247,7 +258,7 @@ public class EventRestControllerIT extends AbstractIT {
         // invalid session (event id does not exist)
 
         RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(event.getOwner().getId())).build();
+                .addFilter(getFilter(owner.getId())).build();
 
         when()
             .delete(EVENTS + EVENT_ID, Long.MAX_VALUE)
@@ -292,8 +303,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(EVENT.LONGITUDE, is(event.getLongitude()))
             .body(EVENT.RADIUS, is(event.getRadius()))
             .body(EVENT.GEO, is(event.isGeoServicesEnabled()))
-            .body(EVENT.VISIBLE, is(event.isVisible()))
-            .body(PARAM.OWNER_ID + TO_STRING, is(event.getOwner().getId().toString()));
+            .body(EVENT.VISIBLE, is(event.isVisible()));
 
         event = getSavedEventMax(owner);
 
@@ -314,8 +324,7 @@ public class EventRestControllerIT extends AbstractIT {
 //            .body("lng.toString()", is(event.getLongitude().toString()))
 //            .body("radius.toString()", is(event.getRadius().toString()))
             .body(EVENT.GEO, is(event.isGeoServicesEnabled()))
-            .body(EVENT.VISIBLE, is(event.isVisible()))
-            .body(PARAM.OWNER_ID + TO_STRING, is(event.getOwner().getId().toString()));
+            .body(EVENT.VISIBLE, is(event.isVisible()));
 
     }
 
@@ -332,7 +341,8 @@ public class EventRestControllerIT extends AbstractIT {
 
     @Test
     public void testUpdateEventSuccess() {
-        Event event = getSavedEventMin(getSavedAccount());
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMin(owner);
 
         EventUpdateDTO eventDto = new EventUpdateDTO(updateEvent(getNewEventMax()));
 
@@ -347,7 +357,7 @@ public class EventRestControllerIT extends AbstractIT {
         assertNotEquals(event.isVisible(), eventDto.getVisible());
 
         RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(event.getOwner().getId())).build();
+                .addFilter(getFilter(owner.getId())).build();
 
         given()
             .body(eventDto)
@@ -445,7 +455,8 @@ public class EventRestControllerIT extends AbstractIT {
 
     @Test
     public void testUpdateEventShouldReturnForbidden() {
-        Event event = getSavedEventMin(getSavedAccount());
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMin(owner);
         EventUpdateDTO eventDto = new EventUpdateDTO(updateEvent(getNewEventMax()));
 
         // invalid session (user id does not exist)
@@ -464,7 +475,7 @@ public class EventRestControllerIT extends AbstractIT {
         // invalid session (event id does not exist)
 
         RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(event.getOwner().getId())).build();
+                .addFilter(getFilter(owner.getId())).build();
 
         given()
             .body(eventDto)
@@ -479,14 +490,14 @@ public class EventRestControllerIT extends AbstractIT {
         Account user = getSavedAccount();
 
         assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(event.getOwner().getId()).getEvents().size());
+        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
         assertEquals(0, this.accountService.getWithEvents(user.getId()).getEvents().size());
 
         // todo: exchange "3"
         this.eventService.addOrUpdateAccountToEvent(user.getId(), event.getId(), 3, null);
 
         assertEquals(2, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(event.getOwner().getId()).getEvents().size());
+        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
         assertEquals(1, this.accountService.getWithEvents(user.getId()).getEvents().size());
 
         RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)

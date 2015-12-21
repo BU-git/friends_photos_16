@@ -57,8 +57,8 @@ public class Event implements Serializable {
     @ManyToOne
     @JoinColumn(name = "event_type")
     private EventType eventType;
-    @OneToOne(fetch = FetchType.EAGER)
-    private Account owner;
+//    @OneToOne(fetch = FetchType.EAGER)
+//    private Account owner;
     /**
      * Is this event visible in the general mode of search?
      */
@@ -127,13 +127,13 @@ public class Event implements Serializable {
         this.eventType = eventType;
     }
 
-    public Account getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Account owner) {
-        this.owner = owner;
-    }
+//    public Account getOwner() {
+//        return owner;
+//    }
+//
+//    public void setOwner(Account owner) {
+//        this.owner = owner;
+//    }
 
     public boolean isVisible() {
         return visible;
@@ -262,7 +262,6 @@ public class Event implements Serializable {
         sb.append(", name='").append(name).append('\'');
         sb.append(", description='").append(description).append('\'');
         sb.append(", eventType=").append(eventType);
-        sb.append(", owner=").append(owner);
         sb.append(", visible=").append(visible);
         sb.append(", date=").append(date);
         sb.append(", expireDate=").append(expireDate);
