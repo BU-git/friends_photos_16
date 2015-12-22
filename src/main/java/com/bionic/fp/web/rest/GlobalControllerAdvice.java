@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.io.IOException;
+
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 /**
  * Global exception handler of the application
@@ -60,6 +63,12 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(NonUniqueResultException.class)
     @ResponseStatus(CONFLICT)
     public @ResponseBody ErrorInfoDTO nonUniqueResultExceptionHandler(NonUniqueResultException e){
+        return new ErrorInfoDTO(e.getMessage());
+    }
+
+    @ExceptionHandler(IOException.class)
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
+    public @ResponseBody ErrorInfoDTO IOExceptionHandler(IOException e){
         return new ErrorInfoDTO(e.getMessage());
     }
 }

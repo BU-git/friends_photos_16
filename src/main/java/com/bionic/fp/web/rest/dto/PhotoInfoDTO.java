@@ -27,8 +27,8 @@ public class PhotoInfoDTO {
     public PhotoInfoDTO(final Photo photo) {
         this.name = photo.getName();
         this.url = photo.getUrl();
-        this.ownerId = photo.getOwner().getId();
-		this.eventId = photo.getEvent().getId();
+        this.ownerId = photo.getOwner() == null ? null : photo.getOwner().getId();
+		this.eventId = photo.getEvent() == null ? null : photo.getEvent().getId();
     }
 
     public String getName() {

@@ -3,6 +3,8 @@ package com.bionic.fp.service;
 import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.dao.PhotoDAO;
 import com.bionic.fp.domain.Photo;
+import com.bionic.fp.exception.logic.InvalidParameterException;
+import com.bionic.fp.exception.logic.impl.PhotoNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -16,6 +18,8 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * Created by franky_str on 22.11.15.
@@ -96,8 +100,20 @@ public class PhotoService {
      * @param id photo ID
      * @return Photo entity from database
      */
-    public Photo getById(Long id) {
+    public Photo get(Long id) {
         return photoDAO.read(id);
+    }
+
+    /**
+     * Returns a photo by ID or throw exception
+     *
+     * @param photoId the photo ID
+     * @return a photo
+     * @throws InvalidParameterException if the photo ID is invalid
+     * @throws PhotoNotFoundException if the photo doesn't exist
+     */
+    public Photo getOrThrow(final Long photoId) throws InvalidParameterException, PhotoNotFoundException {
+        return ofNullable(this.get(photoId)).orElseThrow(() -> new PhotoNotFoundException(photoId));
     }
 
 

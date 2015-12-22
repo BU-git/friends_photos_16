@@ -60,64 +60,64 @@ public class AccountController {
      */
     @RequestMapping(value = ACCOUNT_ID+EVENTS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public final @ResponseBody
-    EntityInfoLists getUserEvents(@PathVariable(ACCOUNT.ID) final Long accountId) {
+    @ResponseBody
+    public final EntityInfoLists getUserEvents(@PathVariable(ACCOUNT.ID) final Long accountId) {
         return getEvents(accountId);
     }
 
     @RequestMapping(value = SELF+EVENTS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public @ResponseBody
-    EntityInfoLists getUserEvents(final HttpSession session) {
+    @ResponseBody
+    public final EntityInfoLists getUserEvents(final HttpSession session) {
         Long userId = SessionUtils.getUserId(session);
-        return getEvents(userId);
+        return this.getEvents(userId);
     }
 
     @RequestMapping(value = ACCOUNT_ID+EVENTS+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public final @ResponseBody
-    EntityInfoLists getOwnerEvents(@PathVariable(ACCOUNT.ID) final Long accountId) {
-        return getEvents(accountId, RoleConstants.OWNER);
+    @ResponseBody
+    public final EntityInfoLists getOwnerEvents(@PathVariable(ACCOUNT.ID) final Long accountId) {
+        return this.getEvents(accountId, RoleConstants.OWNER);
     }
 
     @RequestMapping(value = SELF+EVENTS+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public @ResponseBody
-    EntityInfoLists getOwnerEvents(final HttpSession session) {
+    @ResponseBody
+    public final EntityInfoLists getOwnerEvents(final HttpSession session) {
         Long userId = SessionUtils.getUserId(session);
-        return getEvents(userId, RoleConstants.OWNER);
+        return this.getEvents(userId, RoleConstants.OWNER);
     }
 
     @RequestMapping(value = ACCOUNT_ID+ROLES+ROLE_ID+EVENTS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public final @ResponseBody
-    EntityInfoLists getUserEvents(@PathVariable(ACCOUNT.ID) final Long accountId,
-                                  @PathVariable(ROLE.ID) final Integer roleId) {
-        return getEvents(accountId, roleId);
+    @ResponseBody
+    public final EntityInfoLists getUserEvents(@PathVariable(ACCOUNT.ID) final Long accountId,
+                                               @PathVariable(ROLE.ID) final Integer roleId) {
+        return this.getEvents(accountId, roleId);
     }
 
     @RequestMapping(value = SELF+ROLES+ROLE_ID+EVENTS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public final @ResponseBody
-    EntityInfoLists getUserEvents(final HttpSession session,
-                                  @PathVariable(ROLE.ID) final Integer roleId) {
+    @ResponseBody
+    public final EntityInfoLists getUserEvents(final HttpSession session,
+                                               @PathVariable(ROLE.ID) final Integer roleId) {
         Long userId = SessionUtils.getUserId(session);
-        return getEvents(userId, roleId);
+        return this.getEvents(userId, roleId);
     }
 
     @RequestMapping(value = ACCOUNT_ID+EVENTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public @ResponseBody
-    IdLists getUserEventIds(@PathVariable(ACCOUNT.ID) final Long accountId) {
-        return getEventIds(accountId);
+    @ResponseBody
+    public final IdLists getUserEventIds(@PathVariable(ACCOUNT.ID) final Long accountId) {
+        return this.getEventIds(accountId);
     }
 
     @RequestMapping(value = SELF+EVENTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public @ResponseBody
-    IdLists getUserEventIds(final HttpSession session) {
+    @ResponseBody
+    public final IdLists getUserEventIds(final HttpSession session) {
         Long userId = SessionUtils.getUserId(session);
-        return getEventIds(userId);
+        return this.getEventIds(userId);
     }
 
     /**
@@ -128,64 +128,63 @@ public class AccountController {
      */
     @RequestMapping(value = ACCOUNT_ID+EVENTS+ID+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public final @ResponseBody
-    IdLists getOwnerEventIds(@PathVariable(ACCOUNT.ID) final Long accountId) {
-        return getEventIds(accountId, RoleConstants.OWNER);
+    @ResponseBody
+    public final IdLists getOwnerEventIds(@PathVariable(ACCOUNT.ID) final Long accountId) {
+        return this.getEventIds(accountId, RoleConstants.OWNER);
     }
 
     @RequestMapping(value = SELF+EVENTS+ID+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public @ResponseBody
-    IdLists getOwnerEventIds(final HttpSession session) {
+    @ResponseBody
+    public final IdLists getOwnerEventIds(final HttpSession session) {
         Long userId = SessionUtils.getUserId(session);
-        return getEventIds(userId, RoleConstants.OWNER);
+        return this.getEventIds(userId, RoleConstants.OWNER);
     }
 
     @RequestMapping(value = ACCOUNT_ID+ROLES+ROLE_ID+EVENTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public final @ResponseBody
-    IdLists getUserEventIds(@PathVariable(ACCOUNT.ID) final Long accountId,
-                            @PathVariable(ROLE.ID) final Integer roleId) {
-        return getEventIds(accountId, roleId);
+    @ResponseBody
+    public final IdLists getUserEventIds(@PathVariable(ACCOUNT.ID) final Long accountId,
+                                         @PathVariable(ROLE.ID) final Integer roleId) {
+        return this.getEventIds(accountId, roleId);
     }
 
     @RequestMapping(value = SELF+ROLES+ROLE_ID+EVENTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public final @ResponseBody
-    IdLists getUserEventIds(final HttpSession session,
-                            @PathVariable(ROLE.ID) final Integer roleId) {
+    @ResponseBody
+    public final IdLists getUserEventIds(final HttpSession session, @PathVariable(ROLE.ID) final Integer roleId) {
         Long userId = SessionUtils.getUserId(session);
-        return getEventIds(userId, roleId);
+        return this.getEventIds(userId, roleId);
     }
 
     @RequestMapping(value = ACCOUNT_ID+PHOTOS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public @ResponseBody
-    EntityInfoLists getUserPhotos(@PathVariable(ACCOUNT.ID) final Long ownerId) {
-        return getPhotos(ownerId);
+    @ResponseBody
+    public final EntityInfoLists getUserPhotos(@PathVariable(ACCOUNT.ID) final Long ownerId) {
+        return this.getPhotos(ownerId);
     }
 
     @RequestMapping(value = ACCOUNT_ID+PHOTOS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public @ResponseBody
-    IdLists getUserPhotoIds(@PathVariable(ACCOUNT.ID) final Long ownerId) {
-        return getPhotoIds(ownerId);
+    @ResponseBody
+    public final IdLists getUserPhotoIds(@PathVariable(ACCOUNT.ID) final Long ownerId) {
+        return this.getPhotoIds(ownerId);
     }
 
     @RequestMapping(value = SELF+PHOTOS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public @ResponseBody
-    EntityInfoLists getUserPhotos(final HttpSession session) {
+    @ResponseBody
+    public final EntityInfoLists getUserPhotos(final HttpSession session) {
         Long userId = SessionUtils.getUserId(session);
-        return getPhotos(userId);
+        return this.getPhotos(userId);
     }
 
     @RequestMapping(value = SELF+PHOTOS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public @ResponseBody
-    IdLists getUserPhotoIds(final HttpSession session) {
+    @ResponseBody
+    public final IdLists getUserPhotoIds(final HttpSession session) {
         Long userId = SessionUtils.getUserId(session);
-        return getPhotoIds(userId);
+        return this.getPhotoIds(userId);
     }
 
 
