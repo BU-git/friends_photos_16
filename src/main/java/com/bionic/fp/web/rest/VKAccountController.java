@@ -20,10 +20,8 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static com.bionic.fp.web.rest.RestConstants.PARAM.VK_ID;
-import static com.bionic.fp.web.rest.RestConstants.PARAM.VK_TOKEN;
-import static com.bionic.fp.web.rest.RestConstants.PATH.ACCOUNTS;
-import static com.bionic.fp.web.rest.RestConstants.PATH.VK;
+import static com.bionic.fp.Constants.RestConstants.PARAM.*;
+import static com.bionic.fp.Constants.RestConstants.PATH.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 

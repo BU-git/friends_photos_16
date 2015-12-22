@@ -2,7 +2,6 @@ package com.bionic.fp.dao.impl;
 
 import com.bionic.fp.Constants;
 import com.bionic.fp.dao.AccountDAO;
-import com.bionic.fp.dao.RoleDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
@@ -129,6 +128,7 @@ public class AccountDaoImpl implements AccountDAO {
         return result.getSingleResult();
     }
 
+    // todo delete it!
     @Override
     public List<Event> getWhereOwner(Long accountId) throws AccountNotFoundException {
         Account account = ofNullable(this.getWithEvents(accountId)).orElseThrow(() -> new AccountNotFoundException(accountId));

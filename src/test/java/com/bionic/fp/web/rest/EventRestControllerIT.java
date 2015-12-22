@@ -4,8 +4,7 @@ import com.bionic.fp.AbstractIT;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
-import com.bionic.fp.web.rest.dto.EventCreateDTO;
-import com.bionic.fp.web.rest.dto.EventUpdateDTO;
+import com.bionic.fp.web.rest.dto.EventInput;
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -13,10 +12,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 
-import static com.bionic.fp.web.rest.RestConstants.*;
-import static com.bionic.fp.web.rest.RestConstants.PATH.ACCOUNTS;
-import static com.bionic.fp.web.rest.RestConstants.PATH.EVENTS;
-import static com.bionic.fp.web.rest.RestConstants.PATH.EVENT_ID;
+import static com.bionic.fp.Constants.RestConstants.*;
+import static com.bionic.fp.Constants.RestConstants.PATH.ACCOUNTS;
+import static com.bionic.fp.Constants.RestConstants.PATH.EVENTS;
+import static com.bionic.fp.Constants.RestConstants.PATH.EVENT_ID;
 import static com.jayway.restassured.http.ContentType.JSON;
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.when;
@@ -38,7 +37,7 @@ public class EventRestControllerIT extends AbstractIT {
         Account owner = getSavedAccount();
         EventType privateEvent = getPrivateEventType();
 
-        EventCreateDTO eventDto = new EventCreateDTO(getNewEventMax());
+        EventInput eventDto = new EventInput(getNewEventMax());
 
         RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .addFilter(getFilter(owner.getId())).build();
@@ -89,7 +88,7 @@ public class EventRestControllerIT extends AbstractIT {
         Account owner = getSavedAccount();
         EventType privateEvent = getPrivateEventType();
 
-        EventCreateDTO eventDto = new EventCreateDTO(getNewEventMax());
+        EventInput eventDto = new EventInput(getNewEventMax());
 
         RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .addFilter(getFilter(owner.getId())).build();
@@ -188,7 +187,7 @@ public class EventRestControllerIT extends AbstractIT {
 
     @Test
     public void testSaveEventWithoutValidOwnerIdShouldReturnUnautorized() {
-        EventCreateDTO eventDto = new EventCreateDTO(getNewEventMin());
+        EventInput eventDto = new EventInput(getNewEventMin());
 
         // without owner ID
 
@@ -344,7 +343,7 @@ public class EventRestControllerIT extends AbstractIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMin(owner);
 
-        EventUpdateDTO eventDto = new EventUpdateDTO(updateEvent(getNewEventMax()));
+        EventInput eventDto = new EventInput(updateEvent(getNewEventMax()));
 
         assertNotEquals(event.getName(), eventDto.getName());
         assertNotEquals(event.getDescription(), eventDto.getDescription());
@@ -379,7 +378,7 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(event.isVisible(), eventDto.getVisible());
 
 
-        eventDto = new EventUpdateDTO();
+        eventDto = new EventInput();
         eventDto.setName("NY 2020");
 
         assertNotEquals(event.getName(), eventDto.getName());
@@ -414,7 +413,7 @@ public class EventRestControllerIT extends AbstractIT {
 
     @Test
     public void testUpdateEventShouldReturnNotFound() {
-        EventUpdateDTO eventDto = new EventUpdateDTO();
+        EventInput eventDto = new EventInput();
 
         given()
             .body(eventDto)
@@ -427,7 +426,7 @@ public class EventRestControllerIT extends AbstractIT {
 
     @Test @Ignore // todo: there is no necessary role
     public void testUpdateEventShouldReturnBadRequest() {
-        EventUpdateDTO eventDto = new EventUpdateDTO();
+        EventInput eventDto = new EventInput();
         given()
             .body(eventDto)
             .contentType(JSON)
@@ -440,7 +439,7 @@ public class EventRestControllerIT extends AbstractIT {
     @Test
     public void testUpdateEventShouldReturnUnauthorized() {
         Event event = getSavedEventMin(getSavedAccount());
-        EventUpdateDTO eventDto = new EventUpdateDTO(updateEvent(getNewEventMax()));
+        EventInput eventDto = new EventInput(updateEvent(getNewEventMax()));
 
         // no session
 
@@ -457,7 +456,7 @@ public class EventRestControllerIT extends AbstractIT {
     public void testUpdateEventShouldReturnForbidden() {
         Account owner = getSavedAccount();
         Event event = getSavedEventMin(owner);
-        EventUpdateDTO eventDto = new EventUpdateDTO(updateEvent(getNewEventMax()));
+        EventInput eventDto = new EventInput(updateEvent(getNewEventMax()));
 
         // invalid session (user id does not exist)
 

@@ -1,11 +1,10 @@
 package com.bionic.fp.web.rest.dto;
 
 import com.bionic.fp.domain.Photo;
-import com.bionic.fp.web.rest.RestConstants;
-import com.bionic.fp.web.rest.RestConstants.EVENT;
-import com.bionic.fp.web.rest.RestConstants.PARAM;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import com.bionic.fp.Constants.RestConstants.*;
 
 /**
  * Created by franky_str on 26.11.15.

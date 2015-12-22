@@ -12,8 +12,8 @@ import javax.servlet.http.HttpSession;
 
 import java.util.List;
 
-import static com.bionic.fp.web.rest.RestConstants.*;
-import static com.bionic.fp.web.rest.RestConstants.PATH.*;
+import static com.bionic.fp.Constants.RestConstants.*;
+import static com.bionic.fp.Constants.RestConstants.PATH.*;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -21,7 +21,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 /**
  * Created by Yevhenii on 11/29/2015.
  */
-
 @RestController
 @RequestMapping(ROLES)
 public class RoleController {
@@ -43,13 +42,11 @@ public class RoleController {
         return new ResponseEntity<>(allRolesDTO, OK);
     }
 
-    @RequestMapping(value = ACCOUNTS+ACCOUNT_ID+EVENTS+EVENT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ID+ACCOUNTS+ACCOUNT_ID+EVENTS+EVENT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<RoleIdDTO> getRoleByAccountAndEvent(
             @PathVariable(ACCOUNT.ID) final Long accountId,
-            @PathVariable(EVENT.ID) final Long eventId
-    ) {
-        Role roleByAccountAndEvent = null;
-        roleByAccountAndEvent = roleService.getRole(accountId, eventId);
+            @PathVariable(EVENT.ID) final Long eventId) {
+        Role roleByAccountAndEvent = roleService.getRole(accountId, eventId);
         RoleIdDTO roleId = new RoleIdDTO(roleByAccountAndEvent.getId());
         return new ResponseEntity<>(roleId, OK);
     }

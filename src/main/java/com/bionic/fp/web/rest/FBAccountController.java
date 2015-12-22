@@ -20,10 +20,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static com.bionic.fp.util.Checks.check;
-import static com.bionic.fp.web.rest.RestConstants.PARAM.FB_ID;
-import static com.bionic.fp.web.rest.RestConstants.PARAM.FB_TOKEN;
-import static com.bionic.fp.web.rest.RestConstants.PATH.ACCOUNTS;
-import static com.bionic.fp.web.rest.RestConstants.PATH.FB;
+import static com.bionic.fp.Constants.RestConstants.PARAM.*;
+import static com.bionic.fp.Constants.RestConstants.PATH.*;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;

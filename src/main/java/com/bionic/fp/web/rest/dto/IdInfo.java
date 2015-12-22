@@ -8,14 +8,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * @author Sergiy Gabriel
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class IdInfoDTO {
+public class IdInfo {
 
     private Long id;
 
-    public IdInfoDTO() {
+    public IdInfo() {
     }
 
-    public IdInfoDTO(final Long id) {
+    public IdInfo(final Long id) {
         this.id = id;
     }
 

@@ -2,10 +2,7 @@ package com.bionic.fp.service;
 
 import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.dao.PhotoDAO;
-import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
-import com.bionic.fp.exception.logic.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -18,6 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by franky_str on 22.11.15.
@@ -45,9 +43,25 @@ public class PhotoService {
 		return photoDAO.read(id);
 	}
 
+    /**
+     * Returns a list of the photos by the owner ID
+     *
+     * @param ownerId the owner ID
+     * @return a list of the photos of the owner
+     */
 	public List<Photo> getPhotosByOwnerId(final Long ownerId) {
-		return ownerId == null ? Collections.emptyList() : photoDAO.getPhotosByOwnerId(ownerId);
+		return ownerId == null ? Collections.emptyList() : this.photoDAO.getPhotosByOwnerId(ownerId);
 	}
+
+    /**
+     * Returns an ID list of the photos by the owner ID
+     *
+     * @param ownerId the owner ID
+     * @return an ID list of the photos of the owner
+     */
+    public List<Long> getPhotoIdsByOwnerId(final Long ownerId) {
+        return this.getPhotosByOwnerId(ownerId).stream().parallel().map(Photo::getId).collect(Collectors.toList());
+    }
 
 
 
@@ -97,6 +111,7 @@ public class PhotoService {
 //    public List<Photo> getEventInfo(Event event) {
 //        return event == null ? Collections.emptyList() : photoDAO.getPhotosByEvent(event);
 //    }
+
 
     /* Private methods */
 

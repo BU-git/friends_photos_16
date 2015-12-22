@@ -1,9 +1,9 @@
 package com.bionic.fp.web.rest.dto;
 
-import com.bionic.fp.web.rest.RestConstants.EVENT;
-import com.bionic.fp.web.rest.RestConstants.PHOTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import com.bionic.fp.Constants.RestConstants.*;
 
 import java.util.List;
 
@@ -13,23 +13,23 @@ import java.util.List;
  * @author Sergiy Gabriel
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class EntityInfoListsDTO {
+public class EntityInfoLists {
 
 //    private List<AccountInfoDTO> accounts;
-    @JsonProperty(EVENT.LIST)       private List<EventInfoDTO> events;
+    @JsonProperty(EVENT.LIST)       private List<EventInfo> events;
     @JsonProperty(PHOTO.LIST)       private List<PhotoInfoDTO> photos;
 //    private List<CommentInfoDTO> comments;
 //    private List<TypeInfoDTO> types;
 //    private List<RoleInfoDTO> roles;
 
-    public EntityInfoListsDTO() {
+    public EntityInfoLists() {
     }
 
-    public List<EventInfoDTO> getEvents() {
+    public List<EventInfo> getEvents() {
         return events;
     }
 
-    public void setEvents(List<EventInfoDTO> events) {
+    public void setEvents(List<EventInfo> events) {
         this.events = events;
     }
 

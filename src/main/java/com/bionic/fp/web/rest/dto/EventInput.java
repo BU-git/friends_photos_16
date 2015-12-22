@@ -3,14 +3,14 @@ package com.bionic.fp.web.rest.dto;
 import com.bionic.fp.domain.Event;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import static com.bionic.fp.web.rest.RestConstants.*;
+import static com.bionic.fp.Constants.RestConstants.*;
 
 /**
  * Holds event for the client-server communication
  *
  * @author Sergiy Gabriel
  */
-public class EventCreateDTO {
+public class EventInput {
 
     @JsonProperty(EVENT.NAME)           private String name;
     @JsonProperty(EVENT.DESCRIPTION)    private String description;
@@ -23,10 +23,10 @@ public class EventCreateDTO {
     @JsonProperty(EVENT.PRIVATE)        private Boolean isPrivate;
     @JsonProperty(EVENT.PASSWORD)       private String password;
 
-    public EventCreateDTO() {
+    public EventInput() {
     }
 
-    public EventCreateDTO(final Event event) {
+    public EventInput(final Event event) {
         this.name = event.getName();
         this.description = event.getDescription();
         this.typeId = event.getEventType().getId();

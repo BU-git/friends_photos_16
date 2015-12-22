@@ -30,8 +30,8 @@ import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-import static com.bionic.fp.web.rest.RestConstants.*;
-import static com.bionic.fp.web.rest.RestConstants.PATH.*;
+import static com.bionic.fp.Constants.RestConstants.*;
+import static com.bionic.fp.Constants.RestConstants.PATH.*;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
@@ -216,7 +216,7 @@ public class PhotoController {
 
     /*
 	@RequestMapping(value = "owner/{owner_id:[\\d]+}/event/{event_id:[\\d]+}/upload", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public @ResponseBody ResponseEntity<IdInfoDTO> handleFileUpload(@ModelAttribute("upload_form") , @PathVariable("owner_id") Long ownerId, @PathVariable("event_id") Long eventId ) throws IOException {
+    public @ResponseBody ResponseEntity<IdInfo> handleFileUpload(@ModelAttribute("upload_form") , @PathVariable("owner_id") Long ownerId, @PathVariable("event_id") Long eventId ) throws IOException {
 
         Event event = eventService.getById(eventId);
         Account account = accountService.getById(ownerId);
@@ -228,7 +228,7 @@ public class PhotoController {
         Photo photo = new Photo(file.getOriginalFilename(), event, account);
 
         Long id = photoService.saveSinglePhoto(photo, file.getInputStream());
-        return new ResponseEntity<IdInfoDTO>(new IdInfoDTO(id), HttpStatus.CREATED);
+        return new ResponseEntity<IdInfo>(new IdInfo(id), HttpStatus.CREATED);
     }
 */
 //        String name = multipartFileRef.getOriginalFilename();
