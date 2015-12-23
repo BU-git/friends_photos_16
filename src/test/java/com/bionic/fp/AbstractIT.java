@@ -40,6 +40,8 @@ import static org.junit.Assert.assertTrue;
 @ContextConfiguration("classpath:spring/test-root-context.xml")
 public abstract class AbstractIT {
 
+    protected static final String TO_STRING = ".toString()";
+
     @Autowired
     protected EventDAO eventDAO;
 

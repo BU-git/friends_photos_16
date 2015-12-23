@@ -30,8 +30,6 @@ import static org.junit.Assert.*;
  */
 public class EventRestControllerIT extends AbstractIT {
 
-    public static final String TO_STRING = ".toString()";
-
     @Test
     public void testSaveEventSuccess() {
         Account owner = getSavedAccount();

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.bionic.fp.util.Checks.check;
+import static java.util.Optional.ofNullable;
 
 /**
  * Created by boubdyk on 11.11.2015.
@@ -201,6 +202,18 @@ public class AccountService {
     public Account get(final Long accountId) throws InvalidParameterException {
         this.validation(accountId);
         return this.accountDAO.read(accountId);
+    }
+
+    /**
+     * Returns an account by account ID or throw exception
+     *
+     * @param accountId the account ID
+     * @return the account
+     * @throws InvalidParameterException if the account ID is invalid
+     * @throws AccountNotFoundException if the account doesn't exist
+     */
+    public Account getOrThrow(final Long accountId) throws InvalidParameterException, AccountNotFoundException {
+        return ofNullable(this.get(accountId)).orElseThrow(() -> new AccountNotFoundException(accountId));
     }
 
     /**

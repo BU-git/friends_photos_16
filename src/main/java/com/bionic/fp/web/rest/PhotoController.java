@@ -1,7 +1,5 @@
 package com.bionic.fp.web.rest;
 
-import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.rest.NotFoundException;
 import com.bionic.fp.web.rest.dto.PhotoInfoDTO;
@@ -9,7 +7,6 @@ import com.bionic.fp.service.AccountService;
 import com.bionic.fp.service.EventService;
 import com.bionic.fp.service.PhotoService;
 import com.bionic.fp.web.security.SessionUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -18,11 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.SecureRandom;
 
 import static com.bionic.fp.Constants.RestConstants.*;
@@ -111,44 +105,8 @@ public class PhotoController {
 									@RequestParam(value = PHOTO.NAME, required = false) final String name,
 									@RequestParam(value = PHOTO.DESCRIPTION, required = false) final String description,
 									final HttpServletRequest servletRequest) throws IOException {
-		check(!file.isEmpty(), "The file should not be empty");
-		Account owner = SessionUtils.getUser(servletRequest.getSession(false), this.accountService);
-		Event event = eventService.getOrThrow(eventId);
-
-		// todo: move this logic to PhotoService
-
-		String fileName = file.getOriginalFilename();
-		String fileExtension = FilenameUtils.getExtension(fileName);
-
-		String resultFileName = new BigInteger(130, random).toString(32);
-		if (StringUtils.isNotEmpty(fileExtension)) {
-			resultFileName = new StringBuilder(resultFileName)
-					.append('.')
-					.append(fileExtension)
-					.toString();
-		}
-
-		byte[] bytes = file.getBytes();
-		// FIXME set correct path to file
-		String fullPath = new StringBuilder("/home/artem/ff/")
-				.append(event.getId().toString())
-				.append('/')
-				.append(owner.getId().toString())
-				.append('/')
-				.append(resultFileName)
-				.toString();
-		BufferedOutputStream stream =
-				new BufferedOutputStream(new FileOutputStream(new File(fullPath)));
-		stream.write(bytes);
-		stream.close();
-
-		Photo photo = new Photo();
-		photo.setName(name == null ? file.getOriginalFilename() : name);
-		photo.setUrl(fullPath);
-		photo.setOwner(owner);
-		photo.setEvent(event);
-		photo = photoService.create(photo);
-
+		Long userId = SessionUtils.getUserId(servletRequest.getSession(false));
+		Photo photo = this.photoService.saveToFileSystem(eventId, userId, file, name);
 		return new PhotoInfoDTO(photo);
 	}
 

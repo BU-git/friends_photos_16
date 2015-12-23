@@ -12,7 +12,7 @@ import com.bionic.fp.Constants.RestConstants.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PhotoInfoDTO {
 
-
+    @JsonProperty(PHOTO.NAME)
     private String name;
     private String url;
 
