@@ -6,11 +6,15 @@
   "app/components/login.js",
   "app/config/decorator.js",
   "app/config/states.js",
+  "app/config/unauthorizedInterceptor.js",
   "app/controllers/AuthController.js",
   "app/controllers/EventsController.js",
+  "app/directives/carouselDirective.js",
+  "app/directives/dropzoneDirective.js",
   "app/directives/eventPreviewDirective.js",
   "app/directives/navbarDirective.js",
   "app/services/authService.js",
   "app/services/eventsService.js",
-  "app/services/facebookService.js"
+  "app/services/facebookService.js",
+  "app/services/photosService.js"
 ]

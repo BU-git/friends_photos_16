@@ -1,10 +1,13 @@
-<img src="http://www.newstatesman.com/sites/default/files/images/2014%2B36_Friends_Cast_Poker(1).jpg">
+<img ng-src="photos/{{event.photos[0]}}/file" ng-click="showCarousel()">
 <div class="event-name">
-    Name goes here
+    <span ng-bind="event.name"></span>
+    <a class="pull-right" ui-sref="home.events.edit({id: event.event_id})">
+        <i class="fa fa-edit"></i>
+    </a>
 </div>
 <div class="event-info">
-    <i class="fa fa-users"></i> 12
-    <i class="fa fa-calendar"></i> 12.10.2015
+    <i class="fa fa-users"></i> <span ng-bind="event.photos.length"></span>
+    <i class="fa fa-calendar"></i> <span ng-bind="event.date | date"></span>
     <div class="pull-right">
         <i class="fa fa-user-plus"></i>
     </div>

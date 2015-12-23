@@ -8,7 +8,12 @@
     function events() {
         return {
             templateUrl: 'app/views/events.html',
-            controller: 'EventsController'
+            controller: 'EventsController',
+            controllerAs: 'ctrl',
+            scope: {},
+            bindToController: {
+                action: '@'
+            }
         };
     }
 

@@ -10,7 +10,12 @@
             restrict: 'AE',
             templateUrl: 'app/views/events-create-edit.html',
             controller: 'EventsController',
-            controllerAs: 'eventsCtrl'
+            controllerAs: 'ctrl',
+            scope: {},
+            bindToController: {
+                action: '@',
+                eventId: '@'
+            }
         };
     }
 

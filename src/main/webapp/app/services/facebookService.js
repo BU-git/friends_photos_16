@@ -45,6 +45,7 @@
                             fbToken: res.authResponse.accessToken
                         }).then(function (res) {
                             debugger
+                            $state.go('home.events');
                         });
                     }
                 });
@@ -76,7 +77,7 @@
             };
         }
 
-        function getCredentials($q) { debugger
+        function getCredentials($q) {
             var deferred = $q.defer();
             FB.api('/me', {
                 fields: 'last_name'

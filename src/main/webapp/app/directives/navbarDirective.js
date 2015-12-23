@@ -17,7 +17,6 @@
                 onScroll();
 
                 function onScroll() {
-                    console.log($window.scrollY);
                     if ($window.scrollY > scrollOffset) {
                         elem.addClass('navbar-fixed-top');
                     } else {

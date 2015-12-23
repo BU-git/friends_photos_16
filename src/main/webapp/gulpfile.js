@@ -13,7 +13,7 @@ gulp.task('include_files', function() {
             //'css': 'styles.min.css',
             'app_js': JSON.parse(fs.readFileSync('filelist.json', 'utf8'))
         }))
-        .pipe(rename('index.html'))
+        .pipe(rename('index.jsp'))
         .pipe(gulp.dest('./'));
 });
 

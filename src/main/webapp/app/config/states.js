@@ -58,7 +58,7 @@
                 url: '/events',
                 views: {
                     'content@': {
-                        template: '<events>'
+                        template: '<events action="list">'
                     }
                 }
             })
@@ -66,7 +66,17 @@
                 url: '/create',
                 views: {
                     'content@': {
-                        template: '<events-create-edit>'
+                        template: '<events-create-edit action="edit">'
+                    }
+                }
+            })
+            .state('home.events.edit', {
+                url: '/edit/:id',
+                views: {
+                    'content@': {
+                        templateProvider: ['$stateParams', function ($stateParams) {
+                            return '<events-create-edit action="edit" event-id="' + $stateParams.id + '">';
+                        }]
                     }
                 }
             })

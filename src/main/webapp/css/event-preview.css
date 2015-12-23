@@ -27,3 +27,7 @@ event-preview img {
     opacity: 0.8;
     padding: 6px 12px;
 }
+
+.event-name .fa-edit {
+    color: white;
+}

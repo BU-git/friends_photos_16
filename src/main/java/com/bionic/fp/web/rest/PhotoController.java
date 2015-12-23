@@ -151,13 +151,22 @@ public class PhotoController {
 
 			byte[] bytes = file.getBytes();
 			// FIXME set correct path to file
+//			String fullPath = new StringBuilder("D:\\Projects\\fp-server\\photos_cloud\\")
+//					.append(eventId.toString())
+//					.append('\\')
+//					.append(ownerId.toString())
+//					.toString();
 			String fullPath = new StringBuilder("/home/artem/ff/")
 					.append(eventId.toString())
 					.append('/')
 					.append(ownerId.toString())
-					.append('/')
-					.append(resultFileName)
 					.toString();
+
+			// FIXME temporary testing fix
+			new File(fullPath).mkdirs();
+//			fullPath += '\\' + resultFileName;
+			fullPath += '/' + resultFileName;
+
 			BufferedOutputStream stream =
 					new BufferedOutputStream(new FileOutputStream(new File(fullPath)));
 			stream.write(bytes);

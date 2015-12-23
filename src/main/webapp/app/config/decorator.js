@@ -31,9 +31,7 @@
                                     formData.append(name, val);
                                 } else if (angular.isDefined(val)) {
                                     val = angular.isObject(val) ? JSON.stringify(val) : val;
-                                    formData.append(name, new Blob([val], {
-                                        type: "application/json; charset=utf-8"
-                                    }));
+                                    formData.append(name, val);
                                 }
                             });
                             return formData;

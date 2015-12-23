@@ -1,0 +1,13 @@
+md-dialog.carousel-modal {
+    /*overflow: hidden;*/
+    height: 100%;
+}
+
+carousel {
+    display: block;
+    height: 100%;
+}
+
+md-dialog.carousel-modal img {
+    height: 100%;
+}
