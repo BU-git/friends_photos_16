@@ -10,7 +10,7 @@ import java.util.List;
  * @author Sergiy Gabriel
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class IdListsDTO {
+public class IdLists {
 
     private List<Long> accounts;
     private List<Long> events;
@@ -19,7 +19,7 @@ public class IdListsDTO {
     private List<Integer> types;
     private List<Integer> roles;
 
-    public IdListsDTO() {
+    public IdLists() {
     }
 
     public List<Long> getAccounts() {

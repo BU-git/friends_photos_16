@@ -1,10 +1,9 @@
 package com.bionic.fp.web.rest.dto;
 
+import com.bionic.fp.Constants.RestConstants.EVENT;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.util.LocalDateTimeJsonDeserializer;
 import com.bionic.fp.util.LocalDateTimeJsonSerializer;
-import com.bionic.fp.web.rest.RestConstants.EVENT;
-import com.bionic.fp.web.rest.RestConstants.PARAM;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -27,7 +26,7 @@ import static java.util.Arrays.asList;
  * @author Sergiy Gabriel
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class EventInfoDTO {
+public class EventInfo {
 
     @JsonProperty(EVENT.ID)                 private Long id;
     @JsonProperty(EVENT.NAME)               private String name;
@@ -46,10 +45,10 @@ public class EventInfoDTO {
     @JsonProperty(EVENT.VISIBLE)            private Boolean visible;
     @JsonProperty(EVENT.PRIVATE)            private Boolean isPrivate;
 
-    public EventInfoDTO() {
+    public EventInfo() {
     }
 
-    public EventInfoDTO(final Event event) {
+    public EventInfo(final Event event) {
         build(event);
     }
 
@@ -70,9 +69,9 @@ public class EventInfoDTO {
 
     public static class Transformer {
         private final Event event;
-        private final EventInfoDTO dto;
+        private final EventInfo dto;
 
-        public Transformer(final Event event, final EventInfoDTO dto) {
+        public Transformer(final Event event, final EventInfo dto) {
             check(event != null, "The event is not initialized");
             check(dto != null, "The event dto is not initialized");
             this.event = event;
@@ -83,15 +82,15 @@ public class EventInfoDTO {
             return this.event;
         }
 
-        public EventInfoDTO getDto() {
+        public EventInfo getDto() {
             return this.dto;
         }
 
-        public static EventInfoDTO transform(final Event event, final String fields) {
+        public static EventInfo transform(final Event event, final String fields) {
             if(event == null) {
                 return null;
             }
-            EventInfoDTO dto = new EventInfoDTO();
+            EventInfo dto = new EventInfo();
             Consumer<Transformer> consumer = getConsumer(fields);
             if(consumer != null) {
                 consumer.accept(new Transformer(event, dto));
@@ -101,7 +100,7 @@ public class EventInfoDTO {
             return dto;
         }
 
-        public static List<EventInfoDTO> transform(final List<Event> events, final String fields) {
+        public static List<EventInfo> transform(final List<Event> events, final String fields) {
             if(events == null || events.isEmpty()) {
                 return Collections.emptyList();
             }
@@ -109,16 +108,16 @@ public class EventInfoDTO {
             if(consumer != null) {
                 return events.stream().parallel()
                         .map(event -> {
-                            EventInfoDTO dto = new EventInfoDTO();
+                            EventInfo dto = new EventInfo();
                             consumer.accept(new Transformer(event, dto));
                             return dto;
                         })
                         .collect(Collectors.toList());
             }
             return events.stream().parallel()
-//                    .map(EventInfoDTO::new)
+//                    .map(EventInfo::new)
                     .map(e -> {
-                        EventInfoDTO dto = new EventInfoDTO();
+                        EventInfo dto = new EventInfo();
                         dto.setId(e.getId());
                         return dto;
                     })

@@ -181,6 +181,18 @@ public class EventService {
     }
 
     /**
+     * Returns an event from database by event ID or throw exception
+     *
+     * @param eventId the event ID
+     * @return the event
+     * @throws InvalidParameterException if the event ID is invalid
+     * @throws EventNotFoundException if the event doesn't exist
+     */
+    public Event getOrThrow(final Long eventId) throws InvalidParameterException, EventNotFoundException {
+        return ofNullable(this.get(eventId)).orElseThrow(() -> new EventNotFoundException(eventId));
+    }
+
+    /**
      * Returns an event from database by event ID and null otherwise.
      * Also pulls the owner and accounts of the event
      *

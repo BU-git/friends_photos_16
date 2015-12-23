@@ -17,6 +17,7 @@ import javax.inject.Named;
 import javax.persistence.NoResultException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.bionic.fp.util.Checks.check;
 
@@ -215,7 +216,7 @@ public class AccountService {
     }
 
     /**
-     * Returns a list of the events of the account by the account ID
+     * Returns a list of the events by the account ID
      *
      * @param accountId the account ID
      * @return a list of the events of the account
@@ -226,21 +227,18 @@ public class AccountService {
         return this.accountDAO.getEvents(accountId);
     }
 
+    // todo delete it!
     public List<Event> getEventsWhereRoleOwner(Long accountId) {
         this.validation(accountId);
         return accountDAO.getWhereOwner(accountId);
     }
 
-    public List<Long> getEventsIDs(final Long accountId) {
+    public List<Long> getEventIds(final Long accountId) {
         List<Event> events = this.getEvents(accountId);
-        List<Long> eventsIDs = new ArrayList<>();
-
-        for (Event event : events) {
-            eventsIDs.add(event.getId());
-        }
-        return eventsIDs;
+        return events.stream().parallel().map(Event::getId).collect(Collectors.toList());
     }
 
+    // todo delete it!
     public List<Long> getEventsIDsWhereRoleOwner(Long accountId) {
         List<Event> eventsWhereRoleOwner = this.getEventsWhereRoleOwner(accountId);
         List<Long> eventsIDs = new ArrayList<>();
@@ -250,7 +248,6 @@ public class AccountService {
         }
         return eventsIDs;
     }
-
 
     /**
      * Checks an account ID

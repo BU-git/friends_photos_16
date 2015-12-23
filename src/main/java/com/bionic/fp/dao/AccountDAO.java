@@ -45,11 +45,11 @@ public interface AccountDAO extends GenericDAO<Account, Long> {
     Account getWithEvents(Long accountId);
 
     /**
-     * Returns a list of the events of the account by the event ID
+     * Returns a list of the events by the account ID
      *
      * @param accountId the account ID
      * @return a list of the events of the account
-     * @throws AccountNotFoundException if the account ID doesn't exist
+     * @throws AccountNotFoundException if the account doesn't exist
      */
     List<Event> getEvents(Long accountId) throws AccountNotFoundException;
 
@@ -85,6 +85,7 @@ public interface AccountDAO extends GenericDAO<Account, Long> {
      * Used to get all events where this account is owner
      * @param accountId
      * @return list of events
+     * // todo delete it!
      */
     List<Event> getWhereOwner(Long accountId) throws AccountNotFoundException;
 }

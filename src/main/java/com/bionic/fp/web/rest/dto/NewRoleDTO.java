@@ -1,10 +1,9 @@
 package com.bionic.fp.web.rest.dto;
 
-import com.bionic.fp.web.rest.RestConstants.ACCOUNT;
-import com.bionic.fp.web.rest.RestConstants.EVENT;
-import com.bionic.fp.web.rest.RestConstants.ROLE;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import com.bionic.fp.Constants.RestConstants.*;
 
 /**
  * Created by Yevhenii on 11/30/2015.

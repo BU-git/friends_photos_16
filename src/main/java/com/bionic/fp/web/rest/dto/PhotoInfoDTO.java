@@ -1,11 +1,10 @@
 package com.bionic.fp.web.rest.dto;
 
 import com.bionic.fp.domain.Photo;
-import com.bionic.fp.web.rest.RestConstants;
-import com.bionic.fp.web.rest.RestConstants.EVENT;
-import com.bionic.fp.web.rest.RestConstants.PARAM;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import com.bionic.fp.Constants.RestConstants.*;
 
 /**
  * Created by franky_str on 26.11.15.
@@ -28,8 +27,8 @@ public class PhotoInfoDTO {
     public PhotoInfoDTO(final Photo photo) {
         this.name = photo.getName();
         this.url = photo.getUrl();
-        this.ownerId = photo.getOwner().getId();
-		this.eventId = photo.getEvent().getId();
+        this.ownerId = photo.getOwner() == null ? null : photo.getOwner().getId();
+		this.eventId = photo.getEvent() == null ? null : photo.getEvent().getId();
     }
 
     public String getName() {
