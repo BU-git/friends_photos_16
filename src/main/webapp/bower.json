@@ -10,10 +10,13 @@
     "tests"
   ],
   "dependencies": {
+    "angular-google-maps": "~2.2.1",
     "angular-loading-bar": "~0.8.0",
     "angular-material": "~1.0.1",
+    "angular-simple-logger": "~0.1.5",
     "angular-ui-router": "~0.2.15",
     "bootstrap": "~3.3.6",
-    "font-awesome": "~4.5.0"
+    "font-awesome": "~4.5.0",
+    "lodash": "~3.10.1"
   }
 }

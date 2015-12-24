@@ -5,9 +5,9 @@
         .module('friends_photos')
         .controller('EventsController', EventsController);
 
-    EventsController.$inject = ['$injector', 'eventsService', 'photosService'];
+    EventsController.$inject = ['$injector', '$scope', 'eventsService', 'photosService'];
 
-    function EventsController($injector, eventsService, photosService) {
+    function EventsController($injector, $scope, eventsService, photosService) {
         var ctrl = this;
         angular.extend(ctrl, {
             listAction: listAction,
@@ -34,6 +34,7 @@
 
         function editAction() {
             angular.extend(ctrl, {
+                chooseLocation: chooseLocation,
                 save: save
             });
             if (ctrl.eventId) {
@@ -58,6 +59,48 @@
                         ctrl.uploadedPhotos = count;
                     });
             });
+        }
+
+        function chooseLocation(e) {
+            $injector.invoke(['$mdDialog', function ($mdDialog) {
+                $mdDialog.show({
+                    templateUrl: 'app/views/choose-location-map.html',
+                    parent: angular.element(document.body),
+                    targetEvent: e,
+                    clickOutsideToClose: true,
+                    fullscreen: true,
+                    scope: angular.extend($scope.$new(), {
+                        map: {
+                            center: {
+                                latitude: ctrl.event.lat || 50.42270673841995,
+                                longitude: ctrl.event.lng || 30.55322265625
+                            },
+                            zoom: 8
+                        },
+                        marker: {
+                            id: 0,
+                            coords: {
+                                latitude: ctrl.event.lat || 50.42270673841995,
+                                longitude: ctrl.event.lng || 30.55322265625
+                            },
+                            options: {
+                                draggable: true
+                            }
+                        }
+                    }),
+                    controller: ['$mdDialog', '$scope', function ($mdDialog, $scope) {
+                        angular.extend($scope, {
+                            ok: function () {
+                                $mdDialog.hide($scope.marker.coords);
+                            },
+                            closeDialog: $mdDialog.cancel
+                        });
+                    }]
+                }).then(function (coords) {
+                    ctrl.event.lat = coords.latitude;
+                    ctrl.event.lng = coords.longitude;
+                });
+            }]);
         }
     }
 

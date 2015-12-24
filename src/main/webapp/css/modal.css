@@ -1,0 +1,21 @@
+.modal-fullsize {
+    min-width: 80%;
+    min-height: 80%;
+    height: 100%;
+}
+
+.md-dialog-fullscreen md-dialog-content,
+.md-dialog-fullscreen .angular-google-map-container,
+.md-dialog-fullscreen .angular-google-map {
+    height: 100%;
+}
+
+.md-dialog-fullscreen md-dialog-content {
+    position: relative;
+}
+
+md-dialog-content ui-gmap-google-map {
+    position: absolute;
+    width: 100%;
+    top: 0;
+}

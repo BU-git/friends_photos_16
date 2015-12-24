@@ -10,12 +10,12 @@
     <!-- css -->
     <!-- google -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
+    <!-- bower -->
     <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
     <link href="bower_components/angular-material/angular-material.css" rel="stylesheet">
     <link href="bower_components/font-awesome/css/font-awesome.css" rel="stylesheet">
     <link href="bower_components/angular-loading-bar/build/loading-bar.css" rel="stylesheet">
-
+    <!-- app -->
     <link href="css/friends-photos.css" rel="stylesheet">
     <link href="css/account.css" rel="stylesheet">
     <link href="css/login.css" rel="stylesheet">
@@ -23,6 +23,7 @@
     <link href="css/event-preview.css" rel="stylesheet">
     <link href="css/events-create-edit.css" rel="stylesheet">
     <link href="css/carousel.css" rel="stylesheet">
+    <link href="css/modal.css" rel="stylesheet">
 
 </head>
 <body>
@@ -31,6 +32,9 @@
 
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <!-- Libs -->
+<script src='//maps.googleapis.com/maps/api/js?sensor=false'></script>
+<!-- bower -->
+<script src="bower_components/lodash/lodash.js"></script>
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-animate/angular-animate.js"></script>
 <script src="bower_components/angular-aria/angular-aria.js"></script>
@@ -38,6 +42,8 @@
 <script src="bower_components/angular-messages/angular-messages.js"></script>
 <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
 <script src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
+<script src="bower_components/angular-simple-logger/dist/angular-simple-logger.js"></script>
+<script src="bower_components/angular-google-maps/dist/angular-google-maps.js"></script>
 <!-- app -->
 <script src="app/friends-photos.module.js"></script>
 <script src="app/components/account.js"></script>
@@ -45,6 +51,7 @@
 <script src="app/components/eventsCreateEdir.js"></script>
 <script src="app/components/login.js"></script>
 <script src="app/config/decorator.js"></script>
+<script src="app/config/loadingBar.js"></script>
 <script src="app/config/states.js"></script>
 <script src="app/config/unauthorizedInterceptor.js"></script>
 <script src="app/controllers/AuthController.js"></script>

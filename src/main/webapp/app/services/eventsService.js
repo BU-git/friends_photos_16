@@ -5,9 +5,9 @@
         .module('friends_photos')
         .service('eventsService', eventsService);
 
-    eventsService.$inject = ['$http', '$q'];
+    eventsService.$inject = ['$http', '$q', 'cfpLoadingBar'];
 
-    function eventsService($http, $q) {
+    function eventsService($http, $q, cfpLoadingBar) {
         var service = this;
         // export public properties and functions
         angular.extend(service, {
@@ -30,6 +30,10 @@
         function getList() {
             var deferred = $q.defer();
             var events = [];
+            cfpLoadingBar.start();
+            deferred.promise.then(function () {
+                cfpLoadingBar.complete();
+            });
             $http.get('events').then(function (res) {
                 var list = res.data.events;
                 loadSequence(events, list, list.length - 1, 10, deferred);

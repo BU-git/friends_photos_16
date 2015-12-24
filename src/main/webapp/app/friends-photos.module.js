@@ -5,7 +5,9 @@
         .module('friends_photos', [
             'ngMaterial',
             'ui.router',
-            'angular-loading-bar'
+            'nemLogging',
+            'uiGmapgoogle-maps',
+            'cfp.loadingBar'
         ]);
 
 })();

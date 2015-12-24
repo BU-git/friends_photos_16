@@ -1,0 +1,14 @@
+<md-dialog class="modal-fullsize" aria-label="Choose location">
+    <md-dialog-content>
+        <ui-gmap-google-map center="map.center" zoom="map.zoom" draggable="true">
+            <ui-gmap-marker idkey="marker.id"
+                            coords="marker.coords"
+                            options="marker.options">
+            </ui-gmap-marker>
+        </ui-gmap-google-map>
+    </md-dialog-content>
+    <md-dialog-actions>
+        <md-button ng-click="ok()" class="md-primary">Ok</md-button>
+        <md-button ng-click="closeDialog()" class="md-primary">Close Dialog</md-button>
+    </md-dialog-actions>
+</md-dialog>

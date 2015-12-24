@@ -1,3 +1,4 @@
+<!-- @namespace EventsController -->
 <div class="container">
     <div class="row">
         <div class="col-lg-8 col-xs-12">
@@ -19,6 +20,11 @@
                 </md-input-container>
 
                 <div layout="row">
+                    <md-button class="md-icon-button md-primary"
+                               aria-label="Chose location"
+                               ng-click="ctrl.chooseLocation($event)">
+                        <md-icon md-font-set="material-icons">location_on</md-icon>
+                    </md-button>
                     <md-input-container class="md-block" flex>
                         <label>Lat</label>
                         <input ng-model="ctrl.event.lat" type="text">
