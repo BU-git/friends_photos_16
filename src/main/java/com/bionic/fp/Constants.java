@@ -35,7 +35,7 @@ public final class Constants {
             String FB = "/fb";
             String VK = "/vk";
             String FILE = "/file";
-            String ID = ".id";
+            String ID = "/id";
             String SELF = "/self";
         }
 

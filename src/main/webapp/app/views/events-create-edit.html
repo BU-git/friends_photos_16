@@ -48,7 +48,7 @@
             </form>
 
             <div class="alert alert-success" type="alert" ng-show="ctrl.uploadedPhotos">
-                Uploaded <strong ng-bind="ctrl.uploadedPhotos"></strong> photos
+                Uploaded <strong>{{ctrl.uploadedPhotos}}/{{ctrl.photos.length}}</strong> photos
             </div>
 
         </div>
