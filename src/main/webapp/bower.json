@@ -10,6 +10,7 @@
     "tests"
   ],
   "dependencies": {
+    "angular-loading-bar": "~0.8.0",
     "angular-material": "~1.0.1",
     "angular-ui-router": "~0.2.15",
     "bootstrap": "~3.3.6",

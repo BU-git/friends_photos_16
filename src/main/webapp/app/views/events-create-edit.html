@@ -2,14 +2,12 @@
     <div class="row">
         <div class="col-lg-8 col-xs-12">
             <form name="eventForm" ng-submit="ctrl.save(ctrl.event)">
-                <div class="row">
-                    <div class="col-lg-8">
-                        <md-input-container class="md-block">
-                            <label>Name</label>
-                            <input ng-model="ctrl.event.name" type="text">
-                        </md-input-container>
-                    </div>
-                    <div class="col-lg-4 md-datepicker-container">
+                <div layout="row">
+                    <md-input-container class="md-block" flex>
+                        <label>Name</label>
+                        <input ng-model="ctrl.event.name" type="text">
+                    </md-input-container>
+                    <div class="md-datepicker-container">
                         <md-datepicker ng-model="event.date" md-placeholder="Enter date" class="pull-right">
                         </md-datepicker>
                     </div>

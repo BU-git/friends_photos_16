@@ -4,7 +4,8 @@
     angular
         .module('friends_photos', [
             'ngMaterial',
-            'ui.router'
+            'ui.router',
+            'angular-loading-bar'
         ]);
 
 })();
