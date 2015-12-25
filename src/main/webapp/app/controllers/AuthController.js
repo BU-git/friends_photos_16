@@ -5,17 +5,19 @@
         .module('friends_photos')
         .controller('AuthController', AuthController);
 
-    AuthController.$inject = ['authService'];
+    AuthController.$inject = ['$state', 'authService'];
 
-    function AuthController(authService) {
+    function AuthController($state, authService) {
         var ctrl = this;
         // export public properties and functions
         angular.extend(ctrl, {
             login: login
         });
 
-        function login() {
-
+        function login(data) {
+            authService.login(data).then(function (user) {
+                $state.go('home.events');
+            });
         }
     }
 

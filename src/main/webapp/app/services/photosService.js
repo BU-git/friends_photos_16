@@ -11,6 +11,7 @@
         var service = this;
         // export public properties and functions
         angular.extend(service, {
+            getEventPhotos: getEventPhotos,
             uploadPhotos: uploadPhotos
         });
 
@@ -34,6 +35,12 @@
                     uploadSequence(eventId, photos, pointer, deferred);
                 });
             }
+        }
+
+        function getEventPhotos(eventId) {
+            return $http.get('events/' + eventId + '/photos/id').then(function (res) {
+                return res.data.photos;
+            });
         }
     }
 

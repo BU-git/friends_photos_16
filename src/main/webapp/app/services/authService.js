@@ -14,8 +14,10 @@
             login: login
         });
 
-        function login(provider) {
-
+        function login(data) {
+            if (angular.isString(data)) {
+                if (data === 'facebook') return facebook.login();
+            }
         }
     }
 

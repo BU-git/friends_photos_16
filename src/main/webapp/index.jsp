@@ -58,8 +58,10 @@
 <script src="app/controllers/EventsController.js"></script>
 <script src="app/directives/carouselDirective.js"></script>
 <script src="app/directives/dropzoneDirective.js"></script>
+<script src="app/directives/editPhotosListDirective.js"></script>
 <script src="app/directives/eventPreviewDirective.js"></script>
 <script src="app/directives/navbarDirective.js"></script>
+<script src="app/directives/photoDirective.js"></script>
 <script src="app/services/authService.js"></script>
 <script src="app/services/eventsService.js"></script>
 <script src="app/services/facebookService.js"></script>

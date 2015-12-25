@@ -20,10 +20,7 @@
         function getById(id) {
             id = parseInt(id);
             return $http.get('events/' + id).then(function (res) {
-                var event = res.data;
-                return $http.get('events/' + id + '/photos/id').then(function (res) {
-                    return angular.extend(event, res.data);
-                });
+                return res.data;
             });
         }
 
@@ -53,7 +50,7 @@
                         angular.extend(event, res.data);
                         events.push(event);
                         loadSequence(events, list, --pointer, limit, deferred)
-                    })
+                    });
                 });
             }
         }

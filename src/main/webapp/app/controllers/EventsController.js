@@ -41,16 +41,21 @@
                 eventsService.getById(ctrl.eventId).then(function (event) {
                     ctrl.event = event;
                 });
+                photosService.getEventPhotos(ctrl.eventId).then(function (photos) {
+                    ctrl.photos = photos;
+                });
             } else {
                 ctrl.event = testEvent;
+                ctrl.photos = [];
             }
-            ctrl.photos = [];
         }
 
         function save(event) {
             eventsService.save(event).then(function (eventId) {
                 photosService
-                    .uploadPhotos(eventId, ctrl.photos)
+                    .uploadPhotos(eventId, ctrl.photos.filter(function (file) {
+                        return file instanceof File;
+                    }))
                     .then(function success (result) {
                         ctrl.uploadedPhotos = result;
                     }, function error () {

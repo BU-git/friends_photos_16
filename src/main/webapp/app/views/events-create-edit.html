@@ -57,11 +57,19 @@
 
         </div>
 
-        <div class="col-lg-4  col-xs-12">
-            <div style="min-height: 360px; height: 100%; border: dotted 2px lightgrey; position: relative; border-radius: 5px;">
-                <dropzone style="position: absolute; width: 100%; min-height: 100%;" ng-model="ctrl.photos"></dropzone>
+        <div class="col-lg-4 col-xs-12">
+            <div style="min-height: 325px; height: 100%; border: dotted 2px lightgrey; position: relative; border-radius: 5px;">
+                <dropzone style="position: absolute; width: 100%; min-height: 100%; color: lightgray;"
+                          ng-model="ctrl.photos">
+                    <h3 style="line-height: 292px; text-align: center">Drag and drop files here</h3>
+                </dropzone>
             </div>
         </div>
 
     </div>
+
+    <md-divider></md-divider>
+
+    <edit-photos-list photos-list="ctrl.photos"></edit-photos-list>
+
 </div>

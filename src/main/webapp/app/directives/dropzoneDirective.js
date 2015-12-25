@@ -11,9 +11,6 @@
         var directive = {
             restrict: 'AE',
             require: 'ngModel',
-            scope: {
-                onFiles: '&'
-            },
             link: link
         };
         return directive;
@@ -34,25 +31,16 @@
 
             elem[0].ondrop = function (e) {
                 e.preventDefault();
-                model.assign(scope, e.dataTransfer.files);
-                ngModel.$setViewValue(e.dataTransfer.files);
-                ngModel.$render();
-                //return false;
+                scope.$apply(function () {
+                    var photosList = model(scope);
+                    angular.forEach(e.dataTransfer.files, function (file) {
+                        photosList.push(file);
+                    });
+                    model.assign(scope, photosList);
+                });
             };
 
-            function render() {
-                angular.forEach(this.$viewValue, function (file) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        elem.append(angular
-                                .element('<img>')
-                                .attr('src', e.target.result)
-                                .css({width: '30%'})
-                        );
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
+            function render() {}
         }
     }
 

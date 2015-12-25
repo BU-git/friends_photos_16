@@ -1,18 +1,33 @@
 <div class="login-box">
-    <h3 class="padding-15">Login to your account:</h3>
+    <h3>Login to your account:</h3>
 
-    <form name="loginForm" class="login-form padding-15">
+    <form name="loginForm" class="login-form" ng-submit="ctrl.login(user)">
         <md-input-container class="md-block">
             <label>E-mail</label>
-            <input ng-model="user.address">
+            <input ng-model="user.address" type="text">
         </md-input-container>
         <md-input-container class="md-block">
             <label>Password</label>
-            <input ng-model="user.address">
+            <input ng-model="user.password" type="password">
         </md-input-container>
 
         <p>Or use socials</p>
 
-        <fb:login-button show-faces="true" max-rows="1" size="large"></fb:login-button>
+        <!--<fb:login-button show-faces="false" max-rows="1" size="large"></fb:login-button>-->
+        <div layout="row">
+            <md-button class="md-raised md-default">
+                G+
+            </md-button>
+            <md-button class="md-raised md-primary" ng-click="ctrl.login('facebook')" type="button">
+                FB
+            </md-button>
+        </div>
+
+        <div layout="row">
+            <md-button class="md-raised md-primary">
+                Login
+            </md-button>
+        </div>
+
     </form>
 </div>
