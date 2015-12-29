@@ -20,32 +20,25 @@ import java.util.List;
                 @NamedAttributeNode("comments")})
 })
 @NamedQueries({
-        @NamedQuery(
-                name = Event.FIND_BY_NAME_AND_DESCRIPTION,
+        @NamedQuery(name = Event.FIND_BY_NAME_AND_DESCRIPTION,
                 query = "SELECT e FROM Event e WHERE e.visible = TRUE AND e.name LIKE :name AND e.description LIKE :description"
         ),
-        @NamedQuery(
-                name = Event.FIND_BY_NAME,
+        @NamedQuery(name = Event.FIND_BY_NAME,
                 query = "SELECT e FROM Event e WHERE e.visible = TRUE AND e.name LIKE :name "
         ),
-        @NamedQuery(
-                name = Event.FIND_BY_DESCRIPTION,
+        @NamedQuery(name = Event.FIND_BY_DESCRIPTION,
                 query = "SELECT e FROM Event e WHERE e.visible = TRUE AND e.description LIKE :description"
         ),
-        @NamedQuery(
-                name = Event.FIND_ALL,
+        @NamedQuery(name = Event.FIND_ALL,
                 query = "SELECT e FROM Event e WHERE e.visible = TRUE"
         )
 })
 public class Event implements Serializable {
-    @Transient
-    public static final String FIND_BY_NAME_AND_DESCRIPTION = "Event.findByNameAndDescription";
-    @Transient
-    public static final String FIND_BY_NAME = "Event.findByName";
-    @Transient
-    public static final String FIND_BY_DESCRIPTION = "Event.findByDescription";
-    @Transient
-    public static final String FIND_ALL = "Event.findAll";
+
+    @Transient public static final String FIND_BY_NAME_AND_DESCRIPTION = "Event.findByNameAndDescription";
+    @Transient public static final String FIND_BY_NAME = "Event.findByName";
+    @Transient public static final String FIND_BY_DESCRIPTION = "Event.findByDescription";
+    @Transient public static final String FIND_ALL = "Event.findAll";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,8 +50,6 @@ public class Event implements Serializable {
     @ManyToOne
     @JoinColumn(name = "event_type")
     private EventType eventType;
-//    @OneToOne(fetch = FetchType.EAGER)
-//    private Account owner;
     /**
      * Is this event visible in the general mode of search?
      */
@@ -126,14 +117,6 @@ public class Event implements Serializable {
     public void setEventType(EventType eventType) {
         this.eventType = eventType;
     }
-
-//    public Account getOwner() {
-//        return owner;
-//    }
-//
-//    public void setOwner(Account owner) {
-//        this.owner = owner;
-//    }
 
     public boolean isVisible() {
         return visible;

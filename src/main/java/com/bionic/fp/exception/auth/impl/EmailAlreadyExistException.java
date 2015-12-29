@@ -10,6 +10,10 @@ import com.bionic.fp.exception.auth.AuthenticationException;
 public class EmailAlreadyExistException extends AuthenticationException {
 
     public EmailAlreadyExistException() {
-        super("Email already exist in DB.");
+        super("Email already exists in DB.");
+    }
+
+    public EmailAlreadyExistException(final String email) {
+        super(String.format("Email '%s' already exists in DB.", email));
     }
 }

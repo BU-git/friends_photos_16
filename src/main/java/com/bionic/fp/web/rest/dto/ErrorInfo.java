@@ -8,11 +8,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * @author Sergiy Gabriel
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ErrorInfoDTO {
+public class ErrorInfo {
 
     private String error;
 
-    public ErrorInfoDTO(String error) {
+    public ErrorInfo() {
+    }
+
+    public ErrorInfo(final String error) {
         this.error = error;
     }
 

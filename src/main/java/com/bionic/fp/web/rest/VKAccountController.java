@@ -78,7 +78,7 @@ public class VKAccountController {
             return authResponse;
         }
 
-        Account account = accountService.getOrCreateAccountForVKId(checkTokenResponse.getResponse().getUserId());
+        Account account = accountService.getOrCreateAccountForVkId(checkTokenResponse.getResponse().getUserId());
 
         authResponse.setCode(AuthResponse.AUTHENTICATED);
         authResponse.setUserId(String.valueOf(account.getId()));

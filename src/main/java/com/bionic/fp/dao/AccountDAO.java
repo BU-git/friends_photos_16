@@ -5,7 +5,6 @@ import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.exception.logic.impl.AccountNotFoundException;
 
-import javax.persistence.NoResultException;
 import java.util.List;
 
 /**
@@ -54,38 +53,24 @@ public interface AccountDAO extends GenericDAO<Account, Long> {
     List<Event> getEvents(Long accountId) throws AccountNotFoundException;
 
     /**
-     * This method is used to get account by email if it exist.
-     * @param email user email.
-     * @return instance of Account by requested email.
+     * Returns an account by email
+     * @param email the user email
+     * @return an account by email and null if the account doesn't exist
      */
-    Account getByEmail(String email) throws NoResultException;
+    Account getByEmail(String email);
 
     /**
-     * Used to get account by fb id if it exist.
-     * @param fbId users fb unique identifier.
-     * @return instance of Account by requested fb id.
+     * Returns an account by fb id
+     * @param fbId users fb unique identifier
+     * @return an account by fb id and null if the account doesn't exist
      */
-    Account getByFBId(String fbId) throws NoResultException;
+    Account getByFbId(String fbId);
 
     /**
-     * Used to get account by vk id if it exist.
+     * Returns an account by vk id
      * @param vkId users vk unique identifier.
-     * @return instance of Account by requested fb id.
+     * @return an account by vk id and null if the account doesn't exist
      */
-    Account getByVKId(String vkId) throws NoResultException;
+    Account getByVkId(String vkId);
 
-    /**
-     * Used to get account by user name if it exist.
-     * @param userName user name.
-     * @return instance of Account by requested user name.
-     */
-    Account getByUserName(String userName) throws NoResultException;
-
-    /**
-     * Used to get all events where this account is owner
-     * @param accountId
-     * @return list of events
-     * // todo delete it!
-     */
-    List<Event> getWhereOwner(Long accountId) throws AccountNotFoundException;
 }

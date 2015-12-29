@@ -66,11 +66,15 @@ public abstract class AbstractIT {
     }
 
     protected Account getSavedAccount() {
-        String s = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME);
-        Account account = new Account("yaya@gmail.com" + s, "Yaya" + s, "yaya" + s);
-        Long accountId = this.accountService.addAccount(account);
+        Account account = getNewEmailAccount();
+        Long accountId = this.accountService.create(account);
         assertNotNull(accountId);
         return account;
+    }
+
+    protected Account getNewEmailAccount() {
+        String s = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME);
+        return new Account("yaya@gmail.com" + s, "Yaya" + s, "yaya" + s);
     }
 
     protected EventType getPrivateEventType() {

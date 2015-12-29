@@ -273,7 +273,7 @@ public class EventService {
         check(eventId != null, "The event ID should not be null");
         List<Account> accounts = this.accountEventDAO.getAccounts(eventId, OWNER);
         check(!accounts.isEmpty(), new EventNotFoundException(eventId));
-        check(accounts.size() == 1, new NonUniqueResultException("Broken business logic of the application (the event has too many owners)"));
+        check(accounts.size() == 1, new NonUniqueResultException("The event has too many owners"));
         return accounts.get(0);
     }
 

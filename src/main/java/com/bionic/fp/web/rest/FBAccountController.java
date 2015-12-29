@@ -88,7 +88,7 @@ public class FBAccountController {
             throw new InvalidParameterException(fbUserTokenInfo.getData().getError().getMessage());
         }
 
-        Account account = accountService.getOrCreateAccountForFBId(userInfo.getId(),
+        Account account = accountService.getOrCreateAccountForFbId(userInfo.getId(),
                 userInfo.getName(), userInfo.getEmail());
 
         authResponse.setCode(AuthResponse.AUTHENTICATED);

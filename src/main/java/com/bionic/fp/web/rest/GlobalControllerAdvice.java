@@ -1,6 +1,8 @@
 package com.bionic.fp.web.rest;
 
 import com.bionic.fp.exception.AppException;
+import com.bionic.fp.exception.auth.impl.EmailAlreadyExistException;
+import com.bionic.fp.exception.auth.impl.IncorrectPasswordException;
 import com.bionic.fp.exception.logic.critical.NonUniqueResultException;
 import com.bionic.fp.exception.permission.PermissionsDeniedException;
 import com.bionic.fp.exception.permission.UserDoesNotExistException;
@@ -8,7 +10,7 @@ import com.bionic.fp.exception.auth.impl.InvalidSessionException;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.rest.NotFoundException;
-import com.bionic.fp.web.rest.dto.ErrorInfoDTO;
+import com.bionic.fp.web.rest.dto.ErrorInfo;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -31,10 +33,12 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @ControllerAdvice
 public class GlobalControllerAdvice {
 
-    @ExceptionHandler({InvalidParameterException.class, EntityNotFoundException.class})
+    @ExceptionHandler({InvalidParameterException.class, EntityNotFoundException.class, EmailAlreadyExistException.class,
+            IncorrectPasswordException.class})
     @ResponseStatus(BAD_REQUEST)
-    public @ResponseBody ErrorInfoDTO badRequestExceptionHandler(AppException e) {
-        return new ErrorInfoDTO(e.getMessage());
+    @ResponseBody
+    public ErrorInfo badRequestExceptionHandler(AppException e) {
+        return new ErrorInfo(e.getMessage());
     }
 
     @ExceptionHandler(NotFoundException.class)
@@ -44,31 +48,36 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(UserDoesNotExistException.class)
     @ResponseStatus(BAD_REQUEST)
-    public @ResponseBody ErrorInfoDTO userNotFoundInEvent(UserDoesNotExistException e) {
-        return new ErrorInfoDTO(e.getMessage());
+    @ResponseBody
+    public ErrorInfo userNotFoundInEvent(UserDoesNotExistException e) {
+        return new ErrorInfo(e.getMessage());
     }
 
     @ExceptionHandler(PermissionsDeniedException.class)
     @ResponseStatus(FORBIDDEN)
-    public @ResponseBody ErrorInfoDTO permissionsDenied(PermissionsDeniedException e){
-        return new ErrorInfoDTO(e.getMessage());
+    @ResponseBody
+    public ErrorInfo permissionsDenied(PermissionsDeniedException e){
+        return new ErrorInfo(e.getMessage());
     }
 
     @ExceptionHandler(InvalidSessionException.class)
     @ResponseStatus(UNAUTHORIZED)
-    public @ResponseBody ErrorInfoDTO unauthorizedExceptionHandler(InvalidSessionException e){
-        return new ErrorInfoDTO(e.getMessage());
+    @ResponseBody
+    public ErrorInfo unauthorizedExceptionHandler(InvalidSessionException e){
+        return new ErrorInfo(e.getMessage());
     }
 
     @ExceptionHandler(NonUniqueResultException.class)
     @ResponseStatus(CONFLICT)
-    public @ResponseBody ErrorInfoDTO nonUniqueResultExceptionHandler(NonUniqueResultException e){
-        return new ErrorInfoDTO(e.getMessage());
+    @ResponseBody
+    public ErrorInfo nonUniqueResultExceptionHandler(NonUniqueResultException e){
+        return new ErrorInfo(e.getMessage());
     }
 
     @ExceptionHandler(IOException.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
-    public @ResponseBody ErrorInfoDTO IOExceptionHandler(IOException e){
-        return new ErrorInfoDTO(e.getMessage());
+    @ResponseBody
+    public ErrorInfo IOExceptionHandler(IOException e){
+        return new ErrorInfo(e.getMessage());
     }
 }

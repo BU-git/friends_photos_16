@@ -68,6 +68,8 @@ public final class Constants {
 
         public interface ACCOUNT {
             String ID = "account_id";
+            String EMAIL = "email";
+            String PASSWORD = "password";
         }
 
         public interface ROLE {
