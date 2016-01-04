@@ -5,6 +5,7 @@ import com.bionic.fp.dao.AccountEventDAO;
 import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.dao.RoleDAO;
 import com.bionic.fp.domain.*;
+import com.bionic.fp.exception.AppException;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.critical.NonUniqueResultException;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
@@ -312,4 +313,20 @@ public class EventService {
     }
 
 
+    /**
+     * Add comment to event
+     * @param event - event entity
+     * @param comment - comment entity
+     */
+    public void addComment(Event event, Comment comment) {
+        if (event.getComments() == null) {
+            throw new AppException("Invalid event entity");
+        }
+
+        if(comment.getText().isEmpty()) {
+            throw new AppException("Comment is empty");
+        }
+        event.getComments().add(comment);
+        update(event);
+    }
 }

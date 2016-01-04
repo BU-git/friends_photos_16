@@ -77,7 +77,7 @@ public class Event implements Serializable {
     private List<AccountEvent> accounts = new ArrayList<>();
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
     private List<Photo> photos = new ArrayList<>();
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "events_comments",
             joinColumns = {@JoinColumn(name = "event_id")},
             inverseJoinColumns = {@JoinColumn(name = "comment_id")})

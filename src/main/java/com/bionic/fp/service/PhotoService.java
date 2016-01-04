@@ -2,8 +2,10 @@ package com.bionic.fp.service;
 
 import com.bionic.fp.dao.PhotoDAO;
 import com.bionic.fp.domain.Account;
+import com.bionic.fp.domain.Comment;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
+import com.bionic.fp.exception.AppException;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.PhotoNotFoundException;
@@ -245,4 +247,24 @@ public class PhotoService {
 //        }
 //        return newPhotoName;
 //    }
+
+
+    /**
+     * Add comment to photo
+     * @param photo - photo entity
+     * @param comment - comment entity
+     */
+    public void addComment(Photo photo, Comment comment) {
+        if (photo.getComments() == null) {
+            throw new AppException("Invalid photo entity");
+        }
+
+        if(comment.getText().isEmpty()) {
+            throw new AppException("Comment is empty");
+        }
+
+        photo.getComments().add(comment);
+        update(photo);
+    }
+
 }

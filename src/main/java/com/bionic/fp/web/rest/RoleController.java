@@ -4,6 +4,7 @@ import com.bionic.fp.domain.Role;
 import com.bionic.fp.web.rest.dto.*;
 import com.bionic.fp.service.RoleService;
 import com.bionic.fp.web.security.SessionUtils;
+import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,7 @@ public class RoleController {
 
     @Inject
     private RoleService roleService;
+    final static Logger LOG = Logger.getLogger(RoleController.class);
 
 
     //***************************************

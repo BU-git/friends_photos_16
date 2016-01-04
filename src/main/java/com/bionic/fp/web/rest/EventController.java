@@ -5,6 +5,7 @@ import com.bionic.fp.domain.*;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import com.bionic.fp.exception.logic.impl.EventTypeNotFoundException;
 import com.bionic.fp.exception.rest.NotFoundException;
+import com.bionic.fp.service.AccountService;
 import com.bionic.fp.web.rest.dto.*;
 import com.bionic.fp.web.security.SessionUtils;
 import com.bionic.fp.service.EventService;
@@ -13,6 +14,7 @@ import com.bionic.fp.service.RoleService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import static com.bionic.fp.Constants.RestConstants.PARAM.*;
@@ -42,6 +44,9 @@ public class EventController {
 
     @Inject
     private RoleService roleService;
+
+    @Inject
+    private AccountService accountService;
 
 
     //***************************************
@@ -168,6 +173,19 @@ public class EventController {
         this.eventService.addOrUpdateAccountToEvent(userId, eventId, Constants.RoleConstants.MEMBER, password);
     }
 
+
+    @RequestMapping(method = POST, consumes = APPLICATION_JSON_VALUE)
+    @ResponseStatus(CREATED)
+    public void addComment(@RequestParam(value = EVENT.ID) final Long eventId,
+                           @RequestParam(value = COMMENT.TEXT) final String text,
+                           final HttpServletRequest servletRequest) {
+        Long userId = SessionUtils.getUserId(servletRequest.getSession(false));
+        Event event = eventService.get(eventId);
+        Comment comment = new Comment();
+        comment.setAuthor(accountService.get(userId));
+        comment.setText(text);
+        eventService.addComment(event, comment);
+    }
 
     //***************************************
     //                 @PUT

@@ -1,5 +1,6 @@
 package com.bionic.fp.web.rest;
 
+import com.bionic.fp.domain.Comment;
 import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.rest.NotFoundException;
 import com.bionic.fp.web.rest.dto.PhotoInfoDTO;
@@ -24,9 +25,7 @@ import static com.bionic.fp.Constants.RestConstants.PATH.*;
 import static com.bionic.fp.util.Checks.check;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpStatus.*;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
+import static org.springframework.http.MediaType.*;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
@@ -108,6 +107,19 @@ public class PhotoController {
 		Long userId = SessionUtils.getUserId(servletRequest.getSession(false));
 		Photo photo = this.photoService.saveToFileSystem(eventId, userId, file, name);
 		return new PhotoInfoDTO(photo);
+	}
+
+	@RequestMapping(method = POST, consumes = APPLICATION_JSON_VALUE)
+	@ResponseStatus(CREATED)
+	public void addComment(@RequestParam(value = PHOTO.ID) final Long photoId,
+						   @RequestParam(value = COMMENT.TEXT) final String text,
+						   final HttpServletRequest servletRequest) {
+		Long userId = SessionUtils.getUserId(servletRequest.getSession(false));
+		Photo photo = photoService.get(photoId);
+		Comment comment = new Comment();
+		comment.setAuthor(accountService.get(userId));
+		comment.setText(text);
+		photoService.addComment(photo, comment);
 	}
 
 

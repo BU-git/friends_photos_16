@@ -86,6 +86,7 @@ public final class Constants {
 
         public interface COMMENT {
             String ID = "comment_id";
+            String TEXT = "comment_text";
         }
 
     }

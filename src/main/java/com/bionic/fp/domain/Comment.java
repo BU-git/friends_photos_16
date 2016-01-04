@@ -18,6 +18,10 @@ public class Comment implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private Account author;
 
+    public Comment() {
+        date = LocalDateTime.now();
+    }
+
     public Long getId() {
         return id;
     }
