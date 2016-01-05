@@ -6,15 +6,18 @@ import com.bionic.fp.domain.Role;
 import com.bionic.fp.exception.permission.PermissionsDeniedException;
 import com.bionic.fp.exception.rest.NotFoundException;
 import com.bionic.fp.service.AccountEventService;
+import com.bionic.fp.web.rest.dto.CommentDTO;
 import com.bionic.fp.web.rest.dto.PhotoInfoDTO;
 import com.bionic.fp.service.AccountService;
 import com.bionic.fp.service.EventService;
 import com.bionic.fp.service.PhotoService;
 import com.bionic.fp.web.security.SessionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -117,7 +120,7 @@ public class PhotoController {
 	@RequestMapping(value = PHOTO_ID+ADD_COMMENT , method = POST, consumes = APPLICATION_JSON_VALUE)
 	@ResponseStatus(CREATED)
 	public void addComment(@PathVariable(PHOTO.ID) final Long photoId,
-						   @RequestParam(value = COMMENT.TEXT) final String text,
+						   @RequestBody final CommentDTO commentDTO,
 						   final HttpServletRequest servletRequest) {
 		Long userId = SessionUtils.getUserId(servletRequest.getSession(false));
 		Photo photo = photoService.get(photoId);
@@ -127,7 +130,7 @@ public class PhotoController {
 		}
 		Comment comment = new Comment();
 		comment.setAuthor(accountService.get(userId));
-		comment.setText(text);
+		comment.setText(commentDTO.getCommentText());
 		photoService.addComment(photo, comment);
 	}
 

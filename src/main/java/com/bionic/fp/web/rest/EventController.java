@@ -178,7 +178,7 @@ public class EventController {
     @RequestMapping(value = EVENT_ID+ADD_COMMENT ,method = POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
     public void addComment(@PathVariable(value = EVENT.ID) final Long eventId,
-                           @RequestParam(value = COMMENT.TEXT) final String text,
+                           @RequestBody final CommentDTO commentDTO,
                            final HttpServletRequest servletRequest) {
         Long userId = SessionUtils.getUserId(servletRequest.getSession(false));
         Role role = accountEventService.get(userId, eventId).getRole();
@@ -188,7 +188,7 @@ public class EventController {
         Event event = eventService.get(eventId);
         Comment comment = new Comment();
         comment.setAuthor(accountService.get(userId));
-        comment.setText(text);
+        comment.setText(commentDTO.getCommentText());
         eventService.addComment(event, comment);
     }
 
