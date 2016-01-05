@@ -4,6 +4,7 @@ import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.dao.AccountEventDAO;
 import com.bionic.fp.domain.Event;
+import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,8 +44,14 @@ public class AccountEventService {
     }
 
     public AccountEvent get(final Long accountId, final Long eventId) {
-        return (accountId == null || eventId == null) ? null :
-                this.accountEventDAO.get(accountId, eventId);
+        if(accountId == null || eventId == null) {
+            throw new InvalidParameterException("Not valid account or event");
+        }
+        AccountEvent accountEvent = this.accountEventDAO.get(accountId, eventId);
+        if(accountEvent == null) {
+            throw new EntityNotFoundException("account-event");
+        }
+        return accountEvent;
     }
 
     public AccountEvent getWithAccountEvent(final Long id) {
