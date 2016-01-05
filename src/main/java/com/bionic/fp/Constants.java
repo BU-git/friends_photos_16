@@ -37,6 +37,7 @@ public final class Constants {
             String FILE = "/file";
             String ID = "/id";
             String SELF = "/self";
+            String ADD_COMMENT = "/add_comment";
         }
 
         public interface PARAM {

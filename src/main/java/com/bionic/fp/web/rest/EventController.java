@@ -174,7 +174,7 @@ public class EventController {
     }
 
 
-    @RequestMapping(method = POST, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = EVENT_ID+ADD_COMMENT ,method = POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
     public void addComment(@RequestParam(value = EVENT.ID) final Long eventId,
                            @RequestParam(value = COMMENT.TEXT) final String text,
