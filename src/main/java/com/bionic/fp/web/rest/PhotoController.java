@@ -2,7 +2,10 @@ package com.bionic.fp.web.rest;
 
 import com.bionic.fp.domain.Comment;
 import com.bionic.fp.domain.Photo;
+import com.bionic.fp.domain.Role;
+import com.bionic.fp.exception.permission.PermissionsDeniedException;
 import com.bionic.fp.exception.rest.NotFoundException;
+import com.bionic.fp.service.AccountEventService;
 import com.bionic.fp.web.rest.dto.PhotoInfoDTO;
 import com.bionic.fp.service.AccountService;
 import com.bionic.fp.service.EventService;
@@ -44,6 +47,8 @@ public class PhotoController {
 	private EventService eventService;
 	@Autowired
 	private AccountService accountService;
+	@Autowired
+	private AccountEventService accountEventService;
 
 	private SecureRandom random = new SecureRandom();
 
@@ -111,11 +116,15 @@ public class PhotoController {
 
 	@RequestMapping(value = PHOTO_ID+ADD_COMMENT , method = POST, consumes = APPLICATION_JSON_VALUE)
 	@ResponseStatus(CREATED)
-	public void addComment(@RequestParam(value = PHOTO.ID) final Long photoId,
+	public void addComment(@PathVariable(PHOTO.ID) final Long photoId,
 						   @RequestParam(value = COMMENT.TEXT) final String text,
 						   final HttpServletRequest servletRequest) {
 		Long userId = SessionUtils.getUserId(servletRequest.getSession(false));
 		Photo photo = photoService.get(photoId);
+		Role role = accountEventService.get(userId, photo.getEvent().getId()).getRole();
+		if(!role.isCanAddComments()) {
+			throw new PermissionsDeniedException();
+		}
 		Comment comment = new Comment();
 		comment.setAuthor(accountService.get(userId));
 		comment.setText(text);

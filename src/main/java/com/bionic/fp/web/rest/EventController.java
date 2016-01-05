@@ -4,13 +4,11 @@ import com.bionic.fp.Constants;
 import com.bionic.fp.domain.*;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import com.bionic.fp.exception.logic.impl.EventTypeNotFoundException;
+import com.bionic.fp.exception.permission.PermissionsDeniedException;
 import com.bionic.fp.exception.rest.NotFoundException;
-import com.bionic.fp.service.AccountService;
+import com.bionic.fp.service.*;
 import com.bionic.fp.web.rest.dto.*;
 import com.bionic.fp.web.security.SessionUtils;
-import com.bionic.fp.service.EventService;
-import com.bionic.fp.service.EventTypeService;
-import com.bionic.fp.service.RoleService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
@@ -47,6 +45,9 @@ public class EventController {
 
     @Inject
     private AccountService accountService;
+
+    @Inject
+    private AccountEventService accountEventService;
 
 
     //***************************************
@@ -176,10 +177,14 @@ public class EventController {
 
     @RequestMapping(value = EVENT_ID+ADD_COMMENT ,method = POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
-    public void addComment(@RequestParam(value = EVENT.ID) final Long eventId,
+    public void addComment(@PathVariable(value = EVENT.ID) final Long eventId,
                            @RequestParam(value = COMMENT.TEXT) final String text,
                            final HttpServletRequest servletRequest) {
         Long userId = SessionUtils.getUserId(servletRequest.getSession(false));
+        Role role = accountEventService.get(userId, eventId).getRole();
+        if(!role.isCanAddComments()) {
+            throw new PermissionsDeniedException();
+        }
         Event event = eventService.get(eventId);
         Comment comment = new Comment();
         comment.setAuthor(accountService.get(userId));
