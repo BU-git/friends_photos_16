@@ -49,7 +49,7 @@ public class AccountEventService {
         }
         AccountEvent accountEvent = this.accountEventDAO.get(accountId, eventId);
         if(accountEvent == null) {
-            throw new EntityNotFoundException("account-event");
+            throw new EntityNotFoundException("You are not a member of this event");
         }
         return accountEvent;
     }
