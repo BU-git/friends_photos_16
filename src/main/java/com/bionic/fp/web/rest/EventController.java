@@ -142,7 +142,7 @@ public class EventController {
         // required parameters (should not be null)
         event.setName(eventDto.getName());
         event.setDescription(eventDto.getDescription());
-        EventType eventType = this.getEventTypeOrThrow(eventDto.getTypeId());
+        EventType eventType = this.getEventTypeOrThrow(eventDto.getEventTypeId());
         event.setEventType(eventType);
 
         // optional parameters (possible null)
@@ -206,8 +206,8 @@ public class EventController {
         Event event = this.getEventOrThrow(eventId);
 
         // required parameters (should not be null)
-        if(eventDto.getTypeId() != null) {
-            EventType eventType = this.getEventTypeOrThrow(eventDto.getTypeId());
+        if(eventDto.getEventTypeId() != null) {
+            EventType eventType = this.getEventTypeOrThrow(eventDto.getEventTypeId());
             event.setEventType(eventType);
         }
         if(eventDto.getName() != null) {
@@ -249,7 +249,7 @@ public class EventController {
     @ResponseStatus(OK)
     public void updateAccountToEvent(@PathVariable(EVENT.ID) final Long eventId,
                                      @PathVariable(ACCOUNT.ID) final Long accountId,
-                                     @RequestParam(value = ROLE.ID, required = false) Integer roleId,
+                                     @RequestParam(value = ROLE.ID, required = false) Long roleId,
                                      @RequestParam(value = EVENT.PASSWORD, required = false) final String password,
                                      final HttpSession session) {
         // todo: test and is this roles valid?
@@ -276,7 +276,7 @@ public class EventController {
     //***************************************
 
 
-    private EventType getEventTypeOrThrow(final Integer eventTypeId) {
+    private EventType getEventTypeOrThrow(final Long eventTypeId) {
         return ofNullable(this.eventTypeService.get(eventTypeId)).orElseThrow(() -> new EventTypeNotFoundException(eventTypeId));
     }
 

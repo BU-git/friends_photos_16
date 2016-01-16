@@ -9,6 +9,7 @@ import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.auth.impl.UserNameAlreadyExistException;
 import com.bionic.fp.exception.logic.impl.AccountNotFoundException;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -23,7 +24,7 @@ import static java.util.Optional.ofNullable;
 /**
  * Created by boubdyk on 11.11.2015.
  */
-@Named
+@Service
 @Transactional
 public class AccountService {
     public static final String FACEBOOK_BASE_URL = "https://www.facebook.com/";
@@ -79,7 +80,7 @@ public class AccountService {
             throw new IncorrectPasswordException();
         }
 
-        account.setActive(true); // ?
+//        account.setActive(true); // ?
         this.accountDAO.update(account);
 
         return account.getId();

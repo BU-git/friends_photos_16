@@ -94,7 +94,7 @@ public class EventRestControllerIT extends AbstractIT {
         // without name, description, type
         eventDto.setName(null);
         eventDto.setDescription(null);
-        eventDto.setTypeId(null);
+        eventDto.setEventTypeId(null);
 
         given()
             .body(eventDto)
@@ -107,7 +107,7 @@ public class EventRestControllerIT extends AbstractIT {
         // without description, type
         eventDto.setName("NY 2016");
         eventDto.setDescription(null);
-        eventDto.setTypeId(null);
+        eventDto.setEventTypeId(null);
 
         given()
             .body(eventDto)
@@ -120,7 +120,7 @@ public class EventRestControllerIT extends AbstractIT {
         // without name, description
         eventDto.setName(null);
         eventDto.setDescription(null);
-        eventDto.setTypeId(privateEvent.getId());
+        eventDto.setEventTypeId(privateEvent.getId());
 
         given()
             .body(eventDto)
@@ -133,7 +133,7 @@ public class EventRestControllerIT extends AbstractIT {
         // without name, type
         eventDto.setName(null);
         eventDto.setDescription("Happy New Year!");
-        eventDto.setTypeId(null);
+        eventDto.setEventTypeId(null);
 
         given()
             .body(eventDto)
@@ -146,7 +146,7 @@ public class EventRestControllerIT extends AbstractIT {
         // without name
         eventDto.setName(null);
         eventDto.setDescription("Happy New Year!");
-        eventDto.setTypeId(privateEvent.getId());
+        eventDto.setEventTypeId(privateEvent.getId());
 
         given()
             .body(eventDto)
@@ -159,7 +159,7 @@ public class EventRestControllerIT extends AbstractIT {
         // without type
         eventDto.setName("NY 2016");
         eventDto.setDescription("Happy New Year!");
-        eventDto.setTypeId(null);
+        eventDto.setEventTypeId(null);
 
         given()
             .body(eventDto)
@@ -172,7 +172,7 @@ public class EventRestControllerIT extends AbstractIT {
         // without description
         eventDto.setName("NY 2016");
         eventDto.setDescription(null);
-        eventDto.setTypeId(privateEvent.getId());
+        eventDto.setEventTypeId(privateEvent.getId());
 
         given()
             .body(eventDto)
@@ -290,7 +290,7 @@ public class EventRestControllerIT extends AbstractIT {
             .statusCode(SC_OK)
             .body(EVENT.ID + TO_STRING, is(event.getId().toString()))
             .body(EVENT.NAME, is(event.getName()))
-            .body(EVENT.TYPE_ID + TO_STRING, is(event.getEventType().getId().toString()))
+            .body(EVENT.EVENT_TYPE_ID + TO_STRING, is(event.getEventType().getId().toString()))
             .body(EVENT.DESCRIPTION, is(event.getDescription()))
             // sometimes failure 2015-11-24 16:51:53 == 2015-11-24 16:51:53.213
             // but 2015-11-24 16:51:53 != 2015-11-24 16:51:53.599
@@ -310,7 +310,7 @@ public class EventRestControllerIT extends AbstractIT {
             .statusCode(SC_OK)
             .body(EVENT.ID + TO_STRING, is(event.getId().toString()))
             .body(EVENT.NAME, is(event.getName()))
-            .body(EVENT.TYPE_ID + TO_STRING, is(event.getEventType().getId().toString()))
+            .body(EVENT.EVENT_TYPE_ID + TO_STRING, is(event.getEventType().getId().toString()))
             .body(EVENT.DESCRIPTION, is(event.getDescription()))
             // sometimes failure 2015-11-24 16:51:53 == 2015-11-24 16:51:53.213
             // but 2015-11-24 16:51:53 != 2015-11-24 16:51:53.599
@@ -368,7 +368,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         assertEquals(event.getName(), eventDto.getName());
         assertEquals(event.getDescription(), eventDto.getDescription());
-        assertEquals(event.getEventType().getId(), eventDto.getTypeId());
+        assertEquals(event.getEventType().getId(), eventDto.getEventTypeId());
         assertEquals(event.getLatitude(), eventDto.getLatitude());
         assertEquals(event.getLongitude(), eventDto.getLongitude());
         assertEquals(event.getRadius(), eventDto.getRadius());
@@ -401,7 +401,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         assertEquals(event.getName(), eventDto.getName());
         assertNotEquals(event.getDescription(), eventDto.getDescription());
-        assertNotEquals(event.getEventType().getId(), eventDto.getTypeId());
+        assertNotEquals(event.getEventType().getId(), eventDto.getEventTypeId());
         assertNotEquals(event.getLatitude(), eventDto.getLatitude());
         assertNotEquals(event.getLongitude(), eventDto.getLongitude());
         assertNotEquals(event.getRadius(), eventDto.getRadius());
@@ -491,7 +491,7 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(0, this.accountService.getWithEvents(user.getId()).getEvents().size());
 
         // todo: exchange "3"
-        this.eventService.addOrUpdateAccountToEvent(user.getId(), event.getId(), 3, null);
+        this.eventService.addOrUpdateAccountToEvent(user.getId(), event.getId(), 3L, null);
 
         assertEquals(2, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
         assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());

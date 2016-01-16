@@ -48,7 +48,7 @@ public class Event implements Serializable {
     @Column(nullable = false)
     private String description;
     @ManyToOne
-    @JoinColumn(name = "event_type")
+    @JoinColumn(name = "event_type_id")
     private EventType eventType;
     /**
      * Is this event visible in the general mode of search?

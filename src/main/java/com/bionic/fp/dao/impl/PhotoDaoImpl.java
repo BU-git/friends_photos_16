@@ -57,16 +57,5 @@ public class PhotoDaoImpl implements PhotoDAO {
                 .setParameter("ownerId", ownerId)
                 .getResultList();
 	}
-//    @Override
-//    public Photo getSingleInfoByHash(String hash){
-//        Query query = em.createQuery("from Photo where hash = :md5");
-//        query.setParameter("md5", hash);
-//        List<Photo> list  = query.getResultList();
-//
-//        Photo foundEntity = null;
-//        if (!list.isEmpty()) {
-//            foundEntity = list.get(0);
-//        }
-//        return foundEntity;
-//    }
+
 }

@@ -28,13 +28,13 @@ public class RoleDaoImpl implements RoleDAO {
 
 
     @Override
-    public Integer create(Role role) {
+    public Long create(Role role) {
         em.persist(role);
         return role.getId();
     }
 
     @Override
-    public Role read(Integer id) {
+    public Role read(Long id) {
         return em.find(Role.class, id);
     }
 
@@ -45,13 +45,13 @@ public class RoleDaoImpl implements RoleDAO {
     }
 
     @Override
-    public void delete(Integer roleId) throws RoleNotFoundException {
+    public void delete(Long roleId) throws RoleNotFoundException {
         this.em.remove(this.getOrThrow(roleId));
     }
 
     @Override
     public Role getOwner() throws RoleNotFoundException  {
-        return this.getOrThrow(1);
+        return this.getOrThrow(1L);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class RoleDaoImpl implements RoleDAO {
         return allRolesQuery.getResultList();
     }
 
-    private Role getOrThrow(final Integer roleId) throws RoleNotFoundException {
+    private Role getOrThrow(final Long roleId) throws RoleNotFoundException {
         return ofNullable(this.read(roleId)).orElseThrow(() -> new RoleNotFoundException(roleId));
     }
 }

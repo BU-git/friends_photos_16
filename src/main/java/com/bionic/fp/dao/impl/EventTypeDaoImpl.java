@@ -23,13 +23,13 @@ public class EventTypeDaoImpl implements EventTypeDAO {
     private EntityManager em;
 
     @Override
-    public Integer create(final EventType eventType) {
+    public Long create(final EventType eventType) {
         this.em.persist(eventType);
         return eventType.getId();
     }
 
     @Override
-    public EventType read(final Integer eventTypeId) {
+    public EventType read(final Long eventTypeId) {
         return this.em.find(EventType.class, eventTypeId);
     }
 
@@ -39,17 +39,17 @@ public class EventTypeDaoImpl implements EventTypeDAO {
     }
 
     @Override
-    public void delete(final Integer eventTypeId) throws EventTypeNotFoundException {
+    public void delete(final Long eventTypeId) throws EventTypeNotFoundException {
         EventType eventType = this.getOrThrow(eventTypeId);
         this.em.remove(eventType);
     }
 
     @Override
     public EventType getPrivate() throws EventTypeNotFoundException {
-        return this.getOrThrow(1);
+        return this.getOrThrow(1L);
     }
 
-    private EventType getOrThrow(final Integer eventTypeId) throws EventTypeNotFoundException {
+    private EventType getOrThrow(final Long eventTypeId) throws EventTypeNotFoundException {
         return ofNullable(this.read(eventTypeId)).orElseThrow(() -> new EventTypeNotFoundException(eventTypeId));
     }
 }

@@ -5,7 +5,7 @@ import com.bionic.fp.exception.auth.impl.EmailAlreadyExistException;
 import com.bionic.fp.exception.auth.impl.IncorrectPasswordException;
 import com.bionic.fp.exception.logic.critical.NonUniqueResultException;
 import com.bionic.fp.exception.permission.PermissionsDeniedException;
-import com.bionic.fp.exception.permission.UserDoesNotExistException;
+import com.bionic.fp.exception.permission.UserDoesNotExistInEventException;
 import com.bionic.fp.exception.auth.impl.InvalidSessionException;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
@@ -46,10 +46,10 @@ public class GlobalControllerAdvice {
     public void notFoundExceptionHandler(NotFoundException e) {
     }
 
-    @ExceptionHandler(UserDoesNotExistException.class)
+    @ExceptionHandler(UserDoesNotExistInEventException.class)
     @ResponseStatus(BAD_REQUEST)
     @ResponseBody
-    public ErrorInfo userNotFoundInEvent(UserDoesNotExistException e) {
+    public ErrorInfo userNotFoundInEvent(UserDoesNotExistInEventException e) {
         return new ErrorInfo(e.getMessage());
     }
 

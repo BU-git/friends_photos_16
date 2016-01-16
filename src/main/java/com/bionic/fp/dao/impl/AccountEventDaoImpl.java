@@ -22,7 +22,7 @@ import static java.util.Optional.ofNullable;
  * @author Sergiy Gabriel
  */
 @Repository
-public class AccountEventDaoImpl implements AccountEventDAO {
+public class AccountEventDaoImpl extends AbstractQueryHelper implements AccountEventDAO {
 
     @PersistenceContext(unitName = "entityManager")
     private EntityManager em;
@@ -89,7 +89,7 @@ public class AccountEventDaoImpl implements AccountEventDAO {
     }
 
     @Override
-    public List<AccountEvent> getByEventAndRole(final Long eventId, final Integer roleId) {
+    public List<AccountEvent> getByEventAndRole(final Long eventId, final Long roleId) {
         return this.em.createNamedQuery(AccountEvent.FIND_BY_EVENT_ID_AND_ROLE_ID, AccountEvent.class)
                 .setParameter("eventId", eventId)
                 .setParameter("roleId", roleId)
@@ -97,7 +97,7 @@ public class AccountEventDaoImpl implements AccountEventDAO {
     }
 
     @Override
-    public List<AccountEvent> getByAccountAndRole(final Long accountId, final Integer roleId) {
+    public List<AccountEvent> getByAccountAndRole(final Long accountId, final Long roleId) {
         return this.em.createNamedQuery(AccountEvent.FIND_BY_ACCOUNT_ID_AND_ROLE_ID, AccountEvent.class)
                 .setParameter("accountId", accountId)
                 .setParameter("roleId", roleId)
@@ -105,7 +105,7 @@ public class AccountEventDaoImpl implements AccountEventDAO {
     }
 
     @Override
-    public List<Account> getAccounts(final Long eventId, final Integer roleId) {
+    public List<Account> getAccounts(final Long eventId, final Long roleId) {
         EntityGraph<AccountEvent> graph = this.em.createEntityGraph(AccountEvent.class);
         graph.addAttributeNodes("account");
         return this.em.createNamedQuery(AccountEvent.FIND_BY_EVENT_ID_AND_ROLE_ID, AccountEvent.class)
@@ -118,7 +118,7 @@ public class AccountEventDaoImpl implements AccountEventDAO {
     }
 
     @Override
-    public List<Event> getEvents(final Long accountId, final Integer roleId) {
+    public List<Event> getEvents(final Long accountId, final Long roleId) {
         EntityGraph<AccountEvent> graph = this.em.createEntityGraph(AccountEvent.class);
         graph.addAttributeNodes("event");
         return this.em.createNamedQuery(AccountEvent.FIND_BY_ACCOUNT_ID_AND_ROLE_ID, AccountEvent.class)
@@ -128,13 +128,6 @@ public class AccountEventDaoImpl implements AccountEventDAO {
                 .getResultList().stream().parallel()
                 .map(AccountEvent::getEvent)
                 .collect(Collectors.toList());
-    }
-
-    private <T> T getSingleResult(TypedQuery<T> query) {
-        try {
-            return query.getSingleResult();
-        } catch (NoResultException ignored) {}
-        return null;
     }
 
     private AccountEvent getOrThrow(final Long accountEventId) throws AccountEventNotFoundException {

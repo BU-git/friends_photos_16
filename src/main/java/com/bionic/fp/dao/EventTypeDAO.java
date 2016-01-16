@@ -8,7 +8,7 @@ import com.bionic.fp.exception.logic.impl.EventTypeNotFoundException;
  *
  * @author Sergiy Gabriel
  */
-public interface EventTypeDAO extends GenericDAO<EventType, Integer> {
+public interface EventTypeDAO extends GenericDAO<EventType, Long> {
 
     /**
      * Returns the private type of the event from database

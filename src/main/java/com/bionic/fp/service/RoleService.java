@@ -10,7 +10,7 @@ import com.bionic.fp.domain.Role;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
 import com.bionic.fp.exception.permission.PermissionsDeniedException;
-import com.bionic.fp.exception.permission.UserDoesNotExistException;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -22,7 +22,7 @@ import static com.bionic.fp.util.Checks.check;
 /**
  * Created by Yevhenii Semenov on 11/17/2015.
  */
-@Named
+@Service
 @Transactional
 public class RoleService {
 
@@ -55,7 +55,7 @@ public class RoleService {
     /**
      * todo: delete it or fixed, see {@link EventService} method addOrUpdateAccountToEvent()
      */
-    public boolean setNewRole(Integer newRoleId, Long userId, Long eventId, Long ownerId) {
+    public boolean setNewRole(Long newRoleId, Long userId, Long eventId, Long ownerId) {
         AccountEvent accountEvent
                 = accountEventDAO.getWithAccountEvent(userId, eventId);
 

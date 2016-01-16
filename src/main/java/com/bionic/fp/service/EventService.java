@@ -11,6 +11,7 @@ import com.bionic.fp.exception.logic.critical.NonUniqueResultException;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.RoleNotFoundException;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -27,7 +28,7 @@ import static java.util.Optional.ofNullable;
  *
  * @author Sergiy Gabriel
  */
-@Named
+@Service
 @Transactional
 public class EventService {
 
@@ -102,7 +103,7 @@ public class EventService {
      * @throws EntityNotFoundException if the owner and its role doesn't exist or the event doesn't exist
      * todo: make update test, when more roles
      */
-    public void addOrUpdateAccountToEvent(final Long accountId, final Long eventId, final Integer roleId,
+    public void addOrUpdateAccountToEvent(final Long accountId, final Long eventId, final Long roleId,
                                           final String password) throws InvalidParameterException, EntityNotFoundException {
         check(roleId != null, "The role id should not be null");
         Role role = this.roleDAO.read(roleId);

@@ -4,6 +4,7 @@ import com.bionic.fp.dao.EventTypeDAO;
 import com.bionic.fp.domain.EventType;
 import com.bionic.fp.exception.logic.impl.EventTypeNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -16,7 +17,7 @@ import static com.bionic.fp.util.Checks.check;
  *
  * @author Sergiy Gabriel
  */
-@Named
+@Service
 @Transactional
 public class EventTypeService {
 
@@ -40,7 +41,7 @@ public class EventTypeService {
      * @return the event type and null otherwise
      * @throws InvalidParameterException if the event type ID is invalid
      */
-    public EventType get(final Integer eventTypeId) throws InvalidParameterException {
+    public EventType get(final Long eventTypeId) throws InvalidParameterException {
         this.validation(eventTypeId);
         return this.eventTypeDAO.read(eventTypeId);
     }
@@ -62,7 +63,7 @@ public class EventTypeService {
      * @param eventTypeId the event type ID
      * @throws InvalidParameterException if the event type ID is invalid
      */
-    private void validation(final Integer eventTypeId) throws InvalidParameterException {
+    private void validation(final Long eventTypeId) throws InvalidParameterException {
         check(eventTypeId != null, "The event type ID should not be null");
     }
 }

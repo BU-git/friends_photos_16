@@ -37,7 +37,7 @@ public class EventInfo {
     @JsonSerialize(using = LocalDateTimeJsonSerializer.class)
     @JsonDeserialize(using = LocalDateTimeJsonDeserializer.class)
     @JsonProperty(EVENT.EXPIRE_DATE)        private LocalDateTime expireDate;
-    @JsonProperty(EVENT.TYPE_ID)            private Integer typeId;
+    @JsonProperty(EVENT.EVENT_TYPE_ID)      private Long typeId;
     @JsonProperty(EVENT.LATITUDE)           private Double latitude;
     @JsonProperty(EVENT.LONGITUDE)          private Double longitude;
     @JsonProperty(EVENT.RADIUS)             private Float radius;
@@ -131,7 +131,7 @@ public class EventInfo {
                 result = addConsumer(fields, EVENT.DESCRIPTION, result, t -> t.getDto().setDescription(t.getEvent().getDescription()));
                 result = addConsumer(fields, EVENT.DATE, result, t -> t.getDto().setDate(t.getEvent().getDate()));
                 result = addConsumer(fields, EVENT.EXPIRE_DATE, result, t -> t.getDto().setExpireDate(t.getEvent().getExpireDate()));
-                result = addConsumer(fields, EVENT.TYPE_ID, result, t -> t.getDto().setTypeId(t.getEvent().getEventType().getId()));
+                result = addConsumer(fields, EVENT.EVENT_TYPE_ID, result, t -> t.getDto().setTypeId(t.getEvent().getEventType().getId()));
                 result = addConsumer(fields, EVENT.LATITUDE, result, t -> t.getDto().setLatitude(t.getEvent().getLatitude()));
                 result = addConsumer(fields, EVENT.LONGITUDE, result, t -> t.getDto().setLongitude(t.getEvent().getLongitude()));
                 result = addConsumer(fields, EVENT.RADIUS, result, t -> t.getDto().setRadius(t.getEvent().getRadius()));
@@ -153,7 +153,7 @@ public class EventInfo {
                 result = addConsumer(list, EVENT.DESCRIPTION, result, t -> t.getDto().setDescription(t.getEvent().getDescription()));
                 result = addConsumer(list, EVENT.DATE, result, t -> t.getDto().setDate(t.getEvent().getDate()));
                 result = addConsumer(list, EVENT.EXPIRE_DATE, result, t -> t.getDto().setExpireDate(t.getEvent().getExpireDate()));
-                result = addConsumer(list, EVENT.TYPE_ID, result, t -> t.getDto().setTypeId(t.getEvent().getEventType().getId()));
+                result = addConsumer(list, EVENT.EVENT_TYPE_ID, result, t -> t.getDto().setTypeId(t.getEvent().getEventType().getId()));
                 result = addConsumer(list, EVENT.LATITUDE, result, t -> t.getDto().setLatitude(t.getEvent().getLatitude()));
                 result = addConsumer(list, EVENT.LONGITUDE, result, t -> t.getDto().setLongitude(t.getEvent().getLongitude()));
                 result = addConsumer(list, EVENT.RADIUS, result, t -> t.getDto().setRadius(t.getEvent().getRadius()));
@@ -223,11 +223,11 @@ public class EventInfo {
         this.expireDate = expireDate;
     }
 
-    public Integer getTypeId() {
+    public Long getTypeId() {
         return typeId;
     }
 
-    public void setTypeId(Integer typeId) {
+    public void setTypeId(Long typeId) {
         this.typeId = typeId;
     }
 

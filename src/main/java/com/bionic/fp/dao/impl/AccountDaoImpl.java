@@ -22,7 +22,7 @@ import static java.util.Optional.ofNullable;
  * @author Sergiy Gabriel
  */
 @Repository
-public class AccountDaoImpl implements AccountDAO {
+public class AccountDaoImpl extends AbstractQueryHelper implements AccountDAO {
 
     @PersistenceContext(unitName = "entityManager")
     private EntityManager em;
@@ -93,36 +93,23 @@ public class AccountDaoImpl implements AccountDAO {
     @Override
     public Account getByEmail(final String email) {
         return this.getSingleResult(
-                this.em.createNamedQuery(Account.GET_BY_EMAIL, Account.class).setParameter("email", email),
-                "email");
+                this.em.createNamedQuery(Account.GET_BY_EMAIL, Account.class).setParameter("email", email));
     }
 
     @Override
     public Account getByFbId(final String fbId) {
         return this.getSingleResult(
-                this.em.createNamedQuery(Account.GET_BY_FB_ID, Account.class).setParameter("fbId", fbId),
-                "fbId");
+                this.em.createNamedQuery(Account.GET_BY_FB_ID, Account.class).setParameter("fbId", fbId));
     }
 
     @Override
     public Account getByVkId(final String vkId) {
         return this.getSingleResult(
-                this.em.createNamedQuery(Account.GET_BY_VK_ID, Account.class).setParameter("vkId", vkId),
-                "vkId");
+                this.em.createNamedQuery(Account.GET_BY_VK_ID, Account.class).setParameter("vkId", vkId));
     }
 
     private Account getOrThrow(final Long accountId) throws AccountNotFoundException {
         return ofNullable(this.read(accountId)).orElseThrow(() -> new AccountNotFoundException(accountId));
     }
 
-
-    private <T> T getSingleResult(final TypedQuery<T> query, final String param) throws NonUniqueResultException {
-        try {
-            return query.getSingleResult();
-        } catch (NoResultException ignored) {
-            return null;
-        } catch (javax.persistence.NonUniqueResultException e) {
-            throw new NonUniqueResultException(String.format("There are too many accounts with such %s)", param));
-        }
-    }
 }

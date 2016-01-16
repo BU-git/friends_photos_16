@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Yevhenii on 11/16/2015.
  */
-public interface RoleDAO extends GenericDAO<Role, Integer> {
+public interface RoleDAO extends GenericDAO<Role, Long> {
 
     Role getOwner() throws RoleNotFoundException;
     List<Role> getAllRoles();

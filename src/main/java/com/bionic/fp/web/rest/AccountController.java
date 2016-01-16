@@ -84,7 +84,7 @@ public class AccountController {
     @ResponseStatus(OK)
     @ResponseBody
     public final EntityInfoLists getUserEvents(@PathVariable(ACCOUNT.ID) final Long accountId,
-                                               @PathVariable(ROLE.ID) final Integer roleId) {
+                                               @PathVariable(ROLE.ID) final Long roleId) {
         return this.getEvents(accountId, roleId);
     }
 
@@ -92,7 +92,7 @@ public class AccountController {
     @ResponseStatus(OK)
     @ResponseBody
     public final EntityInfoLists getUserEvents(final HttpSession session,
-                                               @PathVariable(ROLE.ID) final Integer roleId) {
+                                               @PathVariable(ROLE.ID) final Long roleId) {
         Long userId = SessionUtils.getUserId(session);
         return this.getEvents(userId, roleId);
     }
@@ -137,14 +137,14 @@ public class AccountController {
     @ResponseStatus(OK)
     @ResponseBody
     public final IdLists getUserEventIds(@PathVariable(ACCOUNT.ID) final Long accountId,
-                                         @PathVariable(ROLE.ID) final Integer roleId) {
+                                         @PathVariable(ROLE.ID) final Long roleId) {
         return this.getEventIds(accountId, roleId);
     }
 
     @RequestMapping(value = SELF+ROLES+ROLE_ID+EVENTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final IdLists getUserEventIds(final HttpSession session, @PathVariable(ROLE.ID) final Integer roleId) {
+    public final IdLists getUserEventIds(final HttpSession session, @PathVariable(ROLE.ID) final Long roleId) {
         Long userId = SessionUtils.getUserId(session);
         return this.getEventIds(userId, roleId);
     }
@@ -229,7 +229,7 @@ public class AccountController {
         return this.getEventIds(accountId, null);
     }
 
-    private EntityInfoLists getEvents(final Long accountId, final Integer roleId) {
+    private EntityInfoLists getEvents(final Long accountId, final Long roleId) {
         List<Event> events = roleId == null ?
                 this.accountService.getEvents(accountId) :
                 this.accountEventService.getEvents(accountId, roleId);
@@ -240,7 +240,7 @@ public class AccountController {
         return body;
     }
 
-    private IdLists getEventIds(final Long accountId, final Integer roleId) {
+    private IdLists getEventIds(final Long accountId, final Long roleId) {
         List<Long> events = roleId == null ?
                 this.accountService.getEventIds(accountId) :
                 this.accountEventService.getEventIds(accountId, roleId);

@@ -3,9 +3,9 @@ package com.bionic.fp;
 public final class Constants {
 
 	public static class RoleConstants {
-		public final static Integer OWNER = 1;
-		public final static Integer ADMIN = 2;
-		public final static Integer MEMBER = 3;
+		public final static Long OWNER = 1L;
+		public final static Long ADMIN = 2L;
+		public final static Long MEMBER = 3L;
 	}
 
 
@@ -56,7 +56,7 @@ public final class Constants {
             String DESCRIPTION = "description";
             String DATE = "date";
             String EXPIRE_DATE = "expire_date";
-            String TYPE_ID = "type_id";
+            String EVENT_TYPE_ID = "event_type_id";
             String LATITUDE = "lat";
             String LONGITUDE = "lng";
             String RADIUS = "radius";

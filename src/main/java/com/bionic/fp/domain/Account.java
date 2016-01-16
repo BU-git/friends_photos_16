@@ -55,10 +55,10 @@ public class Account implements Serializable {
     @Column(name = "vk_profile_url")
     private String vkProfileUrl;
 
-    private boolean guest;
-
-	@Column(name = "active")
-    private boolean active = true;
+//    private boolean guest;
+//
+//	@Column(name = "active")
+//    private boolean active = true;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<AccountEvent> events;
@@ -163,21 +163,21 @@ public class Account implements Serializable {
         this.vkProfileUrl = vkProfileUrl;
     }
 
-    public boolean isGuest() {
-        return guest;
-    }
-
-    public void setGuest(boolean guest) {
-        this.guest = guest;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
+//    public boolean isGuest() {
+//        return guest;
+//    }
+//
+//    public void setGuest(boolean guest) {
+//        this.guest = guest;
+//    }
+//
+//    public boolean isActive() {
+//        return active;
+//    }
+//
+//    public void setActive(boolean active) {
+//        this.active = active;
+//    }
 
     public List<AccountEvent> getEvents() {
         return events;
@@ -206,12 +206,12 @@ public class Account implements Serializable {
     public String toString() {
         return "Account{" +
                 "id=" + id +
-                ", active=" + active +
+//                ", active=" + active +
                 ", email='" + email + '\'' +
                 ", fbID='" + fbId + '\'' +
                 ", fbProfile='" + fbProfileUrl + '\'' +
                 ", fbToken='" + fbToken + '\'' +
-                ", guest=" + guest +
+//                ", guest=" + guest +
                 ", password='" + password + '\'' +
                 ", profileImageURL='" + profileImageUrl + '\'' +
                 ", userName='" + userName + '\'' +

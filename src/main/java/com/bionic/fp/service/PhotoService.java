@@ -12,6 +12,7 @@ import com.bionic.fp.exception.logic.impl.PhotoNotFoundException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,7 +31,7 @@ import static java.util.Optional.ofNullable;
 /**
  * Created by franky_str on 22.11.15.
  */
-@Named
+@Service
 @Transactional
 public class PhotoService {
 

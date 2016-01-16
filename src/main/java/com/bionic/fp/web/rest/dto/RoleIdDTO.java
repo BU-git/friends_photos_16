@@ -12,20 +12,20 @@ import com.bionic.fp.Constants.RestConstants.*;
 public class RoleIdDTO {
 
     @JsonProperty(ROLE.ID)
-    private Integer roleId;
+    private Long roleId;
 
-    public RoleIdDTO(Integer roleId) {
+    public RoleIdDTO(Long roleId) {
         this.roleId = roleId;
     }
 
     public RoleIdDTO() {
     }
 
-    public Integer getRoleId() {
+    public Long getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Integer roleId) {
+    public void setRoleId(Long roleId) {
         this.roleId = roleId;
     }
 }

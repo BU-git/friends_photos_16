@@ -10,6 +10,7 @@ import javax.inject.Named;
  * Created by boubdyk on 17.11.2015.
  */
 
+@Deprecated
 @Named
 public class FromJSONParser {
 

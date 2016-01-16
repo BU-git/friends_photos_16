@@ -3,6 +3,7 @@ package com.bionic.fp.service;
 import com.bionic.fp.dao.AccountDAO;
 import com.bionic.fp.dao.CommentDAO;
 import com.bionic.fp.domain.Comment;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -12,7 +13,7 @@ import javax.inject.Named;
  * Created by Yevhenii on 1/4/2016.
  */
 
-@Named
+@Service
 @Transactional
 public class CommentService {
     @Inject
