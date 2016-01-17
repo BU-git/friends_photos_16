@@ -79,7 +79,7 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(actualOwner.getId(), owner.getId());
         assertEquals(actualOwner.getEmail(), owner.getEmail());
         assertEquals(actualOwner.getUserName(), owner.getUserName());
-        assertEquals(actualOwner.getPassword(), owner.getPassword());
+//        assertEquals(actualOwner.getPassword(), owner.getPassword());
     }
 
     @Test

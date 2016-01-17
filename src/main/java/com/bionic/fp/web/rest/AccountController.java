@@ -6,7 +6,7 @@ import com.bionic.fp.domain.Photo;
 import com.bionic.fp.service.AccountEventService;
 import com.bionic.fp.service.PhotoService;
 import com.bionic.fp.web.rest.dto.*;
-import com.bionic.fp.web.security.SessionUtils;
+import com.bionic.fp.web.security.session.SessionUtils;
 import com.bionic.fp.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -192,7 +192,7 @@ public class AccountController {
     @ResponseStatus(CREATED)
     @ResponseBody
     public final IdInfo registerByFP(@RequestBody final AccountInput user, final HttpSession session) {
-        Long userId = this.accountService.registerByFP(user.getEmail(), user.getPassword());
+        Long userId = this.accountService.registerByFP(user.getEmail(), user.getPassword(), null);
         SessionUtils.setUserId(session, userId);
         return new IdInfo(userId);
     }

@@ -1,4 +1,4 @@
-package com.bionic.fp.web.security;
+package com.bionic.fp.web.security.session;
 
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Role;

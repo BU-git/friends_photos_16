@@ -9,11 +9,11 @@ import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.auth.impl.UserNameAlreadyExistException;
 import com.bionic.fp.exception.logic.impl.AccountNotFoundException;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -30,15 +30,15 @@ public class AccountService {
     public static final String FACEBOOK_BASE_URL = "https://www.facebook.com/";
     private static final String VK_BASE_URL = "http://vk.com/";
 
-    @Inject
-    private AccountDAO accountDAO;
+    @Autowired private AccountDAO accountDAO;
+    @Autowired private PasswordEncoder passwordEncoder;
 
     public AccountService() {}
 
-    public Long create(final Account account) throws InvalidParameterException {
-        check(account != null, "The account should not be null");
-        return this.accountDAO.create(account);
-    }
+//    public Long create(final Account account) throws InvalidParameterException {
+//        check(account != null, "The account should not be null");
+//        return this.accountDAO.create(account);
+//    }
 
     /**
      * Used to register user by FP. If user exist method return user id. If user doesn't exist method
@@ -49,14 +49,14 @@ public class AccountService {
      * @throws UserNameAlreadyExistException if user already exist in DB
      * @throws IncorrectPasswordException if user password is incorrect
      */
-    public Long registerByFP(final String email, final String password) throws EmailAlreadyExistException, IncorrectPasswordException {
+    public Long registerByFP(final String email, final String password, final String username) throws EmailAlreadyExistException, IncorrectPasswordException {
         checkEmail(email);
         checkPassword(password);
         if(this.accountDAO.getByEmail(email) != null) {
             throw new EmailAlreadyExistException(email);
         }
 
-        Account account = new Account(email, password);
+        Account account = new Account(email, username, this.passwordEncoder.encode(password));
         return this.accountDAO.create(account);
     }
 
@@ -76,7 +76,7 @@ public class AccountService {
 
         Account account = ofNullable(this.accountDAO.getByEmail(email)).orElseThrow(() -> new AccountNotFoundException(email));
 
-        if(!Objects.equals(account.getPassword(), password)) {
+        if(!this.passwordEncoder.matches(password, account.getPassword())) {
             throw new IncorrectPasswordException();
         }
 
@@ -134,12 +134,24 @@ public class AccountService {
      * Returns an account by the account ID
      *
      * @param accountId the account ID
-     * @return the event and null otherwise
+     * @return the account and null otherwise
      * @throws InvalidParameterException if the account ID is invalid
      */
     public Account get(final Long accountId) throws InvalidParameterException {
         this.validation(accountId);
         return this.accountDAO.read(accountId);
+    }
+
+    /**
+     * Returns an account by the specified email
+     *
+     * @param email the email
+     * @return the account and null otherwise
+     * @throws InvalidParameterException if the email is invalid
+     */
+    public Account getByEmail(final String email) throws InvalidParameterException {
+        check(email != null, "The email should not be null");
+        return this.accountDAO.getByEmail(email);
     }
 
     /**

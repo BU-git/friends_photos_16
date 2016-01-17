@@ -5,7 +5,7 @@ import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.web.rest.dto.FBUserInfoResponse;
 import com.bionic.fp.web.rest.dto.AuthResponse;
 import com.bionic.fp.web.rest.dto.FBUserTokenInfo;
-import com.bionic.fp.web.security.SessionUtils;
+import com.bionic.fp.web.security.session.SessionUtils;
 import com.bionic.fp.service.AccountService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.ClientHttpResponse;

@@ -4,7 +4,7 @@ import com.bionic.fp.domain.Account;
 import com.bionic.fp.web.rest.dto.AuthResponse;
 import com.bionic.fp.web.rest.dto.VKAccessTokenResponse;
 import com.bionic.fp.web.rest.dto.VKCheckTokenResponse;
-import com.bionic.fp.web.security.SessionUtils;
+import com.bionic.fp.web.security.session.SessionUtils;
 import com.bionic.fp.service.AccountService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.ClientHttpResponse;

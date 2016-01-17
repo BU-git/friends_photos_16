@@ -8,7 +8,7 @@ import com.bionic.fp.exception.permission.PermissionsDeniedException;
 import com.bionic.fp.exception.rest.NotFoundException;
 import com.bionic.fp.service.*;
 import com.bionic.fp.web.rest.dto.*;
-import com.bionic.fp.web.security.SessionUtils;
+import com.bionic.fp.web.security.session.SessionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSession;
 import static com.bionic.fp.Constants.RestConstants.PARAM.*;
 import static com.bionic.fp.Constants.RestConstants.*;
 import static com.bionic.fp.Constants.RestConstants.PATH.*;
-import static com.bionic.fp.web.security.SessionUtils.checkPermission;
+import static com.bionic.fp.web.security.session.SessionUtils.checkPermission;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.*;

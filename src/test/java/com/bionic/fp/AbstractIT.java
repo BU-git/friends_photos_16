@@ -4,7 +4,6 @@ import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
-import com.bionic.fp.web.security.SessionUtils;
 import com.bionic.fp.service.AccountService;
 import com.bionic.fp.service.EventService;
 import com.bionic.fp.service.EventTypeService;
@@ -41,6 +40,8 @@ import static org.junit.Assert.assertTrue;
 public abstract class AbstractIT {
 
     protected static final String TO_STRING = ".toString()";
+    private static Account REGULAR_USER;
+    private static EventType PRIVATE_EVENT_TYPE;
 
     @Autowired
     protected EventDAO eventDAO;
@@ -65,11 +66,23 @@ public abstract class AbstractIT {
         RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
 
-    protected Account getSavedAccount() {
-        Account account = getNewEmailAccount();
-        Long accountId = this.accountService.create(account);
+    protected Long save(final Account account) {
+        Long accountId = this.accountService.registerByFP(account.getEmail(), account.getPassword(), account.getUserName());
         assertNotNull(accountId);
+        return accountId;
+    }
+
+    protected Account getSavedAccount() {
+        Account account = this.getNewEmailAccount();
+        account.setId(save(account));
         return account;
+    }
+
+    protected Account getRegularUser() {
+        if(REGULAR_USER == null) {
+            REGULAR_USER = this.getSavedAccount();
+        }
+        return REGULAR_USER;
     }
 
     protected Account getNewEmailAccount() {
@@ -77,10 +90,16 @@ public abstract class AbstractIT {
         return new Account("yaya@gmail.com" + s, "Yaya" + s, "yaya" + s);
     }
 
+//    protected String getToken(final Account account) {
+//        return this.tokenUtils.generateToken(new User(account.getId(), account.getEmail()));
+//    }
+
     protected EventType getPrivateEventType() {
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-        return privateEvent;
+        if(PRIVATE_EVENT_TYPE == null) {
+            PRIVATE_EVENT_TYPE = this.eventTypeService.getPrivate();
+            assertNotNull(PRIVATE_EVENT_TYPE);
+        }
+        return PRIVATE_EVENT_TYPE;
     }
 
     protected Event getNewEventMin() {
@@ -173,6 +192,15 @@ public abstract class AbstractIT {
         return event;
     }
 
+    protected Long getEventOwnerId(final Long eventId) {
+        return getEventOwner(eventId).getId();
+    }
+
+    protected Account getEventOwner(final Long eventId) {
+        return this.eventService.getOwner(eventId);
+    }
+
+
     protected Filter getFilter(final Long accountId) {
         return new Filter() {
             @Override
@@ -180,20 +208,12 @@ public abstract class AbstractIT {
 
             @Override
             public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-                SessionUtils.setUserId(((HttpServletRequest) request).getSession(), accountId);
+                com.bionic.fp.web.security.session.SessionUtils.setUserId(((HttpServletRequest) request).getSession(), accountId);
                 chain.doFilter(request, response);
             }
 
             @Override
             public void destroy() {}
         };
-    }
-
-    protected Long getEventOwnerId(final Long eventId) {
-        return getEventOwner(eventId).getId();
-    }
-
-    protected Account getEventOwner(final Long eventId) {
-        return this.eventService.getOwner(eventId);
     }
 }

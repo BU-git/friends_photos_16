@@ -1,6 +1,6 @@
-package com.bionic.fp.web.security.filter;
+package com.bionic.fp.web.security.session.filter;
 
-import com.bionic.fp.web.security.SessionUtils;
+import com.bionic.fp.web.security.session.SessionUtils;
 import com.bionic.fp.service.AccountService;
 
 import javax.servlet.Filter;

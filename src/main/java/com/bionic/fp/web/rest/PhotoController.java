@@ -11,13 +11,11 @@ import com.bionic.fp.web.rest.dto.PhotoInfoDTO;
 import com.bionic.fp.service.AccountService;
 import com.bionic.fp.service.EventService;
 import com.bionic.fp.service.PhotoService;
-import com.bionic.fp.web.security.SessionUtils;
+import com.bionic.fp.web.security.session.SessionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

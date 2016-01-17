@@ -129,23 +129,26 @@ public class AccountRestControllerIT extends AbstractIT {
 
     @Test
     public void testLoginAccountSuccess() {
-        Account account = getSavedAccount();
+        Account account = getNewEmailAccount();
+        Long accountId = save(account);
+
+//        Account account = getSavedAccount();
         AccountInput accountInput = new AccountInput(account.getEmail(), account.getPassword());
 
         RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(account.getId())).build();
+                .addFilter(getFilter(accountId)).build();
 
         IdInfo idInfo = given()
             .body(accountInput)
             .contentType(JSON)
         .when()
-            .post(API+ACCOUNTS + LOGIN)
+            .post(API+ACCOUNTS+LOGIN)
         .then()
             .statusCode(SC_OK)
         .extract()
             .as(IdInfo.class);
 
-        assertEquals(account.getId(), idInfo.getId());
+        assertEquals(accountId, idInfo.getId());
     }
 
     @Test
