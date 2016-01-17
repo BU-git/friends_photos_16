@@ -17,6 +17,9 @@ public final class Constants {
     public static final class RestConstants {
 
         public interface PATH {
+            String API = "/api";
+
+            String AUTH = "/auth";
             String ACCOUNTS = "/accounts";
             String ACCOUNT_ID = "/{"+ ACCOUNT.ID + ":[\\d]+}";
             String EVENTS = "/events";
@@ -56,7 +59,7 @@ public final class Constants {
             String DESCRIPTION = "description";
             String DATE = "date";
             String EXPIRE_DATE = "expire_date";
-            String EVENT_TYPE_ID = "event_type_id";
+            String TYPE_ID = "type_id";
             String LATITUDE = "lat";
             String LONGITUDE = "lng";
             String RADIUS = "radius";
@@ -71,6 +74,8 @@ public final class Constants {
             String ID = "account_id";
             String EMAIL = "email";
             String PASSWORD = "password";
+            String TOKEN = "token";
+            String USERNAME = "username";
         }
 
         public interface ROLE {

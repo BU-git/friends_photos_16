@@ -47,7 +47,7 @@ public class PhotoRestControllerIT extends AbstractIT {
             .param(EVENT.ID, event.getId())
             .contentType(MULTIPART_FORM_DATA_VALUE)
         .when()
-            .post(PHOTOS)
+            .post(API+PHOTOS)
         .then()
             .statusCode(SC_CREATED);
 
@@ -57,7 +57,7 @@ public class PhotoRestControllerIT extends AbstractIT {
             .param(PHOTO.NAME, "BearGrylls")
             .contentType(MULTIPART_FORM_DATA_VALUE)
         .when()
-            .post(PHOTOS)
+            .post(API+PHOTOS)
         .then()
             .statusCode(SC_CREATED)
             .body(PHOTO.NAME + TO_STRING, is("BearGrylls"));

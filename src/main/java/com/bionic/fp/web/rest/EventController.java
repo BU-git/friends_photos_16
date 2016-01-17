@@ -31,7 +31,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  * @author Sergiy Gabriel
  */
 @RestController
-@RequestMapping(EVENTS)
+@RequestMapping(API+EVENTS)
 public class EventController {
 
     @Inject

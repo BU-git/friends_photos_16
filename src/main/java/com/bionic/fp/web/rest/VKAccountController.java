@@ -26,7 +26,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping(ACCOUNTS+VK)
+@RequestMapping(API+ACCOUNTS+VK)
 public class VKAccountController {
     private static final String APP_TOKEN_URL =
             "https://oauth.vk.com/access_token?client_id=%s&client_secret=%s&v=5.40&grant_type=client_credentials";

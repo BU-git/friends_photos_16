@@ -41,7 +41,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
  */
 
 @Controller
-@RequestMapping(PHOTOS)
+@RequestMapping(API+PHOTOS)
 public class PhotoController {
 
 	@Autowired

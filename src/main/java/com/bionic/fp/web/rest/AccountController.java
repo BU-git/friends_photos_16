@@ -29,7 +29,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  * Created by boubdyk on 15.11.2015.
  */
 @RestController
-@RequestMapping(ACCOUNTS)
+@RequestMapping(API+ACCOUNTS)
 public class AccountController {
 
 	@Autowired

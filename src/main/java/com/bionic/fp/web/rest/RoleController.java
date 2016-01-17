@@ -23,7 +23,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  * Created by Yevhenii on 11/29/2015.
  */
 @RestController
-@RequestMapping(ROLES)
+@RequestMapping(API+ROLES)
 public class RoleController {
 
     @Inject

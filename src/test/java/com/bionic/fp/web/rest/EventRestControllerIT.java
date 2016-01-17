@@ -15,6 +15,7 @@ import java.util.List;
 import static com.bionic.fp.Constants.RestConstants.*;
 import static com.bionic.fp.Constants.RestConstants.PATH.ACCOUNTS;
 import static com.bionic.fp.Constants.RestConstants.PATH.EVENTS;
+import static com.bionic.fp.Constants.RestConstants.PATH.API;
 import static com.bionic.fp.Constants.RestConstants.PATH.EVENT_ID;
 import static com.jayway.restassured.http.ContentType.JSON;
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
@@ -44,7 +45,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(EVENTS)
+            .post(API+EVENTS)
         .then()
             .statusCode(SC_CREATED);
 
@@ -100,7 +101,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(EVENTS)
+            .post(API+EVENTS)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -113,7 +114,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(EVENTS)
+            .post(API+EVENTS)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -126,7 +127,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(EVENTS)
+            .post(API+EVENTS)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -139,7 +140,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(EVENTS)
+            .post(API+EVENTS)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -152,7 +153,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(EVENTS)
+            .post(API+EVENTS)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -165,7 +166,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(EVENTS)
+            .post(API+EVENTS)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -178,7 +179,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(EVENTS)
+            .post(API+EVENTS)
         .then()
             .statusCode(SC_BAD_REQUEST);
     }
@@ -193,7 +194,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(EVENTS)
+            .post(API+EVENTS)
         .then()
             .statusCode(SC_UNAUTHORIZED);
 
@@ -205,7 +206,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .post(EVENTS)
+            .post(API+EVENTS)
         .then()
 //            .statusCode(SC_UNAUTHORIZED); // todo: fixme
             .statusCode(SC_BAD_REQUEST);
@@ -220,7 +221,7 @@ public class EventRestControllerIT extends AbstractIT {
                 .addFilter(getFilter(owner.getId())).build();
 
         when()
-            .delete(EVENTS + EVENT_ID, event.getId())
+            .delete(API+EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_NO_CONTENT);
     }
@@ -232,7 +233,7 @@ public class EventRestControllerIT extends AbstractIT {
         // no session
 
         when()
-            .delete(EVENTS + EVENT_ID, event.getId())
+            .delete(API+EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_UNAUTHORIZED);
     }
@@ -248,7 +249,7 @@ public class EventRestControllerIT extends AbstractIT {
                 .addFilter(getFilter(Long.MAX_VALUE)).build();
 
         when()
-            .delete(EVENTS + EVENT_ID, event.getId())
+            .delete(API+EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_FORBIDDEN);
 
@@ -258,7 +259,7 @@ public class EventRestControllerIT extends AbstractIT {
                 .addFilter(getFilter(owner.getId())).build();
 
         when()
-            .delete(EVENTS + EVENT_ID, Long.MAX_VALUE)
+            .delete(API+EVENTS + EVENT_ID, Long.MAX_VALUE)
         .then()
             .statusCode(SC_FORBIDDEN);
     }
@@ -266,7 +267,7 @@ public class EventRestControllerIT extends AbstractIT {
     @Test
     public void testRemoveEventByIdShouldReturnNotFound() {
         when()
-            .delete(EVENTS + EVENT_ID, "1abc")
+            .delete(API+EVENTS + EVENT_ID, "1abc")
         .then()
             .statusCode(SC_NOT_FOUND);
     }
@@ -274,7 +275,7 @@ public class EventRestControllerIT extends AbstractIT {
     @Test @Ignore // todo: there is no necessary role
     public void testRemoveEventByIdShouldReturnBadRequest() {
          when()
-            .delete(EVENTS + EVENT_ID, Long.MAX_VALUE)
+            .delete(API+EVENTS + EVENT_ID, Long.MAX_VALUE)
         .then()
             .statusCode(SC_BAD_REQUEST);
     }
@@ -285,12 +286,12 @@ public class EventRestControllerIT extends AbstractIT {
         Event event = getSavedEventMin(owner);
 
         when()
-            .get(EVENTS + EVENT_ID, event.getId())
+            .get(API+EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_OK)
             .body(EVENT.ID + TO_STRING, is(event.getId().toString()))
             .body(EVENT.NAME, is(event.getName()))
-            .body(EVENT.EVENT_TYPE_ID + TO_STRING, is(event.getEventType().getId().toString()))
+            .body(EVENT.TYPE_ID + TO_STRING, is(event.getEventType().getId().toString()))
             .body(EVENT.DESCRIPTION, is(event.getDescription()))
             // sometimes failure 2015-11-24 16:51:53 == 2015-11-24 16:51:53.213
             // but 2015-11-24 16:51:53 != 2015-11-24 16:51:53.599
@@ -305,12 +306,12 @@ public class EventRestControllerIT extends AbstractIT {
         event = getSavedEventMax(owner);
 
         when()
-            .get(EVENTS + EVENT_ID, event.getId())
+            .get(API+EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_OK)
             .body(EVENT.ID + TO_STRING, is(event.getId().toString()))
             .body(EVENT.NAME, is(event.getName()))
-            .body(EVENT.EVENT_TYPE_ID + TO_STRING, is(event.getEventType().getId().toString()))
+            .body(EVENT.TYPE_ID + TO_STRING, is(event.getEventType().getId().toString()))
             .body(EVENT.DESCRIPTION, is(event.getDescription()))
             // sometimes failure 2015-11-24 16:51:53 == 2015-11-24 16:51:53.213
             // but 2015-11-24 16:51:53 != 2015-11-24 16:51:53.599
@@ -330,7 +331,7 @@ public class EventRestControllerIT extends AbstractIT {
         long id = Long.MAX_VALUE;
 
         when()
-            .get(EVENTS + EVENT_ID, id)
+            .get(API+EVENTS + EVENT_ID, id)
         .then()
             .statusCode(SC_NOT_FOUND);
 //            .body("error", is((new EventNotFoundException(id)).getMessage()));
@@ -360,7 +361,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .put(EVENTS + EVENT_ID, event.getId())
+            .put(API+EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_OK);
 
@@ -393,7 +394,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .put(EVENTS + EVENT_ID, event.getId())
+            .put(API+EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_OK);
 
@@ -417,7 +418,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .put(EVENTS + EVENT_ID, "1abc")
+            .put(API+EVENTS + EVENT_ID, "1abc")
         .then()
             .statusCode(SC_NOT_FOUND);
     }
@@ -429,7 +430,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .put(EVENTS + EVENT_ID, Long.MAX_VALUE)
+            .put(API+EVENTS + EVENT_ID, Long.MAX_VALUE)
         .then()
             .statusCode(SC_BAD_REQUEST);
     }
@@ -445,7 +446,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .put(EVENTS + EVENT_ID, event.getId())
+            .put(API+EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_UNAUTHORIZED);
     }
@@ -465,7 +466,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .put(EVENTS + EVENT_ID, event.getId())
+            .put(API+EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_FORBIDDEN);
 
@@ -478,7 +479,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .put(EVENTS + EVENT_ID, Long.MAX_VALUE)
+            .put(API+EVENTS + EVENT_ID, Long.MAX_VALUE)
         .then()
             .statusCode(SC_FORBIDDEN);
 
@@ -504,7 +505,7 @@ public class EventRestControllerIT extends AbstractIT {
             .body(eventDto)
             .contentType(JSON)
         .when()
-            .put(EVENTS + EVENT_ID, event.getId())
+            .put(API+EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_FORBIDDEN);
     }
@@ -526,7 +527,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         given()
         .when()
-            .post(EVENTS + EVENT_ID + ACCOUNTS, event.getId())
+            .post(API+EVENTS + EVENT_ID + ACCOUNTS, event.getId())
         .then()
             .statusCode(SC_CREATED);
 
@@ -540,7 +541,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         given()
         .when()
-            .post(EVENTS + EVENT_ID + ACCOUNTS, event.getId())
+            .post(API+EVENTS + EVENT_ID + ACCOUNTS, event.getId())
         .then()
             .statusCode(SC_CREATED);
 
@@ -562,7 +563,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         given()
         .when()
-            .post(EVENTS + EVENT_ID + ACCOUNTS, newEvent.getId())
+            .post(API+EVENTS + EVENT_ID + ACCOUNTS, newEvent.getId())
         .then()
             .statusCode(SC_CREATED);
 
@@ -577,7 +578,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         given()
         .when()
-            .post(EVENTS + EVENT_ID + ACCOUNTS, newEvent.getId())
+            .post(API+EVENTS + EVENT_ID + ACCOUNTS, newEvent.getId())
         .then()
             .statusCode(SC_CREATED);
 
@@ -606,7 +607,7 @@ public class EventRestControllerIT extends AbstractIT {
         given().
             queryParam(EVENT.PASSWORD, event.getPassword()).
         when().
-            post(EVENTS + EVENT_ID + ACCOUNTS, event.getId()).
+            post(API+EVENTS + EVENT_ID + ACCOUNTS, event.getId()).
         then().
             statusCode(SC_CREATED);
 
@@ -621,7 +622,7 @@ public class EventRestControllerIT extends AbstractIT {
         given().
             queryParam(EVENT.PASSWORD, event.getPassword()).
         when().
-            post(EVENTS + EVENT_ID + ACCOUNTS, event.getId()).
+            post(API+EVENTS + EVENT_ID + ACCOUNTS, event.getId()).
         then().
             statusCode(SC_CREATED);
 
@@ -644,7 +645,7 @@ public class EventRestControllerIT extends AbstractIT {
         given().
             queryParam(EVENT.PASSWORD, event.getPassword()).
         when().
-            post(EVENTS + EVENT_ID + ACCOUNTS, newEvent.getId()).
+            post(API+EVENTS + EVENT_ID + ACCOUNTS, newEvent.getId()).
         then().
             statusCode(SC_CREATED);
 
@@ -660,7 +661,7 @@ public class EventRestControllerIT extends AbstractIT {
         given().
             queryParam(EVENT.PASSWORD, event.getPassword()).
         when().
-            post(EVENTS + EVENT_ID + ACCOUNTS, newEvent.getId(), user1.getId()).
+            post(API+EVENTS + EVENT_ID + ACCOUNTS, newEvent.getId(), user1.getId()).
         then().
             statusCode(SC_CREATED);
 
@@ -688,7 +689,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         given().
         when().
-            post(EVENTS + EVENT_ID + ACCOUNTS, event.getId()).
+            post(API+EVENTS + EVENT_ID + ACCOUNTS, event.getId()).
         then().
             statusCode(SC_BAD_REQUEST);
 
@@ -704,7 +705,7 @@ public class EventRestControllerIT extends AbstractIT {
         given().
             queryParam(EVENT.PASSWORD, event.getPassword() + "!").
         when().
-            post(EVENTS + EVENT_ID + ACCOUNTS, event.getId()).
+            post(API+EVENTS + EVENT_ID + ACCOUNTS, event.getId()).
         then().
             statusCode(SC_BAD_REQUEST);
 

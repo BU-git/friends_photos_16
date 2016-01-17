@@ -27,7 +27,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping(ACCOUNTS+FB)
+@RequestMapping(API+ACCOUNTS+FB)
 public class FBAccountController {
     private static final String DEBUG_TOKEN_URL =
             "https://graph.facebook.com/debug_token?input_token=%s&access_token=%s|%s";

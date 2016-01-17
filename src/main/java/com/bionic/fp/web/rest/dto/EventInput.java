@@ -14,7 +14,7 @@ public class EventInput {
 
     @JsonProperty(EVENT.NAME)           private String name;
     @JsonProperty(EVENT.DESCRIPTION)    private String description;
-    @JsonProperty(EVENT.EVENT_TYPE_ID)  private Long eventTypeId;
+    @JsonProperty(EVENT.TYPE_ID)  private Long eventTypeId;
     @JsonProperty(EVENT.LATITUDE)       private Double latitude;
     @JsonProperty(EVENT.LONGITUDE)      private Double longitude;
     @JsonProperty(EVENT.RADIUS)         private Float radius;
