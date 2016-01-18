@@ -1,8 +1,10 @@
 package com.bionic.fp.web.rest;
 
 import com.bionic.fp.Constants.RoleConstants;
+import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
+import com.bionic.fp.exception.rest.NotFoundException;
 import com.bionic.fp.service.AccountEventService;
 import com.bionic.fp.service.MethodSecurityService;
 import com.bionic.fp.service.PhotoService;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 
 import static com.bionic.fp.Constants.RestConstants.*;
 import static com.bionic.fp.Constants.RestConstants.PATH.*;
+import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -38,6 +41,22 @@ public class AccountController {
     //                 @GET
     //***************************************
 
+
+    @RequestMapping(value = ACCOUNT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    @ResponseBody
+    public final UserInfo getUser(@PathVariable(ACCOUNT.ID) final Long accountId) {
+        Account account = ofNullable(accountService.get(accountId))
+                .orElseThrow(() -> new NotFoundException(accountId, "account"));
+        return new UserInfo(account);
+    }
+
+    @RequestMapping(value = SELF, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    @ResponseBody
+    public final UserInfo getUser() {
+        return new UserInfo(methodSecurityService.getUser());
+    }
 
     /**
      * All events where the user is involved

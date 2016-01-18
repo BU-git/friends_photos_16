@@ -98,7 +98,7 @@ public class PhotoController {
 		return new PhotoInfoDTO(photo);
 	}
 
-	@RequestMapping(value = PHOTO_ID+ADD_COMMENT, method = POST, consumes = APPLICATION_JSON_VALUE)
+	@RequestMapping(value = PHOTO_ID+COMMENTS, method = POST, consumes = APPLICATION_JSON_VALUE)
 	@ResponseStatus(CREATED)
 	public void addComment(@PathVariable(PHOTO.ID) final Long photoId,
 						   @RequestBody final CommentDTO commentDTO) {

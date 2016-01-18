@@ -40,7 +40,6 @@ public final class Constants {
             String FILE = "/file";
             String ID = "/id";
             String SELF = "/self";
-            String ADD_COMMENT = "/add_comment";
         }
 
         public interface PARAM {
@@ -76,6 +75,7 @@ public final class Constants {
             String PASSWORD = "password";
             String TOKEN = "token";
             String USERNAME = "username";
+            String IMAGE_URL = "image_url";
         }
 
         public interface ROLE {

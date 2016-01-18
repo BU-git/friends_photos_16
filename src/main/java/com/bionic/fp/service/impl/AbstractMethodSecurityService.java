@@ -39,7 +39,7 @@ public abstract class AbstractMethodSecurityService implements MethodSecuritySer
         if(isNotEmpty(predicates)) {
             try {
                 Role role = this.roleService.getRole(this.getUserId(), eventId);
-                if(Stream.of(predicates).anyMatch(p -> p.negate().test(role))) {
+                if(Stream.of(predicates).anyMatch(p -> p != null && p.negate().test(role))) {
                     throw new AccessDeniedException("You are not allowed to perform this operation");
                 }
             } catch (AccountEventNotFoundException e) {

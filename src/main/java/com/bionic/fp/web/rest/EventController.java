@@ -4,7 +4,6 @@ import com.bionic.fp.Constants;
 import com.bionic.fp.domain.*;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import com.bionic.fp.exception.logic.impl.EventTypeNotFoundException;
-import com.bionic.fp.exception.permission.PermissionsDeniedException;
 import com.bionic.fp.exception.rest.NotFoundException;
 import com.bionic.fp.service.*;
 import com.bionic.fp.web.rest.dto.*;
@@ -31,8 +30,6 @@ public class EventController {
 
     @Autowired private EventService eventService;
     @Autowired private EventTypeService eventTypeService;
-    @Autowired private AccountService accountService;
-    @Autowired private AccountEventService accountEventService;
     @Autowired private MethodSecurityService methodSecurityService;
 
 
@@ -167,18 +164,14 @@ public class EventController {
     }
 
 
-    @RequestMapping(value = EVENT_ID+ADD_COMMENT ,method = POST, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = EVENT_ID+COMMENTS ,method = POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
     public void addComment(@PathVariable(value = EVENT.ID) final Long eventId,
                            @RequestBody final CommentDTO commentDTO) {
-        Long userId = this.methodSecurityService.getUserId();
-        Role role = accountEventService.get(userId, eventId).getRole();
-        if(!role.isCanAddComments()) {
-            throw new PermissionsDeniedException();
-        }
+        methodSecurityService.checkPermission(eventId, Role::isCanAddComments);
         Event event = eventService.get(eventId);
         Comment comment = new Comment();
-        comment.setAuthor(accountService.get(userId));
+        comment.setAuthor(methodSecurityService.getUser());
         comment.setText(commentDTO.getCommentText());
         eventService.addComment(event, comment);
     }

@@ -2,6 +2,7 @@ package com.bionic.fp.web.rest.dto;
 
 import com.bionic.fp.Constants.RestConstants.ACCOUNT;
 import com.bionic.fp.Constants.RestConstants.PARAM;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @author Sergiy Gabriel
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AuthenticationResponse {
 
     @JsonProperty(ACCOUNT.TOKEN) private String token;
