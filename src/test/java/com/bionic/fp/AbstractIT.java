@@ -8,10 +8,13 @@ import com.bionic.fp.service.AccountService;
 import com.bionic.fp.service.EventService;
 import com.bionic.fp.service.EventTypeService;
 import com.bionic.fp.service.RoleService;
+import com.bionic.fp.web.security.spring.infrastructure.User;
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -43,27 +46,16 @@ public abstract class AbstractIT {
     private static Account REGULAR_USER;
     private static EventType PRIVATE_EVENT_TYPE;
 
-    @Autowired
-    protected EventDAO eventDAO;
-
-    @Autowired
-    protected EventService eventService;
-
-    @Autowired
-    protected AccountService accountService;
-
-    @Autowired
-    protected EventTypeService eventTypeService;
-
-    @Autowired
-    protected RoleService roleService;
-
-    @Autowired
-    protected WebApplicationContext context;
+    @Autowired protected EventDAO eventDAO;
+    @Autowired protected EventService eventService;
+    @Autowired protected AccountService accountService;
+    @Autowired protected EventTypeService eventTypeService;
+    @Autowired protected RoleService roleService;
+    @Autowired protected WebApplicationContext context;
 
     @Before
     public void setUp() {
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+        RestAssuredMockMvc.mockMvc(MockMvcBuilders.webAppContextSetup(context).build());
     }
 
     protected Long save(final Account account) {
@@ -200,7 +192,6 @@ public abstract class AbstractIT {
         return this.eventService.getOwner(eventId);
     }
 
-
     protected Filter getFilter(final Long accountId) {
         return new Filter() {
             @Override
@@ -215,5 +206,30 @@ public abstract class AbstractIT {
             @Override
             public void destroy() {}
         };
+    }
+
+    protected com.jayway.restassured.response.Cookie transform(javax.servlet.http.Cookie cookie) {
+        if(cookie.getName() == null || cookie.getValue() == null) {
+            return null;
+        }
+        com.jayway.restassured.response.Cookie.Builder builder =
+                new com.jayway.restassured.response.Cookie.Builder(cookie.getName(), cookie.getValue());
+        if(cookie.getPath() != null) builder.setPath(cookie.getPath());
+        if(cookie.getComment() != null) builder.setComment(cookie.getComment());
+        if(cookie.getDomain() != null) builder.setDomain(cookie.getDomain());
+//        builder.setExpiryDate();
+        return builder.setHttpOnly(cookie.isHttpOnly())
+                .setMaxAge(cookie.getMaxAge())
+                .setVersion(cookie.getVersion())
+                .setSecured(cookie.getSecure())
+                .build();
+    }
+
+    protected void authenticateUser(Account owner) {
+        User user = new User(owner);
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+//        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

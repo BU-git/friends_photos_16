@@ -1,16 +1,13 @@
 package com.bionic.fp.web.rest;
 
 import com.bionic.fp.domain.Role;
+import com.bionic.fp.service.MethodSecurityService;
 import com.bionic.fp.web.rest.dto.*;
 import com.bionic.fp.service.RoleService;
-import com.bionic.fp.web.security.session.SessionUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpSession;
-
 import java.util.List;
 
 import static com.bionic.fp.Constants.RestConstants.*;
@@ -26,9 +23,10 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @RequestMapping(API+ROLES)
 public class RoleController {
 
-    @Inject
-    private RoleService roleService;
     final static Logger LOG = Logger.getLogger(RoleController.class);
+
+    @Autowired private RoleService roleService;
+    @Autowired private MethodSecurityService methodSecurityService;
 
 
     //***************************************
@@ -64,8 +62,8 @@ public class RoleController {
      */
     @RequestMapping(method = PUT, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public void setNewRole(@RequestBody final NewRoleDTO newRoleDTO, final HttpSession session) {
-        Long userId = SessionUtils.getUserId(session);
+    public void setNewRole(@RequestBody final NewRoleDTO newRoleDTO) {
+        Long userId = this.methodSecurityService.getUserId();
         boolean isNewRoleSetted = roleService.setNewRole(
                 newRoleDTO.getRoleId(),
                 newRoleDTO.getAccountId(),

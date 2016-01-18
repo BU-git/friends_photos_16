@@ -1,6 +1,7 @@
 package com.bionic.fp.web.rest;
 
 import com.bionic.fp.exception.AppException;
+import com.bionic.fp.exception.auth.AuthenticationException;
 import com.bionic.fp.exception.auth.impl.EmailAlreadyExistException;
 import com.bionic.fp.exception.auth.impl.IncorrectPasswordException;
 import com.bionic.fp.exception.logic.critical.NonUniqueResultException;
@@ -11,6 +12,8 @@ import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.rest.NotFoundException;
 import com.bionic.fp.web.rest.dto.ErrorInfo;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,7 +36,10 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @ControllerAdvice
 public class GlobalControllerAdvice {
 
-    @ExceptionHandler({InvalidParameterException.class, EntityNotFoundException.class, EmailAlreadyExistException.class,
+    @ExceptionHandler({
+            InvalidParameterException.class,
+            EntityNotFoundException.class,
+            EmailAlreadyExistException.class,
             IncorrectPasswordException.class})
     @ResponseStatus(BAD_REQUEST)
     @ResponseBody
@@ -60,10 +66,17 @@ public class GlobalControllerAdvice {
         return new ErrorInfo(e.getMessage());
     }
 
-    @ExceptionHandler(InvalidSessionException.class)
+    @ExceptionHandler({InvalidSessionException.class, AuthenticationException.class})
     @ResponseStatus(UNAUTHORIZED)
     @ResponseBody
     public ErrorInfo unauthorizedExceptionHandler(InvalidSessionException e){
+        return new ErrorInfo(e.getMessage());
+    }
+
+    @ExceptionHandler({UsernameNotFoundException.class, org.springframework.security.core.AuthenticationException.class})
+    @ResponseStatus(UNAUTHORIZED)
+    @ResponseBody
+    public ErrorInfo unauthorizedExceptionHandler(org.springframework.security.core.AuthenticationException e){
         return new ErrorInfo(e.getMessage());
     }
 
@@ -78,6 +91,13 @@ public class GlobalControllerAdvice {
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     @ResponseBody
     public ErrorInfo IOExceptionHandler(IOException e){
+        return new ErrorInfo(e.getMessage());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(BAD_REQUEST)
+    @ResponseBody
+    public ErrorInfo authenticationExceptionHandler(BadCredentialsException e){
         return new ErrorInfo(e.getMessage());
     }
 }

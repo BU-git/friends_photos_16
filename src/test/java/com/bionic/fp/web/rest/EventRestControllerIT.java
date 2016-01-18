@@ -6,10 +6,14 @@ import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
 import com.bionic.fp.web.rest.dto.EventInput;
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.security.web.FilterChainProxy;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 import static com.bionic.fp.Constants.RestConstants.*;
@@ -29,7 +33,19 @@ import static org.junit.Assert.*;
  *
  * @author Sergiy Gabriel
  */
+@ContextConfiguration(value = {
+        "classpath:spring/test-root-context.xml",
+        "classpath:spring/test-stateful-spring-security.xml"})
 public class EventRestControllerIT extends AbstractIT {
+
+    @Resource private FilterChainProxy springSecurityFilterChain;
+
+    @Override
+    @Before
+    public void setUp() {
+        RestAssuredMockMvc.mockMvc(MockMvcBuilders.webAppContextSetup(context)
+                .addFilter(springSecurityFilterChain).build());
+    }
 
     @Test
     public void testSaveEventSuccess() {
@@ -38,8 +54,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         EventInput eventDto = new EventInput(getNewEventMax());
 
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(owner.getId())).build();
+        authenticateUser(owner);
 
         given()
             .body(eventDto)
@@ -89,8 +104,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         EventInput eventDto = new EventInput(getNewEventMax());
 
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(owner.getId())).build();
+        authenticateUser(owner);
 
         // without name, description, type
         eventDto.setName(null);
@@ -199,8 +213,7 @@ public class EventRestControllerIT extends AbstractIT {
             .statusCode(SC_UNAUTHORIZED);
 
         // with a non-existent ID
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(Long.MAX_VALUE)).build();
+        authenticateUser(new Account());
 
         given()
             .body(eventDto)
@@ -217,8 +230,7 @@ public class EventRestControllerIT extends AbstractIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMin(owner);
 
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(owner.getId())).build();
+        authenticateUser(owner);
 
         when()
             .delete(API+EVENTS + EVENT_ID, event.getId())
@@ -243,20 +255,16 @@ public class EventRestControllerIT extends AbstractIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMin(owner);
 
-        // invalid session (user id does not exist)
-
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(Long.MAX_VALUE)).build();
+        // user does not exist
+        authenticateUser(new Account());
 
         when()
             .delete(API+EVENTS + EVENT_ID, event.getId())
         .then()
             .statusCode(SC_FORBIDDEN);
 
-        // invalid session (event id does not exist)
-
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(owner.getId())).build();
+        // event does not exist
+        authenticateUser(owner);
 
         when()
             .delete(API+EVENTS + EVENT_ID, Long.MAX_VALUE)
@@ -354,8 +362,7 @@ public class EventRestControllerIT extends AbstractIT {
         assertNotEquals(event.isGeoServicesEnabled(), eventDto.getGeo());
         assertNotEquals(event.isVisible(), eventDto.getVisible());
 
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(owner.getId())).build();
+        authenticateUser(owner);
 
         given()
             .body(eventDto)
@@ -457,10 +464,8 @@ public class EventRestControllerIT extends AbstractIT {
         Event event = getSavedEventMin(owner);
         EventInput eventDto = new EventInput(updateEvent(getNewEventMax()));
 
-        // invalid session (user id does not exist)
-
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(Long.MAX_VALUE)).build();
+        // the user does not exist
+        authenticateUser(new Account());
 
         given()
             .body(eventDto)
@@ -470,10 +475,8 @@ public class EventRestControllerIT extends AbstractIT {
         .then()
             .statusCode(SC_FORBIDDEN);
 
-        // invalid session (event id does not exist)
-
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(owner.getId())).build();
+        // the event does not exist
+        authenticateUser(owner);
 
         given()
             .body(eventDto)
@@ -498,8 +501,7 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
         assertEquals(1, this.accountService.getWithEvents(user.getId()).getEvents().size());
 
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(user.getId())).build();
+        authenticateUser(user);
 
         given()
             .body(eventDto)
@@ -522,8 +524,7 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
         assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
 
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(user1.getId())).build();
+        authenticateUser(user1);
 
         given()
         .when()
@@ -536,8 +537,7 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
         assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
 
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(user2.getId())).build();
+        authenticateUser(user2);
 
         given()
         .when()
@@ -558,8 +558,7 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
         assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
 
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(owner.getId())).build();
+        authenticateUser(owner);
 
         given()
         .when()
@@ -573,8 +572,7 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
         assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
 
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(user1.getId())).build();
+        authenticateUser(user1);
 
         given()
         .when()
@@ -601,8 +599,7 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
         assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
 
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(user1.getId())).build();
+        authenticateUser(user1);
 
         given().
             queryParam(EVENT.PASSWORD, event.getPassword()).
@@ -616,8 +613,7 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
         assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
 
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(user2.getId())).build();
+        authenticateUser(user2);
 
         given().
             queryParam(EVENT.PASSWORD, event.getPassword()).
@@ -639,8 +635,7 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
         assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
 
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(owner.getId())).build();
+        authenticateUser(owner);
 
         given().
             queryParam(EVENT.PASSWORD, event.getPassword()).
@@ -655,8 +650,7 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
         assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
 
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(user1.getId())).build();
+        authenticateUser(user1);
 
         given().
             queryParam(EVENT.PASSWORD, event.getPassword()).
@@ -684,8 +678,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         // no password
 
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(user1.getId())).build();
+        authenticateUser(user1);
 
         given().
         when().
@@ -699,8 +692,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         // incorrect password
 
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilter(getFilter(user1.getId())).build();
+        authenticateUser(user1);
 
         given().
             queryParam(EVENT.PASSWORD, event.getPassword() + "!").
@@ -713,6 +705,4 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
         assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
     }
-
-
 }

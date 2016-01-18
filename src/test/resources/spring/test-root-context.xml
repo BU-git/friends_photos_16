@@ -13,8 +13,8 @@
 
     <import resource="test-data.xml" />
 
-    <import resource="test-security.xml" />
+    <!--<import resource="test-security.xml" />-->
+    <!--<bean class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>-->
 
-    <bean class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
-
+    <!--<import resource="test-spring-security.xml"/>-->
 </beans>

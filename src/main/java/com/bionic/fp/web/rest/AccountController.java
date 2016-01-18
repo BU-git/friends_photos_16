@@ -4,25 +4,21 @@ import com.bionic.fp.Constants.RoleConstants;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 import com.bionic.fp.service.AccountEventService;
+import com.bionic.fp.service.MethodSecurityService;
 import com.bionic.fp.service.PhotoService;
 import com.bionic.fp.web.rest.dto.*;
-import com.bionic.fp.web.security.session.SessionUtils;
 import com.bionic.fp.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpSession;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.bionic.fp.Constants.RestConstants.*;
 import static com.bionic.fp.Constants.RestConstants.PATH.*;
-import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 
 /**
@@ -32,12 +28,11 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RequestMapping(API+ACCOUNTS)
 public class AccountController {
 
-	@Autowired
-    private AccountService accountService;
-    @Autowired
-    private AccountEventService accountEventService;
-    @Autowired
-    private PhotoService photoService;
+	@Autowired private AccountService accountService;
+    @Autowired private AccountEventService accountEventService;
+    @Autowired private PhotoService photoService;
+    @Autowired private MethodSecurityService methodSecurityService;
+
 
     //***************************************
     //                 @GET
@@ -60,8 +55,8 @@ public class AccountController {
     @RequestMapping(value = SELF+EVENTS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final EntityInfoLists getUserEvents(final HttpSession session) {
-        Long userId = SessionUtils.getUserId(session);
+    public final EntityInfoLists getUserEvents() {
+        Long userId = this.methodSecurityService.getUserId();
         return this.getEvents(userId);
     }
 
@@ -76,7 +71,7 @@ public class AccountController {
     @ResponseStatus(OK)
     @ResponseBody
     public final EntityInfoLists getOwnerEvents(final HttpSession session) {
-        Long userId = SessionUtils.getUserId(session);
+        Long userId = this.methodSecurityService.getUserId();
         return this.getEvents(userId, RoleConstants.OWNER);
     }
 
@@ -93,7 +88,7 @@ public class AccountController {
     @ResponseBody
     public final EntityInfoLists getUserEvents(final HttpSession session,
                                                @PathVariable(ROLE.ID) final Long roleId) {
-        Long userId = SessionUtils.getUserId(session);
+        Long userId = this.methodSecurityService.getUserId();
         return this.getEvents(userId, roleId);
     }
 
@@ -108,7 +103,7 @@ public class AccountController {
     @ResponseStatus(OK)
     @ResponseBody
     public final IdLists getUserEventIds(final HttpSession session) {
-        Long userId = SessionUtils.getUserId(session);
+        Long userId = this.methodSecurityService.getUserId();
         return this.getEventIds(userId);
     }
 
@@ -129,7 +124,7 @@ public class AccountController {
     @ResponseStatus(OK)
     @ResponseBody
     public final IdLists getOwnerEventIds(final HttpSession session) {
-        Long userId = SessionUtils.getUserId(session);
+        Long userId = this.methodSecurityService.getUserId();
         return this.getEventIds(userId, RoleConstants.OWNER);
     }
 
@@ -145,7 +140,7 @@ public class AccountController {
     @ResponseStatus(OK)
     @ResponseBody
     public final IdLists getUserEventIds(final HttpSession session, @PathVariable(ROLE.ID) final Long roleId) {
-        Long userId = SessionUtils.getUserId(session);
+        Long userId = this.methodSecurityService.getUserId();
         return this.getEventIds(userId, roleId);
     }
 
@@ -167,7 +162,7 @@ public class AccountController {
     @ResponseStatus(OK)
     @ResponseBody
     public final EntityInfoLists getUserPhotos(final HttpSession session) {
-        Long userId = SessionUtils.getUserId(session);
+        Long userId = this.methodSecurityService.getUserId();
         return this.getPhotos(userId);
     }
 
@@ -175,7 +170,7 @@ public class AccountController {
     @ResponseStatus(OK)
     @ResponseBody
     public final IdLists getUserPhotoIds(final HttpSession session) {
-        Long userId = SessionUtils.getUserId(session);
+        Long userId = this.methodSecurityService.getUserId();
         return this.getPhotoIds(userId);
     }
 
@@ -185,35 +180,35 @@ public class AccountController {
     //***************************************
 
 
-    /**
-     * Endpoint used to register user by FP.
-     */
-    @RequestMapping(value = REGISTER, method = POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(CREATED)
-    @ResponseBody
-    public final IdInfo registerByFP(@RequestBody final AccountInput user, final HttpSession session) {
-        Long userId = this.accountService.registerByFP(user.getEmail(), user.getPassword(), null);
-        SessionUtils.setUserId(session, userId);
-        return new IdInfo(userId);
-    }
-
-    /**
-     * Endpoint used to login by FP.
-     */
-	@RequestMapping(value = LOGIN, method = POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(OK)
-    @ResponseBody
-    public final IdInfo loginByFP(@RequestBody final AccountInput user, final HttpSession session) {
-        Long userId = this.accountService.loginByFP(user.getEmail(), user.getPassword());
-        SessionUtils.setUserId(session, userId);
-        return new IdInfo(userId);
-    }
-
-    @RequestMapping(value = LOGOUT, method = POST)
-    @ResponseStatus(OK)
-    public final void logout(final HttpSession session) {
-        SessionUtils.logout(session);
-    }
+//    /**
+//     * Endpoint used to register user by FP.
+//     */
+//    @RequestMapping(value = REGISTER, method = POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+//    @ResponseStatus(CREATED)
+//    @ResponseBody
+//    public final IdInfo registerByFP(@RequestBody final AccountInput user, final HttpSession session) {
+//        Long userId = this.accountService.registerByFP(user.getEmail(), user.getPassword(), null);
+//        SessionUtils.setUserId(session, userId);
+//        return new IdInfo(userId);
+//    }
+//
+//    /**
+//     * Endpoint used to login by FP.
+//     */
+//	@RequestMapping(value = LOGIN, method = POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+//    @ResponseStatus(OK)
+//    @ResponseBody
+//    public final IdInfo loginByFP(@RequestBody final AccountInput user, final HttpSession session) {
+//        Long userId = this.accountService.loginByFP(user.getEmail(), user.getPassword());
+//        SessionUtils.setUserId(session, userId);
+//        return new IdInfo(userId);
+//    }
+//
+//    @RequestMapping(value = LOGOUT, method = POST)
+//    @ResponseStatus(OK)
+//    public final void logout(final HttpSession session) {
+//        SessionUtils.logout(session);
+//    }
 
 
     //***************************************

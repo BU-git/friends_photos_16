@@ -37,4 +37,15 @@ public class Checks {
             throw e;
         }
     }
+
+    /**
+     * Verifies that target object is not null and throws the exception otherwise
+     *
+     * @param target the target object
+     * @param targetName the name of the target object
+     * @throws InvalidParameterException if the target object is null
+     */
+    public static void checkNotNull(final Object target, final String targetName) throws InvalidParameterException {
+        check(target != null, String.format("The %s shouldn't be null", targetName));
+    }
 }

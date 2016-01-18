@@ -5,18 +5,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:property-placeholder location="classpath:app.properties"/>
-    <context:component-scan base-package="com.bionic.fp.dao, com.bionic.fp.service" />
-    <context:annotation-config />
-
-    <import resource="mvc.xml" />
-
-    <import resource="data.xml" />
-
-    <import resource="security.xml" />
-
-    <!--<bean class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>-->
-
-    <import resource="spring-security.xml"/>
+    <context:property-placeholder location="classpath:test-app.properties"/>
+    <context:component-scan base-package="com.bionic.fp.web.security.spring.infrastructure
+                                          com.bionic.fp.web.security.spring.config.stateful"/>
+    <context:annotation-config/>
 
 </beans>
