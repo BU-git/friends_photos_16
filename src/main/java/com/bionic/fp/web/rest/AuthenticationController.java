@@ -71,7 +71,7 @@ public class AuthenticationController {
         User user = this.getAuthenticatedUser(authRequest);
         this.authenticationStrategy.saveAuthentication(user, request, response);
         String token = this.tokenUtils.generateToken(user);
-        return new AuthenticationResponse(token);
+        return new AuthenticationResponse(token, user.getId());
     }
 
     /**
@@ -86,7 +86,7 @@ public class AuthenticationController {
         User user = this.getAuthenticatedUser(authRequest);
         this.authenticationStrategy.saveAuthentication(user, request, response);
         String token = this.tokenUtils.generateToken(user);
-        return new AuthenticationResponse(token);
+        return new AuthenticationResponse(token, user.getId());
     }
 
     /**
@@ -115,7 +115,13 @@ public class AuthenticationController {
         User user = new User(account);
         this.authenticationStrategy.saveAuthentication(user, request, response);
 
-        return new AuthenticationResponse(this.tokenUtils.generateToken(user));
+        return new AuthenticationResponse(this.tokenUtils.generateToken(user), user.getId());
+    }
+
+    @RequestMapping(value = LOGOUT, method = POST)
+    @ResponseStatus(OK)
+    public final void logout(final HttpServletRequest request, final HttpServletResponse response) {
+        this.authenticationStrategy.removeAuthentication(request, response);
     }
 
 
