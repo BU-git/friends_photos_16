@@ -1,4 +1,4 @@
-package com.bionic.fp.web.rest.dto;
+package com.bionic.fp.web.rest.dto.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

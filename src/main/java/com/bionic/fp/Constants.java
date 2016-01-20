@@ -47,9 +47,9 @@ public final class Constants {
             String OWNER_ID = "owner_id";
             String USER_ID = "user_id";
             String FB_ID = "fbId";
-            String FB_TOKEN = "fbToken";
+            String FB_TOKEN = "token";
             String VK_ID = "vkId";
-            String VK_TOKEN = "vkToken";
+            String VK_TOKEN = "token";
         }
 
         public interface EVENT {
@@ -76,6 +76,7 @@ public final class Constants {
             String TOKEN = "token";
             String USERNAME = "username";
             String IMAGE_URL = "image_url";
+            String LIST = "accounts";
         }
 
         public interface ROLE {
@@ -85,6 +86,7 @@ public final class Constants {
         public interface PHOTO {
             String ID = "photo_id";
             String FILE = "file";
+            String URL = "url";
             String NAME = "name";
             String DESCRIPTION = "description";
             String LIST = "photos";
@@ -93,6 +95,9 @@ public final class Constants {
         public interface COMMENT {
             String ID = "comment_id";
             String TEXT = "comment_text";
+            String AUTHOR_ID = "author_id";
+            String DATE = "date";
+            String LIST = "comments";
         }
 
     }

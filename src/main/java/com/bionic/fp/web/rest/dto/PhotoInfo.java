@@ -10,21 +10,17 @@ import com.bionic.fp.Constants.RestConstants.*;
  * Created by franky_str on 26.11.15.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PhotoInfoDTO {
+public class PhotoInfo {
 
-    @JsonProperty(PHOTO.NAME)
-    private String name;
-    private String url;
+    @JsonProperty(PHOTO.NAME)       private String name;
+    @JsonProperty(PHOTO.URL)        private String url;
+    @JsonProperty(PARAM.OWNER_ID)   private Long ownerId;
+	@JsonProperty(EVENT.ID)         private Long eventId;
 
-    @JsonProperty(PARAM.OWNER_ID)
-	private Long ownerId;
-	@JsonProperty(EVENT.ID)
-	private Long eventId;
-
-    public PhotoInfoDTO() {
+    public PhotoInfo() {
     }
 
-    public PhotoInfoDTO(final Photo photo) {
+    public PhotoInfo(final Photo photo) {
         this.name = photo.getName();
         this.url = photo.getUrl();
         this.ownerId = photo.getOwner() == null ? null : photo.getOwner().getId();

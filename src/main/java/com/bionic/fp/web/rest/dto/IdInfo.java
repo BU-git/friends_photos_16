@@ -3,7 +3,7 @@ package com.bionic.fp.web.rest.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
- * Holds ID for the client-server communication
+ * Holds id for the client-server communication
  *
  * @author Sergiy Gabriel
  */

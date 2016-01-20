@@ -12,7 +12,6 @@ import com.bionic.fp.web.rest.dto.*;
 import com.bionic.fp.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,35 +41,52 @@ public class AccountController {
     //***************************************
 
 
+    /**
+     * Returns an account
+     * @param accountId the account id
+     *
+     * @return an account
+     */
     @RequestMapping(value = ACCOUNT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final UserInfo getUser(@PathVariable(ACCOUNT.ID) final Long accountId) {
+    public final AccountInfo getAccount(@PathVariable(ACCOUNT.ID) final Long accountId) {
         Account account = ofNullable(accountService.get(accountId))
                 .orElseThrow(() -> new NotFoundException(accountId, "account"));
-        return new UserInfo(account);
-    }
-
-    @RequestMapping(value = SELF, method = GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(OK)
-    @ResponseBody
-    public final UserInfo getUser() {
-        return new UserInfo(methodSecurityService.getUser());
+        return new AccountInfo(account);
     }
 
     /**
-     * All events where the user is involved
+     * Returns the user, the user must be authenticated
      *
-     * @param accountId - account ID
-     * @return - List of IDs events where the user is involved
+     * @return the user
+     */
+    @RequestMapping(value = SELF, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    @ResponseBody
+    public final AccountInfo getUser() {
+        return new AccountInfo(methodSecurityService.getUser());
+    }
+
+    /**
+     * Returns all events where the account is involved
+     *
+     * @param accountId the account id
+     * @return a list of events
      */
     @RequestMapping(value = ACCOUNT_ID+EVENTS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final EntityInfoLists getUserEvents(@PathVariable(ACCOUNT.ID) final Long accountId) {
+    public final EntityInfoLists getAccountEvents(@PathVariable(ACCOUNT.ID) final Long accountId) {
         return getEvents(accountId);
     }
 
+    /**
+     * Returns a list of events where the user is involved.
+     * The user must be authenticated
+     *
+     * @return a list of events
+     */
     @RequestMapping(value = SELF+EVENTS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
@@ -79,6 +95,12 @@ public class AccountController {
         return this.getEvents(userId);
     }
 
+    /**
+     * Returns a list of events owned by the account
+     *
+     * @param accountId the account id
+     * @return a list of events
+     */
     @RequestMapping(value = ACCOUNT_ID+EVENTS+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
@@ -86,51 +108,82 @@ public class AccountController {
         return this.getEvents(accountId, RoleConstants.OWNER);
     }
 
+    /**
+     * Returns a list of events owned by the user.
+     * The user must be authenticated
+     *
+     * @return a list of events
+     */
     @RequestMapping(value = SELF+EVENTS+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final EntityInfoLists getOwnerEvents(final HttpSession session) {
+    public final EntityInfoLists getOwnerEvents() {
         Long userId = this.methodSecurityService.getUserId();
         return this.getEvents(userId, RoleConstants.OWNER);
     }
 
+    /**
+     * Returns a list of events where the account has the specified role
+     *
+     * @param accountId the account id
+     * @param roleId the role id
+     * @return a list of events
+     */
     @RequestMapping(value = ACCOUNT_ID+ROLES+ROLE_ID+EVENTS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final EntityInfoLists getUserEvents(@PathVariable(ACCOUNT.ID) final Long accountId,
-                                               @PathVariable(ROLE.ID) final Long roleId) {
+    public final EntityInfoLists getAccountEvents(@PathVariable(ACCOUNT.ID) final Long accountId,
+                                                  @PathVariable(ROLE.ID) final Long roleId) {
         return this.getEvents(accountId, roleId);
     }
 
+    /**
+     * Returns a list of events where the user has the specified role.
+     * The user must be authenticated
+     *
+     * @param roleId the role id
+     * @return a list of events
+     */
     @RequestMapping(value = SELF+ROLES+ROLE_ID+EVENTS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final EntityInfoLists getUserEvents(final HttpSession session,
-                                               @PathVariable(ROLE.ID) final Long roleId) {
+    public final EntityInfoLists getUserEvents(@PathVariable(ROLE.ID) final Long roleId) {
         Long userId = this.methodSecurityService.getUserId();
         return this.getEvents(userId, roleId);
     }
 
+    /**
+     * Return a list of event ids of the account
+     *
+     * @param accountId the account id
+     * @return a list of event ids
+     */
     @RequestMapping(value = ACCOUNT_ID+EVENTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final IdLists getUserEventIds(@PathVariable(ACCOUNT.ID) final Long accountId) {
+    public final IdLists getAccountEventIds(@PathVariable(ACCOUNT.ID) final Long accountId) {
         return this.getEventIds(accountId);
     }
 
+    /**
+     * Return a list of event ids of the user.
+     * The user must be authenticated
+     *
+     * @return a list of event ids
+     */
     @RequestMapping(value = SELF+EVENTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final IdLists getUserEventIds(final HttpSession session) {
+    public final IdLists getUserEventIds() {
         Long userId = this.methodSecurityService.getUserId();
         return this.getEventIds(userId);
     }
 
     /**
-     * All events where the user is owner
+     * Return a list of event ids owned by the account
      *
      * @param accountId - account ID
-     * @return - List of IDs events where the user is owner
+     * @return a list of event ids
      */
     @RequestMapping(value = ACCOUNT_ID+EVENTS+ID+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
@@ -139,56 +192,100 @@ public class AccountController {
         return this.getEventIds(accountId, RoleConstants.OWNER);
     }
 
+    /**
+     * Return a list of event ids owned by the user.
+     * The user must be authenticated
+     *
+     * @return a list of event ids
+     */
     @RequestMapping(value = SELF+EVENTS+ID+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final IdLists getOwnerEventIds(final HttpSession session) {
+    public final IdLists getOwnerEventIds() {
         Long userId = this.methodSecurityService.getUserId();
         return this.getEventIds(userId, RoleConstants.OWNER);
     }
 
+    /**
+     * Returns a list of event ids where the account has the specified role
+     *
+     * @param accountId the account id
+     * @param roleId the role id
+     * @return a list of event ids
+     */
     @RequestMapping(value = ACCOUNT_ID+ROLES+ROLE_ID+EVENTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final IdLists getUserEventIds(@PathVariable(ACCOUNT.ID) final Long accountId,
-                                         @PathVariable(ROLE.ID) final Long roleId) {
+    public final IdLists getAccountEventIds(@PathVariable(ACCOUNT.ID) final Long accountId,
+                                            @PathVariable(ROLE.ID) final Long roleId) {
         return this.getEventIds(accountId, roleId);
     }
 
+    /**
+     * Returns a list of event ids where the user has the specified role.
+     * The user must be authenticated
+     *
+     * @param roleId the role id
+     * @return a list of event ids
+     */
     @RequestMapping(value = SELF+ROLES+ROLE_ID+EVENTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final IdLists getUserEventIds(final HttpSession session, @PathVariable(ROLE.ID) final Long roleId) {
+    public final IdLists getUserEventIds(@PathVariable(ROLE.ID) final Long roleId) {
         Long userId = this.methodSecurityService.getUserId();
         return this.getEventIds(userId, roleId);
     }
 
+    /**
+     * Returns a list of photos of the owner
+     *
+     * @param ownerId the owner id
+     * @return a list of photos
+     */
     @RequestMapping(value = ACCOUNT_ID+PHOTOS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final EntityInfoLists getUserPhotos(@PathVariable(ACCOUNT.ID) final Long ownerId) {
+    public final EntityInfoLists getAccountPhotos(@PathVariable(ACCOUNT.ID) final Long ownerId) {
         return this.getPhotos(ownerId);
     }
 
+    /**
+     * Returns a list of photo ids of the owner
+     *
+     * @param ownerId the owner id
+     * @return a list of photo ids
+     */
     @RequestMapping(value = ACCOUNT_ID+PHOTOS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final IdLists getUserPhotoIds(@PathVariable(ACCOUNT.ID) final Long ownerId) {
+    public final IdLists getAccountPhotoIds(@PathVariable(ACCOUNT.ID) final Long ownerId) {
         return this.getPhotoIds(ownerId);
     }
 
+    /**
+     * Returns a list of photos of the user.
+     * The user must be authenticated
+     *
+     * @return a list of photos
+     */
     @RequestMapping(value = SELF+PHOTOS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final EntityInfoLists getUserPhotos(final HttpSession session) {
+    public final EntityInfoLists getUserPhotos() {
         Long userId = this.methodSecurityService.getUserId();
         return this.getPhotos(userId);
     }
 
+    /**
+     * Returns a list of photo ids of the user.
+     * The user must be authenticated
+     *
+     * @return a list of photo ids
+     */
     @RequestMapping(value = SELF+PHOTOS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final IdLists getUserPhotoIds(final HttpSession session) {
+    public final IdLists getUserPhotoIds() {
         Long userId = this.methodSecurityService.getUserId();
         return this.getPhotoIds(userId);
     }
@@ -267,7 +364,7 @@ public class AccountController {
         List<Photo> photos = this.photoService.getPhotosByOwnerId(accountId);
         EntityInfoLists body = new EntityInfoLists();
         body.setPhotos(photos.stream().parallel()
-                .map(PhotoInfoDTO::new)
+                .map(PhotoInfo::new)
                 .collect(Collectors.toList()));
         return body;
     }

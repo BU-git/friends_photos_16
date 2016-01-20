@@ -20,7 +20,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
- * This is REST web-service that handles group-related requests
+ * This is REST web-service that handles event-related requests
  *
  * @author Sergiy Gabriel
  */
@@ -38,15 +38,32 @@ public class EventController {
     //***************************************
 
 
+    /**
+     * Returns an event
+     *
+     * @param event_id the event id
+     * @param fields the fields that should return the request, separated by commas,
+     *               the order of insertion is not important
+     * @return an event
+     */
     @RequestMapping(value = EVENT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public EventInfo findEventById(@PathVariable(EVENT.ID) final Long id,
+    public EventInfo findEventById(@PathVariable(EVENT.ID) final Long event_id,
                                    @RequestParam(value = FIELDS, required = false) final String fields) {
-        Event event = this.findEventOrThrow(id);
+        Event event = this.findEventOrThrow(event_id);
         return EventInfo.Transformer.transform(event, fields);
     }
 
+    /**
+     * Returns a list of events as a result of the search according to the specified parameters
+     *
+     * @param name the event name
+     * @param description the event description
+     * @param fields the fields that should return the request, separated by commas,
+     *               the order of insertion is not important
+     * @return a list of events
+     */
     @RequestMapping(method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
@@ -58,6 +75,13 @@ public class EventController {
         return body;
     }
 
+    /**
+     * Returns a list of event ids as a result of the search according to the specified parameters
+     *
+     * @param name the event name
+     * @param description the event description
+     * @return a list of event ids
+     */
     @RequestMapping(value = ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
@@ -69,26 +93,60 @@ public class EventController {
         return body;
     }
 
+    /**
+     * Returns a list of accounts belonging to this event
+     *
+     * @param eventId the event id
+     * @return a list of accounts
+     */
+    @RequestMapping(value = EVENT_ID+ACCOUNTS, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    @ResponseBody
+    public EntityInfoLists getAccounts(@PathVariable(EVENT.ID) final Long eventId) {
+        EntityInfoLists body = new EntityInfoLists();
+        body.setAccounts(this.eventService.getAccounts(eventId).stream().parallel()
+                .map(AccountInfo::new).collect(toList()));
+        return body;
+    }
+
+    /**
+     * Returns a list of account ids belonging to this event
+     *
+     * @param eventId the event id
+     * @return a list of account ids
+     */
     @RequestMapping(value = EVENT_ID+ACCOUNTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public IdLists getAccounts(@PathVariable(EVENT.ID) final Long eventId) {
+    public IdLists getAccountIds(@PathVariable(EVENT.ID) final Long eventId) {
         IdLists body = new IdLists();
         body.setAccounts(this.eventService.getAccounts(eventId).stream().parallel()
                 .map(Account::getId).collect(toList()));
         return body;
     }
 
+    /**
+     * Returns a list of photos of the event
+     *
+     * @param eventId the event id
+     * @return a list of photos
+     */
     @RequestMapping(value = EVENT_ID+PHOTOS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
     public EntityInfoLists getPhotos(@PathVariable(EVENT.ID) final Long eventId) {
         EntityInfoLists body = new EntityInfoLists();
         body.setPhotos(this.eventService.getPhotos(eventId).stream().parallel()
-                .map(PhotoInfoDTO::new).collect(toList()));
+                .map(PhotoInfo::new).collect(toList()));
         return body;
     }
 
+    /**
+     * Returns a list of photo ids of the event
+     *
+     * @param eventId the event id
+     * @return a list of photo ids
+     */
     @RequestMapping(value = EVENT_ID+PHOTOS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
@@ -99,20 +157,61 @@ public class EventController {
         return body;
     }
 
+    /**
+     * Returns a list of comments of the event
+     *
+     * @param eventId the event id
+     * @return a list of comments
+     */
+    @RequestMapping(value = EVENT_ID+COMMENTS, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    @ResponseBody
+    public EntityInfoLists getComments(@PathVariable(EVENT.ID) final Long eventId) {
+        EntityInfoLists body = new EntityInfoLists();
+        body.setComments(this.eventService.getComments(eventId).stream().parallel()
+                .map(CommentInfo::new).collect(toList()));
+        return body;
+    }
+
+    /**
+     * Returns a list of comment ids of the event
+     *
+     * @param eventId the event id
+     * @return a list of comment ids
+     */
     @RequestMapping(value = EVENT_ID+COMMENTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public IdLists getComments(@PathVariable(EVENT.ID) final Long eventId) {
+    public IdLists getCommentIds(@PathVariable(EVENT.ID) final Long eventId) {
         IdLists body = new IdLists();
         body.setComments(this.eventService.getComments(eventId).stream().parallel()
                 .map(Comment::getId).collect(toList()));
         return body;
     }
 
+    /**
+     * Returns the owner of the event
+     *
+     * @param eventId the event id
+     * @return the owner
+     */
     @RequestMapping(value = EVENT_ID+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public IdInfo getEventOwner(@PathVariable(EVENT.ID) final Long eventId) {
+    public AccountInfo getEventOwner(@PathVariable(EVENT.ID) final Long eventId) {
+        return new AccountInfo(this.eventService.getOwner(eventId));
+    }
+
+    /**
+     * Returns the owner id of the event
+     *
+     * @param eventId the event id
+     * @return the owner id
+     */
+    @RequestMapping(value = EVENT_ID+OWNER+ID, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    @ResponseBody
+    public IdInfo getEventOwnerId(@PathVariable(EVENT.ID) final Long eventId) {
         return new IdInfo(this.eventService.getOwner(eventId).getId());
     }
 
@@ -122,6 +221,12 @@ public class EventController {
     //***************************************
 
 
+    /**
+     * Creates an event and returns its id
+     *
+     * @param eventDto the event
+     * @return the event id
+     */
     @RequestMapping(method = POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
     @ResponseBody
@@ -155,6 +260,12 @@ public class EventController {
         return new IdInfo(eventId);
     }
 
+    /**
+     * Adds an account to the event
+     *
+     * @param eventId the event id
+     * @param password the event password (it will be required if the event is private)
+     */
     @RequestMapping(value = EVENT_ID+ACCOUNTS, method = POST)
     @ResponseStatus(CREATED)
     public void addAccountToEvent(@PathVariable(EVENT.ID) final Long eventId,
@@ -164,6 +275,12 @@ public class EventController {
     }
 
 
+    /**
+     * Adds a comment to the event
+     *
+     * @param eventId the event id
+     * @param commentDTO the comment
+     */
     @RequestMapping(value = EVENT_ID+COMMENTS ,method = POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
     public void addComment(@PathVariable(value = EVENT.ID) final Long eventId,
@@ -176,11 +293,18 @@ public class EventController {
         eventService.addComment(event, comment);
     }
 
+
     //***************************************
     //                 @PUT
     //***************************************
 
 
+    /**
+     * Updates the event
+     *
+     * @param eventId the event id
+     * @param eventDto the event
+     */
     @RequestMapping(value = EVENT_ID,  method = PUT, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public void updateEvent(@PathVariable(EVENT.ID) final Long eventId, @RequestBody final EventInput eventDto) {
@@ -228,6 +352,14 @@ public class EventController {
         this.eventService.update(event);
     }
 
+    /**
+     * Changes the role of the participant in the event
+     *
+     * @param eventId the event id
+     * @param accountId the account id
+     * @param roleId the new role id
+     * @param password the event password (it will be required if the event is private)
+     */
     @RequestMapping(value = EVENT_ID+ACCOUNTS+ACCOUNT_ID, method = PUT)
     @ResponseStatus(OK)
     public void updateAccountToEvent(@PathVariable(EVENT.ID) final Long eventId,
@@ -245,6 +377,11 @@ public class EventController {
     //***************************************
 
 
+    /**
+     * Deletes the event
+     *
+     * @param eventId the event id
+     */
     @RequestMapping(value = EVENT_ID, method = DELETE)
     @ResponseStatus(NO_CONTENT)
     public void deleteEventById(@PathVariable(EVENT.ID) final Long eventId) {

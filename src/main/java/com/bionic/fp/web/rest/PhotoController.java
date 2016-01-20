@@ -6,7 +6,7 @@ import com.bionic.fp.domain.Role;
 import com.bionic.fp.exception.rest.NotFoundException;
 import com.bionic.fp.service.*;
 import com.bionic.fp.web.rest.dto.CommentDTO;
-import com.bionic.fp.web.rest.dto.PhotoInfoDTO;
+import com.bionic.fp.web.rest.dto.PhotoInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -46,9 +46,9 @@ public class PhotoController {
 	@RequestMapping(value = PHOTO_ID, method = GET, produces = APPLICATION_JSON_VALUE)
 	@ResponseStatus(OK)
 	@ResponseBody
-	public PhotoInfoDTO getPhotoInfo(@PathVariable(PHOTO.ID) final Long photoId) {
+	public PhotoInfo getPhotoInfo(@PathVariable(PHOTO.ID) final Long photoId) {
 		Photo photo = ofNullable(photoService.get(photoId)).orElseThrow(() -> new NotFoundException(photoId));
-		return new PhotoInfoDTO(photo);
+		return new PhotoInfo(photo);
 	}
 
 	/**
@@ -89,13 +89,13 @@ public class PhotoController {
 	@RequestMapping(method = POST, consumes = MULTIPART_FORM_DATA_VALUE, produces = APPLICATION_JSON_VALUE)
 	@ResponseStatus(CREATED)
 	@ResponseBody
-	public PhotoInfoDTO createPhoto(@RequestParam(PHOTO.FILE) final MultipartFile file,
-									@RequestParam(EVENT.ID) final Long eventId,
-									@RequestParam(value = PHOTO.NAME, required = false) final String name,
-									@RequestParam(value = PHOTO.DESCRIPTION, required = false) final String description) throws IOException {
+	public PhotoInfo createPhoto(@RequestParam(PHOTO.FILE) final MultipartFile file,
+								 @RequestParam(EVENT.ID) final Long eventId,
+								 @RequestParam(value = PHOTO.NAME, required = false) final String name,
+								 @RequestParam(value = PHOTO.DESCRIPTION, required = false) final String description) throws IOException {
 		Long userId = this.methodSecurityService.getUserId();
 		Photo photo = this.photoService.saveToFileSystem(eventId, userId, file, name);
-		return new PhotoInfoDTO(photo);
+		return new PhotoInfo(photo);
 	}
 
 	@RequestMapping(value = PHOTO_ID+COMMENTS, method = POST, consumes = APPLICATION_JSON_VALUE)
@@ -125,13 +125,13 @@ public class PhotoController {
 	@RequestMapping(value = PHOTO_ID, method = PUT, produces = APPLICATION_JSON_VALUE)
 	@ResponseStatus(OK)
 	@ResponseBody
-	public PhotoInfoDTO updatePhoto(@PathVariable(PHOTO.ID) final Long photoId,
-									@RequestParam(value = PHOTO.NAME) final String name) {
+	public PhotoInfo updatePhoto(@PathVariable(PHOTO.ID) final Long photoId,
+								 @RequestParam(value = PHOTO.NAME) final String name) {
 		check(StringUtils.isNotEmpty(name), "Param 'name' is null or empty string");
 		Photo photo = photoService.getOrThrow(photoId);
 		photo.setName(name);
 		photo = photoService.update(photo);
-		return new PhotoInfoDTO(photo);
+		return new PhotoInfo(photo);
 	}
 
 

@@ -2,7 +2,7 @@
 
 ## Content
 
-* ## [Authentication] (FriendsPhotosRESTAPI.md/#Authentication)
+* ## [Authentication] (FriendsPhotosRESTAPI.md/#authentication)
 
 	* ### [Authentication using email] (FriendsPhotosRESTAPI.md/#authentication-using-email-1)
 
@@ -58,10 +58,15 @@
 
 	* ### [Get a list of event ids] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-1)
 
-	* ### [Get a list of id of the participants of the event] (FriendsPhotosRESTAPI.md/#Get-a-list-of-id-of-the-participants-of-the-event-1)
+	* ### [Get a list of accounts belonging to the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-accounts-belonging-to-the-event-1)
+	
+	* ### [Get a list of account ids belonging to the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-account-ids-belonging-to-the-event-1)
+	
 	* ### [Get a list of photos of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-photos-of-the-event-1)
 
 	* ### [Get a list of photo ids of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-photo-ids-of-the-event-1)
+	
+	* ### [Get a list of comments of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-event-1)
 
 	* ### [Get a list of comment ids of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-event-1)
 
@@ -77,7 +82,7 @@
 
 	* ### [Update the event] (FriendsPhotosRESTAPI.md/#update-the-event-1)
 
-	* ### [Сhange the role of the participant in the event] (FriendsPhotosRESTAPI.md/#change-the-role-of-the-participant-in-the-event-1)
+	* ### [Change the role of the participant in the event] (FriendsPhotosRESTAPI.md/#change-the-role-of-the-participant-in-the-event-1)
 
 	* ### [Delete the event] (FriendsPhotosRESTAPI.md/#delete-the-event-1)
 
@@ -270,7 +275,8 @@
 			{
     			"account_id": 4,
     			"username": "Nagibator",
-				"image_url": "http://nagibator2016.jpg"
+				"image_url": "http://nagibator2016.jpg",
+				"email": "email@gmail.com"
 			}
 
         Param Name | Nullable | Description
@@ -278,6 +284,7 @@
         account_id | true | the account id
 		username | true | the username
         image_url | true | the user image url
+        email | true | the user email
 
     * ### Get the user info
 
@@ -1163,8 +1170,56 @@
         Param Name | Nullable | Description
 		---------- | -------- | -----------
         events | false | the list of events
+        
+    * ### Get a list of accounts belonging to the event
+    
+        #### @GET
+        #### /api/events/{event_id}/accounts
 
-	* ### Get a list of id of the participants of the event
+        ##### Path Params:
+
+        Path Key | Value
+        -------- | -----
+        event_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+        ---------- | -------- | -----------
+        event_id | true | the event id
+        
+        ##### Params:
+
+        Key | Value
+        --- | -----
+        ~~fields~~ | username,image_url
+
+        <p/>
+
+        Param Name | Required | Description
+        ---------- | -------- | -----------
+        ~~fields~~ | false | what fields should return the request, separated by commas, the order of insertion is not important
+
+        ##### Response:
+
+        Status | Description
+        ------ | -----------
+        200 | OK
+        404 | NOT FOUND
+
+            {
+                "account_id": 4,
+                "username": "Nagibator",
+                "image_url": "http://nagibator2016.jpg"
+            }
+
+        Param Name | Nullable | Description
+        ---------- | -------- | -----------
+        account_id | true | the owner id of the event
+        username | true | the owner username of the event
+        image_url | true | the owner image url of the event
+
+	* ### Get a list of account ids belonging to the event
 
     	#### @GET
         #### /api/events/{event_id}/accounts/id
@@ -1282,6 +1337,49 @@
         Param Name | Nullable | Description
 		---------- | -------- | -----------
         photos | false | the list of photo ids
+        
+    * ### Get a list of comments of the event
+    
+    #### @GET
+    #### /api/events/{event_id}/comments
+
+    ##### Path Params:
+
+    Path Key | Value
+    -------- | -----
+    event_id | 14
+
+    <p/>
+
+    Param Name | Required | Description
+    ---------- | -------- | -----------
+    event_id | true | the event id
+
+    ##### Response:
+
+    Status | Description
+    ------ | -----------
+    200 | OK
+    404 | NOT FOUND
+
+        {
+            "comments": [
+                {
+                    "comment_id": 12,
+                    "comment_text": "some text",
+                    "author_id": 11,
+                    "date": "2016-01-25 18:59:31"
+                }, ...
+            ]
+        }
+
+    Param Name | Nullable | Description
+    ---------- | -------- | -----------
+    comments | false | the list of comments
+    comment_id | false | the comment id
+    comment_text | false | the some test of the comment
+    author_id | false | the author of the comment
+    date | false | the create date
 
 	* ### Get a list of comment ids of the event
 
@@ -1315,7 +1413,7 @@
 		---------- | -------- | -----------
         comments | false | the list of comment ids
 
-	* ### ~~Get the owner of the event~~
+	* ### Get the owner of the event
 
     	#### @GET
         #### /api/events/{event_id}/owner
@@ -1580,7 +1678,7 @@
         403 | FORBIDDEN
         404 | NOT FOUND
 
-	* ### Сhange the role of the participant in the event
+	* ### Change the role of the participant in the event
 
     	#### @PUT
         #### /api/events/{event_id}/accounts/{account_id}
