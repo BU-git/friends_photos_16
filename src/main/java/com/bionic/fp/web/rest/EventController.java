@@ -45,6 +45,7 @@ public class EventController {
      * @param fields the fields that should return the request, separated by commas,
      *               the order of insertion is not important
      * @return an event
+     * @throws NotFoundException if the event is not found
      */
     @RequestMapping(value = EVENT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
@@ -98,6 +99,7 @@ public class EventController {
      *
      * @param eventId the event id
      * @return a list of accounts
+     * @throws EventNotFoundException if the event is not found
      */
     @RequestMapping(value = EVENT_ID+ACCOUNTS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
@@ -114,6 +116,7 @@ public class EventController {
      *
      * @param eventId the event id
      * @return a list of account ids
+     * @throws EventNotFoundException if the event is not found
      */
     @RequestMapping(value = EVENT_ID+ACCOUNTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
@@ -130,6 +133,7 @@ public class EventController {
      *
      * @param eventId the event id
      * @return a list of photos
+     * @throws EventNotFoundException if the event is not found
      */
     @RequestMapping(value = EVENT_ID+PHOTOS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
@@ -146,6 +150,7 @@ public class EventController {
      *
      * @param eventId the event id
      * @return a list of photo ids
+     * @throws EventNotFoundException if the event is not found
      */
     @RequestMapping(value = EVENT_ID+PHOTOS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
@@ -162,6 +167,7 @@ public class EventController {
      *
      * @param eventId the event id
      * @return a list of comments
+     * @throws EventNotFoundException if the event is not found
      */
     @RequestMapping(value = EVENT_ID+COMMENTS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
@@ -178,6 +184,7 @@ public class EventController {
      *
      * @param eventId the event id
      * @return a list of comment ids
+     * @throws EventNotFoundException if the event is not found
      */
     @RequestMapping(value = EVENT_ID+COMMENTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
@@ -194,6 +201,7 @@ public class EventController {
      *
      * @param eventId the event id
      * @return the owner
+     * @throws EventNotFoundException if the event is not found
      */
     @RequestMapping(value = EVENT_ID+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
@@ -207,6 +215,7 @@ public class EventController {
      *
      * @param eventId the event id
      * @return the owner id
+     * @throws EventNotFoundException if the event is not found
      */
     @RequestMapping(value = EVENT_ID+OWNER+ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
@@ -226,6 +235,7 @@ public class EventController {
      *
      * @param eventDto the event
      * @return the event id
+     * @throws EventTypeNotFoundException if the event type is not found
      */
     @RequestMapping(method = POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
@@ -261,15 +271,16 @@ public class EventController {
     }
 
     /**
-     * Adds an account to the event
+     * Adds the user to the event
      *
      * @param eventId the event id
      * @param password the event password (it will be required if the event is private)
+     * @throws EventNotFoundException if the event is not found
      */
     @RequestMapping(value = EVENT_ID+ACCOUNTS, method = POST)
     @ResponseStatus(CREATED)
-    public void addAccountToEvent(@PathVariable(EVENT.ID) final Long eventId,
-                                  @RequestParam(value = EVENT.PASSWORD, required = false) final String password) {
+    public void addUserToEvent(@PathVariable(EVENT.ID) final Long eventId,
+                               @RequestParam(value = EVENT.PASSWORD, required = false) final String password) {
         Long userId = this.methodSecurityService.getUserId();
         this.eventService.addOrUpdateAccountToEvent(userId, eventId, Constants.RoleConstants.MEMBER, password);
     }
@@ -280,6 +291,7 @@ public class EventController {
      *
      * @param eventId the event id
      * @param commentDTO the comment
+     * @throws EventNotFoundException if the event is not found
      */
     @RequestMapping(value = EVENT_ID+COMMENTS ,method = POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
@@ -290,6 +302,7 @@ public class EventController {
         Comment comment = new Comment();
         comment.setAuthor(methodSecurityService.getUser());
         comment.setText(commentDTO.getCommentText());
+        // todo: fix this method within event service
         eventService.addComment(event, comment);
     }
 
@@ -366,7 +379,7 @@ public class EventController {
                                      @PathVariable(ACCOUNT.ID) final Long accountId,
                                      @RequestParam(value = ROLE.ID, required = false) Long roleId,
                                      @RequestParam(value = EVENT.PASSWORD, required = false) final String password) {
-        // todo: test and is this roles valid?
+        // todo: test and are this set of roles valid?
         this.methodSecurityService.checkPermission(eventId, Role::isCanChangeSettings, Role::isCanAssignRoles);
         this.eventService.addOrUpdateAccountToEvent(accountId, eventId, roleId, password);
     }
@@ -395,15 +408,15 @@ public class EventController {
     //***************************************
 
 
-    private EventType getEventTypeOrThrow(final Long eventTypeId) {
+    private EventType getEventTypeOrThrow(final Long eventTypeId) throws EventTypeNotFoundException {
         return ofNullable(this.eventTypeService.get(eventTypeId)).orElseThrow(() -> new EventTypeNotFoundException(eventTypeId));
     }
 
-    private Event getEventOrThrow(final Long eventId) {
+    private Event getEventOrThrow(final Long eventId) throws EventNotFoundException {
         return ofNullable(this.eventService.get(eventId)).orElseThrow(() -> new EventNotFoundException(eventId));
     }
 
-    private Event findEventOrThrow(final Long eventId) {
-        return ofNullable(this.eventService.get(eventId)).orElseThrow(() -> new NotFoundException(eventId));
+    private Event findEventOrThrow(final Long eventId) throws NotFoundException {
+        return ofNullable(this.eventService.get(eventId)).orElseThrow(() -> new NotFoundException(eventId, "event"));
     }
 }

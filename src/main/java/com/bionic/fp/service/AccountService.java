@@ -35,11 +35,6 @@ public class AccountService {
 
     public AccountService() {}
 
-//    public Long create(final Account account) throws InvalidParameterException {
-//        check(account != null, "The account should not be null");
-//        return this.accountDAO.create(account);
-//    }
-
     /**
      * Used to register user by FP. If user exist method return user id. If user doesn't exist method
      * create new user in DB and return his id

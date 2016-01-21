@@ -81,6 +81,14 @@ public final class Constants {
 
         public interface ROLE {
             String ID = "role_id";
+            String NAME = "role";
+            String CAN_ASSIGN_ROLES = "can_assign_roles";
+            String CAN_CHANGE_SETTINGS = "can_change_settings";
+            String CAN_VIEW_PHOTOS = "can_view_photos";
+            String CAN_ADD_COMMENTS = "can_add_comments";
+            String CAN_VIEW_COMMENTS = "can_view_comments";
+            String CAN_ADD_PHOTOS = "can_add_photos";
+            String LIST = "roles";
         }
 
         public interface PHOTO {

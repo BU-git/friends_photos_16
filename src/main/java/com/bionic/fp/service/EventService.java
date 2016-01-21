@@ -21,6 +21,7 @@ import java.util.List;
 
 import static com.bionic.fp.Constants.RoleConstants.OWNER;
 import static com.bionic.fp.util.Checks.check;
+import static com.bionic.fp.util.Checks.checkNotNull;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -280,6 +281,41 @@ public class EventService {
     }
 
     /**
+     * Returns a list of events as the result of searching by name and description
+     *
+     * @param name the name of the event
+     * @param description the description of the event
+     * @return a list of events
+     */
+    public List<Event> get(final String name, final String description) {
+        return this.eventDAO.get(name, description);
+    }
+
+    /**
+     * todo: update(event)?!? fixme using commentDao! and event => eventId
+     * Adds comment to event
+     *
+     * @param event the event
+     * @param comment the comment
+     * @throws InvalidParameterException if incoming parameters are not valid
+     * @throws EventNotFoundException if the event doesn't exist
+     */
+    public void addComment(final Event event, final Comment comment) throws InvalidParameterException, EventNotFoundException {
+        checkNotNull(event, "event");
+        checkNotNull(comment, "comment");
+
+        if (event.getComments() == null) {
+            throw new AppException("Invalid event entity");
+        }
+
+        if(comment.getText().isEmpty()) {
+            throw new AppException("Comment is empty");
+        }
+        event.getComments().add(comment);
+        update(event);
+    }
+
+    /**
      * Checks required parameters of an event
      *
      * @param event the event
@@ -300,34 +336,5 @@ public class EventService {
      */
     private void validation(final Long eventId) throws InvalidParameterException {
         check(eventId != null, "The event ID should not be null");
-    }
-
-    /**
-     * Returns a list of events as the result of searching by name and description
-     *
-     * @param name the name of the event
-     * @param description the description of the event
-     * @return a list of events
-     */
-    public List<Event> get(final String name, final String description) {
-        return this.eventDAO.get(name, description);
-    }
-
-
-    /**
-     * Add comment to event
-     * @param event - event entity
-     * @param comment - comment entity
-     */
-    public void addComment(Event event, Comment comment) {
-        if (event.getComments() == null) {
-            throw new AppException("Invalid event entity");
-        }
-
-        if(comment.getText().isEmpty()) {
-            throw new AppException("Comment is empty");
-        }
-        event.getComments().add(comment);
-        update(event);
     }
 }

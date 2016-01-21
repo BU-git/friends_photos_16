@@ -70,7 +70,7 @@
 
 	* ### [Get a list of comment ids of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-event-1)
 
-	* ### [~~Get the owner of the event~~] (FriendsPhotosRESTAPI.md/#get-the-owner-of-the-event-1)
+	* ### [Get the owner of the event] (FriendsPhotosRESTAPI.md/#get-the-owner-of-the-event-1)
 
 	* ### [Get the owner id of the event] (FriendsPhotosRESTAPI.md/#get-the-owner-id-of-the-event-1)
 
@@ -102,7 +102,7 @@
 
 	* ### [Get a list of all roles] (FriendsPhotosRESTAPI.md/#get-a-list-of-all-roles-1)
 
-	* ### [~~Get a role of the account in the event~~] (FriendsPhotosRESTAPI.md/#get-a-role-of-the-account-in-the-event-1)
+	* ### [Get a role of the account in the event] (FriendsPhotosRESTAPI.md/#get-a-role-of-the-account-in-the-event-1)
 
 	* ### [Get a role id of the account in the event] (FriendsPhotosRESTAPI.md/#get-a-role-id-of-the-account-in-the-event-1)
 
@@ -1998,7 +1998,7 @@
         can_view_comments | false | can view comments in the event
         can_add_photos | false | can add photos to the event
 
-	* ### ~~Get a role of the account in the event~~
+	* ### Get a role of the account in the event
 
     	#### @GET
         #### /api/roles/accounts/{account_id}/events/{event_id}

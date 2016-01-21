@@ -12,6 +12,7 @@ import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.rest.NotFoundException;
 import com.bionic.fp.web.rest.dto.ErrorInfo;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -63,6 +64,13 @@ public class GlobalControllerAdvice {
     @ResponseStatus(FORBIDDEN)
     @ResponseBody
     public ErrorInfo permissionsDenied(PermissionsDeniedException e){
+        return new ErrorInfo(e.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(FORBIDDEN)
+    @ResponseBody
+    public ErrorInfo accessDenied(AccessDeniedException e){
         return new ErrorInfo(e.getMessage());
     }
 

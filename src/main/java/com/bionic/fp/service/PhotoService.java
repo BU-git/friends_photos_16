@@ -251,6 +251,7 @@ public class PhotoService {
 
 
     /**
+     * todo: update(photo)?!? fixme using commentDao! and photo => photoId
      * Add comment to photo
      * @param photo - photo entity
      * @param comment - comment entity

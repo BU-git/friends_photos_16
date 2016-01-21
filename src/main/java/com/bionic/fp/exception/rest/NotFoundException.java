@@ -16,4 +16,8 @@ public class NotFoundException extends AppException {
     public NotFoundException(final Long entityId, final String entityName) {
         super(String.format("could not find %s by '%d'.", entityName, entityId));
     }
+
+    public NotFoundException(final String msg) {
+        super(msg);
+    }
 }

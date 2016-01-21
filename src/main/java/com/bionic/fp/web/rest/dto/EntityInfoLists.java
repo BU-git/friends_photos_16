@@ -20,7 +20,7 @@ public class EntityInfoLists {
     @JsonProperty(PHOTO.LIST)       private List<PhotoInfo> photos;
     @JsonProperty(COMMENT.LIST)     private List<CommentInfo> comments;
 //    @JsonProperty(TYPE.LIST)        private List<TypeInfo> types;
-//    @JsonProperty(ROLE.LIST)        private List<RoleInfo> roles;
+    @JsonProperty(ROLE.LIST)        private List<RoleInfo> roles;
 
     public EntityInfoLists() {
     }
@@ -55,5 +55,13 @@ public class EntityInfoLists {
 
     public void setComments(List<CommentInfo> comments) {
         this.comments = comments;
+    }
+
+    public List<RoleInfo> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RoleInfo> roles) {
+        this.roles = roles;
     }
 }

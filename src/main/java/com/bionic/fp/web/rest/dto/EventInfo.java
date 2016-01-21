@@ -37,7 +37,7 @@ public class EventInfo {
     @JsonSerialize(using = LocalDateTimeJsonSerializer.class)
     @JsonDeserialize(using = LocalDateTimeJsonDeserializer.class)
     @JsonProperty(EVENT.EXPIRE_DATE)        private LocalDateTime expireDate;
-    @JsonProperty(EVENT.TYPE_ID)      private Long typeId;
+    @JsonProperty(EVENT.TYPE_ID)            private Long typeId;
     @JsonProperty(EVENT.LATITUDE)           private Double latitude;
     @JsonProperty(EVENT.LONGITUDE)          private Double longitude;
     @JsonProperty(EVENT.RADIUS)             private Float radius;
@@ -115,12 +115,7 @@ public class EventInfo {
                         .collect(Collectors.toList());
             }
             return events.stream().parallel()
-//                    .map(EventInfo::new)
-                    .map(e -> {
-                        EventInfo dto = new EventInfo();
-                        dto.setId(e.getId());
-                        return dto;
-                    })
+                    .map(EventInfo::new)
                     .collect(Collectors.toList());
         }
 

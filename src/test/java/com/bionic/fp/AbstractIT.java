@@ -40,7 +40,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/test-root-context.xml")
-public abstract class AbstractIT {
+public abstract class AbstractIT extends AbstractHelperTest {
 
     protected static final String TO_STRING = ".toString()";
     private static Account REGULAR_USER;
@@ -86,40 +86,13 @@ public abstract class AbstractIT {
 //        return this.tokenUtils.generateToken(new User(account.getId(), account.getEmail()));
 //    }
 
+    @Override
     protected EventType getPrivateEventType() {
         if(PRIVATE_EVENT_TYPE == null) {
             PRIVATE_EVENT_TYPE = this.eventTypeService.getPrivate();
             assertNotNull(PRIVATE_EVENT_TYPE);
         }
         return PRIVATE_EVENT_TYPE;
-    }
-
-    protected Event getNewEventMin() {
-        Event event = new Event();
-        LocalDateTime now = LocalDateTime.now();
-        event.setName("Nano is " + now.getNano());
-        event.setDescription("Today is " + now);
-        event.setEventType(getPrivateEventType());
-
-        assertFalse(event.isDeleted());
-        assertTrue(event.isVisible());
-        assertFalse(event.isGeoServicesEnabled());
-
-        return event;
-    }
-
-    protected Event getNewEventMax() {
-        Random random = new Random();
-        Event event = getNewEventMin();
-        event.setVisible(true);
-        event.setLatitude(random.nextDouble());
-        event.setLongitude(random.nextDouble());
-        event.setRadius(0.1f);
-        event.setGeoServicesEnabled(false);
-
-        assertFalse(event.isDeleted());
-
-        return event;
     }
 
     protected Event setPrivate(final Event event) {

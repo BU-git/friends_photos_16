@@ -43,19 +43,25 @@ public class PhotoController {
 	//***************************************
 
 
+	/**
+	 * Returns a photo
+	 *
+	 * @param photoId the photo id
+	 * @return a photo
+     */
 	@RequestMapping(value = PHOTO_ID, method = GET, produces = APPLICATION_JSON_VALUE)
 	@ResponseStatus(OK)
 	@ResponseBody
-	public PhotoInfo getPhotoInfo(@PathVariable(PHOTO.ID) final Long photoId) {
+	public PhotoInfo getPhoto(@PathVariable(PHOTO.ID) final Long photoId) {
 		Photo photo = ofNullable(photoService.get(photoId)).orElseThrow(() -> new NotFoundException(photoId));
 		return new PhotoInfo(photo);
 	}
 
 	/**
-	 * Get photo image.
+	 * Returns a photo file.
 	 *
-	 * @param photoId id of the photo
-	 * @return file
+	 * @param photoId the photo id
+	 * @return a photo file
 	 */
 	@RequestMapping(value = PHOTO_ID+FILE, method = GET, produces = APPLICATION_OCTET_STREAM_VALUE)
 	@ResponseStatus(OK)
@@ -77,14 +83,14 @@ public class PhotoController {
 
 
 	/**
-	 * Save photo image to filesystem
+	 * Saves a photo file to filesystem
 	 * and save photo info to DB.
 	 *
-	 * @param file
-	 * @param eventId
-	 * @param name
-	 * @param description
-	 * @return
+	 * @param file the file
+	 * @param eventId the event id
+	 * @param name the photo name
+	 * @param description the photo description
+	 * @return a photo
 	 */
 	@RequestMapping(method = POST, consumes = MULTIPART_FORM_DATA_VALUE, produces = APPLICATION_JSON_VALUE)
 	@ResponseStatus(CREATED)
@@ -98,6 +104,12 @@ public class PhotoController {
 		return new PhotoInfo(photo);
 	}
 
+	/**
+	 * Adds a comment to the photo
+	 *
+	 * @param photoId the photo id
+	 * @param commentDTO the comment
+     */
 	@RequestMapping(value = PHOTO_ID+COMMENTS, method = POST, consumes = APPLICATION_JSON_VALUE)
 	@ResponseStatus(CREATED)
 	public void addComment(@PathVariable(PHOTO.ID) final Long photoId,
@@ -117,10 +129,10 @@ public class PhotoController {
 
 
 	/**
-	 * Update photo info
+	 * Update a photo info
 	 *
-	 * @param name
-	 * @return
+	 * @param name the photo name
+	 * @return a photo
 	 */
 	@RequestMapping(value = PHOTO_ID, method = PUT, produces = APPLICATION_JSON_VALUE)
 	@ResponseStatus(OK)
@@ -133,54 +145,4 @@ public class PhotoController {
 		photo = photoService.update(photo);
 		return new PhotoInfo(photo);
 	}
-
-
-    /*
-	@RequestMapping(value = "owner/{owner_id:[\\d]+}/event/{event_id:[\\d]+}/upload", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public @ResponseBody ResponseEntity<IdInfo> handleFileUpload(@ModelAttribute("upload_form") , @PathVariable("owner_id") Long ownerId, @PathVariable("event_id") Long eventId ) throws IOException {
-
-        Event event = eventService.get(eventId);
-        Account account = accountService.get(ownerId);
-
-        if (event == null || account == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        Photo photo = new Photo(file.getOriginalFilename(), event, account);
-
-        Long id = photoService.saveSinglePhoto(photo, file.getInputStream());
-        return new ResponseEntity<IdInfo>(new IdInfo(id), HttpStatus.CREATED);
-    }
-*/
-//        String name = multipartFileRef.getOriginalFilename();
-//        multipartFileRef.getInputStream();
-//        Photo photo = new Photo();
-//        photo.setName(name);
-//
-//
-//        long eventId = 1;
-//        long ownerId = 1;
-////        photo.setName(photoDto.getName());
-//        Event event = eventService.get(eventId /*photoDto.getEventId()*/);
-//        Account account = accountService.get(ownerId /*photoDto.getOwnerId()*/);
-//
-////        if (event == null || account == null){
-////            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-////        }
-////
-////        photo.setEvent(event);
-////        photo.setOwner(account);
-//
-//        photo.setOwner(account);
-//        photo.setEvent(event);
-//
-//        Long aLong = photoService.saveSinglePhoto(photo, multipartFileRef.getInputStream());
-//
-//        if (aLong == null){
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//}
-
 }
