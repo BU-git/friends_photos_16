@@ -1,7 +1,9 @@
 package com.bionic.fp;
 
+import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
+import com.bionic.fp.domain.Photo;
 
 import java.time.LocalDateTime;
 import java.util.Random;
@@ -49,5 +51,20 @@ public class AbstractHelperTest {
         assertFalse(event.isDeleted());
 
         return event;
+    }
+
+    protected Photo getNewPhoto() {
+        Photo photo = new Photo();
+        Event event = new Event();
+        event.setId(System.currentTimeMillis());
+        Account owner = new Account();
+        owner.setId(System.currentTimeMillis());
+        LocalDateTime now = LocalDateTime.now();
+        photo.setName("photo" + now.getNano());
+        photo.setUrl("http://" + now.getNano());
+        photo.setEvent(event);
+        photo.setOwner(owner);
+        photo.setDate(now);
+        return photo;
     }
 }
