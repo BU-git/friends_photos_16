@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -23,9 +24,10 @@ public class PhotoDaoImpl implements PhotoDAO {
     public PhotoDaoImpl() {}
 
     @Override
-    public Long create(Photo newInstance) {
-        em.persist(newInstance);
-        return newInstance.getId();
+    public Long create(final Photo photo) {
+        photo.setCreated(LocalDateTime.now());
+        em.persist(photo);
+        return photo.getId();
     }
 
     @Override
@@ -34,7 +36,8 @@ public class PhotoDaoImpl implements PhotoDAO {
     }
 
     @Override
-    public Photo update(Photo photo) {
+    public Photo update(final Photo photo) {
+        photo.setModified(LocalDateTime.now());
         em.merge(photo);
         return photo;
     }

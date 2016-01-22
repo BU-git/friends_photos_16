@@ -33,7 +33,7 @@ import java.util.List;
                 query = "SELECT e FROM Event e WHERE e.visible = TRUE"
         )
 })
-public class Event implements Serializable {
+public class Event extends BaseEntity {
 
     @Transient public static final String FIND_BY_NAME_AND_DESCRIPTION = "Event.findByNameAndDescription";
     @Transient public static final String FIND_BY_NAME = "Event.findByName";
@@ -54,8 +54,6 @@ public class Event implements Serializable {
      * Is this event visible in the general mode of search?
      */
     private boolean visible = true;
-    @Convert(converter = LocalDateTimePersistenceConverter.class)
-    private LocalDateTime date;
     @Column(name = "expire_date")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime expireDate;
@@ -69,10 +67,6 @@ public class Event implements Serializable {
     @Column(name = "private")
     private boolean isPrivate = false;
     private String password;
-    /**
-     * Is this event deleted? Because the event is not deleted physically
-     */
-    private boolean deleted = false;
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<AccountEvent> accounts = new ArrayList<>();
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
@@ -126,14 +120,6 @@ public class Event implements Serializable {
         this.visible = visible;
     }
 
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
     public LocalDateTime getExpireDate() {
         return expireDate;
     }
@@ -172,14 +158,6 @@ public class Event implements Serializable {
 
     public void setGeoServicesEnabled(boolean geoServicesEnabled) {
         this.geoServicesEnabled = geoServicesEnabled;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 
     public List<AccountEvent> getAccounts() {
@@ -246,7 +224,7 @@ public class Event implements Serializable {
         sb.append(", description='").append(description).append('\'');
         sb.append(", eventType=").append(eventType);
         sb.append(", visible=").append(visible);
-        sb.append(", date=").append(date);
+        sb.append(", date=").append(created);
         sb.append(", expireDate=").append(expireDate);
         sb.append(", latitude=").append(latitude);
         sb.append(", longitude=").append(longitude);

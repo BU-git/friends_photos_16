@@ -9,6 +9,7 @@ import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Role;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
+import com.bionic.fp.exception.logic.impl.RoleNotFoundException;
 import com.bionic.fp.exception.permission.PermissionsDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import javax.inject.Named;
 import java.util.List;
 
 import static com.bionic.fp.util.Checks.check;
+import static java.util.Optional.ofNullable;
 
 /**
  * Created by Yevhenii Semenov on 11/17/2015.
@@ -97,10 +99,17 @@ public class RoleService {
                                                     throws InvalidParameterException, AccountEventNotFoundException {
         check(accountId != null, "The account ID should not be null");
         check(eventId != null, "The event ID should not be null");
-        AccountEvent accountEvent = accountEventDAO.get(accountId, eventId);
-        if (accountEvent == null) {
-            throw new AccountEventNotFoundException(accountId, eventId);
-        }
+        AccountEvent accountEvent = ofNullable(accountEventDAO.get(accountId, eventId))
+                .orElseThrow(() -> new AccountEventNotFoundException(accountId, eventId));
         return accountEvent.getRole();
+    }
+
+    public Role getRole(final Long roleId) throws InvalidParameterException {
+        check(roleId != null, "The role ID should not be null");
+        return roleDAO.read(roleId);
+    }
+
+    public Role getRoleOrThrow(final Long roleId) throws InvalidParameterException, RoleNotFoundException {
+        return ofNullable(getRole(roleId)).orElseThrow(() -> new RoleNotFoundException(roleId));
     }
 }

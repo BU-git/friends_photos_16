@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDateTime;
 
 /**
  * Created by boubdyk on 11.11.2015.
@@ -19,9 +20,10 @@ public class CommentDaoImpl implements CommentDAO {
     public CommentDaoImpl() {}
 
     @Override
-    public Long create(Comment newInstance) {
-        em.persist(newInstance);
-        return newInstance.getId();
+    public Long create(final Comment comment) {
+        comment.setCreated(LocalDateTime.now());
+        em.persist(comment);
+        return comment.getId();
     }
 
     @Override
@@ -30,9 +32,10 @@ public class CommentDaoImpl implements CommentDAO {
     }
 
     @Override
-    public Comment update(Comment transientObject) {
-        em.merge(transientObject);
-        return transientObject;
+    public Comment update(final Comment comment) {
+        comment.setModified(LocalDateTime.now());
+        em.merge(comment);
+        return comment;
     }
 
     @Override

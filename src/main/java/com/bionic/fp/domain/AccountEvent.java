@@ -18,7 +18,7 @@ import javax.persistence.*;
                 name= AccountEvent.FIND_BY_ACCOUNT_ID_AND_ROLE_ID,
                 query="SELECT ae FROM AccountEvent ae WHERE ae.account.id = :accountId AND ae.role.id = :roleId")
 })
-public class AccountEvent {
+public class AccountEvent extends BaseEntity {
 
     @Transient public static final String GET_BY_ACCOUNT_ID_AND_EVENT_ID = "AccountEvent.findByAccountIdAndEventId";
     @Transient public static final String FIND_BY_EVENT_ID_AND_ROLE_ID = "AccountEvent.findByEventIdAndRoleId";
@@ -40,6 +40,12 @@ public class AccountEvent {
     private Role role;
 
     public AccountEvent() {
+    }
+
+    public AccountEvent(final Event event, final Account account, final Role role) {
+        this.event = event;
+        this.account = account;
+        this.role = role;
     }
 
     public Long getId() {

@@ -31,6 +31,8 @@
         <property name="jpaProperties">
             <props>
                 <prop key="hibernate.hbm2ddl.auto">validate</prop>
+                <!--<prop key="hibernate.hbm2ddl.auto">create</prop>-->
+                <!--<prop key="hibernate.hbm2ddl.import_files">/scripts/import-event_types.sql,/scripts/import-roles.sql</prop>-->
                 <!--<prop key="hibernate.enable_lazy_load_no_trans">true</prop>-->
             </props>
         </property>

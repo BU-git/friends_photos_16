@@ -76,7 +76,7 @@ public class AccountService {
         }
 
 //        account.setActive(true); // ?
-        this.accountDAO.update(account);
+//        this.accountDAO.update(account);
 
         return account.getId();
     }

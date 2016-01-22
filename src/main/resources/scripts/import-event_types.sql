@@ -1,0 +1,1 @@
+INSERT INTO event_types (id, created, deleted, modified, type_name) VALUES (1, '2016-01-22 10:43:06', false, null, 'PRIVATE');

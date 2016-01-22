@@ -38,7 +38,7 @@ public class CommentInfo {
 
     public CommentInfo(final Comment comment) {
         this(comment.getId(),comment.getText(),
-                comment.getAuthor() != null ? comment.getAuthor().getId() : null, comment.getDate());
+                comment.getAuthor() != null ? comment.getAuthor().getId() : null, comment.getCreated());
     }
 
     public Long getId() {

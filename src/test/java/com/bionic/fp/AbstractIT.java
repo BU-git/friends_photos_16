@@ -4,10 +4,8 @@ import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
-import com.bionic.fp.service.AccountService;
-import com.bionic.fp.service.EventService;
-import com.bionic.fp.service.EventTypeService;
-import com.bionic.fp.service.RoleService;
+import com.bionic.fp.domain.Role;
+import com.bionic.fp.service.*;
 import com.bionic.fp.web.security.spring.infrastructure.User;
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.Before;
@@ -28,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
+import static com.bionic.fp.Constants.RoleConstants.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -46,9 +45,14 @@ public abstract class AbstractIT extends AbstractHelperTest {
     private static Account REGULAR_USER;
     private static EventType PRIVATE_EVENT_TYPE;
 
+    private static Role ROLE_OWNER;
+    private static Role ROLE_ADMIN;
+    private static Role ROLE_MEMBER;
+
     @Autowired protected EventDAO eventDAO;
     @Autowired protected EventService eventService;
     @Autowired protected AccountService accountService;
+    @Autowired protected AccountEventService accountEventService;
     @Autowired protected EventTypeService eventTypeService;
     @Autowired protected RoleService roleService;
     @Autowired protected WebApplicationContext context;
@@ -71,10 +75,7 @@ public abstract class AbstractIT extends AbstractHelperTest {
     }
 
     protected Account getRegularUser() {
-        if(REGULAR_USER == null) {
-            REGULAR_USER = this.getSavedAccount();
-        }
-        return REGULAR_USER;
+        return REGULAR_USER != null ? REGULAR_USER : (REGULAR_USER = getSavedAccount());
     }
 
     protected Account getNewEmailAccount() {
@@ -153,6 +154,7 @@ public abstract class AbstractIT extends AbstractHelperTest {
         event.setRadius(event.getRadius() == null ? 0 : event.getRadius() + 1);
         event.setVisible(!event.isVisible());
         event.setGeoServicesEnabled(!event.isGeoServicesEnabled());
+        event.setCreated(event.getCreated());
 
         return event;
     }
@@ -204,5 +206,29 @@ public abstract class AbstractIT extends AbstractHelperTest {
                 new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 //        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    protected Role getRoleOwner() {
+        if(ROLE_OWNER == null) {
+            ROLE_OWNER = roleService.getOwner();
+            assertNotNull(ROLE_OWNER);
+        }
+        return ROLE_OWNER;
+    }
+
+    protected Role getRoleAdmin() {
+        if(ROLE_ADMIN == null) {
+            ROLE_ADMIN = roleService.getRole(ADMIN);
+            assertNotNull(ROLE_ADMIN);
+        }
+        return ROLE_ADMIN;
+    }
+
+    protected Role getRoleMember() {
+        if(ROLE_MEMBER == null) {
+            ROLE_MEMBER = roleService.getRole(MEMBER);
+            assertNotNull(ROLE_MEMBER);
+        }
+        return ROLE_MEMBER;
     }
 }

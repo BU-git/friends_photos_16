@@ -20,7 +20,7 @@ public interface EventDAO extends GenericDAO<Event, Long> {
      * @return an updated event
      * @throws EventNotFoundException if the event doesn't exist
      */
-    Event addAccountEvent(Long eventId, AccountEvent accountEvent) throws EventNotFoundException;
+//    Event addAccountEvent(Long eventId, AccountEvent accountEvent) throws EventNotFoundException;
 
     /**
      * Adds an account-event to the event by instance of the event
@@ -29,7 +29,7 @@ public interface EventDAO extends GenericDAO<Event, Long> {
      * @param accountEvent the account-event
      * @return an updated event
      */
-    Event addAccountEvent(Event event, AccountEvent accountEvent);
+//    Event addAccountEvent(Event event, AccountEvent accountEvent);
 
     /**
      * Returns an event with its accounts by the specified id.

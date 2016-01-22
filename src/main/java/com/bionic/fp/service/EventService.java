@@ -11,12 +11,10 @@ import com.bionic.fp.exception.logic.critical.NonUniqueResultException;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.RoleNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.bionic.fp.Constants.RoleConstants.OWNER;
@@ -33,17 +31,10 @@ import static java.util.Optional.ofNullable;
 @Transactional
 public class EventService {
 
-    @Inject
-    private AccountDAO accountDAO;
-
-    @Inject
-    private EventDAO eventDAO;
-
-    @Inject
-    private AccountEventDAO accountEventDAO;
-
-    @Inject
-    private RoleDAO roleDAO;
+    @Autowired private AccountDAO accountDAO;
+    @Autowired private EventDAO eventDAO;
+    @Autowired private AccountEventDAO accountEventDAO;
+    @Autowired private RoleDAO roleDAO;
 
     public EventService() {}
 
@@ -55,7 +46,6 @@ public class EventService {
      * @param role the role of this account in this event
      * @throws InvalidParameterException if incoming parameters are not valid
      * @throws EntityNotFoundException if the owner and its role doesn't exist or the event doesn't exist
-     * todo: make update test, when more roles
      */
     public void addOrUpdateAccountToEvent(final Long accountId, final Long eventId, final Role role,
                                           final String password) throws InvalidParameterException, EntityNotFoundException {
@@ -72,25 +62,13 @@ public class EventService {
             this.accountEventDAO.update(conn);
         } else {
             Event event = this.eventDAO.getOrThrow(eventId);
+            // Check out the password if the event is private
             if(event.isPrivate() && event.getPassword() != null && !event.getPassword().equals(password)) {
                 throw new InvalidParameterException("Incorrect event password");
             }
-            // create empty connection (skeleton)
-            conn = new AccountEvent();
-
-            // add empty connection to owner and event
-            Account account = this.accountDAO.addAccountEvent(accountId, conn);
-            event = this.eventDAO.addAccountEvent(event, conn);
-
-//            if(account != null && event != null) {
-            conn.setAccount(account);
-            conn.setEvent(event);
-            conn.setRole(role);
-            // the magic happens above!!! This is unnecessary (the account and event use CASCADE.ALL)
-//                this.accountEventDAO.create(conn);
-            // this block doesn't work !?!
-//                this.accountDAO.update(account);
-//                this.eventDAO.update(event);
+            Account account = this.accountDAO.getOrThrow(accountId);
+            conn = new AccountEvent(event, account, role);
+            this.accountEventDAO.create(conn);
         }
     }
 
@@ -107,10 +85,7 @@ public class EventService {
     public void addOrUpdateAccountToEvent(final Long accountId, final Long eventId, final Long roleId,
                                           final String password) throws InvalidParameterException, EntityNotFoundException {
         check(roleId != null, "The role id should not be null");
-        Role role = this.roleDAO.read(roleId);
-        if(role == null) {
-            throw new RoleNotFoundException(roleId);
-        }
+        Role role = ofNullable(this.roleDAO.read(roleId)).orElseThrow(() -> new RoleNotFoundException(roleId));
         this.addOrUpdateAccountToEvent(accountId, eventId, role, password);
     }
 
@@ -122,6 +97,7 @@ public class EventService {
      * @return the event ID and null otherwise
      * @throws InvalidParameterException if incoming parameters are not valid
      * @throws EntityNotFoundException if the owner and its role doesn't exist
+     * todo: simplify this logic using accountEventDAO
      */
     public Long createEvent(final Long ownerId, Event event) throws InvalidParameterException, EntityNotFoundException {
         check(ownerId != null, "The owner ID should not be null");
@@ -130,31 +106,38 @@ public class EventService {
 
         Role role = this.roleDAO.getOwner();
 
-        // create empty connection (skeleton)
-        AccountEvent conn = new AccountEvent();
+//        // create empty connection (skeleton)
+//        AccountEvent conn = new AccountEvent();
+//
+//        // add empty connection to owner and event
+//        Account owner = this.accountDAO.addAccountEvent(ownerId, conn);
+//        event = this.eventDAO.addAccountEvent(event, conn);
+//
+//        conn.setAccount(owner);
+//        conn.setEvent(event);
+//        conn.setRole(role);
+////        event.setDate(LocalDateTime.now()); // todo: checkout
+//
+//        Long eventId = this.eventDAO.create(event);
+//        this.accountDAO.update(owner);
+//        return eventId;
 
-        // add empty connection to owner and event
-        Account owner = this.accountDAO.addAccountEvent(ownerId, conn);
-        event = this.eventDAO.addAccountEvent(event, conn);
-
-        conn.setAccount(owner);
-        conn.setEvent(event);
-        conn.setRole(role);
-        event.setDate(LocalDateTime.now());
-
-        Long groupId = this.eventDAO.create(event);
-        this.accountDAO.update(owner);
-        return groupId;
+        Account owner = this.accountDAO.getOrThrow(ownerId);
+        Long eventId = this.eventDAO.create(event);
+        AccountEvent conn = new AccountEvent(event, owner, role);
+        this.accountEventDAO.create(conn);
+        event.getAccounts().add(conn);
+        return eventId;
     }
 
     /**
-     * Removes an event physically from database
+     * Removes an event from the database
      *
      * @param eventId the event ID
      * @throws InvalidParameterException if the event ID is invalid
      * @throws EventNotFoundException if the event doesn't exist
      */
-    public void removePhysically(final Long eventId) throws InvalidParameterException, EventNotFoundException {
+    public void delete(final Long eventId) throws InvalidParameterException, EventNotFoundException {
         this.validation(eventId);
         this.eventDAO.delete(eventId);
     }
@@ -166,7 +149,7 @@ public class EventService {
      * @throws InvalidParameterException if the event ID is invalid
      * @throws EventNotFoundException if the event doesn't exist
      */
-    public void remove(final Long eventId) throws InvalidParameterException, EventNotFoundException {
+    public void softDelete(final Long eventId) throws InvalidParameterException, EventNotFoundException {
         this.validation(eventId);
         this.eventDAO.setDeleted(eventId, true);
     }

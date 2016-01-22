@@ -73,4 +73,12 @@ public interface AccountDAO extends GenericDAO<Account, Long> {
      */
     Account getByVkId(String vkId);
 
+    /**
+     * Returns an account by the specified id and throws the exception otherwise
+     *
+     * @param accountId the account id
+     * @return an account
+     * @throws AccountNotFoundException if the account doesn't exist
+     */
+    Account getOrThrow(Long accountId) throws AccountNotFoundException;
 }

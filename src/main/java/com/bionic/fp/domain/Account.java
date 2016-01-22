@@ -1,9 +1,6 @@
 package com.bionic.fp.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -16,7 +13,7 @@ import java.util.List;
         @NamedQuery(name= Account.GET_BY_FB_ID, query="SELECT a FROM Account a WHERE a.fbId=:fbId"),
         @NamedQuery(name= Account.GET_BY_VK_ID, query="SELECT a FROM Account a WHERE a.vkId=:vkId")
 })
-public class Account implements Serializable {
+public class Account extends BaseEntity {
 
     @Transient public static final String GET_BY_EMAIL = "Account.getByEmail";
     @Transient public static final String GET_BY_FB_ID = "Account.getByFbId";
@@ -26,12 +23,12 @@ public class Account implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonIgnore
     private String password;
 
-    @Column(name = "user_name")
+    @Column(name = "user_name", nullable = true)
     private String userName;
 
+    @Column(unique = true, nullable = false)
     private String email;
 
     @Column(name = "profile_image_url")

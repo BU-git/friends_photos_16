@@ -64,7 +64,7 @@ public class AbstractHelperTest {
         photo.setUrl("http://" + now.getNano());
         photo.setEvent(event);
         photo.setOwner(owner);
-        photo.setDate(now);
+        photo.setCreated(now);
         return photo;
     }
 }

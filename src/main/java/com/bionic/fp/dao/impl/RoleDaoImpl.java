@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Optional.ofNullable;
@@ -19,8 +20,6 @@ import static java.util.Optional.ofNullable;
 @Repository
 public class RoleDaoImpl implements RoleDAO {
 
-
-
     public static final String SELECT_ALL_ROLES = "SELECT r FROM Role r";
 
     @PersistenceContext(unitName = "entityManager")
@@ -28,7 +27,8 @@ public class RoleDaoImpl implements RoleDAO {
 
 
     @Override
-    public Long create(Role role) {
+    public Long create(final Role role) {
+        role.setCreated(LocalDateTime.now());
         em.persist(role);
         return role.getId();
     }
@@ -39,7 +39,8 @@ public class RoleDaoImpl implements RoleDAO {
     }
 
     @Override
-    public Role update(Role role) {
+    public Role update(final Role role) {
+        role.setModified(LocalDateTime.now());
         em.merge(role);
         return role;
     }

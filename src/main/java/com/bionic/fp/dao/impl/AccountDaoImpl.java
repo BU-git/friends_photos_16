@@ -9,6 +9,7 @@ import com.bionic.fp.exception.logic.impl.AccountNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ public class AccountDaoImpl extends AbstractQueryHelper implements AccountDAO {
 
     @Override
     public Long create(Account account) {
+        account.setCreated(LocalDateTime.now());
         em.persist(account);
         return account.getId();
     }
@@ -42,6 +44,7 @@ public class AccountDaoImpl extends AbstractQueryHelper implements AccountDAO {
 
     @Override
     public Account update(Account account) {
+        account.setModified(LocalDateTime.now());
         em.merge(account);
         return account;
     }
@@ -108,7 +111,8 @@ public class AccountDaoImpl extends AbstractQueryHelper implements AccountDAO {
                 this.em.createNamedQuery(Account.GET_BY_VK_ID, Account.class).setParameter("vkId", vkId));
     }
 
-    private Account getOrThrow(final Long accountId) throws AccountNotFoundException {
+    @Override
+    public Account getOrThrow(final Long accountId) throws AccountNotFoundException {
         return ofNullable(this.read(accountId)).orElseThrow(() -> new AccountNotFoundException(accountId));
     }
 

@@ -1,10 +1,6 @@
 package com.bionic.fp.domain;
 
-import com.bionic.fp.util.LocalDateTimePersistenceConverter;
-
 import javax.persistence.*;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,19 +19,17 @@ import java.util.List;
                 query = "SELECT p FROM Photo p WHERE p.event.id = :eventId"
         )
 })
-public class Photo implements Serializable {
-    @Transient
-    public static final String FIND_BY_OWNER_ID = "Photo.findByOwnerId";
-    @Transient
-    public static final String FIND_BY_EVENT_ID = "Photo.findByEventId";
+public class Photo extends BaseEntity {
+
+    @Transient public static final String FIND_BY_OWNER_ID = "Photo.findByOwnerId";
+    @Transient public static final String FIND_BY_EVENT_ID = "Photo.findByEventId";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 	@Column(name = "name")
 	private String name;
-    @Convert(converter = LocalDateTimePersistenceConverter.class)
-    private LocalDateTime date;
+    @Column(nullable = false)
     private String url;
     @Column(name = "preview_url")
     private String previewUrl;
@@ -62,12 +56,6 @@ public class Photo implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-    public LocalDateTime getDate() {
-        return date;
-    }
-	public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
     public String getUrl() {
         return url;
     }
@@ -106,7 +94,7 @@ public class Photo implements Serializable {
     public String toString() {
         return "Photo{" +
                 "id=" + id +
-                ", date=" + date +
+                ", date=" + created +
                 ", previewURL='" + previewUrl + '\'' +
                 ", url='" + url + '\'' +
                 ", event=" + event +

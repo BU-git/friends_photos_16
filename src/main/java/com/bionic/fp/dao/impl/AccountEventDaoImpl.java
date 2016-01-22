@@ -9,6 +9,7 @@ import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,8 @@ public class AccountEventDaoImpl extends AbstractQueryHelper implements AccountE
 
 
     @Override
-    public Long create(AccountEvent accountEvent) {
+    public Long create(final AccountEvent accountEvent) {
+        accountEvent.setCreated(LocalDateTime.now());
         this.em.persist(accountEvent);
         return accountEvent.getId();
     }
@@ -41,6 +43,7 @@ public class AccountEventDaoImpl extends AbstractQueryHelper implements AccountE
 
     @Override
     public AccountEvent update(final AccountEvent accountEvent) {
+        accountEvent.setModified(LocalDateTime.now());
         this.em.merge(accountEvent);
         return accountEvent;
     }

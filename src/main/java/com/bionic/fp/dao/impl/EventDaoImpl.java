@@ -6,6 +6,7 @@ import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,7 @@ public class EventDaoImpl implements EventDAO {
 
     @Override
     public Long create(final Event event) {
+        event.setCreated(LocalDateTime.now());
         this.em.persist(event);
         return event.getId();
     }
@@ -39,6 +41,7 @@ public class EventDaoImpl implements EventDAO {
 
     @Override
     public Event update(final Event event) {
+        event.setModified(LocalDateTime.now());
         return this.em.merge(event);
     }
 
@@ -48,17 +51,17 @@ public class EventDaoImpl implements EventDAO {
         this.em.remove(event);
     }
 
-    @Override
-    public Event addAccountEvent(final Long eventId, final AccountEvent accountEvent) throws EventNotFoundException {
-        Event event = this.getOrThrow(eventId);
-        return addAccountEvent(event, accountEvent);
-    }
-
-    @Override
-    public Event addAccountEvent(final Event event, final AccountEvent accountEvent) {
-        event.getAccounts().add(accountEvent);
-        return event;
-    }
+//    @Override
+//    public Event addAccountEvent(final Long eventId, final AccountEvent accountEvent) throws EventNotFoundException {
+//        Event event = this.getOrThrow(eventId);
+//        return addAccountEvent(event, accountEvent);
+//    }
+//
+//    @Override
+//    public Event addAccountEvent(final Event event, final AccountEvent accountEvent) {
+//        event.getAccounts().add(accountEvent);
+//        return event;
+//    }
 
     @Override
     public Event getWithAccounts(final Long eventId) {

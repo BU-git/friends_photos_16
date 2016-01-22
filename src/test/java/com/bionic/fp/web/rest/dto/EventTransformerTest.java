@@ -194,7 +194,7 @@ public class EventTransformerTest extends AbstractHelperTest {
         assertEquals(event.getLongitude(), eventInfo.getLongitude());
         assertEquals(event.getRadius(), eventInfo.getRadius());
         assertEquals(event.isGeoServicesEnabled(), eventInfo.getGeo());
-        assertEquals(event.getDate(), eventInfo.getDate());
+        assertEquals(event.getCreated(), eventInfo.getDate());
         assertEquals(event.getExpireDate(), eventInfo.getExpireDate());
     }
 

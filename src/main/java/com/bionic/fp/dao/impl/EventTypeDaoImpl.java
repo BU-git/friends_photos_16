@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import java.time.LocalDateTime;
+
 import static com.bionic.fp.util.Checks.check;
 import static java.util.Optional.ofNullable;
 
@@ -24,6 +26,7 @@ public class EventTypeDaoImpl implements EventTypeDAO {
 
     @Override
     public Long create(final EventType eventType) {
+        eventType.setCreated(LocalDateTime.now());
         this.em.persist(eventType);
         return eventType.getId();
     }
@@ -35,6 +38,7 @@ public class EventTypeDaoImpl implements EventTypeDAO {
 
     @Override
     public EventType update(final EventType eventType) {
+        eventType.setModified(LocalDateTime.now());
         return this.em.merge(eventType);
     }
 

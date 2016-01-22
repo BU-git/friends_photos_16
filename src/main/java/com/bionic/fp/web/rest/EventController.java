@@ -399,7 +399,7 @@ public class EventController {
     @ResponseStatus(NO_CONTENT)
     public void deleteEventById(@PathVariable(EVENT.ID) final Long eventId) {
         this.methodSecurityService.checkPermission(eventId, Role::isCanChangeSettings);
-        this.eventService.remove(eventId);
+        this.eventService.softDelete(eventId);
     }
 
 
