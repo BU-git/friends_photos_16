@@ -2,6 +2,8 @@ package com.bionic.fp;
 
 public final class Constants {
 
+    public static final String FILE_SEPERATOR = System.getProperty("file.separator");
+
 	public static class RoleConstants {
 		public final static Long OWNER = 1L;
 		public final static Long ADMIN = 2L;

@@ -10,7 +10,7 @@ import java.io.Serializable;
 public interface GenericDAO<T, PK extends Serializable> {
     /** Save newInstance object to DataBase
      */
-    PK create(T newInstance);
+    PK create(T t);
 
     /**
      * Get object from DataBase using id like PK
@@ -20,11 +20,11 @@ public interface GenericDAO<T, PK extends Serializable> {
     /**
      * Save changes to DataBase that has been made in object
      */
-    T update(T transientObject);
+    T update(T t);
 
     /**
      * Delete object from DataBase
      * @throws EntityNotFoundException if the entity ID doesn't exist
      */
-    void delete(PK persistentObjectID) throws EntityNotFoundException;
+    void delete(PK id) throws EntityNotFoundException;
 }
