@@ -1,5 +1,6 @@
 package com.bionic.fp.web.security.spring.config.stateful;
 
+import com.bionic.fp.Constants;
 import com.bionic.fp.web.security.spring.infrastructure.filter.AuthenticationFilter;
 import com.bionic.fp.web.security.spring.infrastructure.filter.AuthenticationStrategy;
 import com.bionic.fp.web.security.spring.infrastructure.filter.impl.SessionAuthenticationStrategy;
@@ -30,6 +31,7 @@ import java.io.IOException;
 
 import static com.bionic.fp.Constants.RestConstants.PATH.API;
 import static com.bionic.fp.Constants.RestConstants.PATH.AUTH;
+import static com.bionic.fp.Constants.RestConstants.REST_API_VERSION;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 /**
@@ -102,8 +104,8 @@ public class StatefulWebSecurityConfiguration extends WebSecurityConfigurerAdapt
             .and()
             .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers(API+AUTH+"/**").permitAll()
-                .antMatchers(API+"/**").authenticated()
+                .antMatchers(API+REST_API_VERSION+AUTH+"/**").permitAll()
+                .antMatchers(API+REST_API_VERSION+"/**").authenticated()
                 .anyRequest().permitAll();
 
         // Custom authentication

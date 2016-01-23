@@ -20,8 +20,9 @@ import static java.util.stream.Collectors.toList;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PhotoInfo {
 
+    @JsonProperty(PHOTO.ID)         private Long photoId;
     @JsonProperty(PHOTO.NAME)       private String name;
-    @JsonProperty(PHOTO.URL)        private String url;
+//    @JsonProperty(PHOTO.URL)        private String url;
     @JsonProperty(PARAM.OWNER_ID)   private Long ownerId;
 	@JsonProperty(EVENT.ID)         private Long eventId;
 
@@ -33,29 +34,30 @@ public class PhotoInfo {
     }
 
     public void build(final Photo photo) {
+        this.photoId = photo.getId();
         this.name = photo.getName();
-        this.url = photo.getUrl();
+//        this.url = photo.getUrl();
         this.ownerId = photo.getOwner() == null ? null : photo.getOwner().getId();
         this.eventId = photo.getEvent() == null ? null : photo.getEvent().getId();
     }
 
     public static class Transformer {
         private final Photo photo;
-        private final PhotoInfo dto;
+        private final PhotoInfo photoInfo;
 
-        public Transformer(final Photo photo, final PhotoInfo dto) {
+        public Transformer(final Photo photo, final PhotoInfo photoInfo) {
             check(photo != null, "The photo is not initialized");
-            check(dto != null, "The photo dto is not initialized");
+            check(photoInfo != null, "The photo photoInfo is not initialized");
             this.photo = photo;
-            this.dto = dto;
+            this.photoInfo = photoInfo;
         }
 
         public Photo getPhoto() {
             return photo;
         }
 
-        public PhotoInfo getDto() {
-            return dto;
+        public PhotoInfo getPhotoInfo() {
+            return photoInfo;
         }
 
         public static PhotoInfo transform(final Photo photo, final String fields) {
@@ -93,10 +95,11 @@ public class PhotoInfo {
 
         public static Consumer<Transformer> getConsumer(final String fields) {
             if(StringUtils.isNotEmpty(fields)) {
-                Consumer<Transformer> result = addConsumer(fields, PHOTO.NAME, null, t -> t.getDto().setName(t.getPhoto().getName()));
-                result = addConsumer(fields, PHOTO.URL, result, t -> t.getDto().setUrl(t.getPhoto().getUrl()));
-                result = addConsumer(fields, PARAM.OWNER_ID, result, t -> t.getDto().setOwnerId(t.getPhoto().getOwner().getId()));
-                result = addConsumer(fields, EVENT.ID, result, t -> t.getDto().setEventId(t.getPhoto().getEvent().getId()));
+                Consumer<Transformer> result = addConsumer(fields, PHOTO.ID, null, t -> t.getPhotoInfo().setPhotoId(t.getPhoto().getId()));
+                result = addConsumer(fields, PHOTO.NAME, null, t -> t.getPhotoInfo().setName(t.getPhoto().getName()));
+//                result = addConsumer(fields, PHOTO.URL, result, t -> t.getPhotoInfo().setUrl(t.getPhoto().getUrl()));
+                result = addConsumer(fields, PARAM.OWNER_ID, result, t -> t.getPhotoInfo().setOwnerId(t.getPhoto().getOwner().getId()));
+                result = addConsumer(fields, EVENT.ID, result, t -> t.getPhotoInfo().setEventId(t.getPhoto().getEvent().getId()));
 
                 return result;
             }
@@ -112,34 +115,34 @@ public class PhotoInfo {
         }
     }
 
+    public Long getPhotoId() {
+        return photoId;
+    }
+    public void setPhotoId(Long photoId) {
+        this.photoId = photoId;
+    }
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
+//    public String getUrl() {
+//        return url;
+//    }
+//
+//    public void setUrl(String url) {
+//        this.url = url;
+//    }
     public Long getOwnerId() {
         return ownerId;
     }
-
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
     }
-
 	public Long getEventId() {
 		return eventId;
 	}
-
 	public void setEventId(Long eventId) {
 		this.eventId = eventId;
 	}

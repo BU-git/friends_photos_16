@@ -6,6 +6,7 @@ import com.bionic.fp.domain.Role;
 import com.bionic.fp.exception.rest.NotFoundException;
 import com.bionic.fp.service.*;
 import com.bionic.fp.web.rest.dto.CommentDTO;
+import com.bionic.fp.web.rest.dto.CommentInfo;
 import com.bionic.fp.web.rest.dto.PhotoInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.bionic.fp.Constants.RestConstants.*;
 import static com.bionic.fp.Constants.RestConstants.PATH.*;
@@ -76,6 +79,22 @@ public class PhotoController {
 		return new FileSystemResource(url);
 	}
 
+	/**
+	 * Returns photo's comments list
+	 * by given photo id.
+	 *
+	 * @param photoId the photo id.
+	 * @return list of photo's comments.
+	 */
+	@RequestMapping(value = PHOTO_ID+COMMENTS, method = GET, produces = APPLICATION_JSON_VALUE)
+	@ResponseStatus(OK)
+	@ResponseBody
+	public List<CommentInfo> getCommentsByPhoto(@PathVariable(PHOTO.ID) final Long photoId) {
+		Photo photo = ofNullable(photoService.get(photoId)).orElseThrow(() -> new NotFoundException(photoId));
+		List<Comment> commentList = photo.getComments();
+		List<CommentInfo> commentInfoList = commentList.stream().parallel().map(CommentInfo::new).collect(Collectors.toList());
+		return commentInfoList;
+	}
 
 	//***************************************
 	//                 @POST

@@ -13,8 +13,7 @@ public class CommentDTO {
     @JsonProperty(Constants.RestConstants.COMMENT.TEXT)
     String commentText;
 
-    public CommentDTO() {
-    }
+    public CommentDTO() {}
 
     public String getCommentText() {
         return commentText;
