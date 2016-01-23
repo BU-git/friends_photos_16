@@ -2,13 +2,11 @@ package com.bionic.fp.service;
 
 import com.bionic.fp.dao.EventTypeDAO;
 import com.bionic.fp.domain.EventType;
-import com.bionic.fp.exception.logic.impl.EventTypeNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
+import com.bionic.fp.exception.logic.impl.EventTypeNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 import static com.bionic.fp.util.Checks.check;
 
@@ -21,8 +19,7 @@ import static com.bionic.fp.util.Checks.check;
 @Transactional
 public class EventTypeService {
 
-    @Inject
-    private EventTypeDAO eventTypeDAO;
+    @Autowired private EventTypeDAO eventTypeDAO;
 
     public EventTypeService() {}
 

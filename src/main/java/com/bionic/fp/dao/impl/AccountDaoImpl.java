@@ -28,26 +28,6 @@ public class AccountDaoImpl extends GenericDaoJpaImpl<Account, Long> implements 
     public AccountDaoImpl() {}
 
     @Override
-    public Account addAccountEvent(final Long accountId, final AccountEvent accountEvent) throws AccountNotFoundException {
-        Account account = this.getOrThrow(accountId);
-        account.getEvents().add(accountEvent);
-        return account;
-    }
-
-    @Override
-    public Account addAccountEvent(Account account, final AccountEvent accountEvent) throws AccountNotFoundException {
-        if(account != null) {
-            if (account.getId() == null) {
-                List<AccountEvent> accountEvents = account.getEvents();
-                accountEvents.add(accountEvent);
-            } else {
-                account = this.addAccountEvent(account.getId(), accountEvent);
-            }
-        }
-        return account;
-    }
-
-    @Override
     public Account getWithEvents(final Long accountId) {
         EntityGraph graph = this.em.getEntityGraph("Account.events");
         Map<String, Object> hints = new HashMap<>();

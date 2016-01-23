@@ -1,6 +1,5 @@
 package com.bionic.fp.service;
 
-import com.bionic.fp.Constants;
 import com.bionic.fp.dao.PhotoDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Comment;
@@ -12,14 +11,14 @@ import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.PhotoNotFoundException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Collections;
@@ -28,7 +27,6 @@ import java.util.stream.Collectors;
 
 import static com.bionic.fp.Constants.FILE_SEPERATOR;
 import static com.bionic.fp.util.Checks.check;
-import static java.util.Optional.ofNullable;
 
 /**
  * Created by franky_str on 22.11.15.
@@ -37,12 +35,9 @@ import static java.util.Optional.ofNullable;
 @Transactional
 public class PhotoService {
 
-    @Inject
-    private PhotoDAO photoDAO;
-	@Inject
-	private EventService eventService;
-    @Inject
-	private AccountService accountService;
+    @Autowired private PhotoDAO photoDAO;
+    @Autowired private EventService eventService;
+    @Autowired private AccountService accountService;
 
     @Value("${photo.folder}")
     private String directory;

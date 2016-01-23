@@ -11,6 +11,7 @@ import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
 import com.bionic.fp.exception.logic.impl.RoleNotFoundException;
 import com.bionic.fp.exception.permission.PermissionsDeniedException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,11 +29,8 @@ import static java.util.Optional.ofNullable;
 @Transactional
 public class RoleService {
 
-    @Inject
-    private RoleDAO roleDAO;
-
-    @Inject
-    private AccountEventDAO accountEventDAO;
+    @Autowired private RoleDAO roleDAO;
+    @Autowired private AccountEventDAO accountEventDAO;
 
     public RoleService() {}
 

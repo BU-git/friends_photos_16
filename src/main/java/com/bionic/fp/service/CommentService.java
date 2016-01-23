@@ -1,13 +1,10 @@
 package com.bionic.fp.service;
 
-import com.bionic.fp.dao.AccountDAO;
 import com.bionic.fp.dao.CommentDAO;
 import com.bionic.fp.domain.Comment;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Created by Yevhenii on 1/4/2016.
@@ -16,8 +13,8 @@ import javax.inject.Named;
 @Service
 @Transactional
 public class CommentService {
-    @Inject
-    private CommentDAO commentDAO;
+
+    @Autowired private CommentDAO commentDAO;
 
     public CommentService() {}
 

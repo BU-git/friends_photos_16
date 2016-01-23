@@ -5,8 +5,8 @@ import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.exception.auth.impl.EmailAlreadyExistException;
 import com.bionic.fp.exception.auth.impl.IncorrectPasswordException;
-import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.auth.impl.UserNameAlreadyExistException;
+import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.AccountNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.bionic.fp.util.Checks.check;
@@ -27,11 +26,12 @@ import static java.util.Optional.ofNullable;
 @Service
 @Transactional
 public class AccountService {
-    public static final String FACEBOOK_BASE_URL = "https://www.facebook.com/";
-    private static final String VK_BASE_URL = "http://vk.com/";
 
     @Autowired private AccountDAO accountDAO;
     @Autowired private PasswordEncoder passwordEncoder;
+
+    public static final String FACEBOOK_BASE_URL = "https://www.facebook.com/";
+    private static final String VK_BASE_URL = "http://vk.com/";
 
     public AccountService() {}
 

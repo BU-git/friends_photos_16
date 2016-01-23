@@ -1,16 +1,15 @@
 package com.bionic.fp.service;
 
+import com.bionic.fp.dao.AccountEventDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
-import com.bionic.fp.dao.AccountEventDAO;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,8 +24,7 @@ import static com.bionic.fp.util.Checks.check;
 @Transactional
 public class AccountEventService {
 
-    @Inject
-    private AccountEventDAO accountEventDAO;
+    @Autowired private AccountEventDAO accountEventDAO;
 
     public AccountEventService() {}
 

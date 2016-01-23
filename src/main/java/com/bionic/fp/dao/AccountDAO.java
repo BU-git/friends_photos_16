@@ -15,26 +15,6 @@ import java.util.List;
 public interface AccountDAO extends GenericDAO<Account, Long> {
 
     /**
-     * Adds an account-event to the account by account ID
-     *
-     * @param accountId the account ID
-     * @param accountEvent the account-event
-     * @return an updated account
-     * @throws AccountNotFoundException if the account ID doesn't exist
-     */
-    Account addAccountEvent(Long accountId, AccountEvent accountEvent) throws AccountNotFoundException;
-
-    /**
-     * Adds an account-event to the account by instance of the account
-     *
-     * @param account the account
-     * @param accountEvent the account-event
-     * @return an updated account
-     * @throws AccountNotFoundException if the account ID doesn't exist
-     */
-    Account addAccountEvent(Account account, AccountEvent accountEvent) throws AccountNotFoundException;
-
-    /**
      * Returns an account with its events by the account ID.
      * Queries an account with setting EAGER for list of events
      *
