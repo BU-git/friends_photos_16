@@ -5,6 +5,7 @@ import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.EventType;
 import com.bionic.fp.web.rest.dto.EventInput;
+import com.bionic.fp.web.rest.v1.EventController;
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.Before;
 import org.junit.Ignore;

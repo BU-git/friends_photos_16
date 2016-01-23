@@ -1,4 +1,4 @@
-package com.bionic.fp.web.rest;
+package com.bionic.fp.web.rest.v1;
 
 import com.bionic.fp.exception.AppException;
 import com.bionic.fp.exception.auth.AuthenticationException;

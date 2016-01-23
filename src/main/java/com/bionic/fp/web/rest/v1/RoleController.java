@@ -1,6 +1,5 @@
-package com.bionic.fp.web.rest;
+package com.bionic.fp.web.rest.v1;
 
-import com.bionic.fp.Constants;
 import com.bionic.fp.domain.Role;
 import com.bionic.fp.exception.rest.NotFoundException;
 import com.bionic.fp.service.MethodSecurityService;
@@ -8,10 +7,7 @@ import com.bionic.fp.web.rest.dto.*;
 import com.bionic.fp.service.RoleService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.bionic.fp.Constants.RestConstants.*;
 import static com.bionic.fp.Constants.RestConstants.PATH.*;
@@ -25,7 +21,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  * Created by Yevhenii on 11/29/2015.
  */
 @RestController
-@RequestMapping(API+ROLES)
+@RequestMapping(API+REST_API_VERSION+ROLES)
 public class RoleController {
 
     final static Logger LOG = Logger.getLogger(RoleController.class);
@@ -37,7 +33,6 @@ public class RoleController {
     //***************************************
     //                 @GET
     //***************************************
-
 
     /**
      * Returns a list of all roles

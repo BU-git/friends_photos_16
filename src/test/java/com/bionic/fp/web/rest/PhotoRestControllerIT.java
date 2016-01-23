@@ -4,6 +4,7 @@ import com.bionic.fp.AbstractIT;
 import com.bionic.fp.Constants.RestConstants.PHOTO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
+import com.bionic.fp.web.rest.v1.PhotoController;
 import org.junit.Test;
 
 import java.io.File;
@@ -13,7 +14,6 @@ import static com.bionic.fp.Constants.RestConstants.PATH.*;
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 /**

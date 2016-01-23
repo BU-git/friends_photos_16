@@ -1,4 +1,4 @@
-package com.bionic.fp.web.rest;
+package com.bionic.fp.web.rest.v1;
 
 import com.bionic.fp.Constants.RoleConstants;
 import com.bionic.fp.domain.Account;
@@ -27,7 +27,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  * Created by boubdyk on 15.11.2015.
  */
 @RestController
-@RequestMapping(API+ACCOUNTS)
+@RequestMapping(API+REST_API_VERSION+ACCOUNTS)
 public class AccountController {
 
 	@Autowired private AccountService accountService;

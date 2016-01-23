@@ -1,4 +1,4 @@
-package com.bionic.fp.web.rest;
+package com.bionic.fp.web.rest.v1;
 
 import com.bionic.fp.Constants;
 import com.bionic.fp.domain.*;
@@ -25,7 +25,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  * @author Sergiy Gabriel
  */
 @RestController
-@RequestMapping(API+EVENTS)
+@RequestMapping(API+REST_API_VERSION+EVENTS)
 public class EventController {
 
     @Autowired private EventService eventService;

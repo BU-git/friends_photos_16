@@ -18,6 +18,8 @@ public final class Constants {
      */
     public static final class RestConstants {
 
+        public static final String REST_API_VERSION = "/v1";
+
         public interface PATH {
             String API = "/api";
 

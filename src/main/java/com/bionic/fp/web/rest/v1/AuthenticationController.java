@@ -1,4 +1,4 @@
-package com.bionic.fp.web.rest;
+package com.bionic.fp.web.rest.v1;
 
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.service.AccountService;
@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import static com.bionic.fp.Constants.RestConstants.PARAM.FB_TOKEN;
 import static com.bionic.fp.Constants.RestConstants.PATH.*;
+import static com.bionic.fp.Constants.RestConstants.REST_API_VERSION;
 import static com.bionic.fp.util.Checks.check;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
@@ -37,7 +38,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  * @author Sergiy Gabriel
  */
 @RestController
-@RequestMapping(API+AUTH)
+@RequestMapping(API+REST_API_VERSION+AUTH)
 public class AuthenticationController {
 
     private static final String DEBUG_TOKEN_URL = "https://graph.facebook.com/debug_token?input_token=%s&access_token=%s|%s";

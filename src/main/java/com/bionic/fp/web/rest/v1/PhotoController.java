@@ -1,4 +1,4 @@
-package com.bionic.fp.web.rest;
+package com.bionic.fp.web.rest.v1;
 
 import com.bionic.fp.domain.Comment;
 import com.bionic.fp.domain.Photo;
@@ -31,7 +31,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
  * Created by franky_str on 26.11.15.
  */
 @Controller
-@RequestMapping(API+PHOTOS)
+@RequestMapping(API+REST_API_VERSION+PHOTOS)
 public class PhotoController {
 
 	@Autowired private PhotoService photoService;
