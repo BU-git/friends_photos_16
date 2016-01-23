@@ -80,5 +80,5 @@ public interface AccountDAO extends GenericDAO<Account, Long> {
      * @return an account
      * @throws AccountNotFoundException if the account doesn't exist
      */
-    Account getOrThrow(Long accountId) throws AccountNotFoundException;
+//    Account getOrThrow(Long accountId) throws AccountNotFoundException;
 }

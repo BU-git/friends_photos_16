@@ -18,37 +18,11 @@ import static java.util.Optional.ofNullable;
  * Created by Yevhenii on 11/16/2015.
  */
 @Repository
-public class RoleDaoImpl implements RoleDAO {
+public class RoleDaoImpl extends GenericDaoJpaImpl<Role, Long> implements RoleDAO {
 
     public static final String SELECT_ALL_ROLES = "SELECT r FROM Role r";
 
-    @PersistenceContext(unitName = "entityManager")
-    private EntityManager em;
-
-
-    @Override
-    public Long create(final Role role) {
-        role.setCreated(LocalDateTime.now());
-        em.persist(role);
-        return role.getId();
-    }
-
-    @Override
-    public Role read(Long id) {
-        return em.find(Role.class, id);
-    }
-
-    @Override
-    public Role update(final Role role) {
-        role.setModified(LocalDateTime.now());
-        em.merge(role);
-        return role;
-    }
-
-    @Override
-    public void delete(Long roleId) throws RoleNotFoundException {
-        this.em.remove(this.getOrThrow(roleId));
-    }
+    public RoleDaoImpl() {}
 
     @Override
     public Role getOwner() throws RoleNotFoundException  {
@@ -61,7 +35,7 @@ public class RoleDaoImpl implements RoleDAO {
         return allRolesQuery.getResultList();
     }
 
-    private Role getOrThrow(final Long roleId) throws RoleNotFoundException {
-        return ofNullable(this.read(roleId)).orElseThrow(() -> new RoleNotFoundException(roleId));
-    }
+//    private Role getOrThrow(final Long roleId) throws RoleNotFoundException {
+//        return ofNullable(this.read(roleId)).orElseThrow(() -> new RoleNotFoundException(roleId));
+//    }
 }

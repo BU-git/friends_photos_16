@@ -71,8 +71,8 @@ public class PhotoService {
      * @throws InvalidParameterException if the photo ID is invalid
      * @throws PhotoNotFoundException if the photo doesn't exist
      */
-    public Photo getOrThrow(final Long photoId) throws InvalidParameterException, PhotoNotFoundException {
-        return ofNullable(this.get(photoId)).orElseThrow(() -> new PhotoNotFoundException(photoId));
+    public Photo getOrThrow(final Long photoId) throws EntityNotFoundException {
+        return photoDAO.getOrThrow(photoId);
     }
 
     /**

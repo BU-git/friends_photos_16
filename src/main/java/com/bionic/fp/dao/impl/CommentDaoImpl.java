@@ -12,34 +12,8 @@ import java.time.LocalDateTime;
  * Created by boubdyk on 11.11.2015.
  */
 @Repository
-public class CommentDaoImpl implements CommentDAO {
-
-    @PersistenceContext(unitName = "entityManager")
-    private EntityManager em;
+public class CommentDaoImpl extends GenericDaoJpaImpl<Comment, Long> implements CommentDAO {
 
     public CommentDaoImpl() {}
 
-    @Override
-    public Long create(final Comment comment) {
-        comment.setCreated(LocalDateTime.now());
-        em.persist(comment);
-        return comment.getId();
-    }
-
-    @Override
-    public Comment read(Long id) {
-        return em.find(Comment.class, id);
-    }
-
-    @Override
-    public Comment update(final Comment comment) {
-        comment.setModified(LocalDateTime.now());
-        em.merge(comment);
-        return comment;
-    }
-
-    @Override
-    public void delete(Long persistentObjectID) {
-        em.remove(read(persistentObjectID));
-    }
 }

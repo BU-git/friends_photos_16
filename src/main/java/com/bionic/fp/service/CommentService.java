@@ -20,7 +20,8 @@ public class CommentService {
     private CommentDAO commentDAO;
 
     public Long create(Comment comment) {
-        return commentDAO.create(comment);
+        commentDAO.create(comment);
+        return comment.getId();
     }
 
     public Comment read(Long id) {

@@ -2,9 +2,8 @@ package com.bionic.fp.service;
 
 import com.bionic.fp.AbstractIT;
 import com.bionic.fp.domain.*;
+import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
-import com.bionic.fp.exception.logic.impl.AccountNotFoundException;
-import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import org.junit.Test;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -162,7 +161,7 @@ public class EventServiceIT extends AbstractIT {
         assertNull(this.eventService.createEvent(null, event));
     }
 
-    @Test(expected = AccountNotFoundException.class)
+    @Test(expected = EntityNotFoundException.class)
     public void testCreateEventOwnerIdNotFoundFailure() {
         EventType privateEvent = getPrivateEventType();
 
@@ -198,7 +197,7 @@ public class EventServiceIT extends AbstractIT {
         this.eventService.softDelete(null);
     }
 
-    @Test(expected = EventNotFoundException.class)
+    @Test(expected = EntityNotFoundException.class)
     public void testSoftDeleteByIdEventIdNotFoundFailure() {
         this.eventService.softDelete(Long.MAX_VALUE);
     }

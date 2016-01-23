@@ -23,36 +23,9 @@ import static java.util.Optional.ofNullable;
  * @author Sergiy Gabriel
  */
 @Repository
-public class AccountDaoImpl extends AbstractQueryHelper implements AccountDAO {
-
-    @PersistenceContext(unitName = "entityManager")
-    private EntityManager em;
+public class AccountDaoImpl extends GenericDaoJpaImpl<Account, Long> implements AccountDAO {
 
     public AccountDaoImpl() {}
-
-    @Override
-    public Long create(Account account) {
-        account.setCreated(LocalDateTime.now());
-        em.persist(account);
-        return account.getId();
-    }
-
-    @Override
-    public Account read(Long accountId) {
-        return em.find(Account.class, accountId);
-    }
-
-    @Override
-    public Account update(Account account) {
-        account.setModified(LocalDateTime.now());
-        em.merge(account);
-        return account;
-    }
-
-    @Override
-    public void delete(final Long accountId) throws AccountNotFoundException {
-        this.em.remove(this.getOrThrow(accountId));
-    }
 
     @Override
     public Account addAccountEvent(final Long accountId, final AccountEvent accountEvent) throws AccountNotFoundException {
@@ -67,7 +40,6 @@ public class AccountDaoImpl extends AbstractQueryHelper implements AccountDAO {
             if (account.getId() == null) {
                 List<AccountEvent> accountEvents = account.getEvents();
                 accountEvents.add(accountEvent);
-//                account.setEvents(accountEvents);
             } else {
                 account = this.addAccountEvent(account.getId(), accountEvent);
             }
@@ -111,9 +83,9 @@ public class AccountDaoImpl extends AbstractQueryHelper implements AccountDAO {
                 this.em.createNamedQuery(Account.GET_BY_VK_ID, Account.class).setParameter("vkId", vkId));
     }
 
-    @Override
-    public Account getOrThrow(final Long accountId) throws AccountNotFoundException {
-        return ofNullable(this.read(accountId)).orElseThrow(() -> new AccountNotFoundException(accountId));
-    }
+//    @Override
+//    public Account getOrThrow(final Long accountId) throws AccountNotFoundException {
+//        return ofNullable(this.read(accountId)).orElseThrow(() -> new AccountNotFoundException(accountId));
+//    }
 
 }

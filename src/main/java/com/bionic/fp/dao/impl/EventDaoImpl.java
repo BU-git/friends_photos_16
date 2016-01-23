@@ -19,37 +19,9 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
  * @author Sergiy Gabriel
  */
 @Repository
-public class EventDaoImpl implements EventDAO {
+public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements EventDAO {
 
-    @PersistenceContext(unitName = "entityManager")
-    private EntityManager em;
-
-    public EventDaoImpl(){
-    }
-
-    @Override
-    public Long create(final Event event) {
-        event.setCreated(LocalDateTime.now());
-        this.em.persist(event);
-        return event.getId();
-    }
-
-    @Override
-    public Event read(final Long eventId) {
-        return this.em.find(Event.class, eventId);
-    }
-
-    @Override
-    public Event update(final Event event) {
-        event.setModified(LocalDateTime.now());
-        return this.em.merge(event);
-    }
-
-    @Override
-    public void delete(final Long eventId) throws EventNotFoundException {
-        Event event = this.getOrThrow(eventId);
-        this.em.remove(event);
-    }
+    public EventDaoImpl() {}
 
 //    @Override
 //    public Event addAccountEvent(final Long eventId, final AccountEvent accountEvent) throws EventNotFoundException {
@@ -99,17 +71,17 @@ public class EventDaoImpl implements EventDAO {
                 orElseThrow(() -> new EventNotFoundException(eventId)).getComments();
     }
 
-    @Override
-    public void setDeleted(final Long eventId, final boolean value) throws EventNotFoundException {
-        Event event = this.getOrThrow(eventId);
-        event.setDeleted(value);
-        this.update(event);
-    }
+//    @Override
+//    public void setDeleted(final Long eventId, final boolean value) throws EventNotFoundException {
+//        Event event = this.getOrThrow(eventId);
+//        event.setDeleted(value);
+//        this.update(event);
+//    }
 
-    @Override
-    public Event getOrThrow(final Long eventId) throws EventNotFoundException {
-        return ofNullable(this.read(eventId)).orElseThrow(() -> new EventNotFoundException(eventId));
-    }
+//    @Override
+//    public Event getOrThrow(final Long eventId) throws EventNotFoundException {
+//        return ofNullable(this.read(eventId)).orElseThrow(() -> new EventNotFoundException(eventId));
+//    }
 
     @Override
     public List<Event> get(final String name, final String description) {

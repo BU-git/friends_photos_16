@@ -123,11 +123,11 @@ public class EventService {
 //        return eventId;
 
         Account owner = this.accountDAO.getOrThrow(ownerId);
-        Long eventId = this.eventDAO.create(event);
+        this.eventDAO.create(event);
         AccountEvent conn = new AccountEvent(event, owner, role);
         this.accountEventDAO.create(conn);
         event.getAccounts().add(conn);
-        return eventId;
+        return event.getId();
     }
 
     /**

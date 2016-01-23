@@ -16,36 +16,9 @@ import java.util.List;
  * Created by boubdyk on 11.11.2015.
  */
 @Repository
-public class PhotoDaoImpl implements PhotoDAO {
-
-    @PersistenceContext(unitName = "entityManager")
-    private EntityManager em;
+public class PhotoDaoImpl extends GenericDaoJpaImpl<Photo, Long> implements PhotoDAO {
 
     public PhotoDaoImpl() {}
-
-    @Override
-    public Long create(final Photo photo) {
-        photo.setCreated(LocalDateTime.now());
-        em.persist(photo);
-        return photo.getId();
-    }
-
-    @Override
-    public Photo read(Long id) {
-        return em.find(Photo.class, id);
-    }
-
-    @Override
-    public Photo update(final Photo photo) {
-        photo.setModified(LocalDateTime.now());
-        em.merge(photo);
-        return photo;
-    }
-
-    @Override
-    public void delete(Long persistentObjectID) {
-        em.remove(read(persistentObjectID));
-    }
 
 	@Override
 	public List<Photo> getPhotosByEventId(final Long eventId) {

@@ -30,8 +30,9 @@ public class AccountEventService {
 
     public AccountEventService() {}
 
-    public Long addAccountEvent(final AccountEvent accountEvent) {
-        return accountEvent == null ? null : this.accountEventDAO.create(accountEvent);
+    public Long addAccountEvent(AccountEvent accountEvent) {
+        this.accountEventDAO.create(accountEvent);
+        return accountEvent.getId();
     }
 
     public void removeById(final Long id) {

@@ -75,7 +75,7 @@ public interface EventDAO extends GenericDAO<Event, Long> {
      * @param value the value
      * @throws EventNotFoundException if the event doesn't exist
      */
-    void setDeleted(Long eventId, boolean value) throws EventNotFoundException;
+//    void setDeleted(Long eventId, boolean value) throws EventNotFoundException;
 
     /**
      * Returns an event by the specified id and throws the exception otherwise
@@ -84,7 +84,7 @@ public interface EventDAO extends GenericDAO<Event, Long> {
      * @return an event
      * @throws EventNotFoundException if the event doesn't exist
      */
-    Event getOrThrow(Long eventId) throws EventNotFoundException;
+//    Event getOrThrow(Long eventId) throws EventNotFoundException;
 
     /**
      * Returns a list of events as the result of searching by name and description

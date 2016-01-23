@@ -23,36 +23,9 @@ import static java.util.Optional.ofNullable;
  * @author Sergiy Gabriel
  */
 @Repository
-public class AccountEventDaoImpl extends AbstractQueryHelper implements AccountEventDAO {
+public class AccountEventDaoImpl extends GenericDaoJpaImpl<AccountEvent, Long> implements AccountEventDAO {
 
-    @PersistenceContext(unitName = "entityManager")
-    private EntityManager em;
-
-
-    @Override
-    public Long create(final AccountEvent accountEvent) {
-        accountEvent.setCreated(LocalDateTime.now());
-        this.em.persist(accountEvent);
-        return accountEvent.getId();
-    }
-
-    @Override
-    public AccountEvent read(final Long accountEventId) {
-        return this.em.find(AccountEvent.class, accountEventId);
-    }
-
-    @Override
-    public AccountEvent update(final AccountEvent accountEvent) {
-        accountEvent.setModified(LocalDateTime.now());
-        this.em.merge(accountEvent);
-        return accountEvent;
-    }
-
-    @Override
-    public void delete(final Long accountEventId) throws AccountEventNotFoundException {
-        AccountEvent accountEvent = this.getOrThrow(accountEventId);
-        this.em.remove(accountEvent);
-    }
+    public AccountEventDaoImpl() {}
 
     @Override
     public AccountEvent getWithAccountEvent(final Long id) {
@@ -133,10 +106,11 @@ public class AccountEventDaoImpl extends AbstractQueryHelper implements AccountE
                 .collect(Collectors.toList());
     }
 
-    private AccountEvent getOrThrow(final Long accountEventId) throws AccountEventNotFoundException {
-        return ofNullable(this.read(accountEventId)).orElseThrow(() ->
-                new AccountEventNotFoundException(accountEventId));
-    }
+//    @Override
+//    protected AccountEvent getOrThrow(final Long accountEventId) throws AccountEventNotFoundException {
+//        return ofNullable(this.read(accountEventId)).orElseThrow(() ->
+//                new AccountEventNotFoundException(accountEventId));
+//    }
 
     private AccountEvent getOrThrow(final Long accountId, final Long eventId) throws AccountEventNotFoundException {
         return ofNullable(this.get(accountId, eventId)).orElseThrow(() ->

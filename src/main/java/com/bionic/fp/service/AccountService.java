@@ -52,7 +52,8 @@ public class AccountService {
         }
 
         Account account = new Account(email, username, this.passwordEncoder.encode(password));
-        return this.accountDAO.create(account);
+        this.accountDAO.create(account);
+        return account.getId();
     }
 
     /**
