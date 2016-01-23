@@ -38,6 +38,106 @@ public class EventService {
 
     public EventService() {}
 
+    //////////////////////////////////////////////
+    //                  CRUD                    //
+    //////////////////////////////////////////////
+
+    /**
+     * Saves an event into the database and returns its ID as a result of the success
+     *
+     * @param ownerId the owner ID
+     * @param event the event
+     * @return the event ID and null otherwise
+     * @throws InvalidParameterException if incoming parameters are not valid
+     * @throws EntityNotFoundException if the owner and its role doesn't exist
+     * todo: simplify this logic using accountEventDAO
+     */
+    public Long createEvent(final Long ownerId, Event event) throws InvalidParameterException, EntityNotFoundException {
+        check(ownerId != null, "The owner ID should not be null");
+        check(event.getId() == null, "When creating an event it should not have ID");
+        this.validation(event);
+
+        Role role = this.roleDAO.getOwner();
+
+//        // create empty connection (skeleton)
+//        AccountEvent conn = new AccountEvent();
+//
+//        // add empty connection to owner and event
+//        Account owner = this.accountDAO.addAccountEvent(ownerId, conn);
+//        event = this.eventDAO.addAccountEvent(event, conn);
+//
+//        conn.setAccount(owner);
+//        conn.setEvent(event);
+//        conn.setRole(role);
+////        event.setDate(LocalDateTime.now()); // todo: checkout
+//
+//        Long eventId = this.eventDAO.create(event);
+//        this.accountDAO.update(owner);
+//        return eventId;
+
+        Account owner = this.accountDAO.getOrThrow(ownerId);
+        this.eventDAO.create(event);
+        AccountEvent conn = new AccountEvent(event, owner, role);
+        this.accountEventDAO.create(conn);
+        event.getAccounts().add(conn);
+        return event.getId();
+    }
+
+    /**
+     * Returns an event from database by event ID and null otherwise
+     *
+     * @param eventId the event ID
+     * @return the event and null otherwise
+     * @throws InvalidParameterException if the event ID is invalid
+     */
+    public Event get(final Long eventId) throws InvalidParameterException {
+        this.validation(eventId);
+        return this.eventDAO.read(eventId);
+    }
+
+    /**
+     * Updates an event and returns the current state of the event
+     *
+     * @param event the event
+     * @return the current state of the event and null otherwise
+     * @throws InvalidParameterException if incoming parameters are not valid
+     * @throws EventNotFoundException if the event doesn't exist
+     */
+    public Event update(final Event event) throws InvalidParameterException, EventNotFoundException {
+        this.validation(event);
+        this.validation(event.getId());
+        Event actual = this.get(event.getId());
+        ofNullable(actual).orElseThrow(() -> new EventNotFoundException(event.getId()));
+        return this.eventDAO.update(event);
+    }
+
+    /**
+     * Removes an event from the database
+     *
+     * @param eventId the event ID
+     * @throws InvalidParameterException if the event ID is invalid
+     * @throws EventNotFoundException if the event doesn't exist
+     */
+    public void delete(final Long eventId) throws InvalidParameterException, EventNotFoundException {
+        this.validation(eventId);
+        this.eventDAO.delete(eventId);
+    }
+
+    /**
+     * Changes the deleted field to true (soft delete)
+     *
+     * @param eventId the event ID
+     * @throws InvalidParameterException if the event ID is invalid
+     * @throws EventNotFoundException if the event doesn't exist
+     */
+    public void softDelete(final Long eventId) throws InvalidParameterException, EventNotFoundException {
+        this.validation(eventId);
+        this.eventDAO.setDeleted(eventId, true);
+    }
+
+
+
+
     /**
      * Adds or updates an account to the event
      *
@@ -87,83 +187,6 @@ public class EventService {
         check(roleId != null, "The role id should not be null");
         Role role = ofNullable(this.roleDAO.read(roleId)).orElseThrow(() -> new RoleNotFoundException(roleId));
         this.addOrUpdateAccountToEvent(accountId, eventId, role, password);
-    }
-
-    /**
-     * Saves an event into the database and returns its ID as a result of the success
-     *
-     * @param ownerId the owner ID
-     * @param event the event
-     * @return the event ID and null otherwise
-     * @throws InvalidParameterException if incoming parameters are not valid
-     * @throws EntityNotFoundException if the owner and its role doesn't exist
-     * todo: simplify this logic using accountEventDAO
-     */
-    public Long createEvent(final Long ownerId, Event event) throws InvalidParameterException, EntityNotFoundException {
-        check(ownerId != null, "The owner ID should not be null");
-        check(event.getId() == null, "When creating an event it should not have ID");
-        this.validation(event);
-
-        Role role = this.roleDAO.getOwner();
-
-//        // create empty connection (skeleton)
-//        AccountEvent conn = new AccountEvent();
-//
-//        // add empty connection to owner and event
-//        Account owner = this.accountDAO.addAccountEvent(ownerId, conn);
-//        event = this.eventDAO.addAccountEvent(event, conn);
-//
-//        conn.setAccount(owner);
-//        conn.setEvent(event);
-//        conn.setRole(role);
-////        event.setDate(LocalDateTime.now()); // todo: checkout
-//
-//        Long eventId = this.eventDAO.create(event);
-//        this.accountDAO.update(owner);
-//        return eventId;
-
-        Account owner = this.accountDAO.getOrThrow(ownerId);
-        this.eventDAO.create(event);
-        AccountEvent conn = new AccountEvent(event, owner, role);
-        this.accountEventDAO.create(conn);
-        event.getAccounts().add(conn);
-        return event.getId();
-    }
-
-    /**
-     * Removes an event from the database
-     *
-     * @param eventId the event ID
-     * @throws InvalidParameterException if the event ID is invalid
-     * @throws EventNotFoundException if the event doesn't exist
-     */
-    public void delete(final Long eventId) throws InvalidParameterException, EventNotFoundException {
-        this.validation(eventId);
-        this.eventDAO.delete(eventId);
-    }
-
-    /**
-     * Changes the deleted field to true (soft delete)
-     *
-     * @param eventId the event ID
-     * @throws InvalidParameterException if the event ID is invalid
-     * @throws EventNotFoundException if the event doesn't exist
-     */
-    public void softDelete(final Long eventId) throws InvalidParameterException, EventNotFoundException {
-        this.validation(eventId);
-        this.eventDAO.setDeleted(eventId, true);
-    }
-
-    /**
-     * Returns an event from database by event ID and null otherwise
-     *
-     * @param eventId the event ID
-     * @return the event and null otherwise
-     * @throws InvalidParameterException if the event ID is invalid
-     */
-    public Event get(final Long eventId) throws InvalidParameterException {
-        this.validation(eventId);
-        return this.eventDAO.read(eventId);
     }
 
     /**
@@ -228,22 +251,6 @@ public class EventService {
     public List<Comment> getComments(final Long eventId) throws InvalidParameterException, EventNotFoundException {
         this.validation(eventId);
         return this.eventDAO.getComments(eventId);
-    }
-
-    /**
-     * Updates an event and returns the current state of the event
-     *
-     * @param event the event
-     * @return the current state of the event and null otherwise
-     * @throws InvalidParameterException if incoming parameters are not valid
-     * @throws EventNotFoundException if the event doesn't exist
-     */
-    public Event update(final Event event) throws InvalidParameterException, EventNotFoundException {
-        this.validation(event);
-        this.validation(event.getId());
-        Event actual = this.get(event.getId());
-        ofNullable(actual).orElseThrow(() -> new EventNotFoundException(event.getId()));
-        return this.eventDAO.update(event);
     }
 
     /**

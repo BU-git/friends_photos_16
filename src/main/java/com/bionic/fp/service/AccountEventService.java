@@ -30,20 +30,35 @@ public class AccountEventService {
 
     public AccountEventService() {}
 
-    public Long addAccountEvent(AccountEvent accountEvent) {
-        this.accountEventDAO.create(accountEvent);
-        return accountEvent.getId();
-    }
+    //////////////////////////////////////////////
+    //                  CRUD                    //
+    //////////////////////////////////////////////
 
-    public void removeById(final Long id) {
-        if(id != null) {
-            this.accountEventDAO.delete(id);
-        }
+    public AccountEvent create(AccountEvent accountEvent) {
+        this.accountEventDAO.create(accountEvent);
+        return accountEvent;
     }
 
     public AccountEvent get(final Long id) {
         return id == null ? null : this.accountEventDAO.read(id);
     }
+
+    public AccountEvent update(final AccountEvent accountEvent) {
+        return accountEvent == null ? null : this.accountEventDAO.update(accountEvent);
+    }
+
+    public void softDelete(final Long accountId) {
+            this.accountEventDAO.setDeleted(accountId, true);
+    }
+
+    //    @Admin
+    public void delete(final Long accountId) {
+            this.accountEventDAO.delete(accountId);
+    }
+
+    //////////////////////////////////////////////
+    //                  Other                   //
+    //////////////////////////////////////////////
 
     public AccountEvent get(final Long accountId, final Long eventId) {
         if(accountId == null || eventId == null) {
@@ -63,10 +78,6 @@ public class AccountEventService {
     public AccountEvent getWithAccountEvent(final Long accountId, final Long eventId) {
         return (accountId == null || eventId == null) ? null :
                 this.accountEventDAO.getWithAccountEvent(accountId, eventId);
-    }
-
-    public AccountEvent update(final AccountEvent accountEvent) {
-        return accountEvent == null ? null : this.accountEventDAO.update(accountEvent);
     }
 
     /**

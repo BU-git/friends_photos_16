@@ -19,12 +19,18 @@ public class CommentService {
     @Inject
     private CommentDAO commentDAO;
 
+    public CommentService() {}
+
+    //////////////////////////////////////////////
+    //                  CRUD                    //
+    //////////////////////////////////////////////
+
     public Long create(Comment comment) {
         commentDAO.create(comment);
         return comment.getId();
     }
 
-    public Comment read(Long id) {
+    public Comment get(Long id) {
         return commentDAO.read(id);
     }
 
@@ -32,9 +38,17 @@ public class CommentService {
         return commentDAO.update(comment);
     }
 
+    public void softDelete(Long id) {
+        commentDAO.setDeleted(id, true);
+    }
+
     public void delete(Long id) {
         commentDAO.delete(id);
     }
+
+    //////////////////////////////////////////////
+    //                  Other                   //
+    //////////////////////////////////////////////
 
 
 }

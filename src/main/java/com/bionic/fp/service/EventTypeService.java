@@ -24,15 +24,11 @@ public class EventTypeService {
     @Inject
     private EventTypeDAO eventTypeDAO;
 
-    /**
-     * Returns the private type of the event from database
-     *
-     * @return the private type of the event
-     * @throws EventTypeNotFoundException if the event type doesn't exist
-     */
-    public EventType getPrivate() throws EventTypeNotFoundException {
-        return this.eventTypeDAO.getPrivate();
-    }
+    public EventTypeService() {}
+
+    //////////////////////////////////////////////
+    //                  CRUD                    //
+    //////////////////////////////////////////////
 
     /**
      * Returns an event type from database by event type ID
@@ -44,6 +40,20 @@ public class EventTypeService {
     public EventType get(final Long eventTypeId) throws InvalidParameterException {
         this.validation(eventTypeId);
         return this.eventTypeDAO.read(eventTypeId);
+    }
+
+    //////////////////////////////////////////////
+    //                  Other                   //
+    //////////////////////////////////////////////
+
+    /**
+     * Returns the private type of the event from database
+     *
+     * @return the private type of the event
+     * @throws EventTypeNotFoundException if the event type doesn't exist
+     */
+    public EventType getPrivate() throws EventTypeNotFoundException {
+        return this.eventTypeDAO.getPrivate();
     }
 
     /**

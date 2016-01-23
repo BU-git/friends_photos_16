@@ -49,11 +49,15 @@ public class PhotoService {
 
     private SecureRandom random = new SecureRandom();
 
-    public PhotoService(){}
+    public PhotoService() {}
 
-	public Photo update(Photo photo) {
-		return photoDAO.update(photo);
-	}
+    //////////////////////////////////////////////
+    //                  CRUD                    //
+    //////////////////////////////////////////////
+
+    public Photo create(Photo photo) {
+        return photoDAO.create(photo);
+    }
 
     /**
      * @param id photo ID
@@ -62,6 +66,23 @@ public class PhotoService {
     public Photo get(Long id) {
         return photoDAO.read(id);
     }
+
+    public Photo update(Photo photo) {
+		return photoDAO.update(photo);
+	}
+
+    public void softDelete(final Long photoId) {
+        this.photoDAO.setDeleted(photoId, true);
+    }
+
+    //    @Admin
+    public void delete(final Long photoId) {
+        this.photoDAO.delete(photoId);
+    }
+
+    //////////////////////////////////////////////
+    //                  Other                   //
+    //////////////////////////////////////////////
 
     /**
      * Returns a photo by ID or throw exception
@@ -164,8 +185,6 @@ public class PhotoService {
 //    public Photo getSingleInfo(String hash) {
 //        return photoDAO.getSingleInfoByHash(hash);
 //    }
-
-
 
     /**
      * todo: update(photo)?!? fixme using commentDao! and photo => photoId

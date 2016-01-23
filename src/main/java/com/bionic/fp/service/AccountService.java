@@ -35,6 +35,26 @@ public class AccountService {
 
     public AccountService() {}
 
+    //////////////////////////////////////////////
+    //                  CRUD                    //
+    //////////////////////////////////////////////
+
+    /**
+     * Returns an account by the account ID
+     *
+     * @param accountId the account ID
+     * @return the account and null otherwise
+     * @throws InvalidParameterException if the account ID is invalid
+     */
+    public Account get(final Long accountId) throws InvalidParameterException {
+        this.validation(accountId);
+        return this.accountDAO.read(accountId);
+    }
+
+    //////////////////////////////////////////////
+    //                  Other                   //
+    //////////////////////////////////////////////
+
     /**
      * Used to register user by FP. If user exist method return user id. If user doesn't exist method
      * create new user in DB and return his id
@@ -126,17 +146,7 @@ public class AccountService {
         return account;
     }
 
-    /**
-     * Returns an account by the account ID
-     *
-     * @param accountId the account ID
-     * @return the account and null otherwise
-     * @throws InvalidParameterException if the account ID is invalid
-     */
-    public Account get(final Long accountId) throws InvalidParameterException {
-        this.validation(accountId);
-        return this.accountDAO.read(accountId);
-    }
+
 
     /**
      * Returns an account by the specified email
