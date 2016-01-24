@@ -10,9 +10,6 @@ import com.bionic.fp.web.rest.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static com.bionic.fp.Constants.RestConstants.PARAM.*;
 import static com.bionic.fp.Constants.RestConstants.*;
 import static com.bionic.fp.Constants.RestConstants.PATH.*;
@@ -28,7 +25,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  * @author Sergiy Gabriel
  */
 @RestController
-@RequestMapping(API+REST_API_VERSION+EVENTS)
+@RequestMapping(API+V1+EVENTS)
 public class EventController {
 
     @Autowired private EventService eventService;

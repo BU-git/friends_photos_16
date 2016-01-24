@@ -18,10 +18,9 @@ public final class Constants {
      */
     public static final class RestConstants {
 
-        public static final String REST_API_VERSION = "/v1";
-
         public interface PATH {
             String API = "/api";
+            String V1 = "/v1";
 
             String AUTH = "/auth";
             String ACCOUNTS = "/accounts";
@@ -81,6 +80,9 @@ public final class Constants {
             String USERNAME = "username";
             String IMAGE_URL = "image_url";
             String LIST = "accounts";
+            String SOCIAL_ID = "social_id";
+            String LAST_NAME = "last_name";
+            String FIRST_NAME = "first_name";
         }
 
         public interface ROLE {

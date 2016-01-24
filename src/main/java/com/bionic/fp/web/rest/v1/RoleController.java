@@ -21,7 +21,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  * Created by Yevhenii on 11/29/2015.
  */
 @RestController
-@RequestMapping(API+REST_API_VERSION+ROLES)
+@RequestMapping(API+V1+ROLES)
 public class RoleController {
 
     final static Logger LOG = Logger.getLogger(RoleController.class);

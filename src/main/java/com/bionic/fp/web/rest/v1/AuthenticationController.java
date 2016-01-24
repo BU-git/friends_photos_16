@@ -5,28 +5,21 @@ import com.bionic.fp.service.AccountService;
 import com.bionic.fp.service.MethodSecurityService;
 import com.bionic.fp.web.rest.dto.AuthenticationRequest;
 import com.bionic.fp.web.rest.dto.AuthenticationResponse;
-import com.bionic.fp.web.rest.dto.service.FBUserInfoResponse;
-import com.bionic.fp.web.rest.dto.service.FBUserTokenInfo;
+import com.bionic.fp.web.rest.dto.AuthenticationSocialRequest;
 import com.bionic.fp.web.security.spring.infrastructure.User;
 import com.bionic.fp.web.security.spring.infrastructure.filter.AuthenticationStrategy;
 import com.bionic.fp.web.security.spring.infrastructure.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.bionic.fp.Constants.RestConstants.PARAM.FB_TOKEN;
 import static com.bionic.fp.Constants.RestConstants.PATH.*;
-import static com.bionic.fp.Constants.RestConstants.REST_API_VERSION;
-import static com.bionic.fp.util.Checks.check;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -34,26 +27,19 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
  * This is REST web-service that handles authentication requests
+ * todo: hide the token if required
  *
  * @author Sergiy Gabriel
  */
 @RestController
-@RequestMapping(API+REST_API_VERSION+AUTH)
+@RequestMapping(API+V1+AUTH)
 public class AuthenticationController {
-
-    private static final String DEBUG_TOKEN_URL = "https://graph.facebook.com/debug_token?input_token=%s&access_token=%s|%s";
-    private static final String REQUEST_USER_INFO_URL = "https://graph.facebook.com/%s?fields=name,email&access_token=%s";
-    private static final String REQUEST_USER_INFO_URL_ME = "https://graph.facebook.com/me?fields=name,email&access_token=%s";
-
-    @Value("${fb.key}")     private String appKey;
-    @Value("${fb.secret}")  private String appSecret;
 
     @Autowired private AuthenticationManager authenticationManager;
     @Autowired private TokenUtils tokenUtils;
     @Autowired private AccountService accountService;
     @Autowired private MethodSecurityService methodSecurityService;
     @Autowired private AuthenticationStrategy authenticationStrategy;
-    @Autowired private RestTemplate restTemplate;
 
 
     //***************************************
@@ -96,29 +82,17 @@ public class AuthenticationController {
     @RequestMapping(value = FB, method = POST, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public AuthenticationResponse loginViaFacebook(@RequestParam(name = FB_TOKEN, required = true) final String token,
+    public AuthenticationResponse facebook(@RequestBody final AuthenticationSocialRequest authRequest,
                                            final HttpServletRequest request, final HttpServletResponse response) {
-        // verification
-        String fbId = this.getUserFbId(token);
-
-        FBUserInfoResponse userInfo = null;
-        try {
-            userInfo = restTemplate.getForObject(String.format(REQUEST_USER_INFO_URL, fbId, token), FBUserInfoResponse.class);
-//            userInfo = restTemplate.getForObject(String.format(REQUEST_USER_INFO_URL_ME, token), FBUserInfoResponse.class);
-        } catch (RestClientException ignored) {}
-
-        check(userInfo != null, "Unable to get user info from facebook");
-        check(userInfo.hasError(), userInfo.getError().getMessage());
-
-        Account account = accountService.getOrCreateAccountForFbId(userInfo.getId(),
-                userInfo.getName(), userInfo.getEmail());
-
+        Account account = this.accountService.getOrCreateFbAccount(authRequest);
         User user = new User(account);
         this.authenticationStrategy.saveAuthentication(user, request, response);
-
         return new AuthenticationResponse(this.tokenUtils.generateToken(user), user.getId());
     }
 
+    /**
+     * Endpoint used to logout
+     */
     @RequestMapping(value = LOGOUT, method = POST)
     @ResponseStatus(OK)
     public final void logout(final HttpServletRequest request, final HttpServletResponse response) {
@@ -155,18 +129,6 @@ public class AuthenticationController {
         // Perform the authentication
         Authentication authentication = this.authenticationManager.authenticate(auth);
         return (User) authentication.getPrincipal();
-    }
-
-    private String getUserFbId(final String token) {
-        FBUserTokenInfo tokenInfo = null;
-        try {
-            tokenInfo = this.restTemplate.getForObject(String.format(DEBUG_TOKEN_URL, token, appKey, appSecret), FBUserTokenInfo.class);
-        } catch (RestClientException ignored) {}
-
-        check(tokenInfo != null, "Unable to verify token");
-        check(tokenInfo.hasError(), tokenInfo.getData().getError().getMessage());
-
-        return tokenInfo.getData().getUserId();
     }
 
 }

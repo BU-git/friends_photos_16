@@ -1,6 +1,5 @@
 package com.bionic.fp.web.security.spring.config.stateful;
 
-import com.bionic.fp.Constants;
 import com.bionic.fp.web.security.spring.infrastructure.filter.AuthenticationFilter;
 import com.bionic.fp.web.security.spring.infrastructure.filter.AuthenticationStrategy;
 import com.bionic.fp.web.security.spring.infrastructure.filter.impl.SessionAuthenticationStrategy;
@@ -14,7 +13,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,7 +29,7 @@ import java.io.IOException;
 
 import static com.bionic.fp.Constants.RestConstants.PATH.API;
 import static com.bionic.fp.Constants.RestConstants.PATH.AUTH;
-import static com.bionic.fp.Constants.RestConstants.REST_API_VERSION;
+import static com.bionic.fp.Constants.RestConstants.PATH.V1;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 /**
@@ -104,8 +102,8 @@ public class StatefulWebSecurityConfiguration extends WebSecurityConfigurerAdapt
             .and()
             .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers(API+REST_API_VERSION+AUTH+"/**").permitAll()
-                .antMatchers(API+REST_API_VERSION+"/**").authenticated()
+                .antMatchers(API+V1+AUTH+"/**").permitAll()
+                .antMatchers(API+V1+"/**").authenticated()
                 .anyRequest().permitAll();
 
         // Custom authentication

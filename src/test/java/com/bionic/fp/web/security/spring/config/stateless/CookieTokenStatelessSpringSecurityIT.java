@@ -2,6 +2,7 @@ package com.bionic.fp.web.security.spring.config.stateless;
 
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.web.rest.dto.AuthenticationRequest;
+import com.bionic.fp.web.rest.dto.AuthenticationSocialRequest;
 import com.bionic.fp.web.rest.dto.EntityInfoLists;
 import com.bionic.fp.web.security.spring.infrastructure.utils.TokenUtils;
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -54,7 +55,7 @@ public class CookieTokenStatelessSpringSecurityIT extends AbstractAuthentication
             .body(authRequest)
             .contentType(JSON)
         .when()
-            .post(API + AUTH)
+            .post(API + V1 + AUTH)
         .then()
             .statusCode(SC_OK)
         .extract().response();
@@ -70,7 +71,7 @@ public class CookieTokenStatelessSpringSecurityIT extends AbstractAuthentication
             .contentType(JSON)
             .cookie(transform(cookie))
         .when()
-            .get(API + ACCOUNTS + SELF + EVENTS)
+            .get(API + V1 + ACCOUNTS + SELF + EVENTS)
         .then()
             .statusCode(SC_OK)
         .extract().response();
@@ -93,7 +94,7 @@ public class CookieTokenStatelessSpringSecurityIT extends AbstractAuthentication
             .body(authRequest)
             .contentType(JSON)
         .when()
-            .post(API + AUTH + REGISTER)
+            .post(API + V1 + AUTH + REGISTER)
         .then()
             .statusCode(SC_CREATED)
         .extract().response();
@@ -109,7 +110,107 @@ public class CookieTokenStatelessSpringSecurityIT extends AbstractAuthentication
             .contentType(JSON)
             .cookie(transform(cookie))
         .when()
-            .get(API + ACCOUNTS + SELF + EVENTS)
+            .get(API + V1 + ACCOUNTS + SELF + EVENTS)
+        .then()
+            .statusCode(SC_OK)
+        .extract().response();
+
+        assertNull(response.mockHttpServletResponse().getCookie(cookieToken));
+
+        EntityInfoLists lists = response.as(EntityInfoLists.class);
+        assertNotNull(lists);
+        assertNotNull(lists.getEvents());
+        assertTrue(lists.getEvents().isEmpty());
+    }
+
+    @Test
+    public void testAuthenticationViaRegisterByFacebookSuccess() {
+        AuthenticationSocialRequest socialRequest = new AuthenticationSocialRequest();
+
+        socialRequest.setSocialId("fb" + System.currentTimeMillis());
+        socialRequest.setToken("some token");
+        socialRequest.setEmail(generateEmail());
+        socialRequest.setUsername(generateUsername());
+        socialRequest.setFirstName("First");
+        socialRequest.setLastName("Last");
+        socialRequest.setImage("http://image.jpg");
+
+        MockMvcResponse response = given()
+            .body(socialRequest)
+            .contentType(JSON)
+        .when()
+            .post(API + V1 + AUTH + FB)
+        .then()
+            .statusCode(SC_OK)
+        .extract().response();
+
+        Cookie cookie = response.mockHttpServletResponse().getCookie(cookieToken);
+        assertNotNull(cookie);
+        String token = cookie.getValue();
+        assertNotNull(token);
+        assertEquals(this.tokenUtils.getUserEmail(token), socialRequest.getEmail());
+        Account actual = this.accountService.get(this.tokenUtils.getUserId(token));
+        assertNotNull(actual);
+        assertEquals(socialRequest.getSocialId(), actual.getFbId());
+//        assertEquals(socialRequest.getToken(), actual.getFbToken());
+        assertEquals(socialRequest.getEmail(), actual.getEmail());
+        assertEquals(socialRequest.getUsername(), actual.getUserName());
+        assertEquals(socialRequest.getImage(), actual.getProfileImageUrl());
+
+        response = given()
+            .contentType(JSON)
+            .cookie(transform(cookie))
+        .when()
+            .get(API + V1 + ACCOUNTS + SELF + EVENTS)
+        .then()
+            .statusCode(SC_OK)
+        .extract().response();
+
+        assertNull(response.mockHttpServletResponse().getCookie(cookieToken));
+
+        EntityInfoLists lists = response.as(EntityInfoLists.class);
+        assertNotNull(lists);
+        assertNotNull(lists.getEvents());
+        assertTrue(lists.getEvents().isEmpty());
+    }
+
+    @Test
+    public void testAuthenticationByFacebookSuccess() {
+        AuthenticationSocialRequest socialRequest = new AuthenticationSocialRequest();
+        socialRequest.setSocialId("fb" + System.currentTimeMillis());
+        socialRequest.setToken("some token");
+        socialRequest.setEmail(generateEmail());
+        socialRequest.setUsername(generateUsername());
+        socialRequest.setFirstName("First");
+        socialRequest.setLastName("Last");
+        socialRequest.setImage("http://image.jpg");
+
+        Account account = this.accountService.getOrCreateFbAccount(socialRequest);
+        assertNotNull(account);
+        assertNotNull(account.getId());
+
+        AuthenticationSocialRequest authRequest = new AuthenticationSocialRequest();
+        authRequest.setSocialId(socialRequest.getSocialId());
+
+        MockMvcResponse response = given()
+            .body(authRequest)
+            .contentType(JSON)
+        .when()
+            .post(API + V1 + AUTH + FB)
+        .then()
+            .statusCode(SC_OK)
+        .extract().response();
+
+        Cookie cookie = response.mockHttpServletResponse().getCookie(cookieToken);
+        assertNotNull(cookie);
+        String token = cookie.getValue();
+        assertNotNull(token);
+
+        response = given()
+            .contentType(JSON)
+            .cookie(transform(cookie))
+        .when()
+            .get(API + V1 + ACCOUNTS + SELF + EVENTS)
         .then()
             .statusCode(SC_OK)
         .extract().response();

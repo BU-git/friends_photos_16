@@ -80,7 +80,8 @@ public abstract class AbstractIT extends AbstractHelperTest {
 
     protected Account getNewEmailAccount() {
         String s = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME);
-        return new Account("yaya@gmail.com" + s, "Yaya" + s, "yaya" + s);
+//        return new Account("yaya@gmail.com" + s, "Yaya" + s, "yaya" + s);
+        return new Account(generateEmail(), generateUsername(), generatePassword());
     }
 
 //    protected String getToken(final Account account) {
@@ -230,5 +231,17 @@ public abstract class AbstractIT extends AbstractHelperTest {
             assertNotNull(ROLE_MEMBER);
         }
         return ROLE_MEMBER;
+    }
+
+    protected String generateEmail() {
+        return String.format("yaya%d@gmail.com", System.currentTimeMillis());
+    }
+
+    protected String generateUsername() {
+        return String.format("yaya%d", System.currentTimeMillis());
+    }
+
+    protected String generatePassword() {
+        return String.format("secret%d", System.currentTimeMillis());
     }
 }

@@ -25,42 +25,42 @@ public abstract class AbstractAuthenticationFailureIT extends AbstractIT {
         given()
             .contentType(JSON)
         .when()
-            .get(API + "/any")
+            .get(API + V1 + "/any")
         .then()
             .statusCode(SC_UNAUTHORIZED);
 
         given()
             .contentType(JSON)
         .when()
-            .get(API + EVENTS)
+            .get(API + V1 + EVENTS)
         .then()
             .statusCode(SC_UNAUTHORIZED);
 
         given()
             .contentType(JSON)
         .when()
-            .get(API + ACCOUNTS)
+            .get(API + V1 + ACCOUNTS)
         .then()
             .statusCode(SC_UNAUTHORIZED);
 
         given()
             .contentType(JSON)
         .when()
-            .get(API + ROLES)
+            .get(API + V1 + ROLES)
         .then()
             .statusCode(SC_UNAUTHORIZED);
 
         given()
             .contentType(JSON)
         .when()
-            .get(API + COMMENTS)
+            .get(API + V1 + COMMENTS)
         .then()
             .statusCode(SC_UNAUTHORIZED);
 
         given()
             .contentType(JSON)
         .when()
-            .get(API + PHOTOS)
+            .get(API + V1 + PHOTOS)
         .then()
             .statusCode(SC_UNAUTHORIZED);
     }
@@ -76,7 +76,7 @@ public abstract class AbstractAuthenticationFailureIT extends AbstractIT {
             .body(authRequest)
         .contentType(JSON)
             .when()
-        .post(API + AUTH)
+        .post(API + V1 + AUTH)
             .then()
         .statusCode(SC_BAD_REQUEST);
 
@@ -86,7 +86,7 @@ public abstract class AbstractAuthenticationFailureIT extends AbstractIT {
             .body(authRequest)
             .contentType(JSON)
         .when()
-            .post(API + AUTH)
+            .post(API + V1 + AUTH)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -96,7 +96,7 @@ public abstract class AbstractAuthenticationFailureIT extends AbstractIT {
             .body(authRequest)
             .contentType(JSON)
         .when()
-            .post(API + AUTH)
+            .post(API + V1 + AUTH)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -106,7 +106,7 @@ public abstract class AbstractAuthenticationFailureIT extends AbstractIT {
             .body(authRequest)
             .contentType(JSON)
         .when()
-            .post(API + AUTH)
+            .post(API + V1 + AUTH)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -116,7 +116,7 @@ public abstract class AbstractAuthenticationFailureIT extends AbstractIT {
             .body(authRequest)
             .contentType(JSON)
         .when()
-            .post(API + AUTH)
+            .post(API + V1 + AUTH)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -126,7 +126,7 @@ public abstract class AbstractAuthenticationFailureIT extends AbstractIT {
             .body(authRequest)
             .contentType(JSON)
         .when()
-            .post(API + AUTH)
+            .post(API + V1 + AUTH)
         .then()
             .statusCode(SC_BAD_REQUEST);
     }
@@ -141,7 +141,7 @@ public abstract class AbstractAuthenticationFailureIT extends AbstractIT {
             .body(authRequest)
             .contentType(JSON)
         .when()
-            .post(API + AUTH + REGISTER)
+            .post(API + V1 + AUTH + REGISTER)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -151,7 +151,7 @@ public abstract class AbstractAuthenticationFailureIT extends AbstractIT {
             .body(authRequest)
             .contentType(JSON)
         .when()
-            .post(API + AUTH + REGISTER)
+            .post(API + V1 + AUTH + REGISTER)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -161,7 +161,7 @@ public abstract class AbstractAuthenticationFailureIT extends AbstractIT {
             .body(authRequest)
             .contentType(JSON)
         .when()
-            .post(API + AUTH + REGISTER)
+            .post(API + V1 + AUTH + REGISTER)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -171,7 +171,7 @@ public abstract class AbstractAuthenticationFailureIT extends AbstractIT {
             .body(authRequest)
             .contentType(JSON)
         .when()
-            .post(API + AUTH + REGISTER)
+            .post(API + V1 + AUTH + REGISTER)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -181,7 +181,7 @@ public abstract class AbstractAuthenticationFailureIT extends AbstractIT {
             .body(authRequest)
             .contentType(JSON)
         .when()
-            .post(API + AUTH + REGISTER)
+            .post(API + V1 + AUTH + REGISTER)
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -191,7 +191,7 @@ public abstract class AbstractAuthenticationFailureIT extends AbstractIT {
             .body(authRequest)
             .contentType(JSON)
         .when()
-            .post(API + AUTH + REGISTER)
+            .post(API + V1 + AUTH + REGISTER)
         .then()
             .statusCode(SC_BAD_REQUEST);
     }
@@ -205,7 +205,7 @@ public abstract class AbstractAuthenticationFailureIT extends AbstractIT {
             .body(authRequest)
             .contentType(JSON)
         .when()
-            .post(API + AUTH + REGISTER)
+            .post(API + V1 + AUTH + REGISTER)
         .then()
             .statusCode(SC_BAD_REQUEST)
         .extract()

@@ -17,7 +17,7 @@ public class IdLists {
     private List<Long> photos;
     private List<Long> comments;
     private List<Integer> types;
-    private List<Integer> roles;
+    private List<Integer> roles; // todo: change to Long
 
     public IdLists() {
     }
