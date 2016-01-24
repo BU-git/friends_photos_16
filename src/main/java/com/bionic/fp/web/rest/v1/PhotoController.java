@@ -80,6 +80,7 @@ public class PhotoController {
 	}
 
 	/**
+	 * todo: no 404 => 200!
 	 * Returns photo's comments list
 	 * by given photo id.
 	 *
@@ -159,7 +160,7 @@ public class PhotoController {
 	public PhotoInfo updatePhoto(@PathVariable(PHOTO.ID) final Long photoId,
 								 @RequestParam(value = PHOTO.NAME) final String name) {
 		check(StringUtils.isNotEmpty(name), "Param 'name' is null or empty string");
-		Photo photo = photoService.getOrThrow(photoId);
+		Photo photo = photoService.getOrThrow(photoId); // todo: 400 => 404?
 		photo.setName(name);
 		photo = photoService.update(photo);
 		return new PhotoInfo(photo);

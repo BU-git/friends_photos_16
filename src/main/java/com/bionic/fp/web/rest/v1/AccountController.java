@@ -4,6 +4,7 @@ import com.bionic.fp.Constants.RoleConstants;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
+import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.rest.NotFoundException;
 import com.bionic.fp.service.AccountEventService;
 import com.bionic.fp.service.MethodSecurityService;
@@ -65,7 +66,10 @@ public class AccountController {
     @ResponseStatus(OK)
     @ResponseBody
     public final AccountInfo getUser() {
-        return new AccountInfo(methodSecurityService.getUser());
+        Account user = methodSecurityService.getUser();
+        AccountInfo body = new AccountInfo(user);
+        body.setEmail(user.getEmail());
+        return body;
     }
 
     /**
@@ -78,7 +82,7 @@ public class AccountController {
     @ResponseStatus(OK)
     @ResponseBody
     public final EntityInfoLists getAccountEvents(@PathVariable(ACCOUNT.ID) final Long accountId) {
-        return getEvents(accountId);
+        return this.getEvents(accountId);
     }
 
     /**
@@ -332,15 +336,15 @@ public class AccountController {
     //***************************************
 
 
-    private EntityInfoLists getEvents(final Long accountId) {
+    private EntityInfoLists getEvents(final Long accountId) throws InvalidParameterException {
         return this.getEvents(accountId, null);
     }
 
-    private IdLists getEventIds(final Long accountId) {
+    private IdLists getEventIds(final Long accountId) throws InvalidParameterException {
         return this.getEventIds(accountId, null);
     }
 
-    private EntityInfoLists getEvents(final Long accountId, final Long roleId) {
+    private EntityInfoLists getEvents(final Long accountId, final Long roleId) throws InvalidParameterException {
         List<Event> events = roleId == null ?
                 this.accountService.getEvents(accountId) :
                 this.accountEventService.getEvents(accountId, roleId);
@@ -351,7 +355,7 @@ public class AccountController {
         return body;
     }
 
-    private IdLists getEventIds(final Long accountId, final Long roleId) {
+    private IdLists getEventIds(final Long accountId, final Long roleId) throws InvalidParameterException {
         List<Long> events = roleId == null ?
                 this.accountService.getEventIds(accountId) :
                 this.accountEventService.getEventIds(accountId, roleId);

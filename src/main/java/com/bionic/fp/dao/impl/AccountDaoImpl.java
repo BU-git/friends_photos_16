@@ -35,6 +35,7 @@ public class AccountDaoImpl extends GenericDaoJpaImpl<Account, Long> implements 
         return this.em.find(Account.class, accountId, hints);
     }
 
+    // todo: move the logic to EventDao(/Service/Rest) and 400 => 200!
     @Override
     public List<Event> getEvents(final Long accountId) throws AccountNotFoundException {
         Account account = ofNullable(this.getWithEvents(accountId)).orElseThrow(() -> new AccountNotFoundException(accountId));

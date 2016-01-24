@@ -197,6 +197,7 @@ public class EventController {
     }
 
     /**
+     * todo: 400 => 404!
      * Returns the owner of the event
      *
      * @param eventId the event id
@@ -211,6 +212,7 @@ public class EventController {
     }
 
     /**
+     * todo: 400 => 404!
      * Returns the owner id of the event
      *
      * @param eventId the event id
@@ -322,7 +324,7 @@ public class EventController {
     public void updateEvent(@PathVariable(EVENT.ID) final Long eventId, @RequestBody final EventInput eventDto) {
         this.methodSecurityService.checkPermission(eventId, Role::isCanChangeSettings);
 
-        Event event = this.getEventOrThrow(eventId);
+        Event event = this.getEventOrThrow(eventId); // todo: 400 => 404?
 
         // required parameters (should not be null)
         if(eventDto.getEventTypeId() != null) {
@@ -390,6 +392,7 @@ public class EventController {
 
 
     /**
+     * todo: 400 => 404!
      * Deletes the event
      *
      * @param eventId the event id

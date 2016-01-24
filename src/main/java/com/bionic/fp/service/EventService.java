@@ -215,6 +215,7 @@ public class EventService {
     }
 
     /**
+     * // todo: move to AccountDao(/Service/Rest) 400 => 200!
      * Returns a list of the accounts of the event by the event ID
      *
      * @param eventId the event ID
@@ -228,6 +229,7 @@ public class EventService {
     }
 
     /**
+     * // todo: move to PhotoDao(/Service/Rest) 400 => 200!
      * Returns a list of the photos of the event by the event ID
      *
      * @param eventId the event ID
@@ -241,6 +243,7 @@ public class EventService {
     }
 
     /**
+     * // todo: move to CommentDao(/Service/Rest) 400 => 200!
      * Returns a list of the comments of the event by the event ID
      *
      * @param eventId the event ID
@@ -254,6 +257,7 @@ public class EventService {
     }
 
     /**
+     * todo: returns null, no throws EventNotFoundException, must be 400 => 404!
      * Returns the owner of the event
      *
      * @param eventId the event ID

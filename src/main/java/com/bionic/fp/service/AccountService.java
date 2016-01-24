@@ -227,8 +227,9 @@ public class AccountService {
      *
      * @param accountId the account ID
      * @return a list of the events of the account
-     * @throws AccountNotFoundException if the account ID is invalid
+     * @throws InvalidParameterException if the account ID is invalid
      */
+    // todo: move the logic to EventDao(/Service/Rest) and 400 => 200!
     public List<Event> getEvents(final Long accountId) throws InvalidParameterException, AccountNotFoundException {
         this.validation(accountId);
         return this.accountDAO.getEvents(accountId);

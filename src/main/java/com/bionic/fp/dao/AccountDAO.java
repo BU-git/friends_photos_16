@@ -30,6 +30,7 @@ public interface AccountDAO extends GenericDAO<Account, Long> {
      * @return a list of the events of the account
      * @throws AccountNotFoundException if the account doesn't exist
      */
+    // todo: move the logic to EventDao(/Service/Rest) and 400 => 200!
     List<Event> getEvents(Long accountId) throws AccountNotFoundException;
 
     /**

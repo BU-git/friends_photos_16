@@ -44,6 +44,7 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
     }
 
     @Override
+    // todo: move to AccountDao(/Service/Rest) 400 => 200!
     public List<Account> getAccounts(final Long eventId) throws EventNotFoundException {
         Event event = ofNullable(this.getWithAccounts(eventId)).orElseThrow(() -> new EventNotFoundException(eventId));
         return event.getAccounts()
@@ -54,6 +55,7 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
     }
 
     @Override
+    // todo: move to PhotoDao(/Service/Rest) 400 => 200!
     public List<Photo> getPhotos(final Long eventId) throws EventNotFoundException {
         EntityGraph graph = this.em.getEntityGraph("Event.photos");
         Map<String, Object> hints = new HashMap<>();
@@ -63,6 +65,7 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
     }
 
     @Override
+    // todo: move to CommentDao(/Service/Rest) 400 => 200!
     public List<Comment> getComments(final Long eventId) throws EventNotFoundException {
         EntityGraph graph = this.em.getEntityGraph("Event.comments");
         Map<String, Object> hints = new HashMap<>();

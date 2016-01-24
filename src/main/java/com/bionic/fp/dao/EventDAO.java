@@ -41,6 +41,7 @@ public interface EventDAO extends GenericDAO<Event, Long> {
     Event getWithAccounts(Long eventId);
 
     /**
+     * // todo: move to AccountDao(/Service/Rest) 400 => 200!
      * Returns a list of the accounts of the event by the event ID
      *
      * @param eventId the event ID
@@ -50,6 +51,7 @@ public interface EventDAO extends GenericDAO<Event, Long> {
     List<Account> getAccounts(Long eventId) throws EventNotFoundException;
 
     /**
+     * // todo: move to PhotoDao(/Service/Rest) 400 => 200!
      * Returns a list of the photos of the event by the event ID
      *
      * @param eventId the event ID
@@ -59,6 +61,7 @@ public interface EventDAO extends GenericDAO<Event, Long> {
     List<Photo> getPhotos(Long eventId) throws EventNotFoundException;
 
     /**
+     * // todo: move to CommentDao(/Service/Rest) 400 => 200!
      * Returns a list of the comments of the event by the event ID
      *
      * @param eventId the event ID
