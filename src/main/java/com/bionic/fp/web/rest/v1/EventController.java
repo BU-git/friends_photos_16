@@ -2,6 +2,7 @@ package com.bionic.fp.web.rest.v1;
 
 import com.bionic.fp.Constants;
 import com.bionic.fp.domain.*;
+import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import com.bionic.fp.exception.logic.impl.EventTypeNotFoundException;
 import com.bionic.fp.exception.rest.NotFoundException;
@@ -9,6 +10,9 @@ import com.bionic.fp.service.*;
 import com.bionic.fp.web.rest.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.bionic.fp.Constants.RestConstants.PARAM.*;
 import static com.bionic.fp.Constants.RestConstants.*;
@@ -29,6 +33,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 public class EventController {
 
     @Autowired private EventService eventService;
+    @Autowired private AccountEventService accountEventService;
     @Autowired private EventTypeService eventTypeService;
     @Autowired private MethodSecurityService methodSecurityService;
 
@@ -95,136 +100,173 @@ public class EventController {
     }
 
     /**
-     * Returns a list of accounts belonging to this event
+     * Returns a list of events of the account
      *
-     * @param eventId the event id
-     * @return a list of accounts
-     * @throws EventNotFoundException if the event is not found
+     * @param accountId the account id
+     * @return a list of events
      */
-    @RequestMapping(value = EVENT_ID+ACCOUNTS, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ACCOUNTS+ACCOUNT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public EntityInfoLists getAccounts(@PathVariable(EVENT.ID) final Long eventId) {
-        EntityInfoLists body = new EntityInfoLists();
-        body.setAccounts(this.eventService.getAccounts(eventId).stream().parallel()
-                .map(AccountInfo::new).collect(toList()));
-        return body;
+    public final EntityInfoLists getAccountEvents(@PathVariable(ACCOUNT.ID) final Long accountId) {
+        return this.getEvents(accountId);
     }
 
     /**
-     * Returns a list of account ids belonging to this event
+     * Returns a list of events of the user
+     * The user must be authenticated
      *
-     * @param eventId the event id
-     * @return a list of account ids
-     * @throws EventNotFoundException if the event is not found
+     * @return a list of events
      */
-    @RequestMapping(value = EVENT_ID+ACCOUNTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ACCOUNTS+SELF, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public IdLists getAccountIds(@PathVariable(EVENT.ID) final Long eventId) {
-        IdLists body = new IdLists();
-        body.setAccounts(this.eventService.getAccounts(eventId).stream().parallel()
-                .map(Account::getId).collect(toList()));
-        return body;
+    public final EntityInfoLists getUserEvents() {
+        Long userId = this.methodSecurityService.getUserId();
+        return this.getEvents(userId);
     }
 
     /**
-     * Returns a list of photos of the event
+     * Returns a list of events owned by the account
      *
-     * @param eventId the event id
-     * @return a list of photos
-     * @throws EventNotFoundException if the event is not found
+     * @param accountId the account id
+     * @return a list of events
      */
-    @RequestMapping(value = EVENT_ID+PHOTOS, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ACCOUNTS+ACCOUNT_ID+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public EntityInfoLists getPhotos(@PathVariable(EVENT.ID) final Long eventId) {
-        EntityInfoLists body = new EntityInfoLists();
-        body.setPhotos(this.eventService.getPhotos(eventId).stream().parallel()
-                .map(PhotoInfo::new).collect(toList()));
-        return body;
+    public final EntityInfoLists getOwnerEvents(@PathVariable(ACCOUNT.ID) final Long accountId) {
+        return this.getEvents(accountId, Constants.RoleConstants.OWNER);
     }
 
     /**
-     * Returns a list of photo ids of the event
+     * Returns a list of events owned by the user.
+     * The user must be authenticated
      *
-     * @param eventId the event id
-     * @return a list of photo ids
-     * @throws EventNotFoundException if the event is not found
+     * @return a list of events
      */
-    @RequestMapping(value = EVENT_ID+PHOTOS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ACCOUNTS+SELF+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public IdLists getPhotoIds(@PathVariable(EVENT.ID) final Long eventId) {
-        IdLists body = new IdLists();
-        body.setPhotos(this.eventService.getPhotos(eventId).stream().parallel()
-                .map(Photo::getId).collect(toList()));
-        return body;
+    public final EntityInfoLists getOwnerEvents() {
+        Long userId = this.methodSecurityService.getUserId();
+        return this.getEvents(userId, Constants.RoleConstants.OWNER);
     }
 
     /**
-     * Returns a list of comments of the event
+     * Returns a list of events where the account has the specified role
      *
-     * @param eventId the event id
-     * @return a list of comments
-     * @throws EventNotFoundException if the event is not found
+     * @param accountId the account id
+     * @param roleId the role id
+     * @return a list of events
      */
-    @RequestMapping(value = EVENT_ID+COMMENTS, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ACCOUNTS+ACCOUNT_ID+ROLES+ROLE_ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public EntityInfoLists getComments(@PathVariable(EVENT.ID) final Long eventId) {
-        EntityInfoLists body = new EntityInfoLists();
-        body.setComments(this.eventService.getComments(eventId).stream().parallel()
-                .map(CommentInfo::new).collect(toList()));
-        return body;
+    public final EntityInfoLists getAccountEvents(@PathVariable(ACCOUNT.ID) final Long accountId,
+                                                  @PathVariable(ROLE.ID) final Long roleId) {
+        return this.getEvents(accountId, roleId);
     }
 
     /**
-     * Returns a list of comment ids of the event
+     * Returns a list of events where the user has the specified role.
+     * The user must be authenticated
      *
-     * @param eventId the event id
-     * @return a list of comment ids
-     * @throws EventNotFoundException if the event is not found
+     * @param roleId the role id
+     * @return a list of events
      */
-    @RequestMapping(value = EVENT_ID+COMMENTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ACCOUNTS+SELF+ROLES+ROLE_ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public IdLists getCommentIds(@PathVariable(EVENT.ID) final Long eventId) {
-        IdLists body = new IdLists();
-        body.setComments(this.eventService.getComments(eventId).stream().parallel()
-                .map(Comment::getId).collect(toList()));
-        return body;
+    public final EntityInfoLists getUserEvents(@PathVariable(ROLE.ID) final Long roleId) {
+        Long userId = this.methodSecurityService.getUserId();
+        return this.getEvents(userId, roleId);
     }
 
     /**
-     * todo: 400 => 404!
-     * Returns the owner of the event
+     * Return a list of event ids of the account
      *
-     * @param eventId the event id
-     * @return the owner
-     * @throws EventNotFoundException if the event is not found
+     * @param accountId the account id
+     * @return a list of event ids
      */
-    @RequestMapping(value = EVENT_ID+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ID+ACCOUNTS+ACCOUNT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public AccountInfo getEventOwner(@PathVariable(EVENT.ID) final Long eventId) {
-        return new AccountInfo(this.eventService.getOwner(eventId));
+    public final IdLists getAccountEventIds(@PathVariable(ACCOUNT.ID) final Long accountId) {
+        return this.getEventIds(accountId);
     }
 
     /**
-     * todo: 400 => 404!
-     * Returns the owner id of the event
+     * Return a list of event ids of the user.
+     * The user must be authenticated
      *
-     * @param eventId the event id
-     * @return the owner id
-     * @throws EventNotFoundException if the event is not found
+     * @return a list of event ids
      */
-    @RequestMapping(value = EVENT_ID+OWNER+ID, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ID+ACCOUNTS+SELF, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public IdInfo getEventOwnerId(@PathVariable(EVENT.ID) final Long eventId) {
-        return new IdInfo(this.eventService.getOwner(eventId).getId());
+    public final IdLists getUserEventIds() {
+        Long userId = this.methodSecurityService.getUserId();
+        return this.getEventIds(userId);
     }
+
+    /**
+     * Return a list of event ids owned by the account
+     *
+     * @param accountId - account ID
+     * @return a list of event ids
+     */
+    @RequestMapping(value = ID+ACCOUNTS+ACCOUNT_ID+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    @ResponseBody
+    public final IdLists getOwnerEventIds(@PathVariable(ACCOUNT.ID) final Long accountId) {
+        return this.getEventIds(accountId, Constants.RoleConstants.OWNER);
+    }
+
+    /**
+     * Return a list of event ids owned by the user.
+     * The user must be authenticated
+     *
+     * @return a list of event ids
+     */
+    @RequestMapping(value = ID+ACCOUNTS+SELF+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    @ResponseBody
+    public final IdLists getOwnerEventIds() {
+        Long userId = this.methodSecurityService.getUserId();
+        return this.getEventIds(userId, Constants.RoleConstants.OWNER);
+    }
+
+    /**
+     * Returns a list of event ids where the account has the specified role
+     *
+     * @param accountId the account id
+     * @param roleId the role id
+     * @return a list of event ids
+     */
+    @RequestMapping(value = ID+ACCOUNTS+ACCOUNT_ID+ROLES+ROLE_ID, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    @ResponseBody
+    public final IdLists getAccountEventIds(@PathVariable(ACCOUNT.ID) final Long accountId,
+                                            @PathVariable(ROLE.ID) final Long roleId) {
+        return this.getEventIds(accountId, roleId);
+    }
+
+    /**
+     * Returns a list of event ids where the user has the specified role.
+     * The user must be authenticated
+     *
+     * @param roleId the role id
+     * @return a list of event ids
+     */
+    @RequestMapping(value = ID+ACCOUNTS+SELF+ROLES+ROLE_ID, method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    @ResponseBody
+    public final IdLists getUserEventIds(@PathVariable(ROLE.ID) final Long roleId) {
+        Long userId = this.methodSecurityService.getUserId();
+        return this.getEventIds(userId, roleId);
+    }
+
 
     //***************************************
     //                 @POST
@@ -374,7 +416,7 @@ public class EventController {
      * @param roleId the new role id
      * @param password the event password (it will be required if the event is private)
      */
-    @RequestMapping(value = EVENT_ID+ACCOUNTS+ACCOUNT_ID, method = PUT)
+    @RequestMapping(value = EVENT_ID+ACCOUNTS+ACCOUNT_ID+ROLES, method = PUT)
     @ResponseStatus(OK)
     public void updateAccountToEvent(@PathVariable(EVENT.ID) final Long eventId,
                                      @PathVariable(ACCOUNT.ID) final Long accountId,
@@ -420,5 +462,33 @@ public class EventController {
 
     private Event findEventOrThrow(final Long eventId) throws NotFoundException {
         return ofNullable(this.eventService.get(eventId)).orElseThrow(() -> new NotFoundException(eventId, "event"));
+    }
+
+    private EntityInfoLists getEvents(final Long accountId) throws InvalidParameterException {
+        return this.getEvents(accountId, null);
+    }
+
+    private IdLists getEventIds(final Long accountId) throws InvalidParameterException {
+        return this.getEventIds(accountId, null);
+    }
+
+    private EntityInfoLists getEvents(final Long accountId, final Long roleId) throws InvalidParameterException {
+        List<Event> events = roleId == null ?
+                this.accountEventService.getEvents(accountId) :
+                this.accountEventService.getEvents(accountId, roleId);
+        EntityInfoLists body = new EntityInfoLists();
+        body.setEvents(events.stream().parallel()
+                .map(EventInfo::new)
+                .collect(Collectors.toList()));
+        return body;
+    }
+
+    private IdLists getEventIds(final Long accountId, final Long roleId) throws InvalidParameterException {
+        List<Long> events = roleId == null ?
+                this.accountEventService.getEventIds(accountId) :
+                this.accountEventService.getEventIds(accountId, roleId);
+        IdLists body = new IdLists();
+        body.setEvents(events);
+        return body;
     }
 }

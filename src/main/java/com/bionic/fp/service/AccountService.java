@@ -2,7 +2,6 @@ package com.bionic.fp.service;
 
 import com.bionic.fp.dao.AccountDAO;
 import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.Event;
 import com.bionic.fp.exception.auth.impl.EmailAlreadyExistException;
 import com.bionic.fp.exception.auth.impl.IncorrectPasswordException;
 import com.bionic.fp.exception.auth.impl.UserNameAlreadyExistException;
@@ -17,13 +16,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.bionic.fp.util.Checks.check;
+import static com.bionic.fp.util.Checks.*;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -62,7 +57,7 @@ public class AccountService {
      * @throws InvalidParameterException if the account ID is invalid
      */
     public Account get(final Long accountId) throws InvalidParameterException {
-        this.validation(accountId);
+        checkAccount(accountId);
         return this.accountDAO.read(accountId);
     }
 
@@ -91,28 +86,28 @@ public class AccountService {
         return account.getId();
     }
 
-    /**
-     * Used to login user by FP using user name and user password
-     * @param email the user name
-     * @param password the user password
-     * @return user unique identifier
-     * @throws InvalidParameterException if if incoming parameters are not valid
-     * @throws AccountNotFoundException if user doesn't exist in DB
-     * @throws IncorrectPasswordException if password for such user is incorrect
-     */
-    @Deprecated
-    public Long loginByFP(final String email, final String password) throws InvalidParameterException,
-                                                                AccountNotFoundException, IncorrectPasswordException {
-        check(email != null, "The email should not be null");
-        check(password != null, "The password should not be null");
-
-        Account account = ofNullable(this.accountDAO.getByEmail(email)).orElseThrow(() -> new AccountNotFoundException(email));
-
-        if(!this.passwordEncoder.matches(password, account.getPassword())) {
-            throw new IncorrectPasswordException();
-        }
-        return account.getId();
-    }
+//    /**
+//     * Used to login user by FP using user name and user password
+//     * @param email the user name
+//     * @param password the user password
+//     * @return user unique identifier
+//     * @throws InvalidParameterException if if incoming parameters are not valid
+//     * @throws AccountNotFoundException if user doesn't exist in DB
+//     * @throws IncorrectPasswordException if password for such user is incorrect
+//     */
+//    @Deprecated
+//    public Long loginByFP(final String email, final String password) throws InvalidParameterException,
+//                                                                AccountNotFoundException, IncorrectPasswordException {
+//        check(email != null, "The email should not be null");
+//        check(password != null, "The password should not be null");
+//
+//        Account account = ofNullable(this.accountDAO.getByEmail(email)).orElseThrow(() -> new AccountNotFoundException(email));
+//
+//        if(!this.passwordEncoder.matches(password, account.getPassword())) {
+//            throw new IncorrectPasswordException();
+//        }
+//        return account.getId();
+//    }
 
     /**
      * Returns an account or creates new account if such an account not found
@@ -127,7 +122,9 @@ public class AccountService {
 //        fbValidation(authRequest); // turn on when will be set the correct settings facebook app
         Account account = this.accountDAO.getByFbId(authRequest.getSocialId());
         if(account == null) {
-            account = this.accountDAO.getByEmail(authRequest.getEmail());
+            if(authRequest.getEmail() != null) {
+                account = this.accountDAO.getByEmail(authRequest.getEmail());
+            }
             if(account != null) {
                 // check out that the required fields are filled or fill them if required
                 boolean modified = false;
@@ -171,18 +168,18 @@ public class AccountService {
 
 
 
-    public Account getOrCreateAccountForVkId(final String vkId) {
-        check(vkId != null, "The vk id should not be null");
-        Account account = this.accountDAO.getByVkId(vkId);
-        if(account == null) {
-            // no account at all
-            account = new Account();
-            account.setVkId(vkId);
-            account.setVkProfileUrl(VK_BASE_URL + "id" + vkId);
-            accountDAO.create(account);
-        }
-        return account;
-    }
+//    public Account getOrCreateAccountForVkId(final String vkId) {
+//        check(vkId != null, "The vk id should not be null");
+//        Account account = this.accountDAO.getByVkId(vkId);
+//        if(account == null) {
+//            // no account at all
+//            account = new Account();
+//            account.setVkId(vkId);
+//            account.setVkProfileUrl(VK_BASE_URL + "id" + vkId);
+//            accountDAO.create(account);
+//        }
+//        return account;
+//    }
 
 
 
@@ -194,7 +191,7 @@ public class AccountService {
      * @throws InvalidParameterException if the email is invalid
      */
     public Account getByEmail(final String email) throws InvalidParameterException {
-        check(email != null, "The email should not be null");
+        checkNotNull(email, "email");
         return this.accountDAO.getByEmail(email);
     }
 
@@ -216,38 +213,12 @@ public class AccountService {
      * @param accountId the account ID
      * @return an account with its events and null otherwise
      * @throws InvalidParameterException if the account ID is invalid
+     * todo: delete it
      */
+    @Deprecated
     public Account getWithEvents(final Long accountId) throws InvalidParameterException {
-        this.validation(accountId);
+        checkAccount(accountId);
         return this.accountDAO.getWithEvents(accountId);
-    }
-
-    /**
-     * Returns a list of the events by the account ID
-     *
-     * @param accountId the account ID
-     * @return a list of the events of the account
-     * @throws InvalidParameterException if the account ID is invalid
-     */
-    // todo: move the logic to EventDao(/Service/Rest) and 400 => 200!
-    public List<Event> getEvents(final Long accountId) throws InvalidParameterException, AccountNotFoundException {
-        this.validation(accountId);
-        return this.accountDAO.getEvents(accountId);
-    }
-
-    public List<Long> getEventIds(final Long accountId) {
-        List<Event> events = this.getEvents(accountId);
-        return events.stream().parallel().map(Event::getId).collect(Collectors.toList());
-    }
-
-    /**
-     * Checks an account ID
-     *
-     * @param accountId the account ID
-     * @throws InvalidParameterException if the account ID is invalid
-     */
-    private void validation(final Long accountId) throws InvalidParameterException {
-        check(accountId != null, "The account ID should not be null");
     }
 
     /**
@@ -339,23 +310,4 @@ public class AccountService {
         return firstName != null ? firstName : lastName;
     }
 
-    /**
-     * Method is used to check if user exist in DB.
-     * @param email the users email
-     * @param fbId the users fb id
-     * @param vkId the users vk id
-     * @return true if user exist and false otherwise
-     */
-    private boolean isExist(final String email, final String fbId, final String vkId) {
-        if (email != null) {
-            return ofNullable(this.accountDAO.getByEmail(email)).isPresent();
-        }
-        if (fbId != null) {
-            return ofNullable(this.accountDAO.getByFbId(fbId)).isPresent();
-        }
-        if (vkId != null) {
-            return ofNullable(this.accountDAO.getByVkId(vkId)).isPresent();
-        }
-        return false;
-    }
 }

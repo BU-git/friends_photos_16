@@ -6,6 +6,7 @@ import com.bionic.fp.domain.Comment;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.AppException;
+import com.bionic.fp.exception.auth.impl.IncorrectPasswordException;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.PhotoNotFoundException;
@@ -23,10 +24,10 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.bionic.fp.Constants.FILE_SEPERATOR;
-import static com.bionic.fp.util.Checks.check;
+import static com.bionic.fp.util.Checks.*;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Created by franky_str on 22.11.15.
@@ -63,8 +64,8 @@ public class PhotoService {
     }
 
     public Photo update(Photo photo) {
-		return photoDAO.update(photo);
-	}
+        return photoDAO.update(photo);
+    }
 
     public void softDelete(final Long photoId) {
         this.photoDAO.setDeleted(photoId, true);
@@ -97,9 +98,9 @@ public class PhotoService {
      * @param ownerId the owner ID
      * @return a list of the photos of the owner
      */
-	public List<Photo> getPhotosByOwnerId(final Long ownerId) {
-		return ownerId == null ? Collections.emptyList() : this.photoDAO.getPhotosByOwnerId(ownerId);
-	}
+    public List<Photo> getPhotosByOwnerId(final Long ownerId) {
+        return ownerId == null ? Collections.emptyList() : this.photoDAO.getPhotosByOwner(ownerId);
+    }
 
     /**
      * Returns an ID list of the photos by the owner ID
@@ -108,17 +109,16 @@ public class PhotoService {
      * @return an ID list of the photos of the owner
      */
     public List<Long> getPhotoIdsByOwnerId(final Long ownerId) {
-        return this.getPhotosByOwnerId(ownerId).stream().parallel().map(Photo::getId).collect(Collectors.toList());
+        return this.getPhotosByOwnerId(ownerId).stream().parallel().map(Photo::getId).collect(toList());
     }
 
     public Photo saveToFileSystem(final Event event, final Account owner, final MultipartFile file, final String name)
-                                                                        throws InvalidParameterException, IOException {
-        check(owner != null, "The owner should not be null");
-        check(owner.getId() != null, "The owner doesn't exist yet");
-        check(event != null, "The event should not be null");
-        check(event.getId() != null, "The event doesn't exist yet");
-        check(file != null, "The file should not be null");
-        check(!file.isEmpty(), "The file should not be empty");
+            throws InvalidParameterException, IOException {
+        checkAccount(owner);
+        checkAccount(owner.getId());
+        checkEvent(event);
+        checkEvent(event.getId());
+        checkFile(file);
 
         String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
         String fileName = this.generateFileName(fileExtension);
@@ -138,7 +138,7 @@ public class PhotoService {
     }
 
     public Photo saveToFileSystem(final Long eventId, final Long ownerId, final MultipartFile file, final String name)
-                                                throws InvalidParameterException, EntityNotFoundException, IOException {
+            throws InvalidParameterException, EntityNotFoundException, IOException {
         Event event = this.eventService.getOrThrow(eventId);
         Account owner = this.accountService.getOrThrow(ownerId);
         return this.saveToFileSystem(event, owner, file, name);
@@ -200,4 +200,56 @@ public class PhotoService {
         update(photo);
     }
 
+    /**
+     * Returns a list of the photos of the event
+     *
+     * @param eventId the event ID
+     * @return a list of the photos of the event
+     * @throws InvalidParameterException if incoming parameter is not valid
+     */
+    public List<Photo> getPhotosByEvent(final Long eventId) throws InvalidParameterException {
+        checkEvent(eventId);
+        return this.photoDAO.getPhotosByEvent(eventId);
+    }
+
+    /**
+     * Returns a list of the photo ids of the event
+     *
+     * @param eventId the event ID
+     * @return a list of the photo ids of the event
+     * @throws InvalidParameterException if incoming parameter is not valid
+     */
+    public List<Long> getPhotoIdsByEvent(final Long eventId) throws InvalidParameterException {
+        return this.getPhotosByEvent(eventId).stream().parallel()
+                .map(Photo::getId).collect(toList());
+    }
+
+    /**
+     * Returns a list of the photos of the account
+     *
+     * @param accountId the account ID
+     * @return a list of the photos of the account
+     * @throws InvalidParameterException if incoming parameter is not valid
+     */
+    public List<Photo> getPhotosByAccount(final Long accountId) throws InvalidParameterException {
+        checkAccount(accountId);
+        return this.photoDAO.getPhotosByOwner(accountId);
+    }
+
+    /**
+     * Returns a list of the photo ids of the account
+     *
+     * @param accountId the account ID
+     * @return a list of the photo ids of the account
+     * @throws InvalidParameterException if incoming parameter is not valid
+     */
+    public List<Long> getPhotoIdsByAccount(final Long accountId) throws InvalidParameterException {
+        return this.getPhotosByAccount(accountId).stream().parallel()
+                .map(Photo::getId).collect(toList());
+    }
+
+    private void checkFile(final MultipartFile file) throws IncorrectPasswordException {
+        checkNotNull(file, "file");
+        check(!file.isEmpty(), "The file should not be empty");
+    }
 }

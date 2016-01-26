@@ -20,18 +20,10 @@ public interface AccountDAO extends GenericDAO<Account, Long> {
      *
      * @param accountId the account ID
      * @return an account with its events and null if the account doesn't exist
+     * todo: delete it
      */
+    @Deprecated
     Account getWithEvents(Long accountId);
-
-    /**
-     * Returns a list of the events by the account ID
-     *
-     * @param accountId the account ID
-     * @return a list of the events of the account
-     * @throws AccountNotFoundException if the account doesn't exist
-     */
-    // todo: move the logic to EventDao(/Service/Rest) and 400 => 200!
-    List<Event> getEvents(Long accountId) throws AccountNotFoundException;
 
     /**
      * Returns an account by email
@@ -53,13 +45,4 @@ public interface AccountDAO extends GenericDAO<Account, Long> {
      * @return an account by vk id and null if the account doesn't exist
      */
     Account getByVkId(String vkId);
-
-    /**
-     * Returns an account by the specified id and throws the exception otherwise
-     *
-     * @param accountId the account id
-     * @return an account
-     * @throws AccountNotFoundException if the account doesn't exist
-     */
-//    Account getOrThrow(Long accountId) throws AccountNotFoundException;
 }

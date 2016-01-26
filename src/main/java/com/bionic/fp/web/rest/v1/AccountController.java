@@ -2,9 +2,6 @@ package com.bionic.fp.web.rest.v1;
 
 import com.bionic.fp.Constants.RoleConstants;
 import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.Photo;
-import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.rest.NotFoundException;
 import com.bionic.fp.service.AccountEventService;
 import com.bionic.fp.service.MethodSecurityService;
@@ -14,26 +11,27 @@ import com.bionic.fp.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.bionic.fp.Constants.RestConstants.*;
 import static com.bionic.fp.Constants.RestConstants.PATH.*;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 
 /**
- * Created by boubdyk on 15.11.2015.
+ * This is REST web-service that handles account-related requests
+ *
+ * @author Sergiy Gabriel
  */
 @RestController
 @RequestMapping(API+V1+ACCOUNTS)
 public class AccountController {
 
-	@Autowired private AccountService accountService;
+    @Autowired private AccountService accountService;
     @Autowired private AccountEventService accountEventService;
-    @Autowired private PhotoService photoService;
     @Autowired private MethodSecurityService methodSecurityService;
 
 
@@ -51,7 +49,7 @@ public class AccountController {
     @RequestMapping(value = ACCOUNT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final AccountInfo getAccount(@PathVariable(ACCOUNT.ID) final Long accountId) {
+    public AccountInfo getAccount(@PathVariable(ACCOUNT.ID) final Long accountId) {
         Account account = ofNullable(accountService.get(accountId))
                 .orElseThrow(() -> new NotFoundException(accountId, "account"));
         return new AccountInfo(account);
@@ -65,7 +63,7 @@ public class AccountController {
     @RequestMapping(value = SELF, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final AccountInfo getUser() {
+    public AccountInfo getUser() {
         Account user = methodSecurityService.getUser();
         AccountInfo body = new AccountInfo(user);
         body.setEmail(user.getEmail());
@@ -73,225 +71,69 @@ public class AccountController {
     }
 
     /**
-     * Returns all events where the account is involved
+     * Returns a list of accounts belonging to this event
      *
-     * @param accountId the account id
-     * @return a list of events
+     * @param eventId the event id
+     * @return a list of accounts
      */
-    @RequestMapping(value = ACCOUNT_ID+EVENTS, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = EVENTS+EVENT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final EntityInfoLists getAccountEvents(@PathVariable(ACCOUNT.ID) final Long accountId) {
-        return this.getEvents(accountId);
+    public EntityInfoLists getAccounts(@PathVariable(EVENT.ID) final Long eventId) {
+        EntityInfoLists body = new EntityInfoLists();
+        body.setAccounts(this.accountEventService.getAccounts(eventId).stream().parallel()
+                .map(AccountInfo::new).collect(toList()));
+        return body;
     }
 
     /**
-     * Returns a list of events where the user is involved.
-     * The user must be authenticated
+     * Returns a list of account ids belonging to this event
      *
-     * @return a list of events
+     * @param eventId the event id
+     * @return a list of account ids
      */
-    @RequestMapping(value = SELF+EVENTS, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ID+EVENTS+EVENT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final EntityInfoLists getUserEvents() {
-        Long userId = this.methodSecurityService.getUserId();
-        return this.getEvents(userId);
+    public IdLists getAccountIds(@PathVariable(EVENT.ID) final Long eventId) {
+        IdLists body = new IdLists();
+        body.setAccounts(this.accountEventService.getAccounts(eventId).stream().parallel()
+                .map(Account::getId).collect(toList()));
+        return body;
     }
 
     /**
-     * Returns a list of events owned by the account
+     * Returns the owner of the event
      *
-     * @param accountId the account id
-     * @return a list of events
+     * @param eventId the event id
+     * @return the owner
      */
-    @RequestMapping(value = ACCOUNT_ID+EVENTS+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = OWNER+EVENTS+EVENT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final EntityInfoLists getOwnerEvents(@PathVariable(ACCOUNT.ID) final Long accountId) {
-        return this.getEvents(accountId, RoleConstants.OWNER);
+    public AccountInfo getEventOwner(@PathVariable(EVENT.ID) final Long eventId) {
+        List<Account> accounts = this.accountEventService.getAccounts(eventId, RoleConstants.OWNER);
+        if(accounts.isEmpty()) {
+            throw new NotFoundException(eventId, "event");
+        }
+        return new AccountInfo(accounts.get(0));
     }
 
     /**
-     * Returns a list of events owned by the user.
-     * The user must be authenticated
+     * Returns the owner id of the event
      *
-     * @return a list of events
+     * @param eventId the event id
+     * @return the owner id
      */
-    @RequestMapping(value = SELF+EVENTS+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ID+OWNER+EVENTS+EVENT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public final EntityInfoLists getOwnerEvents() {
-        Long userId = this.methodSecurityService.getUserId();
-        return this.getEvents(userId, RoleConstants.OWNER);
-    }
-
-    /**
-     * Returns a list of events where the account has the specified role
-     *
-     * @param accountId the account id
-     * @param roleId the role id
-     * @return a list of events
-     */
-    @RequestMapping(value = ACCOUNT_ID+ROLES+ROLE_ID+EVENTS, method = GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(OK)
-    @ResponseBody
-    public final EntityInfoLists getAccountEvents(@PathVariable(ACCOUNT.ID) final Long accountId,
-                                                  @PathVariable(ROLE.ID) final Long roleId) {
-        return this.getEvents(accountId, roleId);
-    }
-
-    /**
-     * Returns a list of events where the user has the specified role.
-     * The user must be authenticated
-     *
-     * @param roleId the role id
-     * @return a list of events
-     */
-    @RequestMapping(value = SELF+ROLES+ROLE_ID+EVENTS, method = GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(OK)
-    @ResponseBody
-    public final EntityInfoLists getUserEvents(@PathVariable(ROLE.ID) final Long roleId) {
-        Long userId = this.methodSecurityService.getUserId();
-        return this.getEvents(userId, roleId);
-    }
-
-    /**
-     * Return a list of event ids of the account
-     *
-     * @param accountId the account id
-     * @return a list of event ids
-     */
-    @RequestMapping(value = ACCOUNT_ID+EVENTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(OK)
-    @ResponseBody
-    public final IdLists getAccountEventIds(@PathVariable(ACCOUNT.ID) final Long accountId) {
-        return this.getEventIds(accountId);
-    }
-
-    /**
-     * Return a list of event ids of the user.
-     * The user must be authenticated
-     *
-     * @return a list of event ids
-     */
-    @RequestMapping(value = SELF+EVENTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(OK)
-    @ResponseBody
-    public final IdLists getUserEventIds() {
-        Long userId = this.methodSecurityService.getUserId();
-        return this.getEventIds(userId);
-    }
-
-    /**
-     * Return a list of event ids owned by the account
-     *
-     * @param accountId - account ID
-     * @return a list of event ids
-     */
-    @RequestMapping(value = ACCOUNT_ID+EVENTS+ID+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(OK)
-    @ResponseBody
-    public final IdLists getOwnerEventIds(@PathVariable(ACCOUNT.ID) final Long accountId) {
-        return this.getEventIds(accountId, RoleConstants.OWNER);
-    }
-
-    /**
-     * Return a list of event ids owned by the user.
-     * The user must be authenticated
-     *
-     * @return a list of event ids
-     */
-    @RequestMapping(value = SELF+EVENTS+ID+OWNER, method = GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(OK)
-    @ResponseBody
-    public final IdLists getOwnerEventIds() {
-        Long userId = this.methodSecurityService.getUserId();
-        return this.getEventIds(userId, RoleConstants.OWNER);
-    }
-
-    /**
-     * Returns a list of event ids where the account has the specified role
-     *
-     * @param accountId the account id
-     * @param roleId the role id
-     * @return a list of event ids
-     */
-    @RequestMapping(value = ACCOUNT_ID+ROLES+ROLE_ID+EVENTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(OK)
-    @ResponseBody
-    public final IdLists getAccountEventIds(@PathVariable(ACCOUNT.ID) final Long accountId,
-                                            @PathVariable(ROLE.ID) final Long roleId) {
-        return this.getEventIds(accountId, roleId);
-    }
-
-    /**
-     * Returns a list of event ids where the user has the specified role.
-     * The user must be authenticated
-     *
-     * @param roleId the role id
-     * @return a list of event ids
-     */
-    @RequestMapping(value = SELF+ROLES+ROLE_ID+EVENTS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(OK)
-    @ResponseBody
-    public final IdLists getUserEventIds(@PathVariable(ROLE.ID) final Long roleId) {
-        Long userId = this.methodSecurityService.getUserId();
-        return this.getEventIds(userId, roleId);
-    }
-
-    /**
-     * Returns a list of photos of the owner
-     *
-     * @param ownerId the owner id
-     * @return a list of photos
-     */
-    @RequestMapping(value = ACCOUNT_ID+PHOTOS, method = GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(OK)
-    @ResponseBody
-    public final EntityInfoLists getAccountPhotos(@PathVariable(ACCOUNT.ID) final Long ownerId) {
-        return this.getPhotos(ownerId);
-    }
-
-    /**
-     * Returns a list of photo ids of the owner
-     *
-     * @param ownerId the owner id
-     * @return a list of photo ids
-     */
-    @RequestMapping(value = ACCOUNT_ID+PHOTOS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(OK)
-    @ResponseBody
-    public final IdLists getAccountPhotoIds(@PathVariable(ACCOUNT.ID) final Long ownerId) {
-        return this.getPhotoIds(ownerId);
-    }
-
-    /**
-     * Returns a list of photos of the user.
-     * The user must be authenticated
-     *
-     * @return a list of photos
-     */
-    @RequestMapping(value = SELF+PHOTOS, method = GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(OK)
-    @ResponseBody
-    public final EntityInfoLists getUserPhotos() {
-        Long userId = this.methodSecurityService.getUserId();
-        return this.getPhotos(userId);
-    }
-
-    /**
-     * Returns a list of photo ids of the user.
-     * The user must be authenticated
-     *
-     * @return a list of photo ids
-     */
-    @RequestMapping(value = SELF+PHOTOS+ID, method = GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseStatus(OK)
-    @ResponseBody
-    public final IdLists getUserPhotoIds() {
-        Long userId = this.methodSecurityService.getUserId();
-        return this.getPhotoIds(userId);
+    public IdInfo getEventOwnerId(@PathVariable(EVENT.ID) final Long eventId) {
+        List<Account> accounts = this.accountEventService.getAccounts(eventId, RoleConstants.OWNER);
+        if(accounts.isEmpty()) {
+            throw new NotFoundException(eventId, "event");
+        }
+        return new IdInfo(accounts.get(0).getId());
     }
 
 
@@ -335,48 +177,4 @@ public class AccountController {
     //                 PRIVATE
     //***************************************
 
-
-    private EntityInfoLists getEvents(final Long accountId) throws InvalidParameterException {
-        return this.getEvents(accountId, null);
-    }
-
-    private IdLists getEventIds(final Long accountId) throws InvalidParameterException {
-        return this.getEventIds(accountId, null);
-    }
-
-    private EntityInfoLists getEvents(final Long accountId, final Long roleId) throws InvalidParameterException {
-        List<Event> events = roleId == null ?
-                this.accountService.getEvents(accountId) :
-                this.accountEventService.getEvents(accountId, roleId);
-        EntityInfoLists body = new EntityInfoLists();
-        body.setEvents(events.stream().parallel()
-                .map(EventInfo::new)
-                .collect(Collectors.toList()));
-        return body;
-    }
-
-    private IdLists getEventIds(final Long accountId, final Long roleId) throws InvalidParameterException {
-        List<Long> events = roleId == null ?
-                this.accountService.getEventIds(accountId) :
-                this.accountEventService.getEventIds(accountId, roleId);
-        IdLists body = new IdLists();
-        body.setEvents(events);
-        return body;
-    }
-
-    private EntityInfoLists getPhotos(final Long accountId) {
-        List<Photo> photos = this.photoService.getPhotosByOwnerId(accountId);
-        EntityInfoLists body = new EntityInfoLists();
-        body.setPhotos(photos.stream().parallel()
-                .map(PhotoInfo::new)
-                .collect(Collectors.toList()));
-        return body;
-    }
-
-    private IdLists getPhotoIds(final Long accountId) {
-        List<Long> photos = this.photoService.getPhotoIdsByOwnerId(accountId);
-        IdLists body = new IdLists();
-        body.setPhotos(photos);
-        return body;
-    }
 }

@@ -4,21 +4,19 @@ import com.bionic.fp.dao.AccountDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
-import com.bionic.fp.exception.logic.critical.NonUniqueResultException;
 import com.bionic.fp.exception.logic.impl.AccountNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
 /**
- * This is implementation of {@link AccountDaoImpl}
+ * This is an implementation of {@link AccountDaoImpl}
  *
  * @author Sergiy Gabriel
  */
@@ -33,17 +31,6 @@ public class AccountDaoImpl extends GenericDaoJpaImpl<Account, Long> implements 
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
         return this.em.find(Account.class, accountId, hints);
-    }
-
-    // todo: move the logic to EventDao(/Service/Rest) and 400 => 200!
-    @Override
-    public List<Event> getEvents(final Long accountId) throws AccountNotFoundException {
-        Account account = ofNullable(this.getWithEvents(accountId)).orElseThrow(() -> new AccountNotFoundException(accountId));
-        return account.getEvents()
-                    .stream()
-                    .parallel()
-                    .map(AccountEvent::getEvent)
-                    .collect(Collectors.toList());
     }
 
     @Override
@@ -63,10 +50,4 @@ public class AccountDaoImpl extends GenericDaoJpaImpl<Account, Long> implements 
         return this.getSingleResult(
                 this.em.createNamedQuery(Account.GET_BY_VK_ID, Account.class).setParameter("vkId", vkId));
     }
-
-//    @Override
-//    public Account getOrThrow(final Long accountId) throws AccountNotFoundException {
-//        return ofNullable(this.read(accountId)).orElseThrow(() -> new AccountNotFoundException(accountId));
-//    }
-
 }

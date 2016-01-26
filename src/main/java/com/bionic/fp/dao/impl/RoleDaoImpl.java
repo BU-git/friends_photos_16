@@ -35,7 +35,4 @@ public class RoleDaoImpl extends GenericDaoJpaImpl<Role, Long> implements RoleDA
         return allRolesQuery.getResultList();
     }
 
-//    private Role getOrThrow(final Long roleId) throws RoleNotFoundException {
-//        return ofNullable(this.read(roleId)).orElseThrow(() -> new RoleNotFoundException(roleId));
-//    }
 }

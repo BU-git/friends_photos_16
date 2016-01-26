@@ -87,22 +87,6 @@ public class RoleController {
     //***************************************
 
 
-    /**
-     * todo: delete it or fixed, see {@link EventController} method updateAccountToEvent()
-     */
-    @RequestMapping(method = PUT, consumes = APPLICATION_JSON_VALUE)
-    @ResponseStatus(OK)
-    public void setNewRole(@RequestBody final NewRoleDTO newRoleDTO) {
-        Long userId = this.methodSecurityService.getUserId();
-        boolean isNewRoleSetted = roleService.setNewRole(
-                newRoleDTO.getRoleId(),
-                newRoleDTO.getAccountId(),
-                newRoleDTO.getEventId(),
-                userId
-        );
-    }
-
-
     //***************************************
     //                 PRIVATE
     //***************************************

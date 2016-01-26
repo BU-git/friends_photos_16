@@ -13,25 +13,27 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Created by boubdyk on 11.11.2015.
+ * This is an implementation of {@link PhotoDAO}
+ *
+ * @author Sergiy Gabriel
  */
 @Repository
 public class PhotoDaoImpl extends GenericDaoJpaImpl<Photo, Long> implements PhotoDAO {
 
-    public PhotoDaoImpl() {}
+	public PhotoDaoImpl() {}
 
 	@Override
-	public List<Photo> getPhotosByEventId(final Long eventId) {
-        return this.em.createNamedQuery(Photo.FIND_BY_EVENT_ID, Photo.class)
-                .setParameter("eventId", eventId)
-                .getResultList();
+	public List<Photo> getPhotosByEvent(final Long eventId) {
+		return this.em.createNamedQuery(Photo.FIND_BY_EVENT_ID, Photo.class)
+				.setParameter("eventId", eventId)
+				.getResultList();
 	}
 
-    @Override
-	public List<Photo> getPhotosByOwnerId(final Long ownerId) {
-        return this.em.createNamedQuery(Photo.FIND_BY_OWNER_ID, Photo.class)
-                .setParameter("ownerId", ownerId)
-                .getResultList();
+	@Override
+	public List<Photo> getPhotosByOwner(final Long ownerId) {
+		return this.em.createNamedQuery(Photo.FIND_BY_OWNER_ID, Photo.class)
+				.setParameter("ownerId", ownerId)
+				.getResultList();
 	}
 
 }

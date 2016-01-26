@@ -4,8 +4,9 @@ import com.bionic.fp.dao.AccountEventDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
-import com.bionic.fp.exception.logic.EntityNotFoundException;
+import com.bionic.fp.exception.auth.impl.IncorrectPasswordException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
+import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.bionic.fp.util.Checks.check;
+import static com.bionic.fp.Constants.RoleConstants.OWNER;
+import static com.bionic.fp.util.Checks.*;
+import static com.bionic.fp.util.Checks.checkAccount;
+import static com.bionic.fp.util.Checks.checkRole;
+import static java.util.Optional.ofNullable;
 
 /**
  * Entry point to perform operations over account-event connection entities
@@ -33,49 +38,84 @@ public class AccountEventService {
     //////////////////////////////////////////////
 
     public AccountEvent create(AccountEvent accountEvent) {
-        this.accountEventDAO.create(accountEvent);
-        return accountEvent;
+        checkAccountEvent(accountEvent);
+        return this.accountEventDAO.create(accountEvent);
     }
 
-    public AccountEvent get(final Long id) {
-        return id == null ? null : this.accountEventDAO.read(id);
+    public AccountEvent get(final Long accountEventId) throws IncorrectPasswordException {
+        checkAccountEvent(accountEventId);
+        return this.accountEventDAO.read(accountEventId);
     }
 
     public AccountEvent update(final AccountEvent accountEvent) {
-        return accountEvent == null ? null : this.accountEventDAO.update(accountEvent);
+        checkAccountEvent(accountEvent);
+        return this.accountEventDAO.update(accountEvent);
     }
 
-    public void softDelete(final Long accountId) {
-            this.accountEventDAO.setDeleted(accountId, true);
+    public void softDelete(final Long accountEventId) {
+        checkAccountEvent(accountEventId);
+        this.accountEventDAO.setDeleted(accountEventId, true);
     }
 
     //    @Admin
-    public void delete(final Long accountId) {
-            this.accountEventDAO.delete(accountId);
+    public void delete(final Long accountEventId) {
+        checkAccountEvent(accountEventId);
+        this.accountEventDAO.delete(accountEventId);
     }
 
     //////////////////////////////////////////////
     //                  Other                   //
     //////////////////////////////////////////////
 
-    public AccountEvent get(final Long accountId, final Long eventId) {
-        if(accountId == null || eventId == null) {
-            throw new InvalidParameterException("Not valid account or event");
-        }
-        AccountEvent accountEvent = this.accountEventDAO.get(accountId, eventId);
-        if(accountEvent == null) {
-            throw new EntityNotFoundException("You are not a member of this event");
-        }
-        return accountEvent;
+    public AccountEvent get(final Long accountId, final Long eventId) throws IncorrectPasswordException {
+        checkAccount(accountId);
+        checkEvent(eventId);
+        return this.accountEventDAO.get(accountId, eventId);
     }
 
-    public AccountEvent getWithAccountEvent(final Long id) {
-        return id == null ? null : this.accountEventDAO.getWithAccountEvent(id);
+    public AccountEvent getOrThrow(final Long accountEventId) throws IncorrectPasswordException, AccountEventNotFoundException {
+        return ofNullable(this.get(accountEventId))
+                .orElseThrow(() -> new AccountEventNotFoundException(accountEventId));
+    }
+
+    public AccountEvent getOrThrow(final Long accountId, final Long eventId) throws IncorrectPasswordException, AccountEventNotFoundException {
+        return ofNullable(this.get(accountId, eventId))
+                .orElseThrow(() -> new AccountEventNotFoundException(accountId, eventId));
+    }
+
+    public AccountEvent getWithAccountEvent(final Long accountEventId) {
+        checkAccountEvent(accountEventId);
+        return this.accountEventDAO.getWithAccountEvent(accountEventId);
     }
 
     public AccountEvent getWithAccountEvent(final Long accountId, final Long eventId) {
-        return (accountId == null || eventId == null) ? null :
-                this.accountEventDAO.getWithAccountEvent(accountId, eventId);
+        checkAccount(accountId);
+        checkEvent(eventId);
+        return this.accountEventDAO.getWithAccountEvent(accountId, eventId);
+    }
+
+    /**
+     * Returns a list of the accounts of the event
+     *
+     * @param eventId the event ID
+     * @return a list of the accounts of the event
+     * @throws InvalidParameterException if incoming parameter is not valid
+     */
+    public List<Account> getAccounts(final Long eventId) throws InvalidParameterException {
+        checkEvent(eventId);
+        return this.accountEventDAO.getAccounts(eventId);
+    }
+
+    /**
+     * Returns a list of the account ids of the event
+     *
+     * @param eventId the event ID
+     * @return a list of the account ids of the event
+     * @throws InvalidParameterException if incoming parameter is not valid
+     */
+    public List<Long> getAccountIds(final Long eventId) throws InvalidParameterException {
+        List<Account> accounts = this.getAccounts(eventId);
+        return accounts.stream().parallel().map(Account::getId).collect(Collectors.toList());
     }
 
     /**
@@ -87,8 +127,8 @@ public class AccountEventService {
      * @throws InvalidParameterException if incoming parameters are not valid
      */
     public List<Account> getAccounts(final Long eventId, final Long roleId) throws InvalidParameterException {
-        check(eventId != null, "The event ID should not be null");
-        check(roleId != null, "The role ID should not be null");
+        checkEvent(eventId);
+        checkRole(roleId);
         return this.accountEventDAO.getAccounts(eventId, roleId);
     }
 
@@ -106,6 +146,30 @@ public class AccountEventService {
     }
 
     /**
+     * Returns a list of the events of the account
+     *
+     * @param accountId the account ID
+     * @return a list of the events of the account
+     * @throws InvalidParameterException if incoming parameter is not valid
+     */
+    public List<Event> getEvents(final Long accountId) throws InvalidParameterException {
+        checkAccount(accountId);
+        return this.accountEventDAO.getEvents(accountId);
+    }
+
+    /**
+     * Returns a list of the event ids of the account
+     *
+     * @param accountId the account ID
+     * @return a list of the event ids of the account
+     * @throws InvalidParameterException if incoming parameter is not valid
+     */
+    public List<Long> getEventIds(final Long accountId) throws IncorrectPasswordException {
+        List<Event> events = this.getEvents(accountId);
+        return events.stream().parallel().map(Event::getId).collect(Collectors.toList());
+    }
+
+    /**
      * Returns a list of events as the result of searching by account ID and role ID
      *
      * @param accountId the account ID
@@ -114,8 +178,8 @@ public class AccountEventService {
      * @throws InvalidParameterException if incoming parameters are not valid
      */
     public List<Event> getEvents(final Long accountId, final Long roleId) throws InvalidParameterException {
-        check(accountId != null, "The account ID should not be null");
-        check(roleId != null, "The role ID should not be null");
+        checkAccount(accountId);
+        checkRole(roleId);
         return this.accountEventDAO.getEvents(accountId, roleId);
     }
 

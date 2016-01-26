@@ -10,25 +10,24 @@ import java.util.List;
         attributeNodes = @NamedAttributeNode("comments")
 )
 @NamedQueries({
-        @NamedQuery(
-                name = Photo.FIND_BY_OWNER_ID,
-                query = "SELECT p FROM Photo p WHERE p.owner.id = :ownerId"
-        ),
-        @NamedQuery(
-                name = Photo.FIND_BY_EVENT_ID,
-                query = "SELECT p FROM Photo p WHERE p.event.id = :eventId"
-        )
+        @NamedQuery(name = Photo.FIND_BY_OWNER_ID,
+                query = "SELECT p FROM Photo p WHERE p.owner.id = :ownerId"),
+        @NamedQuery(name = Photo.FIND_BY_EVENT_ID,
+                query = "SELECT p FROM Photo p WHERE p.event.id = :eventId"),
+        @NamedQuery(name = Photo.FIND_COMMENTS,
+                query = "SELECT p FROM Photo p JOIN FETCH p.comments WHERE p.id = :photoId")
 })
 public class Photo extends BaseEntity {
 
     @Transient public static final String FIND_BY_OWNER_ID = "Photo.findByOwnerId";
     @Transient public static final String FIND_BY_EVENT_ID = "Photo.findByEventId";
+    @Transient public static final String FIND_COMMENTS = "Photo.findComments";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-	@Column(name = "name")
-	private String name;
+    @Column(name = "name")
+    private String name;
     @Column(nullable = false)
     private String url;
     @Column(name = "preview_url")
@@ -50,12 +49,12 @@ public class Photo extends BaseEntity {
     public void setId(Long id) {
         this.id = id;
     }
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
     public String getUrl() {
         return url;
     }

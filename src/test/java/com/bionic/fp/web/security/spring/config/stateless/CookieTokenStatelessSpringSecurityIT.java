@@ -71,7 +71,7 @@ public class CookieTokenStatelessSpringSecurityIT extends AbstractAuthentication
             .contentType(JSON)
             .cookie(transform(cookie))
         .when()
-            .get(API + V1 + ACCOUNTS + SELF + EVENTS)
+            .get(API+V1+EVENTS+ACCOUNTS+SELF)
         .then()
             .statusCode(SC_OK)
         .extract().response();
@@ -110,7 +110,7 @@ public class CookieTokenStatelessSpringSecurityIT extends AbstractAuthentication
             .contentType(JSON)
             .cookie(transform(cookie))
         .when()
-            .get(API + V1 + ACCOUNTS + SELF + EVENTS)
+            .get(API+V1+EVENTS+ACCOUNTS+SELF)
         .then()
             .statusCode(SC_OK)
         .extract().response();
@@ -161,7 +161,7 @@ public class CookieTokenStatelessSpringSecurityIT extends AbstractAuthentication
             .contentType(JSON)
             .cookie(transform(cookie))
         .when()
-            .get(API + V1 + ACCOUNTS + SELF + EVENTS)
+            .get(API+V1+EVENTS+ACCOUNTS+SELF)
         .then()
             .statusCode(SC_OK)
         .extract().response();
@@ -210,7 +210,7 @@ public class CookieTokenStatelessSpringSecurityIT extends AbstractAuthentication
             .contentType(JSON)
             .cookie(transform(cookie))
         .when()
-            .get(API + V1 + ACCOUNTS + SELF + EVENTS)
+            .get(API+V1+EVENTS+ACCOUNTS+SELF)
         .then()
             .statusCode(SC_OK)
         .extract().response();

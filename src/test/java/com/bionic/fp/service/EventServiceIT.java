@@ -674,7 +674,8 @@ public class EventServiceIT extends AbstractIT {
         Account user2 = getSavedAccount();
         Event event = getSavedEventMax(owner);
 
-        List<Account> accounts = this.eventService.getAccounts(event.getId());
+//        List<Account> accounts = this.eventService.getAccounts(event.getId());
+        List<Account> accounts = this.accountEventService.getAccounts(event.getId());
         assertNotNull(accounts);
         assertEquals(1, accounts.size());
         accounts.forEach(account -> {
@@ -685,7 +686,8 @@ public class EventServiceIT extends AbstractIT {
 
         this.eventService.addOrUpdateAccountToEvent(user1.getId(), event.getId(), this.roleService.getOwner(), null);
 
-        accounts = this.eventService.getAccounts(event.getId());
+//        accounts = this.eventService.getAccounts(event.getId());
+        accounts = this.accountEventService.getAccounts(event.getId());
         assertNotNull(accounts);
         assertEquals(2, accounts.size());
         assertTrue(accounts.contains(owner));
@@ -694,7 +696,8 @@ public class EventServiceIT extends AbstractIT {
 
         this.eventService.addOrUpdateAccountToEvent(user2.getId(), event.getId(), this.roleService.getOwner(), null);
 
-        accounts = this.eventService.getAccounts(event.getId());
+//        accounts = this.eventService.getAccounts(event.getId());
+        accounts = this.accountEventService.getAccounts(event.getId());
         assertNotNull(accounts);
         assertEquals(3, accounts.size());
         assertTrue(accounts.contains(owner));

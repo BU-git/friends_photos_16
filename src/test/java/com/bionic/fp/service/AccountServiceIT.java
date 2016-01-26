@@ -27,7 +27,8 @@ public class AccountServiceIT extends AbstractIT {
         Account owner = getSavedAccount();
         Event event1 = getSavedEventMax(owner);
 
-        List<Event> events = this.accountService.getEvents(owner.getId());
+//        List<Event> events = this.accountService.getEvents(owner.getId());
+        List<Event> events = this.accountEventService.getEvents(owner.getId());
         assertNotNull(events);
         assertEquals(1, events.size());
         events.forEach(event -> {
@@ -42,7 +43,8 @@ public class AccountServiceIT extends AbstractIT {
 
         Event event2 = getSavedEventMax(owner);
 
-        events = this.accountService.getEvents(owner.getId());
+//        events = this.accountService.getEvents(owner.getId());
+        events = this.accountEventService.getEvents(owner.getId());
         assertNotNull(events);
         assertEquals(2, events.size());
         assertTrue(events.contains(event1));
@@ -50,7 +52,8 @@ public class AccountServiceIT extends AbstractIT {
 
         Event event3 = getSavedEventMax(owner);
 
-        events = this.accountService.getEvents(owner.getId());
+//        events = this.accountService.getEvents(owner.getId());
+        events = this.accountEventService.getEvents(owner.getId());
         assertNotNull(events);
         assertEquals(3, events.size());
         assertTrue(events.contains(event1));

@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Random;
 
 import static com.bionic.fp.Constants.RoleConstants.*;
@@ -79,14 +81,14 @@ public abstract class AbstractIT extends AbstractHelperTest {
     }
 
     protected Account getNewEmailAccount() {
-        String s = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME);
-//        return new Account("yaya@gmail.com" + s, "Yaya" + s, "yaya" + s);
         return new Account(generateEmail(), generateUsername(), generatePassword());
     }
 
-//    protected String getToken(final Account account) {
-//        return this.tokenUtils.generateToken(new User(account.getId(), account.getEmail()));
-//    }
+    protected Account getNewEmailAccount(final Long accountId) {
+        Account account = getNewEmailAccount();
+        account.setId(accountId);
+        return account;
+    }
 
     @Override
     protected EventType getPrivateEventType() {
@@ -165,7 +167,8 @@ public abstract class AbstractIT extends AbstractHelperTest {
     }
 
     protected Account getEventOwner(final Long eventId) {
-        return this.eventService.getOwner(eventId);
+        List<Account> accounts = this.accountEventService.getAccounts(eventId, Constants.RoleConstants.OWNER);
+        return accounts.get(0);
     }
 
     protected Filter getFilter(final Long accountId) {
@@ -199,14 +202,6 @@ public abstract class AbstractIT extends AbstractHelperTest {
                 .setVersion(cookie.getVersion())
                 .setSecured(cookie.getSecure())
                 .build();
-    }
-
-    protected void authenticateUser(Account owner) {
-        User user = new User(owner);
-        UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-//        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     protected Role getRoleOwner() {
@@ -243,5 +238,29 @@ public abstract class AbstractIT extends AbstractHelperTest {
 
     protected String generatePassword() {
         return String.format("secret%d", System.currentTimeMillis());
+    }
+
+    protected Filter getPreAuthFilter(final Account owner) {
+        return new Filter() {
+            @Override
+            public void init(FilterConfig filterConfig) throws ServletException {
+
+            }
+
+            @Override
+            public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+                User user = new User(owner);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails((HttpServletRequest) request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                chain.doFilter(request, response);
+            }
+
+            @Override
+            public void destroy() {
+
+            }
+        };
     }
 }

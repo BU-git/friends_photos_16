@@ -14,7 +14,7 @@ import static com.bionic.fp.util.Checks.check;
 import static java.util.Optional.ofNullable;
 
 /**
- * This is implementation of {@link EventTypeDAO}
+ * This is an implementation of {@link EventTypeDAO}
  *
  * @author Sergiy Gabriel
  */
@@ -27,8 +27,4 @@ public class EventTypeDaoImpl extends GenericDaoJpaImpl<EventType, Long> impleme
     public EventType getPrivate() throws EventTypeNotFoundException {
         return this.getOrThrow(1L);
     }
-
-//    private EventType getOrThrow(final Long eventTypeId) throws EventTypeNotFoundException {
-//        return ofNullable(this.read(eventTypeId)).orElseThrow(() -> new EventTypeNotFoundException(eventTypeId));
-//    }
 }

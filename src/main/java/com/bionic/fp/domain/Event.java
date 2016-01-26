@@ -14,24 +14,20 @@ import java.util.List;
         @NamedEntityGraph(name = "Event.accounts",
                 attributeNodes = @NamedAttributeNode(value = "accounts", subgraph = "accounts"),
                 subgraphs = @NamedSubgraph(name = "accounts", attributeNodes = @NamedAttributeNode("account"))),
-        @NamedEntityGraph(name="Event.photos", attributeNodes={
-                @NamedAttributeNode("photos")}),
-        @NamedEntityGraph(name="Event.comments", attributeNodes={
-                @NamedAttributeNode("comments")})
+        @NamedEntityGraph(name="Event.photos", attributeNodes={@NamedAttributeNode("photos")}),
+        @NamedEntityGraph(name="Event.comments", attributeNodes={@NamedAttributeNode("comments")})
 })
 @NamedQueries({
         @NamedQuery(name = Event.FIND_BY_NAME_AND_DESCRIPTION,
-                query = "SELECT e FROM Event e WHERE e.visible = TRUE AND e.name LIKE :name AND e.description LIKE :description"
-        ),
+                query = "SELECT e FROM Event e WHERE e.visible = TRUE AND e.name LIKE :name AND e.description LIKE :description"),
         @NamedQuery(name = Event.FIND_BY_NAME,
-                query = "SELECT e FROM Event e WHERE e.visible = TRUE AND e.name LIKE :name "
-        ),
+                query = "SELECT e FROM Event e WHERE e.visible = TRUE AND e.name LIKE :name "),
         @NamedQuery(name = Event.FIND_BY_DESCRIPTION,
-                query = "SELECT e FROM Event e WHERE e.visible = TRUE AND e.description LIKE :description"
-        ),
+                query = "SELECT e FROM Event e WHERE e.visible = TRUE AND e.description LIKE :description" ),
         @NamedQuery(name = Event.FIND_ALL,
-                query = "SELECT e FROM Event e WHERE e.visible = TRUE"
-        )
+                query = "SELECT e FROM Event e WHERE e.visible = TRUE"),
+        @NamedQuery(name = Event.FIND_COMMENTS,
+                query = "SELECT e FROM Event e JOIN FETCH e.comments WHERE e.id = :eventId")
 })
 public class Event extends BaseEntity {
 
@@ -39,6 +35,7 @@ public class Event extends BaseEntity {
     @Transient public static final String FIND_BY_NAME = "Event.findByName";
     @Transient public static final String FIND_BY_DESCRIPTION = "Event.findByDescription";
     @Transient public static final String FIND_ALL = "Event.findAll";
+    @Transient public static final String FIND_COMMENTS = "Event.findComments";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

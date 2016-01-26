@@ -343,8 +343,7 @@
 	* ### Get a list of events of the account
 
     	#### @GET
-        #### /api/v1/accounts/{account_id}/events
-        #### correct to /api/v1/events/accounts/{account_id}
+        #### /api/v1/events/accounts/{account_id}
 
         ##### Path Params:
 
@@ -411,8 +410,7 @@
     * ### Get a list of events of the user
 
     	#### @GET
-        #### /api/v1/accounts/self/events
-        #### correct to /api/v1/events/accounts/self
+        #### /api/v1/events/accounts/self
 
         ##### Params:
 
@@ -467,8 +465,7 @@
 	* ### Get a list of events owned by the account
 
     	#### @GET
-        #### /api/v1/accounts/{account_id}/events/owner
-        #### correct to /api/v1/events/accounts/{account_id}/owner
+        #### /api/v1/events/accounts/{account_id}/owner
 
         ##### Path Params:
 
@@ -535,8 +532,7 @@
     * ### Get a list of events owned by the user
 
     	#### @GET
-        #### /api/v1/accounts/self/events/owner
-        #### correct to /api/v1/events/accounts/self/owner
+        #### /api/v1/events/accounts/self/owner
 
         ##### Params:
 
@@ -590,8 +586,7 @@
 	* ### Get a list of events where the account has the specified role
 
     	#### @GET
-        #### /api/v1/accounts/{account_id}/roles/{role_id}/events
-        #### correct to /api/v1/events/accounts/{account_id}/roles/{role_id}
+        #### /api/v1/events/accounts/{account_id}/roles/{role_id}
 
         ##### Path Params:
 
@@ -660,8 +655,7 @@
     * ### Get a list of events where the user has the specified role
 
     	#### @GET
-        #### /api/v1/accounts/self/roles/{role_id}/events
-        #### correct to /api/v1/events/accounts/self/roles/{role_id}
+        #### /api/v1/events/accounts/self/roles/{role_id}
 
         ##### Path Params:
 
@@ -728,8 +722,7 @@
 	* ### Get a list of event ids of the account
 
     	#### @GET
-        #### /api/v1/accounts/{account_id}/events/id
-        #### correct to /api/v1/events/id/accounts/{account_id}
+        #### /api/v1/events/id/accounts/{account_id}
 
         ##### Path Params:
 
@@ -761,8 +754,7 @@
     * ### Get a list of event ids of the user
 
     	#### @GET
-        #### /api/v1/accounts/self/events/id
-        #### correct to /api/v1/events/id/accounts/self
+        #### /api/v1/events/id/accounts/self
 
         ##### Response:
 
@@ -782,8 +774,7 @@
 	* ### Get a list of event ids owned by the account
 
     	#### @GET
-        #### /api/v1/accounts/{account_id}/events/id/owner
-        #### correct to /api/v1/events/id/accounts/{account_id}/owner
+        #### /api/v1/events/id/accounts/{account_id}/owner
 
         ##### Path Params:
 
@@ -815,8 +806,7 @@
     * ### Get a list of event ids owned by the user
 
     	#### @GET
-        #### /api/v1/accounts/self/events/id/owner
-        #### correct to /api/v1/events/id/accounts/self/owner
+        #### /api/v1/events/id/accounts/self/owner
 
         ##### Response:
 
@@ -836,8 +826,7 @@
 	* ### Get a list of event ids where the account has the specified role
 
     	#### @GET
-        #### /api/v1/accounts/{account_id}/roles/{role_id}/events/id
-        #### correct to /api/v1/events/id/accounts/{account_id}/roles/{role_id}
+        #### /api/v1/events/id/accounts/{account_id}/roles/{role_id}
 
         ##### Path Params:
 
@@ -871,8 +860,7 @@
     * ### Get a list of event ids where the user has the specified role
 
     	#### @GET
-        #### /api/v1/accounts/self/roles/{role_id}/events/id
-        #### correct to /api/v1/events/id/accounts/self/roles/{role_id}
+        #### /api/v1/events/id/accounts/self/roles/{role_id}
 
         ##### Path Params:
 
@@ -904,8 +892,7 @@
 	* ### Get a list of photos of the account
 
     	#### @GET
-        #### /api/v1/accounts/{account_id}/photos
-        #### correct to /api/v1/photos/accounts/{account_id}
+        #### /api/v1/photos/accounts/{account_id}
 
         ##### Path Params:
 
@@ -960,8 +947,7 @@
     * ### Get a list of photos of the user
 
     	#### @GET
-        #### /api/v1/accounts/self/photos
-        #### correct to /api/v1/photos/accounts/self
+        #### /api/v1/photos/accounts/self
 
         ##### Params:
 
@@ -1004,8 +990,7 @@
 	* ### Get a list of photo ids of the account
 
     	#### @GET
-        #### /api/v1/accounts/{account_id}/photos/id
-        #### correct to /api/v1/photos/id/accounts/{account_id}
+        #### /api/v1/photos/id/accounts/{account_id}
 
         ##### Path Params:
 
@@ -1037,8 +1022,7 @@
     * ### Get a list of photo ids of the user
 
     	#### @GET
-        #### /api/v1/accounts/self/photos/id
-        #### correct to /api/v1/photos/id/accounts/self
+        #### /api/v1/photos/id/accounts/self
 
         ##### Response:
 
@@ -1216,8 +1200,7 @@
     * ### Get a list of accounts belonging to the event
     
         #### @GET
-        #### /api/v1/events/{event_id}/accounts
-        #### correct to /api/v1/accounts/events/{event_id}
+        #### /api/v1/accounts/events/{event_id}
 
         ##### Path Params:
 
@@ -1265,8 +1248,7 @@
 	* ### Get a list of account ids belonging to the event
 
     	#### @GET
-        #### /api/v1/events/{event_id}/accounts/id
-        #### correct to /api/v1/accounts/id/events/{event_id}
+        #### /api/v1/accounts/id/events/{event_id}
 
         ##### Path Params:
 
@@ -1298,8 +1280,7 @@
 	* ### Get a list of photos of the event
 
     	#### @GET
-        #### /api/v1/events/{event_id}/photos
-        #### correct to /api/v1/photos/events/{event_id}
+        #### /api/v1/photos/events/{event_id}
 
         ##### Path Params:
 
@@ -1354,8 +1335,7 @@
 	* ### Get a list of photo ids of the event
 
     	#### @GET
-        #### /api/v1/events/{event_id}/photos/id
-        #### correct to /api/v1/photos/id/events/{event_id}
+        #### /api/v1/photos/id/events/{event_id}
 
         ##### Path Params:
 
@@ -1387,8 +1367,7 @@
     * ### Get a list of comments of the event
     
         #### @GET
-        #### /api/v1/events/{event_id}/comments
-        #### correct to /api/v1/comments/events/{event_id}
+        #### /api/v1/comments/events/{event_id}
     
         ##### Path Params:
     
@@ -1431,8 +1410,7 @@
 	* ### Get a list of comment ids of the event
 
     	#### @GET
-        #### /api/v1/events/{event_id}/comments/id
-        #### correct to /api/v1/comments/id/events/{event_id}
+        #### /api/v1/comments/id/events/{event_id}
 
         ##### Path Params:
 
@@ -1464,9 +1442,7 @@
 	* ### Get the owner of the event
 
     	#### @GET
-        #### /api/v1/events/{event_id}/owner
-        #### correct to /api/v1/accounts/owner/events/{event_id}
-        #### or to /api/v1/owner/events/{event_id}
+        #### /api/v1/accounts/owner/events/{event_id}
 
         ##### Path Params:
 
@@ -1515,9 +1491,7 @@
 	* ### Get the owner id of the event
 
     	#### @GET
-        #### /api/v1/events/{event_id}/owner/id
-        #### correct to /api/v1/accounts/id/owner/events/{event_id}
-        #### or to /api/v1/owner/id/events/{event_id}
+        #### /api/v1/accounts/id/owner/events/{event_id}
 
         ##### Path Params:
 
@@ -1739,9 +1713,7 @@
 	* ### Change the role of the participant in the event
 
     	#### @PUT
-        #### /api/v1/events/{event_id}/accounts/{account_id}
-        #### correct to /api/v1/events/{event_id}/accounts/{account_id}/roles
-        #### or to /api/v1/roles/events/{event_id}/accounts/{account_id}
+        #### /api/v1/events/{event_id}/accounts/{account_id}/roles
 
         ##### Path Params:
 
@@ -1888,47 +1860,46 @@
         
     * ### Get a list of photo comments
     
-        	#### @GET
-            #### /api/v1/photos/{photo_id}/comments
-            #### correct to /api/v1/comments/photos/{photo_id}
-    
-            ##### Path Params:
-    
-            Path Key | Value
-    		-------- | -----
-            photo_id | 14
-    
-            <p/>
-    
-            Param Name | Required | Description
-    		---------- | -------- | -----------
-            photo_id | true | the photo id
-    
-            ##### Response:
-    
-            Status | Description
-    		------ | -----------
-            200 | OK
-            401 | UNAUTHORIZED
-            
-                {
-                    "comments": [
-                        {
-                            "comment_id": 12,
-                            "comment_text": "some text",
-                            "author_id": 11,
-                            "date": "2016-01-25 18:59:31"
-                        }, ...
-                    ]
-                }
+        #### @GET
+        #### /api/v1/comments/photos/{photo_id}
 
-            Param Name | Nullable | Description
-            ---------- | -------- | -----------
-            comments | false | the list of comments
-            comment_id | false | the comment id
-            comment_text | false | the some test of the comment
-            author_id | false | the author of the comment
-            date | false | the create date
+        ##### Path Params:
+
+        Path Key | Value
+        -------- | -----
+        photo_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+        ---------- | -------- | -----------
+        photo_id | true | the photo id
+
+        ##### Response:
+
+        Status | Description
+        ------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+        
+            {
+                "comments": [
+                    {
+                        "comment_id": 12,
+                        "comment_text": "some text",
+                        "author_id": 11,
+                        "date": "2016-01-25 18:59:31"
+                    }, ...
+                ]
+            }
+
+        Param Name | Nullable | Description
+        ---------- | -------- | -----------
+        comments | false | the list of comments
+        comment_id | false | the comment id
+        comment_text | false | the some test of the comment
+        author_id | false | the author of the comment
+        date | false | the create date
     
 	* ### Create a photo
 

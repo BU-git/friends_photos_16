@@ -4,14 +4,14 @@ public final class Constants {
 
     public static final String FILE_SEPERATOR = System.getProperty("file.separator");
 
-	public static class RoleConstants {
-		public final static Long OWNER = 1L;
-		public final static Long ADMIN = 2L;
-		public final static Long MEMBER = 3L;
-	}
+    public static class RoleConstants {
+        public final static Long OWNER = 1L;
+        public final static Long ADMIN = 2L;
+        public final static Long MEMBER = 3L;
+    }
 
 
-	/**
+    /**
      * Holds string constants for the client-server communication
      *
      * @author Sergiy Gabriel
@@ -112,6 +112,11 @@ public final class Constants {
             String AUTHOR_ID = "author_id";
             String DATE = "date";
             String LIST = "comments";
+        }
+
+        public interface TYPE {
+            String ID = "type_id";
+            String LIST = "types";
         }
 
     }

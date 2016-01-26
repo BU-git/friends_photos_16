@@ -56,7 +56,7 @@ public class HeaderTokenStatelessSpringSecurityIT extends AbstractAuthentication
             .body(authRequest)
             .contentType(JSON)
         .when()
-            .post(API + V1 + AUTH)
+            .post(API+V1+AUTH)
         .then()
             .statusCode(SC_OK)
         .extract().response();
@@ -72,7 +72,7 @@ public class HeaderTokenStatelessSpringSecurityIT extends AbstractAuthentication
             .contentType(JSON)
             .header(tokenHeader, token)
         .when()
-            .get(API + V1 + ACCOUNTS + SELF + EVENTS)
+            .get(API+V1+EVENTS+ACCOUNTS+SELF)
         .then()
             .statusCode(SC_OK)
         .extract().response();
@@ -94,7 +94,7 @@ public class HeaderTokenStatelessSpringSecurityIT extends AbstractAuthentication
             .body(authRequest)
             .contentType(JSON)
         .when()
-            .post(API + V1 + AUTH + REGISTER)
+            .post(API+V1+AUTH+REGISTER)
         .then()
             .statusCode(SC_CREATED)
         .extract().response();
@@ -111,7 +111,7 @@ public class HeaderTokenStatelessSpringSecurityIT extends AbstractAuthentication
             .contentType(JSON)
             .header(tokenHeader, token)
         .when()
-            .get(API + V1 + ACCOUNTS + SELF + EVENTS)
+            .get(API+V1+EVENTS+ACCOUNTS+SELF)
         .then()
             .statusCode(SC_OK)
         .extract().response();
@@ -139,7 +139,7 @@ public class HeaderTokenStatelessSpringSecurityIT extends AbstractAuthentication
             .body(socialRequest)
             .contentType(JSON)
         .when()
-            .post(API + V1 + AUTH + FB)
+            .post(API+V1+AUTH+FB)
         .then()
             .statusCode(SC_OK)
         .extract().response();
@@ -163,7 +163,7 @@ public class HeaderTokenStatelessSpringSecurityIT extends AbstractAuthentication
             .contentType(JSON)
             .header(tokenHeader, token)
         .when()
-            .get(API + V1 + ACCOUNTS + SELF + EVENTS)
+            .get(API+V1+EVENTS+ACCOUNTS+SELF)
         .then()
             .statusCode(SC_OK)
         .extract().response();
@@ -197,7 +197,7 @@ public class HeaderTokenStatelessSpringSecurityIT extends AbstractAuthentication
             .body(authRequest)
             .contentType(JSON)
         .when()
-            .post(API + V1 + AUTH + FB)
+            .post(API+V1+AUTH+FB)
         .then()
             .statusCode(SC_OK)
         .extract().response();
@@ -211,7 +211,7 @@ public class HeaderTokenStatelessSpringSecurityIT extends AbstractAuthentication
             .contentType(JSON)
             .header(tokenHeader, token)
         .when()
-            .get(API + V1 + ACCOUNTS + SELF + EVENTS)
+            .get(API+V1+EVENTS+ACCOUNTS+SELF)
         .then()
             .statusCode(SC_OK)
         .extract().response();

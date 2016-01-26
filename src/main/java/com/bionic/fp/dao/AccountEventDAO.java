@@ -70,6 +70,14 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
     List<AccountEvent> getByAccountAndRole(Long accountId, Long roleId);
 
     /**
+     * Returns a list of the accounts of the event
+     *
+     * @param eventId the event ID
+     * @return a list of the accounts of the event
+     */
+    List<Account> getAccounts(Long eventId);
+
+    /**
      * Returns a list of accounts as the result of searching by event ID and role ID
      *
      * @param eventId the event ID
@@ -77,6 +85,14 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
      * @return a list of accounts
      */
     List<Account> getAccounts(Long eventId, Long roleId);
+
+    /**
+     * Returns a list of the events of the account
+     *
+     * @param accountId the account ID
+     * @return a list of the events of the account
+     */
+    List<Event> getEvents(Long accountId);
 
     /**
      * Returns a list of events as the result of searching by account ID and role ID

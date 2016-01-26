@@ -5,9 +5,7 @@ import com.bionic.fp.domain.Photo;
 import com.bionic.fp.domain.Role;
 import com.bionic.fp.exception.rest.NotFoundException;
 import com.bionic.fp.service.*;
-import com.bionic.fp.web.rest.dto.CommentDTO;
-import com.bionic.fp.web.rest.dto.CommentInfo;
-import com.bionic.fp.web.rest.dto.PhotoInfo;
+import com.bionic.fp.web.rest.dto.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -24,6 +22,7 @@ import static com.bionic.fp.Constants.RestConstants.*;
 import static com.bionic.fp.Constants.RestConstants.PATH.*;
 import static com.bionic.fp.util.Checks.check;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -51,7 +50,7 @@ public class PhotoController {
 	 *
 	 * @param photoId the photo id
 	 * @return a photo
-     */
+	 */
 	@RequestMapping(value = PHOTO_ID, method = GET, produces = APPLICATION_JSON_VALUE)
 	@ResponseStatus(OK)
 	@ResponseBody
@@ -80,22 +79,91 @@ public class PhotoController {
 	}
 
 	/**
-	 * todo: no 404 => 200!
-	 * Returns photo's comments list
-	 * by given photo id.
+	 * Returns a list of photos of the owner
 	 *
-	 * @param photoId the photo id.
-	 * @return list of photo's comments.
+	 * @param ownerId the owner id
+	 * @return a list of photos
 	 */
-	@RequestMapping(value = PHOTO_ID+COMMENTS, method = GET, produces = APPLICATION_JSON_VALUE)
+	@RequestMapping(value = ACCOUNTS+ACCOUNT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
 	@ResponseStatus(OK)
 	@ResponseBody
-	public List<CommentInfo> getCommentsByPhoto(@PathVariable(PHOTO.ID) final Long photoId) {
-		Photo photo = ofNullable(photoService.get(photoId)).orElseThrow(() -> new NotFoundException(photoId));
-		List<Comment> commentList = photo.getComments();
-		List<CommentInfo> commentInfoList = commentList.stream().parallel().map(CommentInfo::new).collect(Collectors.toList());
-		return commentInfoList;
+	public final EntityInfoLists getAccountPhotos(@PathVariable(ACCOUNT.ID) final Long ownerId) {
+		return this.getPhotos(ownerId);
 	}
+
+	/**
+	 * Returns a list of photo ids of the owner
+	 *
+	 * @param ownerId the owner id
+	 * @return a list of photo ids
+	 */
+	@RequestMapping(value = ID+ACCOUNTS+ACCOUNT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
+	@ResponseStatus(OK)
+	@ResponseBody
+	public final IdLists getAccountPhotoIds(@PathVariable(ACCOUNT.ID) final Long ownerId) {
+		return this.getPhotoIds(ownerId);
+	}
+
+	/**
+	 * Returns a list of photos of the user.
+	 * The user must be authenticated
+	 *
+	 * @return a list of photos
+	 */
+	@RequestMapping(value = ACCOUNTS+SELF, method = GET, produces = APPLICATION_JSON_VALUE)
+	@ResponseStatus(OK)
+	@ResponseBody
+	public final EntityInfoLists getUserPhotos() {
+		Long userId = this.methodSecurityService.getUserId();
+		return this.getPhotos(userId);
+	}
+
+	/**
+	 * Returns a list of photo ids of the user.
+	 * The user must be authenticated
+	 *
+	 * @return a list of photo ids
+	 */
+	@RequestMapping(value = ID+ACCOUNTS+SELF, method = GET, produces = APPLICATION_JSON_VALUE)
+	@ResponseStatus(OK)
+	@ResponseBody
+	public final IdLists getUserPhotoIds() {
+		Long userId = this.methodSecurityService.getUserId();
+		return this.getPhotoIds(userId);
+	}
+
+	/**
+	 * Returns a list of photos of the event
+	 *
+	 * @param eventId the event id
+	 * @return a list of photos
+	 */
+	@RequestMapping(value = EVENTS+EVENT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
+	@ResponseStatus(OK)
+	@ResponseBody
+	public EntityInfoLists getEventPhotos(@PathVariable(EVENT.ID) final Long eventId) {
+		EntityInfoLists body = new EntityInfoLists();
+		body.setPhotos(this.photoService.getPhotosByEvent(eventId).stream().parallel()
+				.map(PhotoInfo::new).collect(toList()));
+		return body;
+	}
+
+	/**
+	 * Returns a list of photo ids of the event
+	 *
+	 * @param eventId the event id
+	 * @return a list of photo ids
+	 */
+	@RequestMapping(value = ID+EVENTS+EVENT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
+	@ResponseStatus(OK)
+	@ResponseBody
+	public IdLists getEventPhotoIds(@PathVariable(EVENT.ID) final Long eventId) {
+		IdLists body = new IdLists();
+		body.setPhotos(this.photoService.getPhotosByEvent(eventId).stream().parallel()
+				.map(Photo::getId).collect(toList()));
+		return body;
+	}
+
 
 	//***************************************
 	//                 @POST
@@ -129,7 +197,7 @@ public class PhotoController {
 	 *
 	 * @param photoId the photo id
 	 * @param commentDTO the comment
-     */
+	 */
 	@RequestMapping(value = PHOTO_ID+COMMENTS, method = POST, consumes = APPLICATION_JSON_VALUE)
 	@ResponseStatus(CREATED)
 	public void addComment(@PathVariable(PHOTO.ID) final Long photoId,
@@ -164,5 +232,27 @@ public class PhotoController {
 		photo.setName(name);
 		photo = photoService.update(photo);
 		return new PhotoInfo(photo);
+	}
+
+
+	//***************************************
+	//                 PRIVATE
+	//***************************************
+
+
+	private EntityInfoLists getPhotos(final Long accountId) {
+		List<Photo> photos = this.photoService.getPhotosByOwnerId(accountId);
+		EntityInfoLists body = new EntityInfoLists();
+		body.setPhotos(photos.stream().parallel()
+				.map(PhotoInfo::new)
+				.collect(Collectors.toList()));
+		return body;
+	}
+
+	private IdLists getPhotoIds(final Long accountId) {
+		List<Long> photos = this.photoService.getPhotoIdsByOwnerId(accountId);
+		IdLists body = new IdLists();
+		body.setPhotos(photos);
+		return body;
 	}
 }

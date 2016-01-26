@@ -30,14 +30,12 @@ public class PhotoRestControllerIT extends AbstractIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMin(owner);
 
-        authenticateUser(owner);
-
         given()
             .multiPart(file)
             .param(EVENT.ID, event.getId())
             .contentType(MULTIPART_FORM_DATA_VALUE)
         .when()
-            .post(API+PHOTOS)
+            .post(API+V1+PHOTOS)
         .then()
             .statusCode(SC_CREATED);
 
@@ -47,7 +45,7 @@ public class PhotoRestControllerIT extends AbstractIT {
             .param(PHOTO.NAME, "BearGrylls")
             .contentType(MULTIPART_FORM_DATA_VALUE)
         .when()
-            .post(API+PHOTOS)
+            .post(API+V1+PHOTOS)
         .then()
             .statusCode(SC_CREATED)
             .body(PHOTO.NAME + TO_STRING, is("BearGrylls"));
