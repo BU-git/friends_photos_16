@@ -3,7 +3,6 @@ package com.bionic.fp.domain;
 import com.bionic.fp.util.LocalDateTimePersistenceConverter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,7 @@ import java.util.List;
         @NamedQuery(name = Event.FIND_COMMENTS,
                 query = "SELECT e FROM Event e JOIN FETCH e.comments WHERE e.id = :eventId")
 })
-public class Event extends BaseEntity {
+public class Event extends BaseEntity implements IdEntity<Long> {
 
     @Transient public static final String FIND_BY_NAME_AND_DESCRIPTION = "Event.findByNameAndDescription";
     @Transient public static final String FIND_BY_NAME = "Event.findByName";
@@ -64,7 +63,8 @@ public class Event extends BaseEntity {
     @Column(name = "private")
     private boolean isPrivate = false;
     private String password;
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<AccountEvent> accounts = new ArrayList<>();
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
     private List<Photo> photos = new ArrayList<>();
@@ -72,7 +72,7 @@ public class Event extends BaseEntity {
     @JoinTable(name = "events_comments",
             joinColumns = {@JoinColumn(name = "event_id")},
             inverseJoinColumns = {@JoinColumn(name = "comment_id")})
-    private List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments;
 
     public Event() {
     }

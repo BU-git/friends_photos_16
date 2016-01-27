@@ -17,7 +17,7 @@ import java.util.List;
         @NamedQuery(name = Photo.FIND_COMMENTS,
                 query = "SELECT p FROM Photo p JOIN FETCH p.comments WHERE p.id = :photoId")
 })
-public class Photo extends BaseEntity {
+public class Photo extends BaseEntity implements IdEntity<Long> {
 
     @Transient public static final String FIND_BY_OWNER_ID = "Photo.findByOwnerId";
     @Transient public static final String FIND_BY_EVENT_ID = "Photo.findByEventId";
@@ -36,7 +36,7 @@ public class Photo extends BaseEntity {
     private Event event;
     @OneToOne(fetch = FetchType.LAZY)
     private Account owner;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "photos_comments",
             joinColumns = {@JoinColumn(name = "photo_id")},
             inverseJoinColumns = {@JoinColumn(name = "comment_id")})

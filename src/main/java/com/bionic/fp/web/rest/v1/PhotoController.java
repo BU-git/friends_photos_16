@@ -37,6 +37,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 public class PhotoController {
 
 	@Autowired private PhotoService photoService;
+	@Autowired private CommentService commentService;
 	@Autowired private MethodSecurityService methodSecurityService;
 
 
@@ -202,12 +203,12 @@ public class PhotoController {
 	@ResponseStatus(CREATED)
 	public void addComment(@PathVariable(PHOTO.ID) final Long photoId,
 						   @RequestBody final CommentDTO commentDTO) {
-		Photo photo = photoService.get(photoId);
+		Photo photo = photoService.getOrThrow(photoId);
 		this.methodSecurityService.checkPermission(photo.getEvent().getId(), Role::isCanAddComments);
 		Comment comment = new Comment();
 		comment.setAuthor(this.methodSecurityService.getUser());
 		comment.setText(commentDTO.getCommentText());
-		photoService.addComment(photo, comment);
+		commentService.addCommentToPhoto(photoId, comment);
 	}
 
 

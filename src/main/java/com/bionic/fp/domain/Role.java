@@ -1,14 +1,13 @@
 package com.bionic.fp.domain;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 /**
  * Created by Yevhenii Semenov on 11/16/2015.
  */
 @Entity
 @Table(name = "roles")
-public class Role extends BaseEntity {
+public class Role extends BaseEntity implements IdEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

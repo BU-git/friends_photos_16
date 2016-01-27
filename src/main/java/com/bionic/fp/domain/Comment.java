@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "comments")
-public class Comment extends BaseEntity {
+public class Comment extends BaseEntity implements IdEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -12,8 +12,10 @@ public class Comment extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private Account author;
 
-    public Comment() {
-//        date = LocalDateTime.now();
+    public Comment() {}
+
+    public Comment(String text) {
+        this.text = text;
     }
 
     public Long getId() {

@@ -1,9 +1,6 @@
 package com.bionic.fp.util;
 
-import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.AccountEvent;
-import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.Role;
+import com.bionic.fp.domain.*;
 import com.bionic.fp.exception.auth.impl.IncorrectPasswordException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 
@@ -84,5 +81,17 @@ public class Checks {
 
     public static void checkRole(final Long roleId) throws IncorrectPasswordException {
         checkNotNull(roleId, "role id");
+    }
+
+    public static void checkComment(final Comment comment) throws IncorrectPasswordException {
+        checkNotNull(comment, "comment");
+    }
+
+    public static void checkPhoto(final Photo photo) throws IncorrectPasswordException {
+        checkNotNull(photo, "photo");
+    }
+
+    public static void checkPhoto(final Long photoId) throws IncorrectPasswordException {
+        checkNotNull(photoId, "photo id");
     }
 }

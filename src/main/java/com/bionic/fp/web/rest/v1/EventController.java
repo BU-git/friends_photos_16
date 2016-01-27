@@ -35,6 +35,7 @@ public class EventController {
     @Autowired private EventService eventService;
     @Autowired private AccountEventService accountEventService;
     @Autowired private EventTypeService eventTypeService;
+    @Autowired private CommentService commentService;
     @Autowired private MethodSecurityService methodSecurityService;
 
 
@@ -341,12 +342,10 @@ public class EventController {
     public void addComment(@PathVariable(value = EVENT.ID) final Long eventId,
                            @RequestBody final CommentDTO commentDTO) {
         methodSecurityService.checkPermission(eventId, Role::isCanAddComments);
-        Event event = eventService.get(eventId);
         Comment comment = new Comment();
         comment.setAuthor(methodSecurityService.getUser());
         comment.setText(commentDTO.getCommentText());
-        // todo: fix this method within event service
-        eventService.addComment(event, comment);
+        commentService.addCommentToEvent(eventId, comment);
     }
 
 

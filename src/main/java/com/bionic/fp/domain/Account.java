@@ -13,7 +13,7 @@ import java.util.List;
         @NamedQuery(name= Account.GET_BY_FB_ID, query="SELECT a FROM Account a WHERE a.fbId=:fbId"),
         @NamedQuery(name= Account.GET_BY_VK_ID, query="SELECT a FROM Account a WHERE a.vkId=:vkId")
 })
-public class Account extends BaseEntity {
+public class Account extends BaseEntity implements IdEntity<Long> {
 
     @Transient public static final String GET_BY_EMAIL = "Account.getByEmail";
     @Transient public static final String GET_BY_FB_ID = "Account.getByFbId";
@@ -57,7 +57,8 @@ public class Account extends BaseEntity {
 //	@Column(name = "active")
 //    private boolean active = true;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
 	private List<AccountEvent> events;
 
     public Account() {}

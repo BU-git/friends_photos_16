@@ -19,7 +19,7 @@ import javax.persistence.*;
         @NamedQuery(name= AccountEvent.FIND_BY_ACCOUNT_ID,
                 query="SELECT ae FROM AccountEvent ae WHERE ae.account.id = :accountId")
 })
-public class AccountEvent extends BaseEntity {
+public class AccountEvent extends BaseEntity implements IdEntity<Long> {
 
     @Transient public static final String GET_BY_ACCOUNT_ID_AND_EVENT_ID = "AccountEvent.findByAccountIdAndEventId";
     @Transient public static final String FIND_BY_EVENT_ID_AND_ROLE_ID = "AccountEvent.findByEventIdAndRoleId";

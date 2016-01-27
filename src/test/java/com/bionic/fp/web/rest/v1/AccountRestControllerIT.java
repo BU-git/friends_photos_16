@@ -150,7 +150,7 @@ public class AccountRestControllerIT extends AbstractIT {
         lists = response.as(IdLists.class);
         assertNotNull(lists.getAccounts());
         assertTrue(lists.getAccounts().size() == 2);
-        assertEqualsAccountId(lists.getAccounts(), owner, account);
+        assertEqualsId(lists.getAccounts(), owner, account);
     }
 
     @Test
@@ -208,22 +208,6 @@ public class AccountRestControllerIT extends AbstractIT {
             if(optional.isPresent()) {
                 assertEqualsAccount(account, optional.get());
             } else {
-                fail();
-            }
-        }
-
-    }
-
-    private void assertEqualsAccountId(final List<Long> actuals, final Account... accounts) {
-        if(accounts == null || accounts.length == 0) {
-            return;
-        }
-        if(actuals == null || actuals.isEmpty() || accounts.length != actuals.size()) {
-            fail();
-        }
-        for (Account account : accounts) {
-            Optional<Long> optional = actuals.stream().parallel().filter(a -> account.getId().equals(a)).findFirst();
-            if(!optional.isPresent()) {
                 fail();
             }
         }

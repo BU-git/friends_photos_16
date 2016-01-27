@@ -1,10 +1,7 @@
 package com.bionic.fp;
 
 import com.bionic.fp.dao.EventDAO;
-import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.EventType;
-import com.bionic.fp.domain.Role;
+import com.bionic.fp.domain.*;
 import com.bionic.fp.service.*;
 import com.bionic.fp.web.security.spring.infrastructure.User;
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -23,15 +20,16 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import static com.bionic.fp.Constants.RoleConstants.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
 
 /**
  * This is a general integration test
@@ -57,6 +55,8 @@ public abstract class AbstractIT extends AbstractHelperTest {
     @Autowired protected AccountEventService accountEventService;
     @Autowired protected EventTypeService eventTypeService;
     @Autowired protected RoleService roleService;
+    @Autowired protected CommentService commentService;
+    @Autowired protected PhotoService photoService;
     @Autowired protected WebApplicationContext context;
 
     @Before
@@ -262,5 +262,50 @@ public abstract class AbstractIT extends AbstractHelperTest {
 
             }
         };
+    }
+
+    protected Comment getNewComment(final Account author) {
+        Comment comment = new Comment(String.format("I am %s and now %s", author.getUserName(), LocalDateTime.now()));
+        comment.setAuthor(author);
+        return comment;
+    }
+
+    protected Photo getSavedPhoto(final Event event, final Account owner) {
+        Photo photo = getNewPhoto(event, owner);
+
+        assertNull(photo.getCreated());
+        assertNull(photo.getId());
+
+        photo = this.photoService.create(photo);
+
+        assertNotNull(photo.getCreated());
+        assertNotNull(photo.getId());
+
+        return photo;
+    }
+
+    protected Photo getNewPhoto(final Event event, final Account owner) {
+        Photo photo = new Photo();
+        String time = LocalDateTime.now().toString();
+        photo.setName(time);
+        photo.setUrl(String.format("http://fp/%d/%d/%s", event.getId(), owner.getId(), time));
+        photo.setEvent(event);
+        photo.setOwner(owner);
+        return photo;
+    }
+
+    protected <PK extends Serializable> void assertEqualsId(final List<PK> actual, final IdEntity<PK> ... expected) {
+        if(expected == null || expected.length == 0) {
+            return;
+        }
+        if(actual == null || actual.isEmpty() || expected.length != actual.size()) {
+            fail();
+        }
+        for (IdEntity<PK> entity : expected) {
+            Optional<PK> optional = actual.stream().parallel().filter(a -> entity.getId().equals(a)).findFirst();
+            if(!optional.isPresent()) {
+                fail();
+            }
+        }
     }
 }

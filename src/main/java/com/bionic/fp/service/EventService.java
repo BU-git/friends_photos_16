@@ -1,14 +1,9 @@
 package com.bionic.fp.service;
 
-import com.bionic.fp.dao.AccountDAO;
-import com.bionic.fp.dao.AccountEventDAO;
-import com.bionic.fp.dao.EventDAO;
-import com.bionic.fp.dao.RoleDAO;
+import com.bionic.fp.dao.*;
 import com.bionic.fp.domain.*;
-import com.bionic.fp.exception.AppException;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
-import com.bionic.fp.exception.logic.critical.NonUniqueResultException;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 import com.bionic.fp.exception.logic.impl.RoleNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -211,29 +206,9 @@ public class EventService {
         return this.eventDAO.get(name, description);
     }
 
-    /**
-     * todo: update(event)?!? fixme using commentDao! and event => eventId
-     * Adds comment to event
-     *
-     * @param event the event
-     * @param comment the comment
-     * @throws InvalidParameterException if incoming parameters are not valid
-     * @throws EventNotFoundException if the event doesn't exist
-     */
-    public void addComment(final Event event, final Comment comment) throws InvalidParameterException, EventNotFoundException {
-        checkNotNull(event, "event");
-        checkNotNull(comment, "comment");
-
-        if (event.getComments() == null) {
-            throw new AppException("Invalid event entity");
-        }
-
-        if(comment.getText().isEmpty()) {
-            throw new AppException("Comment is empty");
-        }
-        event.getComments().add(comment);
-        update(event);
-    }
+    //////////////////////////////////////////////
+    //                 PRIVATE                  //
+    //////////////////////////////////////////////
 
     /**
      * Checks required parameters of an event
@@ -247,4 +222,5 @@ public class EventService {
         check(event.getEventType() != null, "The type of the event should not be null");
         check(event.getDescription() != null, "The description of the event should not be null");
     }
+
 }

@@ -2,10 +2,8 @@ package com.bionic.fp.service;
 
 import com.bionic.fp.dao.PhotoDAO;
 import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.Comment;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
-import com.bionic.fp.exception.AppException;
 import com.bionic.fp.exception.auth.impl.IncorrectPasswordException;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
@@ -174,33 +172,6 @@ public class PhotoService {
     }
 
     /**
-     * @param hash photo md5
-     * @return Photo entity from database
-     */
-//    public Photo getSingleInfo(String hash) {
-//        return photoDAO.getSingleInfoByHash(hash);
-//    }
-
-    /**
-     * todo: update(photo)?!? fixme using commentDao! and photo => photoId
-     * Add comment to photo
-     * @param photo - photo entity
-     * @param comment - comment entity
-     */
-    public void addComment(Photo photo, Comment comment) {
-        if (photo.getComments() == null) {
-            throw new AppException("Invalid photo entity");
-        }
-
-        if(comment.getText().isEmpty()) {
-            throw new AppException("Comment is empty");
-        }
-
-        photo.getComments().add(comment);
-        update(photo);
-    }
-
-    /**
      * Returns a list of the photos of the event
      *
      * @param eventId the event ID
@@ -247,6 +218,10 @@ public class PhotoService {
         return this.getPhotosByAccount(accountId).stream().parallel()
                 .map(Photo::getId).collect(toList());
     }
+
+    //////////////////////////////////////////////
+    //                 PRIVATE                  //
+    //////////////////////////////////////////////
 
     private void checkFile(final MultipartFile file) throws IncorrectPasswordException {
         checkNotNull(file, "file");
