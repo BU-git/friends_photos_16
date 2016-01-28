@@ -9,6 +9,7 @@ import com.bionic.fp.service.EventService;
 import com.bionic.fp.service.EventTypeService;
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import static org.junit.Assert.*;
  *
  * @author Sergiy Gabriel
  */
+@Ignore
 public class EventDAOIT extends AbstractIT {
 
     @Test

@@ -7,6 +7,7 @@ import com.bionic.fp.exception.logic.InvalidParameterException;
 import org.junit.Test;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -705,8 +706,7 @@ public class EventServiceIT extends AbstractIT {
         assertTrue(accounts.contains(user2));
     }
 
-    private void assertCustomEqualsDate(LocalDateTime expected, LocalDateTime actual) {
-        expected = expected.minusNanos(expected.getNano());
-        assertTrue(expected.isEqual(actual) || expected.isEqual(actual.minusSeconds(1L)));
+    private void assertCustomEqualsDate(final LocalDateTime expected, final LocalDateTime actual) {
+        assertTrue(Duration.between(expected, actual).getSeconds() < 1L);
     }
 }
