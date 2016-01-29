@@ -57,8 +57,7 @@ public class Account extends BaseEntity implements IdEntity<Long> {
 //	@Column(name = "active")
 //    private boolean active = true;
 
-//    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<AccountEvent> events;
 
     public Account() {}

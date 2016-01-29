@@ -7,25 +7,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="accounts_events")
-@NamedQueries({
-        @NamedQuery(name= AccountEvent.GET_BY_ACCOUNT_ID_AND_EVENT_ID,
-                query="SELECT ae FROM AccountEvent ae WHERE ae.account.id = :accountId AND ae.event.id = :eventId"),
-        @NamedQuery(name= AccountEvent.FIND_BY_EVENT_ID_AND_ROLE_ID,
-                query="SELECT ae FROM AccountEvent ae WHERE ae.event.id = :eventId AND ae.role.id = :roleId"),
-        @NamedQuery(name= AccountEvent.FIND_BY_ACCOUNT_ID_AND_ROLE_ID,
-                query="SELECT ae FROM AccountEvent ae WHERE ae.account.id = :accountId AND ae.role.id = :roleId"),
-        @NamedQuery(name= AccountEvent.FIND_BY_EVENT_ID,
-                query="SELECT ae FROM AccountEvent ae WHERE ae.event.id = :eventId"),
-        @NamedQuery(name= AccountEvent.FIND_BY_ACCOUNT_ID,
-                query="SELECT ae FROM AccountEvent ae WHERE ae.account.id = :accountId")
-})
 public class AccountEvent extends BaseEntity implements IdEntity<Long> {
-
-    @Transient public static final String GET_BY_ACCOUNT_ID_AND_EVENT_ID = "AccountEvent.findByAccountIdAndEventId";
-    @Transient public static final String FIND_BY_EVENT_ID_AND_ROLE_ID = "AccountEvent.findByEventIdAndRoleId";
-    @Transient public static final String FIND_BY_ACCOUNT_ID_AND_ROLE_ID = "AccountEvent.findByAccountIdAndRoleId";
-    @Transient public static final String FIND_BY_EVENT_ID = "AccountEvent.findByEventId";
-    @Transient public static final String FIND_BY_ACCOUNT_ID = "AccountEvent.findByAccountId";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

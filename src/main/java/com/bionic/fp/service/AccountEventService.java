@@ -83,16 +83,18 @@ public class AccountEventService {
                 .orElseThrow(() -> new AccountEventNotFoundException(accountId, eventId));
     }
 
-    public AccountEvent getWithAccountEvent(final Long accountEventId) {
-        checkAccountEvent(accountEventId);
-        return this.accountEventDAO.getWithAccountEvent(accountEventId);
-    }
-
-    public AccountEvent getWithAccountEvent(final Long accountId, final Long eventId) {
-        checkAccount(accountId);
-        checkEvent(eventId);
-        return this.accountEventDAO.getWithAccountEvent(accountId, eventId);
-    }
+//    @Deprecated
+//    public AccountEvent getWithAccountEvent(final Long accountEventId) {
+//        checkAccountEvent(accountEventId);
+//        return this.accountEventDAO.getWithAccountEvent(accountEventId);
+//    }
+//
+//    @Deprecated
+//    public AccountEvent getWithAccountEvent(final Long accountId, final Long eventId) {
+//        checkAccount(accountId);
+//        checkEvent(eventId);
+//        return this.accountEventDAO.getWithAccountEvent(accountId, eventId);
+//    }
 
     /**
      * Returns a list of the accounts of the event

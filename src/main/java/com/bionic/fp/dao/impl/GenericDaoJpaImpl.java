@@ -2,10 +2,12 @@ package com.bionic.fp.dao.impl;
 
 import com.bionic.fp.dao.GenericDAO;
 import com.bionic.fp.domain.BaseEntity;
+import com.bionic.fp.domain.IdEntity;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.critical.NonUniqueResultException;
 
 import javax.persistence.*;
+import javax.persistence.criteria.*;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.time.LocalDateTime;
@@ -15,11 +17,15 @@ import java.util.Map;
 import static java.util.Optional.ofNullable;
 
 /**
- * Created by c2414 on 23.01.2016.
+ * This is an implementation of {@link GenericDAO} and some general methods for working with JPA
+ *
+ * @author Sergiy Gabriel
  */
-public class GenericDaoJpaImpl<T extends BaseEntity, PK extends Serializable> implements GenericDAO<T, PK> {
+public class GenericDaoJpaImpl<T extends BaseEntity & IdEntity<PK>, PK extends Serializable> implements GenericDAO<T, PK> {
 
     protected static final String HINT_LOAD_GRAPH = "javax.persistence.loadgraph";
+    private static final String FIELD_ID = "id";
+    private static final String FIELD_DELETED = "deleted";
 
     protected Class<T> entityClass;
 
@@ -40,7 +46,11 @@ public class GenericDaoJpaImpl<T extends BaseEntity, PK extends Serializable> im
 
     @Override
     public T read(PK id) {
-        return this.em.find(entityClass, id);
+        CriteriaBuilder cb = this.em.getCriteriaBuilder();
+        CriteriaQuery<T> query = cb.createQuery(entityClass);
+        Root<T> entity = query.from(entityClass);
+        query.where(cb.and(isNotDeleted(entity), equalId(entity, id)));
+        return this.getSingleResult(this.em.createQuery(query));
     }
 
     @Override
@@ -52,7 +62,8 @@ public class GenericDaoJpaImpl<T extends BaseEntity, PK extends Serializable> im
 
     @Override
     public void delete(PK id) throws EntityNotFoundException {
-        T t = this.getOrThrow(id);
+        T t = ofNullable(this.get(id)).orElseThrow(() -> new EntityNotFoundException(id.toString()));
+        this.em.refresh(t); // workaround, forcing JPA to populate all relationships so that they can be correctly removed
         this.em.remove(t);
     }
 
@@ -63,7 +74,7 @@ public class GenericDaoJpaImpl<T extends BaseEntity, PK extends Serializable> im
      * @return a single result or null
      * @throws NonUniqueResultException
      */
-    protected <T> T getSingleResult(final TypedQuery<T> query) throws NonUniqueResultException {
+    protected <E> E getSingleResult(final TypedQuery<E> query) throws NonUniqueResultException {
         try {
             return query.getSingleResult();
         } catch (NoResultException ignored) {
@@ -92,7 +103,7 @@ public class GenericDaoJpaImpl<T extends BaseEntity, PK extends Serializable> im
      * @throws EntityNotFoundException if the entity doesn't exist
      */
     public void setDeleted(final PK id, final boolean value) throws EntityNotFoundException {
-        T t = this.getOrThrow(id);
+        T t = ofNullable(this.get(id)).orElseThrow(() -> new EntityNotFoundException(id.toString()));
         t.setDeleted(value);
         this.update(t);
     }
@@ -107,5 +118,17 @@ public class GenericDaoJpaImpl<T extends BaseEntity, PK extends Serializable> im
         Map<String, Object> hints = new HashMap<>();
         hints.put(HINT_LOAD_GRAPH, getGraph(attributeName));
         return hints;
+    }
+
+    protected <S extends BaseEntity, X extends BaseEntity> Predicate isNotDeleted(final From<S, X> entity) {
+        return this.em.getCriteriaBuilder().isFalse(entity.get(FIELD_DELETED));
+    }
+
+    protected <S extends IdEntity<PK>, X extends IdEntity<PK>> Predicate equalId(final From<S, X> entity, final PK id) {
+        return this.em.getCriteriaBuilder().equal(entity.get(FIELD_ID), id);
+    }
+
+    private T get(PK id) {
+        return this.em.find(entityClass, id);
     }
 }

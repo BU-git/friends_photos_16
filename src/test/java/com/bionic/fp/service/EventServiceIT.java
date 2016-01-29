@@ -179,6 +179,7 @@ public class EventServiceIT extends AbstractIT {
     public void testSoftDeleteByIdSuccess() {
         Account owner = getSavedAccount();
         Event event = getSavedEventMin(owner);
+
         Event actual = this.eventService.get(event.getId());
         assertNotNull(actual);
         assertFalse(actual.isDeleted());
@@ -187,10 +188,7 @@ public class EventServiceIT extends AbstractIT {
         this.eventService.softDelete(event.getId());
 
         assertFalse(event.isDeleted());
-        actual = this.eventService.get(event.getId());
-        assertNotNull(actual);
-        assertTrue(actual.isDeleted());
-        assertNotNull(actual.getModified());
+        assertNull(this.eventService.get(event.getId()));
     }
 
     @Test(expected = InvalidParameterException.class)

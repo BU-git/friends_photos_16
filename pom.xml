@@ -24,6 +24,8 @@
         <mysql.connector.version>5.1.37</mysql.connector.version>
         <apache.httpclient.version>4.5.1</apache.httpclient.version>
         <hsqldb.version>2.3.3</hsqldb.version>
+        <log4j.version>2.5</log4j.version>
+        <slf4j.version>1.7.14</slf4j.version>
     </properties>
 
     <dependencyManagement>
@@ -186,6 +188,27 @@
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
         </dependency>
+        <!-- slf4j, log4j and a bridge between slf4 and log4j -->
+        <!--<dependency>-->
+            <!--<groupId>org.slf4j</groupId>-->
+            <!--<artifactId>slf4j-api</artifactId>-->
+            <!--<version>${slf4j.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.logging.log4j</groupId>-->
+            <!--<artifactId>log4j-slf4j-impl</artifactId>-->
+            <!--<version>${log4j.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.logging.log4j</groupId>-->
+            <!--<artifactId>log4j-api</artifactId>-->
+            <!--<version>${log4j.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.logging.log4j</groupId>-->
+            <!--<artifactId>log4j-core</artifactId>-->
+            <!--<version>${log4j.version}</version>-->
+        <!--</dependency>-->
 
     </dependencies>
 

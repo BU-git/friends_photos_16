@@ -190,6 +190,7 @@ public class EventService {
      * @return the event and null otherwise
      * @throws InvalidParameterException if the event ID is invalid
      */
+    @Deprecated
     public Event getWithAccounts(final Long eventId) throws InvalidParameterException {
         checkEvent(eventId);
         return this.eventDAO.getWithAccounts(eventId);

@@ -21,7 +21,8 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
      * @param id the unique identifier
      * @return an account-event with its account and null if the account-event doesn't exist
      */
-    AccountEvent getWithAccountEvent(Long id);
+//    @Deprecated
+//    AccountEvent getWithAccountEvent(Long id);
 
     /**
      * Returns an account-event by the specified account ID and event ID.
@@ -34,7 +35,7 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
 
     /**
      * Returns an account-event with its account and event by the specified account ID and event ID.
-     * Queries an account-event with setting EAGER for its account and event
+     * Queries an account-event with setting EAGER for all properties
      *
      * @param accountId the account ID
      * @param eventId the event ID
@@ -102,4 +103,8 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
      * @return a list of events
      */
     List<Event> getEvents(Long accountId, Long roleId);
+
+//    void setDeletedByEvent(Long eventId, boolean value);
+//
+//    void setDeletedByAccount(Long accountId, boolean value);
 }

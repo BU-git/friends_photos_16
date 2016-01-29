@@ -5,6 +5,8 @@ import com.bionic.fp.domain.*;
 import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,60 +21,43 @@ import static java.util.stream.Collectors.toList;
 @Repository
 public class AccountEventDaoImpl extends GenericDaoJpaImpl<AccountEvent, Long> implements AccountEventDAO {
 
+    private static final String ACCOUNT = "account";
+    private static final String EVENT = "event";
+    private static final String ROLE = "role";
+
     public AccountEventDaoImpl() {}
 
     @Override
-    public AccountEvent getWithAccountEvent(final Long id) {
-        return this.em.find(AccountEvent.class, id, getHints("account", "event", "role"));
-    }
-
-    @Override
     public AccountEvent get(final Long accountId, final Long eventId) {
-        return this.getSingleResult(
-                this.em.createNamedQuery(AccountEvent.GET_BY_ACCOUNT_ID_AND_EVENT_ID, AccountEvent.class)
-                        .setParameter("accountId", accountId)
-                        .setParameter("eventId", eventId));
+        return this.getSingleResult(this.em.createQuery(this.getQuery(accountId, eventId, null)));
     }
 
     @Override
     public AccountEvent getWithAccountEvent(final Long accountId, final Long eventId) {
-        return this.getSingleResult(
-                this.em.createNamedQuery(AccountEvent.GET_BY_ACCOUNT_ID_AND_EVENT_ID, AccountEvent.class)
-                        .setParameter("accountId", accountId)
-                        .setParameter("eventId", eventId)
-                        .setHint(HINT_LOAD_GRAPH, getGraph("account", "event", "role")));
+        return this.getSingleResult(this.em.createQuery(this.getQuery(accountId, eventId, null))
+                .setHint(HINT_LOAD_GRAPH, getGraph(ACCOUNT, EVENT, ROLE)));
     }
 
     @Override
     public Role getRole(final Long accountId, final Long eventId) {
-        AccountEvent result = this.getSingleResult(
-                this.em.createNamedQuery(AccountEvent.GET_BY_ACCOUNT_ID_AND_EVENT_ID, AccountEvent.class)
-                        .setParameter("accountId", accountId)
-                        .setParameter("eventId", eventId));
+        AccountEvent result = this.get(accountId, eventId);
         return result == null ? null : result.getRole();
     }
 
     @Override
     public List<AccountEvent> getByEventAndRole(final Long eventId, final Long roleId) {
-        return this.em.createNamedQuery(AccountEvent.FIND_BY_EVENT_ID_AND_ROLE_ID, AccountEvent.class)
-                .setParameter("eventId", eventId)
-                .setParameter("roleId", roleId)
-                .getResultList();
+        return this.em.createQuery(this.getQuery(null, eventId, roleId)).getResultList();
     }
 
     @Override
     public List<AccountEvent> getByAccountAndRole(final Long accountId, final Long roleId) {
-        return this.em.createNamedQuery(AccountEvent.FIND_BY_ACCOUNT_ID_AND_ROLE_ID, AccountEvent.class)
-                .setParameter("accountId", accountId)
-                .setParameter("roleId", roleId)
-                .getResultList();
+        return this.em.createQuery(this.getQuery(accountId, null, roleId)).getResultList();
     }
 
     @Override
     public List<Account> getAccounts(final Long eventId) {
-        return this.em.createNamedQuery(AccountEvent.FIND_BY_EVENT_ID, AccountEvent.class)
-                .setParameter("eventId", eventId)
-                .setHint(HINT_LOAD_GRAPH, getGraph("account"))
+        return this.em.createQuery(this.getQuery(null, eventId, null))
+                .setHint(HINT_LOAD_GRAPH, getGraph(ACCOUNT))
                 .getResultList().stream().parallel()
                 .map(AccountEvent::getAccount)
                 .collect(toList());
@@ -80,10 +65,8 @@ public class AccountEventDaoImpl extends GenericDaoJpaImpl<AccountEvent, Long> i
 
     @Override
     public List<Account> getAccounts(final Long eventId, final Long roleId) {
-        return this.em.createNamedQuery(AccountEvent.FIND_BY_EVENT_ID_AND_ROLE_ID, AccountEvent.class)
-                .setParameter("eventId", eventId)
-                .setParameter("roleId", roleId)
-                .setHint(HINT_LOAD_GRAPH, getGraph("account"))
+        return this.em.createQuery(this.getQuery(null, eventId, roleId))
+                .setHint(HINT_LOAD_GRAPH, getGraph(ACCOUNT))
                 .getResultList().stream().parallel()
                 .map(AccountEvent::getAccount)
                 .collect(Collectors.toList());
@@ -91,9 +74,8 @@ public class AccountEventDaoImpl extends GenericDaoJpaImpl<AccountEvent, Long> i
 
     @Override
     public List<Event> getEvents(final Long accountId) {
-        return this.em.createNamedQuery(AccountEvent.FIND_BY_ACCOUNT_ID, AccountEvent.class)
-                .setParameter("accountId", accountId)
-                .setHint(HINT_LOAD_GRAPH, getGraph("event"))
+        return this.em.createQuery(this.getQuery(accountId, null, null))
+                .setHint(HINT_LOAD_GRAPH, getGraph(EVENT))
                 .getResultList().stream().parallel()
                 .map(AccountEvent::getEvent)
                 .collect(Collectors.toList());
@@ -101,10 +83,8 @@ public class AccountEventDaoImpl extends GenericDaoJpaImpl<AccountEvent, Long> i
 
     @Override
     public List<Event> getEvents(final Long accountId, final Long roleId) {
-        return this.em.createNamedQuery(AccountEvent.FIND_BY_ACCOUNT_ID_AND_ROLE_ID, AccountEvent.class)
-                .setParameter("accountId", accountId)
-                .setParameter("roleId", roleId)
-                .setHint(HINT_LOAD_GRAPH, getGraph("event"))
+        return this.em.createQuery(this.getQuery(accountId, null, roleId))
+                .setHint(HINT_LOAD_GRAPH, getGraph(EVENT))
                 .getResultList().stream().parallel()
                 .map(AccountEvent::getEvent)
                 .collect(Collectors.toList());
@@ -119,5 +99,32 @@ public class AccountEventDaoImpl extends GenericDaoJpaImpl<AccountEvent, Long> i
         return this.getOrThrow(accountId, eventId).getRole();
     }
 
+    private CriteriaQuery<AccountEvent> getQuery(final Long accountId, final Long eventId, final Long roleId) {
+        CriteriaBuilder cb = this.em.getCriteriaBuilder();
+        CriteriaQuery<AccountEvent> query = cb.createQuery(AccountEvent.class);
+
+        Root<AccountEvent> accountEvent = query.from(AccountEvent.class);
+        Join<AccountEvent, Event> event = accountEvent.join(EVENT);
+        Join<AccountEvent, Account> account = accountEvent.join(ACCOUNT);
+        Join<AccountEvent, Role> role = accountEvent.join(ROLE);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(isNotDeleted(accountEvent));
+        predicates.add(isNotDeleted(account));
+        predicates.add(isNotDeleted(event));
+        predicates.add(isNotDeleted(role));
+
+        if(accountId != null) {
+            predicates.add(equalId(account, accountId));
+        }
+        if(eventId != null) {
+            predicates.add(equalId(event, eventId));
+        }
+        if(roleId != null) {
+            predicates.add(equalId(role, roleId));
+        }
+
+        return query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+    }
 
 }

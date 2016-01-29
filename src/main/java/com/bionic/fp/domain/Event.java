@@ -17,23 +17,11 @@ import java.util.List;
         @NamedEntityGraph(name="Event.comments", attributeNodes={@NamedAttributeNode("comments")})
 })
 @NamedQueries({
-        @NamedQuery(name = Event.FIND_BY_NAME_AND_DESCRIPTION,
-                query = "SELECT e FROM Event e WHERE e.visible = TRUE AND e.name LIKE :name AND e.description LIKE :description"),
-        @NamedQuery(name = Event.FIND_BY_NAME,
-                query = "SELECT e FROM Event e WHERE e.visible = TRUE AND e.name LIKE :name "),
-        @NamedQuery(name = Event.FIND_BY_DESCRIPTION,
-                query = "SELECT e FROM Event e WHERE e.visible = TRUE AND e.description LIKE :description" ),
-        @NamedQuery(name = Event.FIND_ALL,
-                query = "SELECT e FROM Event e WHERE e.visible = TRUE"),
         @NamedQuery(name = Event.FIND_COMMENTS,
                 query = "SELECT e FROM Event e JOIN FETCH e.comments WHERE e.id = :eventId")
 })
 public class Event extends BaseEntity implements IdEntity<Long> {
 
-    @Transient public static final String FIND_BY_NAME_AND_DESCRIPTION = "Event.findByNameAndDescription";
-    @Transient public static final String FIND_BY_NAME = "Event.findByName";
-    @Transient public static final String FIND_BY_DESCRIPTION = "Event.findByDescription";
-    @Transient public static final String FIND_ALL = "Event.findAll";
     @Transient public static final String FIND_COMMENTS = "Event.findComments";
 
     @Id
@@ -63,8 +51,7 @@ public class Event extends BaseEntity implements IdEntity<Long> {
     @Column(name = "private")
     private boolean isPrivate = false;
     private String password;
-//    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<AccountEvent> accounts = new ArrayList<>();
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
     private List<Photo> photos = new ArrayList<>();

@@ -1,7 +1,6 @@
 package com.bionic.fp.dao;
 
 import com.bionic.fp.domain.*;
-import com.bionic.fp.exception.logic.impl.EventNotFoundException;
 
 import java.util.List;
 
@@ -19,6 +18,7 @@ public interface EventDAO extends GenericDAO<Event, Long> {
      * @param eventId the unique identifier
      * @return an event with its accounts and null if the event doesn't exist
      */
+    @Deprecated
     Event getWithAccounts(Long eventId);
 
     /**
