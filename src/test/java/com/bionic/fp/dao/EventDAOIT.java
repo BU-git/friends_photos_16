@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  *
  * @author Sergiy Gabriel
  */
-public class EventDaoIT extends AbstractDaoIT {
+public class EventDAOIT extends AbstractDaoIT {
 
     @Test
     public void testGetByIdSuccess() {
