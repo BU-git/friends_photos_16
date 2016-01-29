@@ -1,18 +1,16 @@
 package com.bionic.fp;
 
 import com.bionic.fp.dao.EventDAO;
-import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.EventType;
-import com.bionic.fp.web.security.SessionUtils;
-import com.bionic.fp.service.AccountService;
-import com.bionic.fp.service.EventService;
-import com.bionic.fp.service.EventTypeService;
-import com.bionic.fp.service.RoleService;
+import com.bionic.fp.domain.*;
+import com.bionic.fp.service.*;
+import com.bionic.fp.web.security.spring.infrastructure.User;
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -22,13 +20,16 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static com.bionic.fp.Constants.RoleConstants.*;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
 
 /**
  * This is a general integration test
@@ -38,73 +39,64 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/test-root-context.xml")
-public abstract class AbstractIT {
+public abstract class AbstractIT extends AbstractHelperTest {
 
     protected static final String TO_STRING = ".toString()";
+    private static Account REGULAR_USER;
+    private static EventType PRIVATE_EVENT_TYPE;
 
-    @Autowired
-    protected EventDAO eventDAO;
+    private static Role ROLE_OWNER;
+    private static Role ROLE_ADMIN;
+    private static Role ROLE_MEMBER;
 
-    @Autowired
-    protected EventService eventService;
-
-    @Autowired
-    protected AccountService accountService;
-
-    @Autowired
-    protected EventTypeService eventTypeService;
-
-    @Autowired
-    protected RoleService roleService;
-
-    @Autowired
-    protected WebApplicationContext context;
+    @Autowired protected EventDAO eventDAO;
+    @Autowired protected EventService eventService;
+    @Autowired protected AccountService accountService;
+    @Autowired protected AccountEventService accountEventService;
+    @Autowired protected EventTypeService eventTypeService;
+    @Autowired protected RoleService roleService;
+    @Autowired protected CommentService commentService;
+    @Autowired protected PhotoService photoService;
+    @Autowired protected WebApplicationContext context;
 
     @Before
     public void setUp() {
-        RestAssuredMockMvc.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+        RestAssuredMockMvc.mockMvc(MockMvcBuilders.webAppContextSetup(context).build());
+    }
+
+    protected Long save(final Account account) {
+        Long accountId = this.accountService.registerByFP(account.getEmail(), account.getPassword(), account.getUserName());
+        assertNotNull(accountId);
+        return accountId;
     }
 
     protected Account getSavedAccount() {
-        String s = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME);
-        Account account = new Account("yaya@gmail.com" + s, "Yaya" + s, "yaya" + s);
-        Long accountId = this.accountService.addAccount(account);
-        assertNotNull(accountId);
+        Account account = this.getNewEmailAccount();
+        account.setId(save(account));
         return account;
     }
 
+    protected Account getRegularUser() {
+        return REGULAR_USER != null ? REGULAR_USER : (REGULAR_USER = getSavedAccount());
+    }
+
+    protected Account getNewEmailAccount() {
+        return new Account(generateEmail(), generateUsername(), generatePassword());
+    }
+
+    protected Account getNewEmailAccount(final Long accountId) {
+        Account account = getNewEmailAccount();
+        account.setId(accountId);
+        return account;
+    }
+
+    @Override
     protected EventType getPrivateEventType() {
-        EventType privateEvent = this.eventTypeService.getPrivate();
-        assertNotNull(privateEvent);
-        return privateEvent;
-    }
-
-    protected Event getNewEventMin() {
-        Event event = new Event();
-        LocalDateTime now = LocalDateTime.now();
-        event.setName("Nano is " + now.getNano());
-        event.setDescription("Today is " + now);
-        event.setEventType(getPrivateEventType());
-
-        assertFalse(event.isDeleted());
-        assertTrue(event.isVisible());
-        assertFalse(event.isGeoServicesEnabled());
-
-        return event;
-    }
-
-    protected Event getNewEventMax() {
-        Random random = new Random();
-        Event event = getNewEventMin();
-        event.setVisible(true);
-        event.setLatitude(random.nextDouble());
-        event.setLongitude(random.nextDouble());
-        event.setRadius(0.1f);
-        event.setGeoServicesEnabled(false);
-
-        assertFalse(event.isDeleted());
-
-        return event;
+        if(PRIVATE_EVENT_TYPE == null) {
+            PRIVATE_EVENT_TYPE = this.eventTypeService.getPrivate();
+            assertNotNull(PRIVATE_EVENT_TYPE);
+        }
+        return PRIVATE_EVENT_TYPE;
     }
 
     protected Event setPrivate(final Event event) {
@@ -165,8 +157,18 @@ public abstract class AbstractIT {
         event.setRadius(event.getRadius() == null ? 0 : event.getRadius() + 1);
         event.setVisible(!event.isVisible());
         event.setGeoServicesEnabled(!event.isGeoServicesEnabled());
+        event.setCreated(event.getCreated());
 
         return event;
+    }
+
+    protected Long getEventOwnerId(final Long eventId) {
+        return getEventOwner(eventId).getId();
+    }
+
+    protected Account getEventOwner(final Long eventId) {
+        List<Account> accounts = this.accountEventService.getAccounts(eventId, Constants.RoleConstants.OWNER);
+        return accounts.get(0);
     }
 
     protected Filter getFilter(final Long accountId) {
@@ -176,7 +178,7 @@ public abstract class AbstractIT {
 
             @Override
             public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-                SessionUtils.setUserId(((HttpServletRequest) request).getSession(), accountId);
+                com.bionic.fp.web.security.session.SessionUtils.setUserId(((HttpServletRequest) request).getSession(), accountId);
                 chain.doFilter(request, response);
             }
 
@@ -185,11 +187,125 @@ public abstract class AbstractIT {
         };
     }
 
-    protected Long getEventOwnerId(final Long eventId) {
-        return getEventOwner(eventId).getId();
+    protected com.jayway.restassured.response.Cookie transform(javax.servlet.http.Cookie cookie) {
+        if(cookie.getName() == null || cookie.getValue() == null) {
+            return null;
+        }
+        com.jayway.restassured.response.Cookie.Builder builder =
+                new com.jayway.restassured.response.Cookie.Builder(cookie.getName(), cookie.getValue());
+        if(cookie.getPath() != null) builder.setPath(cookie.getPath());
+        if(cookie.getComment() != null) builder.setComment(cookie.getComment());
+        if(cookie.getDomain() != null) builder.setDomain(cookie.getDomain());
+//        builder.setExpiryDate();
+        return builder.setHttpOnly(cookie.isHttpOnly())
+                .setMaxAge(cookie.getMaxAge())
+                .setVersion(cookie.getVersion())
+                .setSecured(cookie.getSecure())
+                .build();
     }
 
-    protected Account getEventOwner(final Long eventId) {
-        return this.eventService.getOwner(eventId);
+    protected Role getRoleOwner() {
+        if(ROLE_OWNER == null) {
+            ROLE_OWNER = roleService.getOwner();
+            assertNotNull(ROLE_OWNER);
+        }
+        return ROLE_OWNER;
+    }
+
+    protected Role getRoleAdmin() {
+        if(ROLE_ADMIN == null) {
+            ROLE_ADMIN = roleService.getRole(ADMIN);
+            assertNotNull(ROLE_ADMIN);
+        }
+        return ROLE_ADMIN;
+    }
+
+    protected Role getRoleMember() {
+        if(ROLE_MEMBER == null) {
+            ROLE_MEMBER = roleService.getRole(MEMBER);
+            assertNotNull(ROLE_MEMBER);
+        }
+        return ROLE_MEMBER;
+    }
+
+    protected String generateEmail() {
+        return String.format("yaya%d@gmail.com", System.currentTimeMillis());
+    }
+
+    protected String generateUsername() {
+        return String.format("yaya%d", System.currentTimeMillis());
+    }
+
+    protected String generatePassword() {
+        return String.format("secret%d", System.currentTimeMillis());
+    }
+
+    protected Filter getPreAuthFilter(final Account owner) {
+        return new Filter() {
+            @Override
+            public void init(FilterConfig filterConfig) throws ServletException {
+
+            }
+
+            @Override
+            public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+                User user = new User(owner);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails((HttpServletRequest) request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                chain.doFilter(request, response);
+            }
+
+            @Override
+            public void destroy() {
+
+            }
+        };
+    }
+
+    protected Comment getNewComment(final Account author) {
+        Comment comment = new Comment(String.format("I am %s and now %s", author.getUserName(), LocalDateTime.now()));
+        comment.setAuthor(author);
+        return comment;
+    }
+
+    protected Photo getSavedPhoto(final Event event, final Account owner) {
+        Photo photo = getNewPhoto(event, owner);
+
+        assertNull(photo.getCreated());
+        assertNull(photo.getId());
+
+        photo = this.photoService.create(photo);
+
+        assertNotNull(photo.getCreated());
+        assertNotNull(photo.getId());
+
+        return photo;
+    }
+
+    protected Photo getNewPhoto(final Event event, final Account owner) {
+        Photo photo = new Photo();
+        String time = LocalDateTime.now().toString();
+        photo.setName(time);
+        photo.setUrl(String.format("http://fp/%d/%d/%s", event.getId(), owner.getId(), time));
+        photo.setEvent(event);
+        photo.setOwner(owner);
+        return photo;
+    }
+
+    protected <PK extends Serializable> void assertEqualsId(final List<PK> actual, final IdEntity<PK> ... expected) {
+        if(expected == null || expected.length == 0) {
+            return;
+        }
+        if(actual == null || actual.isEmpty() || expected.length != actual.size()) {
+            fail();
+        }
+        for (IdEntity<PK> entity : expected) {
+            Optional<PK> optional = actual.stream().parallel().filter(a -> entity.getId().equals(a)).findFirst();
+            if(!optional.isPresent()) {
+                fail();
+            }
+        }
     }
 }

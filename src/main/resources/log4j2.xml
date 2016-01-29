@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG">
+<!--<Configuration status="INFO">-->
+    <Appenders>
+        <!--<File name="fileLog" fileName="service.log">-->
+        <File name="fileLog" fileName="logs/log4j-application.log">
+            <!--<PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level - %msg%n" />-->
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+        </File>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <!--<PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level - %msg%n" />-->
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+        </Console>
+    </Appenders>
+    <Loggers>
+        <logger name="com.bionic.fp" level="DEBUG">
+            <AppenderRef ref="fileLog" />
+        </logger>
+        <!--<Root level="ERROR">-->
+        <Root level="DEBUG">
+            <AppenderRef ref="STDOUT" />
+        </Root>
+    </Loggers>
+</Configuration>

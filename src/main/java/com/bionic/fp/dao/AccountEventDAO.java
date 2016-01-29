@@ -21,7 +21,8 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
      * @param id the unique identifier
      * @return an account-event with its account and null if the account-event doesn't exist
      */
-    AccountEvent getWithAccountEvent(Long id);
+//    @Deprecated
+//    AccountEvent getWithAccountEvent(Long id);
 
     /**
      * Returns an account-event by the specified account ID and event ID.
@@ -34,7 +35,7 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
 
     /**
      * Returns an account-event with its account and event by the specified account ID and event ID.
-     * Queries an account-event with setting EAGER for its account and event
+     * Queries an account-event with setting EAGER for all properties
      *
      * @param accountId the account ID
      * @param eventId the event ID
@@ -58,7 +59,7 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
      * @param roleId the role ID
      * @return a list of account-events
      */
-    List<AccountEvent> getByEventAndRole(Long eventId, Integer roleId);
+    List<AccountEvent> getByEventAndRole(Long eventId, Long roleId);
 
     /**
      * Returns a list of account-events as the result of searching by account ID and role ID
@@ -67,7 +68,15 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
      * @param roleId the role ID
      * @return a list of account-events
      */
-    List<AccountEvent> getByAccountAndRole(Long accountId, Integer roleId);
+    List<AccountEvent> getByAccountAndRole(Long accountId, Long roleId);
+
+    /**
+     * Returns a list of the accounts of the event
+     *
+     * @param eventId the event ID
+     * @return a list of the accounts of the event
+     */
+    List<Account> getAccounts(Long eventId);
 
     /**
      * Returns a list of accounts as the result of searching by event ID and role ID
@@ -76,7 +85,15 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
      * @param roleId the role ID
      * @return a list of accounts
      */
-    List<Account> getAccounts(Long eventId, Integer roleId);
+    List<Account> getAccounts(Long eventId, Long roleId);
+
+    /**
+     * Returns a list of the events of the account
+     *
+     * @param accountId the account ID
+     * @return a list of the events of the account
+     */
+    List<Event> getEvents(Long accountId);
 
     /**
      * Returns a list of events as the result of searching by account ID and role ID
@@ -85,5 +102,9 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
      * @param roleId the role ID
      * @return a list of events
      */
-    List<Event> getEvents(Long accountId, Integer roleId);
+    List<Event> getEvents(Long accountId, Long roleId);
+
+//    void setDeletedByEvent(Long eventId, boolean value);
+//
+//    void setDeletedByAccount(Long accountId, boolean value);
 }

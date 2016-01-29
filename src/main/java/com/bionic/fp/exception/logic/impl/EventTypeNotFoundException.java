@@ -9,7 +9,7 @@ import com.bionic.fp.exception.logic.EntityNotFoundException;
  */
 public class EventTypeNotFoundException extends EntityNotFoundException {
 
-    public EventTypeNotFoundException(Integer eventTypeId) {
-        super("event type", eventTypeId.longValue());
+    public EventTypeNotFoundException(Long eventTypeId) {
+        super("event type", eventTypeId);
     }
 }

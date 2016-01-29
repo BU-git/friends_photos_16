@@ -15,14 +15,22 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EntityInfoLists {
 
-//    private List<AccountInfoDTO> accounts;
+    @JsonProperty(ACCOUNT.LIST)     private List<AccountInfo> accounts;
     @JsonProperty(EVENT.LIST)       private List<EventInfo> events;
-    @JsonProperty(PHOTO.LIST)       private List<PhotoInfoDTO> photos;
-//    private List<CommentInfoDTO> comments;
-//    private List<TypeInfoDTO> types;
-//    private List<RoleInfoDTO> roles;
+    @JsonProperty(PHOTO.LIST)       private List<PhotoInfo> photos;
+    @JsonProperty(COMMENT.LIST)     private List<CommentInfo> comments;
+//    @JsonProperty(TYPE.LIST)        private List<TypeInfo> types;
+    @JsonProperty(ROLE.LIST)        private List<RoleInfo> roles;
 
     public EntityInfoLists() {
+    }
+
+    public List<AccountInfo> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(List<AccountInfo> accounts) {
+        this.accounts = accounts;
     }
 
     public List<EventInfo> getEvents() {
@@ -33,11 +41,27 @@ public class EntityInfoLists {
         this.events = events;
     }
 
-    public List<PhotoInfoDTO> getPhotos() {
+    public List<PhotoInfo> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(List<PhotoInfoDTO> photos) {
+    public void setPhotos(List<PhotoInfo> photos) {
         this.photos = photos;
+    }
+
+    public List<CommentInfo> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentInfo> comments) {
+        this.comments = comments;
+    }
+
+    public List<RoleInfo> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RoleInfo> roles) {
+        this.roles = roles;
     }
 }

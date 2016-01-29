@@ -14,7 +14,7 @@ public class EventInput {
 
     @JsonProperty(EVENT.NAME)           private String name;
     @JsonProperty(EVENT.DESCRIPTION)    private String description;
-    @JsonProperty(EVENT.TYPE_ID)        private Integer typeId;
+    @JsonProperty(EVENT.TYPE_ID)  private Long eventTypeId;
     @JsonProperty(EVENT.LATITUDE)       private Double latitude;
     @JsonProperty(EVENT.LONGITUDE)      private Double longitude;
     @JsonProperty(EVENT.RADIUS)         private Float radius;
@@ -29,7 +29,7 @@ public class EventInput {
     public EventInput(final Event event) {
         this.name = event.getName();
         this.description = event.getDescription();
-        this.typeId = event.getEventType().getId();
+        this.eventTypeId = event.getEventType().getId();
         this.visible = event.isVisible();
         this.latitude = event.getLatitude();
         this.longitude = event.getLongitude();
@@ -55,12 +55,12 @@ public class EventInput {
         this.description = description;
     }
 
-    public Integer getTypeId() {
-        return typeId;
+    public Long getEventTypeId() {
+        return eventTypeId;
     }
 
-    public void setTypeId(Integer typeId) {
-        this.typeId = typeId;
+    public void setEventTypeId(Long eventTypeId) {
+        this.eventTypeId = eventTypeId;
     }
 
     public Boolean getVisible() {

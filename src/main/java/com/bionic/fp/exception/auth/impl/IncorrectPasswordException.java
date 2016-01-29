@@ -10,6 +10,10 @@ import com.bionic.fp.exception.auth.AuthenticationException;
 public class IncorrectPasswordException extends AuthenticationException {
 
     public IncorrectPasswordException() {
-        super("Incorrect password for requested user name.");
+        super("Wrong email or password");
+    }
+
+    public IncorrectPasswordException(final String msg) {
+        super("Incorrect password. " + msg);
     }
 }

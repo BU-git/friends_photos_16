@@ -1,145 +1,93 @@
 package com.bionic.fp.dao.impl;
 
 import com.bionic.fp.dao.AccountEventDAO;
-import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.AccountEvent;
-import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.Role;
+import com.bionic.fp.domain.*;
 import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.*;
-import java.util.HashMap;
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
 /**
- * This is implementation of {@link AccountEventDAO}
+ * This is an implementation of {@link AccountEventDAO}
  *
  * @author Sergiy Gabriel
  */
 @Repository
-public class AccountEventDaoImpl implements AccountEventDAO {
+public class AccountEventDaoImpl extends GenericDaoJpaImpl<AccountEvent, Long> implements AccountEventDAO {
 
-    @PersistenceContext(unitName = "entityManager")
-    private EntityManager em;
+    private static final String ACCOUNT = "account";
+    private static final String EVENT = "event";
+    private static final String ROLE = "role";
 
-
-    @Override
-    public Long create(AccountEvent accountEvent) {
-        this.em.persist(accountEvent);
-        return accountEvent.getId();
-    }
-
-    @Override
-    public AccountEvent read(final Long accountEventId) {
-        return this.em.find(AccountEvent.class, accountEventId);
-    }
-
-    @Override
-    public AccountEvent update(final AccountEvent accountEvent) {
-        this.em.merge(accountEvent);
-        return accountEvent;
-    }
-
-    @Override
-    public void delete(final Long accountEventId) throws AccountEventNotFoundException {
-        AccountEvent accountEvent = this.getOrThrow(accountEventId);
-        this.em.remove(accountEvent);
-    }
-
-    @Override
-    public AccountEvent getWithAccountEvent(final Long id) {
-        EntityGraph<AccountEvent> graph = this.em.createEntityGraph(AccountEvent.class);
-        graph.addAttributeNodes("account", "event", "role");
-        Map<String, Object> hints = new HashMap<>();
-        hints.put("javax.persistence.loadgraph", graph);
-        return this.em.find(AccountEvent.class, id, hints);
-    }
+    public AccountEventDaoImpl() {}
 
     @Override
     public AccountEvent get(final Long accountId, final Long eventId) {
-        return this.getSingleResult(
-				this.em.createNamedQuery(AccountEvent.GET_BY_ACCOUNT_ID_AND_EVENT_ID, AccountEvent.class)
-						.setParameter("accountId", accountId)
-						.setParameter("eventId", eventId));
+        return this.getSingleResult(this.em.createQuery(this.getQuery(accountId, eventId, null)));
     }
 
     @Override
     public AccountEvent getWithAccountEvent(final Long accountId, final Long eventId) {
-        EntityGraph<AccountEvent> graph = this.em.createEntityGraph(AccountEvent.class);
-        graph.addAttributeNodes("account", "event", "role");
-        return this.getSingleResult(
-				this.em.createNamedQuery(AccountEvent.GET_BY_ACCOUNT_ID_AND_EVENT_ID, AccountEvent.class)
-						.setParameter("accountId", accountId)
-						.setParameter("eventId", eventId)
-						.setHint("javax.persistence.loadgraph", graph));
+        return this.getSingleResult(this.em.createQuery(this.getQuery(accountId, eventId, null))
+                .setHint(HINT_LOAD_GRAPH, getGraph(ACCOUNT, EVENT, ROLE)));
     }
 
     @Override
     public Role getRole(final Long accountId, final Long eventId) {
-        AccountEvent result = this.getSingleResult(
-				this.em.createNamedQuery(AccountEvent.GET_BY_ACCOUNT_ID_AND_EVENT_ID, AccountEvent.class)
-						.setParameter("accountId", accountId)
-						.setParameter("eventId", eventId));
+        AccountEvent result = this.get(accountId, eventId);
         return result == null ? null : result.getRole();
     }
 
     @Override
-    public List<AccountEvent> getByEventAndRole(final Long eventId, final Integer roleId) {
-        return this.em.createNamedQuery(AccountEvent.FIND_BY_EVENT_ID_AND_ROLE_ID, AccountEvent.class)
-                .setParameter("eventId", eventId)
-                .setParameter("roleId", roleId)
-                .getResultList();
+    public List<AccountEvent> getByEventAndRole(final Long eventId, final Long roleId) {
+        return this.em.createQuery(this.getQuery(null, eventId, roleId)).getResultList();
     }
 
     @Override
-    public List<AccountEvent> getByAccountAndRole(final Long accountId, final Integer roleId) {
-        return this.em.createNamedQuery(AccountEvent.FIND_BY_ACCOUNT_ID_AND_ROLE_ID, AccountEvent.class)
-                .setParameter("accountId", accountId)
-                .setParameter("roleId", roleId)
-                .getResultList();
+    public List<AccountEvent> getByAccountAndRole(final Long accountId, final Long roleId) {
+        return this.em.createQuery(this.getQuery(accountId, null, roleId)).getResultList();
     }
 
     @Override
-    public List<Account> getAccounts(final Long eventId, final Integer roleId) {
-        EntityGraph<AccountEvent> graph = this.em.createEntityGraph(AccountEvent.class);
-        graph.addAttributeNodes("account");
-        return this.em.createNamedQuery(AccountEvent.FIND_BY_EVENT_ID_AND_ROLE_ID, AccountEvent.class)
-                .setParameter("eventId", eventId)
-                .setParameter("roleId", roleId)
-                .setHint("javax.persistence.loadgraph", graph)
+    public List<Account> getAccounts(final Long eventId) {
+        return this.em.createQuery(this.getQuery(null, eventId, null))
+                .setHint(HINT_LOAD_GRAPH, getGraph(ACCOUNT))
+                .getResultList().stream().parallel()
+                .map(AccountEvent::getAccount)
+                .collect(toList());
+    }
+
+    @Override
+    public List<Account> getAccounts(final Long eventId, final Long roleId) {
+        return this.em.createQuery(this.getQuery(null, eventId, roleId))
+                .setHint(HINT_LOAD_GRAPH, getGraph(ACCOUNT))
                 .getResultList().stream().parallel()
                 .map(AccountEvent::getAccount)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<Event> getEvents(final Long accountId, final Integer roleId) {
-        EntityGraph<AccountEvent> graph = this.em.createEntityGraph(AccountEvent.class);
-        graph.addAttributeNodes("event");
-        return this.em.createNamedQuery(AccountEvent.FIND_BY_ACCOUNT_ID_AND_ROLE_ID, AccountEvent.class)
-                .setParameter("accountId", accountId)
-                .setParameter("roleId", roleId)
-                .setHint("javax.persistence.loadgraph", graph)
+    public List<Event> getEvents(final Long accountId) {
+        return this.em.createQuery(this.getQuery(accountId, null, null))
+                .setHint(HINT_LOAD_GRAPH, getGraph(EVENT))
                 .getResultList().stream().parallel()
                 .map(AccountEvent::getEvent)
                 .collect(Collectors.toList());
     }
 
-    private <T> T getSingleResult(TypedQuery<T> query) {
-        try {
-            return query.getSingleResult();
-        } catch (NoResultException ignored) {}
-        return null;
-    }
-
-    private AccountEvent getOrThrow(final Long accountEventId) throws AccountEventNotFoundException {
-        return ofNullable(this.read(accountEventId)).orElseThrow(() ->
-                new AccountEventNotFoundException(accountEventId));
+    @Override
+    public List<Event> getEvents(final Long accountId, final Long roleId) {
+        return this.em.createQuery(this.getQuery(accountId, null, roleId))
+                .setHint(HINT_LOAD_GRAPH, getGraph(EVENT))
+                .getResultList().stream().parallel()
+                .map(AccountEvent::getEvent)
+                .collect(Collectors.toList());
     }
 
     private AccountEvent getOrThrow(final Long accountId, final Long eventId) throws AccountEventNotFoundException {
@@ -150,4 +98,33 @@ public class AccountEventDaoImpl implements AccountEventDAO {
     private Role getRoleOrThrow(final Long accountId, final Long eventId) throws AccountEventNotFoundException {
         return this.getOrThrow(accountId, eventId).getRole();
     }
+
+    private CriteriaQuery<AccountEvent> getQuery(final Long accountId, final Long eventId, final Long roleId) {
+        CriteriaBuilder cb = this.em.getCriteriaBuilder();
+        CriteriaQuery<AccountEvent> query = cb.createQuery(AccountEvent.class);
+
+        Root<AccountEvent> accountEvent = query.from(AccountEvent.class);
+        Join<AccountEvent, Event> event = accountEvent.join(EVENT);
+        Join<AccountEvent, Account> account = accountEvent.join(ACCOUNT);
+        Join<AccountEvent, Role> role = accountEvent.join(ROLE);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(isNotDeleted(accountEvent));
+        predicates.add(isNotDeleted(account));
+        predicates.add(isNotDeleted(event));
+        predicates.add(isNotDeleted(role));
+
+        if(accountId != null) {
+            predicates.add(equalId(account, accountId));
+        }
+        if(eventId != null) {
+            predicates.add(equalId(event, eventId));
+        }
+        if(roleId != null) {
+            predicates.add(equalId(role, roleId));
+        }
+
+        return query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+    }
+
 }

@@ -37,7 +37,7 @@ public class EventInfo {
     @JsonSerialize(using = LocalDateTimeJsonSerializer.class)
     @JsonDeserialize(using = LocalDateTimeJsonDeserializer.class)
     @JsonProperty(EVENT.EXPIRE_DATE)        private LocalDateTime expireDate;
-    @JsonProperty(EVENT.TYPE_ID)            private Integer typeId;
+    @JsonProperty(EVENT.TYPE_ID)            private Long typeId;
     @JsonProperty(EVENT.LATITUDE)           private Double latitude;
     @JsonProperty(EVENT.LONGITUDE)          private Double longitude;
     @JsonProperty(EVENT.RADIUS)             private Float radius;
@@ -56,7 +56,7 @@ public class EventInfo {
         this.id = event.getId();
         this.name = event.getName();
         this.description = event.getDescription();
-        this.date = event.getDate();
+        this.date = event.getCreated();
         this.expireDate = event.getExpireDate();
         this.typeId = event.getEventType().getId();
         this.latitude = event.getLatitude();
@@ -115,12 +115,7 @@ public class EventInfo {
                         .collect(Collectors.toList());
             }
             return events.stream().parallel()
-//                    .map(EventInfo::new)
-                    .map(e -> {
-                        EventInfo dto = new EventInfo();
-                        dto.setId(e.getId());
-                        return dto;
-                    })
+                    .map(EventInfo::new)
                     .collect(Collectors.toList());
         }
 
@@ -129,7 +124,7 @@ public class EventInfo {
                 Consumer<Transformer> result = addConsumer(fields, EVENT.ID, null, t -> t.getDto().setId(t.getEvent().getId()));
                 result = addConsumer(fields, EVENT.NAME, result, t -> t.getDto().setName(t.getEvent().getName()));
                 result = addConsumer(fields, EVENT.DESCRIPTION, result, t -> t.getDto().setDescription(t.getEvent().getDescription()));
-                result = addConsumer(fields, EVENT.DATE, result, t -> t.getDto().setDate(t.getEvent().getDate()));
+                result = addConsumer(fields, EVENT.DATE, result, t -> t.getDto().setDate(t.getEvent().getCreated()));
                 result = addConsumer(fields, EVENT.EXPIRE_DATE, result, t -> t.getDto().setExpireDate(t.getEvent().getExpireDate()));
                 result = addConsumer(fields, EVENT.TYPE_ID, result, t -> t.getDto().setTypeId(t.getEvent().getEventType().getId()));
                 result = addConsumer(fields, EVENT.LATITUDE, result, t -> t.getDto().setLatitude(t.getEvent().getLatitude()));
@@ -151,7 +146,7 @@ public class EventInfo {
                 Consumer<Transformer> result = addConsumer(list, EVENT.ID, null, t -> t.getDto().setId(t.getEvent().getId()));
                 result = addConsumer(list, EVENT.NAME, result, t -> t.getDto().setName(t.getEvent().getName()));
                 result = addConsumer(list, EVENT.DESCRIPTION, result, t -> t.getDto().setDescription(t.getEvent().getDescription()));
-                result = addConsumer(list, EVENT.DATE, result, t -> t.getDto().setDate(t.getEvent().getDate()));
+                result = addConsumer(list, EVENT.DATE, result, t -> t.getDto().setDate(t.getEvent().getCreated()));
                 result = addConsumer(list, EVENT.EXPIRE_DATE, result, t -> t.getDto().setExpireDate(t.getEvent().getExpireDate()));
                 result = addConsumer(list, EVENT.TYPE_ID, result, t -> t.getDto().setTypeId(t.getEvent().getEventType().getId()));
                 result = addConsumer(list, EVENT.LATITUDE, result, t -> t.getDto().setLatitude(t.getEvent().getLatitude()));
@@ -223,11 +218,11 @@ public class EventInfo {
         this.expireDate = expireDate;
     }
 
-    public Integer getTypeId() {
+    public Long getTypeId() {
         return typeId;
     }
 
-    public void setTypeId(Integer typeId) {
+    public void setTypeId(Long typeId) {
         this.typeId = typeId;
     }
 

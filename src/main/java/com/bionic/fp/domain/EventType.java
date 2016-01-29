@@ -6,18 +6,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
 
 /**
  * Created by Yevhenii Semenov on 11/16/2015.
  */
 @Entity
 @Table(name = "event_types")
-public class EventType implements Serializable {
+public class EventType extends BaseEntity implements IdEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
 	@Column(name = "type_name")
     private String typeName;
@@ -30,11 +29,11 @@ public class EventType implements Serializable {
                 '}';
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -9,8 +9,10 @@ import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Role;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
+import com.bionic.fp.exception.logic.impl.RoleNotFoundException;
 import com.bionic.fp.exception.permission.PermissionsDeniedException;
-import com.bionic.fp.exception.permission.UserDoesNotExistException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -18,21 +20,50 @@ import javax.inject.Named;
 import java.util.List;
 
 import static com.bionic.fp.util.Checks.check;
+import static java.util.Optional.ofNullable;
 
 /**
  * Created by Yevhenii Semenov on 11/17/2015.
  */
-@Named
+@Service
 @Transactional
 public class RoleService {
 
-    @Inject
-    private RoleDAO roleDAO;
-
-    @Inject
-    private AccountEventDAO accountEventDAO;
+    @Autowired private RoleDAO roleDAO;
+    @Autowired private AccountEventDAO accountEventDAO;
 
     public RoleService() {}
+
+    //////////////////////////////////////////////
+    //                  CRUD                    //
+    //////////////////////////////////////////////
+
+    public Role getRole(final Long roleId) throws InvalidParameterException {
+        check(roleId != null, "The role ID should not be null");
+        return roleDAO.read(roleId);
+    }
+
+    //////////////////////////////////////////////
+    //                  Other                   //
+    //////////////////////////////////////////////
+
+    /**
+     * Returns the user's role in the event by id of the user and the events, respectively
+     *
+     * @param accountId the account id
+     * @param eventId the event id
+     * @return the user's role in the event
+     * @throws InvalidParameterException if the account id or the event id are not initialized
+     * @throws AccountEventNotFoundException if the relationship between the user and the event is not found
+     */
+    public Role getRole(final Long accountId, final Long eventId)
+            throws InvalidParameterException, AccountEventNotFoundException {
+        check(accountId != null, "The account ID should not be null");
+        check(eventId != null, "The event ID should not be null");
+        AccountEvent accountEvent = ofNullable(accountEventDAO.get(accountId, eventId))
+                .orElseThrow(() -> new AccountEventNotFoundException(accountId, eventId));
+        return accountEvent.getRole();
+    }
 
     public void setRole(Account account, Event event, Role role) {
 //        AccountEvent accountEvent = new AccountEvent();
@@ -55,7 +86,7 @@ public class RoleService {
     /**
      * todo: delete it or fixed, see {@link EventService} method addOrUpdateAccountToEvent()
      */
-    public boolean setNewRole(Integer newRoleId, Long userId, Long eventId, Long ownerId) {
+    public boolean setNewRole(Long newRoleId, Long userId, Long eventId, Long ownerId) {
         AccountEvent accountEvent
                 = accountEventDAO.getWithAccountEvent(userId, eventId);
 
@@ -84,23 +115,7 @@ public class RoleService {
         throw new PermissionsDeniedException();
     }
 
-    /**
-     * Returns the user's role in the event by id of the user and the events, respectively
-     *
-     * @param accountId the account id
-     * @param eventId the event id
-     * @return the user's role in the event
-     * @throws InvalidParameterException if the account id or the event id are not initialized
-     * @throws AccountEventNotFoundException if the relationship between the user and the event is not found
-     */
-    public Role getRole(final Long accountId, final Long eventId)
-                                                    throws InvalidParameterException, AccountEventNotFoundException {
-        check(accountId != null, "The account ID should not be null");
-        check(eventId != null, "The event ID should not be null");
-        AccountEvent accountEvent = accountEventDAO.get(accountId, eventId);
-        if (accountEvent == null) {
-            throw new AccountEventNotFoundException(accountId, eventId);
-        }
-        return accountEvent.getRole();
+    public Role getRoleOrThrow(final Long roleId) throws InvalidParameterException, RoleNotFoundException {
+        return ofNullable(getRole(roleId)).orElseThrow(() -> new RoleNotFoundException(roleId));
     }
 }

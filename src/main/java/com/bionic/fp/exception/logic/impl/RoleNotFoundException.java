@@ -9,7 +9,7 @@ import com.bionic.fp.exception.logic.EntityNotFoundException;
  */
 public class RoleNotFoundException extends EntityNotFoundException {
 
-    public RoleNotFoundException(Integer roleId) {
-        super("role", roleId.longValue());
+    public RoleNotFoundException(Long roleId) {
+        super("role", roleId);
     }
 }

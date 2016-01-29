@@ -1,10 +1,6 @@
 package com.bionic.fp.domain;
 
-import com.bionic.fp.util.LocalDateTimePersistenceConverter;
-
 import javax.persistence.*;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,28 +10,25 @@ import java.util.List;
         attributeNodes = @NamedAttributeNode("comments")
 )
 @NamedQueries({
-        @NamedQuery(
-                name = Photo.FIND_BY_OWNER_ID,
-                query = "SELECT p FROM Photo p WHERE p.owner.id = :ownerId"
-        ),
-        @NamedQuery(
-                name = Photo.FIND_BY_EVENT_ID,
-                query = "SELECT p FROM Photo p WHERE p.event.id = :eventId"
-        )
+        @NamedQuery(name = Photo.FIND_BY_OWNER_ID,
+                query = "SELECT p FROM Photo p WHERE p.owner.id = :ownerId"),
+        @NamedQuery(name = Photo.FIND_BY_EVENT_ID,
+                query = "SELECT p FROM Photo p WHERE p.event.id = :eventId"),
+        @NamedQuery(name = Photo.FIND_COMMENTS,
+                query = "SELECT p FROM Photo p JOIN FETCH p.comments WHERE p.id = :photoId")
 })
-public class Photo implements Serializable {
-    @Transient
-    public static final String FIND_BY_OWNER_ID = "Photo.findByOwnerId";
-    @Transient
-    public static final String FIND_BY_EVENT_ID = "Photo.findByEventId";
+public class Photo extends BaseEntity implements IdEntity<Long> {
+
+    @Transient public static final String FIND_BY_OWNER_ID = "Photo.findByOwnerId";
+    @Transient public static final String FIND_BY_EVENT_ID = "Photo.findByEventId";
+    @Transient public static final String FIND_COMMENTS = "Photo.findComments";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-	@Column(name = "name")
-	private String name;
-    @Convert(converter = LocalDateTimePersistenceConverter.class)
-    private LocalDateTime date;
+    @Column(name = "name")
+    private String name;
+    @Column(nullable = false)
     private String url;
     @Column(name = "preview_url")
     private String previewUrl;
@@ -43,7 +36,7 @@ public class Photo implements Serializable {
     private Event event;
     @OneToOne(fetch = FetchType.LAZY)
     private Account owner;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "photos_comments",
             joinColumns = {@JoinColumn(name = "photo_id")},
             inverseJoinColumns = {@JoinColumn(name = "comment_id")})
@@ -56,17 +49,11 @@ public class Photo implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-    public LocalDateTime getDate() {
-        return date;
+    public String getName() {
+        return name;
     }
-	public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setName(String name) {
+        this.name = name;
     }
     public String getUrl() {
         return url;
@@ -106,7 +93,7 @@ public class Photo implements Serializable {
     public String toString() {
         return "Photo{" +
                 "id=" + id +
-                ", date=" + date +
+                ", date=" + created +
                 ", previewURL='" + previewUrl + '\'' +
                 ", url='" + url + '\'' +
                 ", event=" + event +

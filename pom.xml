@@ -15,12 +15,17 @@
         <java.version>1.8</java.version>
         <spring.framework.version>4.2.2.RELEASE</spring.framework.version>
         <junit.version>4.12</junit.version>
+        <jayway.version>2.8.0</jayway.version>
         <spring.security.version>4.0.3.RELEASE</spring.security.version>
+        <jjwt.version>0.4</jjwt.version>
         <hibernate.entitymanager.version>5.0.3.Final</hibernate.entitymanager.version>
         <hibernate.validator.version>5.2.2.Final</hibernate.validator.version>
         <jackson.version>2.6.3</jackson.version>
         <mysql.connector.version>5.1.37</mysql.connector.version>
         <apache.httpclient.version>4.5.1</apache.httpclient.version>
+        <hsqldb.version>2.3.3</hsqldb.version>
+        <log4j.version>2.5</log4j.version>
+        <slf4j.version>1.7.14</slf4j.version>
     </properties>
 
     <dependencyManagement>
@@ -71,6 +76,11 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-taglibs</artifactId>
             <version>${spring.security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jjwt.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -163,7 +173,13 @@
         <dependency>
             <groupId>com.jayway.restassured</groupId>
             <artifactId>spring-mock-mvc</artifactId>
-            <version>2.4.0</version>
+            <version>${jayway.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>${hsqldb.version}</version>
             <scope>test</scope>
         </dependency>
         <!--Logging -->
@@ -172,6 +188,27 @@
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
         </dependency>
+        <!-- slf4j, log4j and a bridge between slf4 and log4j -->
+        <!--<dependency>-->
+            <!--<groupId>org.slf4j</groupId>-->
+            <!--<artifactId>slf4j-api</artifactId>-->
+            <!--<version>${slf4j.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.logging.log4j</groupId>-->
+            <!--<artifactId>log4j-slf4j-impl</artifactId>-->
+            <!--<version>${log4j.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.logging.log4j</groupId>-->
+            <!--<artifactId>log4j-api</artifactId>-->
+            <!--<version>${log4j.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.logging.log4j</groupId>-->
+            <!--<artifactId>log4j-core</artifactId>-->
+            <!--<version>${log4j.version}</version>-->
+        <!--</dependency>-->
 
     </dependencies>
 

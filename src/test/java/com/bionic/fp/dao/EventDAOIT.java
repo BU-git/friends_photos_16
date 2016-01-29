@@ -1,23 +1,14 @@
 package com.bionic.fp.dao;
 
-import com.bionic.fp.AbstractIT;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.EventType;
-import com.bionic.fp.service.AccountService;
-import com.bionic.fp.service.EventService;
-import com.bionic.fp.service.EventTypeService;
-import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
-import org.junit.Before;
+import com.bionic.fp.exception.logic.EntityNotFoundException;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static com.bionic.fp.Constants.RoleConstants.OWNER;
 import static org.junit.Assert.*;
 
 /**
@@ -25,7 +16,7 @@ import static org.junit.Assert.*;
  *
  * @author Sergiy Gabriel
  */
-public class EventDAOIT extends AbstractIT {
+public class EventDAOIT extends AbstractDaoIT {
 
     @Test
     public void testGetByIdSuccess() {
@@ -34,38 +25,222 @@ public class EventDAOIT extends AbstractIT {
 
         Event actual = this.eventDAO.read(event.getId());
         assertNotNull(actual);
-
-        assertEquals(actual.getId(), event.getId());
-        assertEquals(actual.getName(), event.getName());
-        assertEquals(actual.getDescription(), event.getDescription());
-        assertEquals(actual.getEventType(), event.getEventType());
-        assertEquals(actual.getLatitude(), event.getLatitude());
-        assertEquals(actual.getLongitude(), event.getLongitude());
-        assertEquals(actual.getRadius(), event.getRadius());
-        assertEquals(actual.isVisible(), event.isVisible());
-        assertEquals(actual.isGeoServicesEnabled(), event.isGeoServicesEnabled());
+        assertEqualsEvent(event, actual);
     }
 
     @Test
-    public void testGetByIdWithAccountsSuccess() {
+    public void testSoftDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
 
-        Event actual = this.eventDAO.getWithAccounts(event.getId());
-        assertNotNull(actual);
+        assertEventIsNotDeleted(owner.getId(), event);
 
-        assertEquals(actual.getId(), event.getId());
-        assertEquals(actual.getName(), event.getName());
-        assertEquals(actual.getDescription(), event.getDescription());
-        assertEquals(actual.getEventType(), event.getEventType());
-        assertEquals(actual.getLatitude(), event.getLatitude());
-        assertEquals(actual.getLongitude(), event.getLongitude());
-        assertEquals(actual.getRadius(), event.getRadius());
-        assertEquals(actual.isVisible(), event.isVisible());
-        assertEquals(actual.isGeoServicesEnabled(), event.isGeoServicesEnabled());
+        this.eventDAO.setDeleted(event.getId(), true);
 
-        assertFalse(actual.getAccounts().isEmpty());
-        assertFalse(event.getAccounts().isEmpty());
-        assertEquals(actual.getAccounts().size(), event.getAccounts().size());
+        assertEventIsDeleted(owner.getId(), event);
+    }
+
+    @Test
+    public void testSoftDeleteAndRecoverSuccess() throws Exception {
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMax(owner);
+
+        assertEventIsNotDeleted(owner.getId(), event);
+
+        this.eventDAO.setDeleted(event.getId(), true);
+
+        assertEventIsDeleted(owner.getId(), event);
+
+        this.eventDAO.setDeleted(event.getId(), false);
+
+        assertEventIsNotDeleted(owner.getId(), event);
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void testDeleteSuccess() throws Exception {
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMax(owner);
+
+        assertEventIsNotDeleted(owner.getId(), event);
+
+        this.eventDAO.delete(event.getId());
+
+        assertEventIsDeleted(owner.getId(), event);
+
+        this.eventDAO.delete(event.getId());
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void testDeleteAfterSoftDeleteSuccess() throws Exception {
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMax(owner);
+
+        assertEventIsNotDeleted(owner.getId(), event);
+
+        this.eventDAO.setDeleted(event.getId(), true);
+
+        assertEventIsDeleted(owner.getId(), event);
+
+        this.eventDAO.delete(event.getId());
+
+        assertEventIsDeleted(owner.getId(), event);
+
+        this.eventDAO.delete(event.getId());
+    }
+
+    @Test
+    public void testGetByNameSuccess() throws Exception {
+        Account owner = getSavedAccount();
+        Event event1 = getNewEventMin();
+        Event event2 = getNewEventMin();
+        Event event3 = getNewEventMin();
+        LocalDateTime now = LocalDateTime.now();
+        event1.setName("The first event starts at " + now);
+        event2.setName("The second event starts at " + now);
+        event3.setName("The third event starts at " + now);
+        event1 = save(owner, event1);
+        event2 = save(owner, event2);
+        event3 = save(owner, event3);
+
+        List<Event> events = this.eventDAO.get("at " + now, null);
+
+        assertEquals(3, events.size());
+        assertTrue(events.contains(event1));
+        assertTrue(events.contains(event2));
+        assertTrue(events.contains(event3));
+
+        events = this.eventDAO.get("d event starts at " + now, null);
+
+        assertEquals(2, events.size());
+        assertTrue(events.contains(event2));
+        assertTrue(events.contains(event3));
+    }
+
+    @Test
+    public void testGetByDescriptionSuccess() throws Exception {
+        Account owner = getSavedAccount();
+        Event event1 = getNewEventMin();
+        Event event2 = getNewEventMin();
+        Event event3 = getNewEventMin();
+        LocalDateTime now = LocalDateTime.now();
+        event1.setDescription("The first event starts at " + now);
+        event2.setDescription("The second event starts at " + now);
+        event3.setDescription("The third event starts at " + now);
+        event1 = save(owner, event1);
+        event2 = save(owner, event2);
+        event3 = save(owner, event3);
+
+        List<Event> events = this.eventDAO.get(null, "at " + now);
+
+        assertEquals(3, events.size());
+        assertTrue(events.contains(event1));
+        assertTrue(events.contains(event2));
+        assertTrue(events.contains(event3));
+
+        events = this.eventDAO.get(null, "d event starts at " + now);
+
+        assertEquals(2, events.size());
+        assertTrue(events.contains(event2));
+        assertTrue(events.contains(event3));
+    }
+
+    @Test
+    public void testGetByNameAndDescriptionSuccess() throws Exception {
+        Account owner = getSavedAccount();
+        Event event1 = getNewEventMin();
+        Event event2 = getNewEventMin();
+        Event event3 = getNewEventMin();
+        LocalDateTime now = LocalDateTime.now();
+        event1.setName("The first event starts at " + now);
+        event2.setName("The second event starts at " + now);
+        event3.setName("The third event starts at " + now);
+        event1.setDescription("The first event starts at " + now);
+        event2.setDescription("The second event starts at " + now);
+        event3.setDescription("The third event starts at " + now);
+        event1 = save(owner, event1);
+        event2 = save(owner, event2);
+        event3 = save(owner, event3);
+
+        List<Event> events = this.eventDAO.get("at " + now, "at " + now);
+
+        assertEquals(3, events.size());
+        assertTrue(events.contains(event1));
+        assertTrue(events.contains(event2));
+        assertTrue(events.contains(event3));
+
+        events = this.eventDAO.get("second", "d event starts at " + now);
+
+        assertEquals(1, events.size());
+        assertTrue(events.contains(event2));
+    }
+
+    protected void assertEqualsEvent(final Event expected, final Event actual) {
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getName(), actual.getName());
+        assertEquals(expected.getDescription(), actual.getDescription());
+        assertEquals(expected.getEventType(), actual.getEventType());
+        assertEquals(expected.getLatitude(), actual.getLatitude());
+        assertEquals(expected.getLongitude(), actual.getLongitude());
+        assertEquals(expected.getRadius(), actual.getRadius());
+        assertEquals(expected.isVisible(), actual.isVisible());
+        assertEquals(expected.isGeoServicesEnabled(), actual.isGeoServicesEnabled());
+    }
+
+    private void assertEventIsNotDeleted(final Long accountId, final Event event) {
+        assertEqualsEvent(event, this.eventDAO.read(event.getId()));
+        assertEventIsNotDeleted(accountId, event.getId());
+        assertFalse(this.eventDAO.get(event.getName(), null).isEmpty());
+        assertFalse(this.eventDAO.get(null, event.getDescription()).isEmpty());
+        assertFalse(this.eventDAO.get(event.getName(), event.getDescription()).isEmpty());
+    }
+
+    private void assertEventIsDeleted(final Long accountId, final Event event) {
+        assertEventIsDeleted(accountId, event.getId());
+        assertTrue(this.eventDAO.get(event.getName(), null).isEmpty());
+        assertTrue(this.eventDAO.get(null, event.getDescription()).isEmpty());
+        assertTrue(this.eventDAO.get(event.getName(), event.getDescription()).isEmpty());
+    }
+
+    private void assertEventIsDeleted(final Long ownerId, final Long eventId) {
+        assertNull(this.eventDAO.read(eventId));
+        try {
+            this.eventDAO.getOrThrow(eventId);
+            fail();
+        } catch (EntityNotFoundException ignored){}
+
+        assertNull(this.accountEventDAO.get(ownerId, eventId));
+        assertNull(this.accountEventDAO.getRole(ownerId, eventId));
+        assertNull(this.accountEventDAO.getWithAccountEvent(ownerId, eventId));
+
+        assertTrue(this.accountEventDAO.getAccounts(eventId).isEmpty());
+        assertTrue(this.accountEventDAO.getAccounts(eventId, OWNER).isEmpty());
+        assertTrue(this.accountEventDAO.getByEventAndRole(eventId, OWNER).isEmpty());
+
+        assertTrue(this.accountEventDAO.getEvents(ownerId).isEmpty());
+        assertTrue(this.accountEventDAO.getEvents(ownerId, OWNER).isEmpty());
+        assertTrue(this.accountEventDAO.getByAccountAndRole(ownerId, OWNER).isEmpty());
+
+//        this.commentDAO.getCommentsByEvent(eventId) todo this
+//        this.photoDAO.getPhotosByEvent(eventId) todo this
+    }
+
+    private void assertEventIsNotDeleted(final Long accountId, final Long eventId) {
+        assertNotNull(this.eventDAO.read(eventId));
+        assertNotNull(this.eventDAO.getOrThrow(eventId));
+
+        assertNotNull(this.accountEventDAO.get(accountId, eventId));
+        assertNotNull(this.accountEventDAO.getRole(accountId, eventId));
+        assertNotNull(this.accountEventDAO.getWithAccountEvent(accountId, eventId));
+
+        assertFalse(this.accountEventDAO.getAccounts(eventId).isEmpty());
+        assertFalse(this.accountEventDAO.getAccounts(eventId, OWNER).isEmpty());
+        assertFalse(this.accountEventDAO.getByEventAndRole(eventId, OWNER).isEmpty());
+
+        assertFalse(this.accountEventDAO.getEvents(accountId).isEmpty());
+        assertFalse(this.accountEventDAO.getEvents(accountId, OWNER).isEmpty());
+        assertFalse(this.accountEventDAO.getByAccountAndRole(accountId, OWNER).isEmpty());
+
+//        this.commentDAO.getCommentsByEvent(eventId) todo this
+//        this.photoDAO.getPhotosByEvent(eventId) todo this
     }
 }

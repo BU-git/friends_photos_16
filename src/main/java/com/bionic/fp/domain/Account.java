@@ -1,9 +1,6 @@
 package com.bionic.fp.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -11,17 +8,27 @@ import java.util.List;
 @NamedEntityGraph(name = "Account.events",
         attributeNodes = @NamedAttributeNode(value = "events", subgraph = "events"),
         subgraphs = @NamedSubgraph(name = "events", attributeNodes = @NamedAttributeNode("event")))
-public class Account implements Serializable {
+@NamedQueries({
+        @NamedQuery(name= Account.GET_BY_EMAIL, query="SELECT a FROM Account a WHERE a.email=:email"),
+        @NamedQuery(name= Account.GET_BY_FB_ID, query="SELECT a FROM Account a WHERE a.fbId=:fbId"),
+        @NamedQuery(name= Account.GET_BY_VK_ID, query="SELECT a FROM Account a WHERE a.vkId=:vkId")
+})
+public class Account extends BaseEntity implements IdEntity<Long> {
+
+    @Transient public static final String GET_BY_EMAIL = "Account.getByEmail";
+    @Transient public static final String GET_BY_FB_ID = "Account.getByFbId";
+    @Transient public static final String GET_BY_VK_ID = "Account.getByVkId";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonIgnore
     private String password;
 
-    @Column(name = "user_name")
+    @Column(name = "user_name", nullable = true)
     private String userName;
 
+    @Column(unique = true, nullable = false)
     private String email;
 
     @Column(name = "profile_image_url")
@@ -45,20 +52,24 @@ public class Account implements Serializable {
     @Column(name = "vk_profile_url")
     private String vkProfileUrl;
 
-    private boolean guest;
+//    private boolean guest;
+//
+//	@Column(name = "active")
+//    private boolean active = true;
 
-	@Column(name = "active")
-    private boolean active = true;
-
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<AccountEvent> events;
 
     public Account() {}
 
-    public Account(String email, String userName, String password) {
+    public Account(final String email, final String password) {
         this.email = email;
-        this.userName = userName;
         this.password = password;
+    }
+
+    public Account(final String email, final String username, final String password) {
+        this(email, password);
+        this.userName = username;
     }
 
     public Long getId() {
@@ -149,21 +160,21 @@ public class Account implements Serializable {
         this.vkProfileUrl = vkProfileUrl;
     }
 
-    public boolean isGuest() {
-        return guest;
-    }
-
-    public void setGuest(boolean guest) {
-        this.guest = guest;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
+//    public boolean isGuest() {
+//        return guest;
+//    }
+//
+//    public void setGuest(boolean guest) {
+//        this.guest = guest;
+//    }
+//
+//    public boolean isActive() {
+//        return active;
+//    }
+//
+//    public void setActive(boolean active) {
+//        this.active = active;
+//    }
 
     public List<AccountEvent> getEvents() {
         return events;
@@ -180,7 +191,7 @@ public class Account implements Serializable {
 
         Account account = (Account) o;
 
-        if (password != null ? !password.equals(account.password) : account.password != null) return false;
+//        if (password != null ? !password.equals(account.password) : account.password != null) return false;   // password in DB is encoded
         if (userName != null ? !userName.equals(account.userName) : account.userName != null) return false;
         if (email != null ? !email.equals(account.email) : account.email != null) return false;
         if (fbId != null ? !fbId.equals(account.fbId) : account.fbId != null) return false;
@@ -192,12 +203,12 @@ public class Account implements Serializable {
     public String toString() {
         return "Account{" +
                 "id=" + id +
-                ", active=" + active +
+//                ", active=" + active +
                 ", email='" + email + '\'' +
                 ", fbID='" + fbId + '\'' +
                 ", fbProfile='" + fbProfileUrl + '\'' +
                 ", fbToken='" + fbToken + '\'' +
-                ", guest=" + guest +
+//                ", guest=" + guest +
                 ", password='" + password + '\'' +
                 ", profileImageURL='" + profileImageUrl + '\'' +
                 ", userName='" + userName + '\'' +

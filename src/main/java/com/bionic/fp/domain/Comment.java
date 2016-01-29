@@ -1,22 +1,22 @@
 package com.bionic.fp.domain;
 
-import com.bionic.fp.util.LocalDateTimePersistenceConverter;
-
 import javax.persistence.*;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comments")
-public class Comment implements Serializable {
+public class Comment extends BaseEntity implements IdEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String text;
-    @Convert(converter = LocalDateTimePersistenceConverter.class)
-    private LocalDateTime date;
     @ManyToOne(fetch = FetchType.EAGER)
     private Account author;
+
+    public Comment() {}
+
+    public Comment(String text) {
+        this.text = text;
+    }
 
     public Long getId() {
         return id;
@@ -34,14 +34,6 @@ public class Comment implements Serializable {
         this.text = text;
     }
 
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
     public Account getAuthor() {
         return author;
     }
@@ -54,7 +46,7 @@ public class Comment implements Serializable {
     public String toString() {
         return "Comments{" +
                 "id=" + id +
-                ", date=" + date +
+                ", date=" + created +
                 ", text='" + text + '\'' +
                 ", author=" + author +
                 '}';

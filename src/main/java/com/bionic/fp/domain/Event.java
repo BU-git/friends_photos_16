@@ -3,7 +3,6 @@ package com.bionic.fp.domain;
 import com.bionic.fp.util.LocalDateTimePersistenceConverter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,38 +13,16 @@ import java.util.List;
         @NamedEntityGraph(name = "Event.accounts",
                 attributeNodes = @NamedAttributeNode(value = "accounts", subgraph = "accounts"),
                 subgraphs = @NamedSubgraph(name = "accounts", attributeNodes = @NamedAttributeNode("account"))),
-        @NamedEntityGraph(name="Event.photos", attributeNodes={
-                @NamedAttributeNode("photos")}),
-        @NamedEntityGraph(name="Event.comments", attributeNodes={
-                @NamedAttributeNode("comments")})
+        @NamedEntityGraph(name="Event.photos", attributeNodes={@NamedAttributeNode("photos")}),
+        @NamedEntityGraph(name="Event.comments", attributeNodes={@NamedAttributeNode("comments")})
 })
 @NamedQueries({
-        @NamedQuery(
-                name = Event.FIND_BY_NAME_AND_DESCRIPTION,
-                query = "SELECT e FROM Event e WHERE e.visible = TRUE AND e.name LIKE :name AND e.description LIKE :description"
-        ),
-        @NamedQuery(
-                name = Event.FIND_BY_NAME,
-                query = "SELECT e FROM Event e WHERE e.visible = TRUE AND e.name LIKE :name "
-        ),
-        @NamedQuery(
-                name = Event.FIND_BY_DESCRIPTION,
-                query = "SELECT e FROM Event e WHERE e.visible = TRUE AND e.description LIKE :description"
-        ),
-        @NamedQuery(
-                name = Event.FIND_ALL,
-                query = "SELECT e FROM Event e WHERE e.visible = TRUE"
-        )
+        @NamedQuery(name = Event.FIND_COMMENTS,
+                query = "SELECT e FROM Event e JOIN FETCH e.comments WHERE e.id = :eventId")
 })
-public class Event implements Serializable {
-    @Transient
-    public static final String FIND_BY_NAME_AND_DESCRIPTION = "Event.findByNameAndDescription";
-    @Transient
-    public static final String FIND_BY_NAME = "Event.findByName";
-    @Transient
-    public static final String FIND_BY_DESCRIPTION = "Event.findByDescription";
-    @Transient
-    public static final String FIND_ALL = "Event.findAll";
+public class Event extends BaseEntity implements IdEntity<Long> {
+
+    @Transient public static final String FIND_COMMENTS = "Event.findComments";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,16 +32,12 @@ public class Event implements Serializable {
     @Column(nullable = false)
     private String description;
     @ManyToOne
-    @JoinColumn(name = "event_type")
+    @JoinColumn(name = "event_type_id")
     private EventType eventType;
-//    @OneToOne(fetch = FetchType.EAGER)
-//    private Account owner;
     /**
      * Is this event visible in the general mode of search?
      */
     private boolean visible = true;
-    @Convert(converter = LocalDateTimePersistenceConverter.class)
-    private LocalDateTime date;
     @Column(name = "expire_date")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime expireDate;
@@ -78,19 +51,15 @@ public class Event implements Serializable {
     @Column(name = "private")
     private boolean isPrivate = false;
     private String password;
-    /**
-     * Is this event deleted? Because the event is not deleted physically
-     */
-    private boolean deleted = false;
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<AccountEvent> accounts = new ArrayList<>();
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
     private List<Photo> photos = new ArrayList<>();
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "events_comments",
             joinColumns = {@JoinColumn(name = "event_id")},
             inverseJoinColumns = {@JoinColumn(name = "comment_id")})
-    private List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments;
 
     public Event() {
     }
@@ -127,28 +96,12 @@ public class Event implements Serializable {
         this.eventType = eventType;
     }
 
-//    public Account getOwner() {
-//        return owner;
-//    }
-//
-//    public void setOwner(Account owner) {
-//        this.owner = owner;
-//    }
-
     public boolean isVisible() {
         return visible;
     }
 
     public void setVisible(boolean visible) {
         this.visible = visible;
-    }
-
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
     }
 
     public LocalDateTime getExpireDate() {
@@ -189,14 +142,6 @@ public class Event implements Serializable {
 
     public void setGeoServicesEnabled(boolean geoServicesEnabled) {
         this.geoServicesEnabled = geoServicesEnabled;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 
     public List<AccountEvent> getAccounts() {
@@ -263,7 +208,7 @@ public class Event implements Serializable {
         sb.append(", description='").append(description).append('\'');
         sb.append(", eventType=").append(eventType);
         sb.append(", visible=").append(visible);
-        sb.append(", date=").append(date);
+        sb.append(", date=").append(created);
         sb.append(", expireDate=").append(expireDate);
         sb.append(", latitude=").append(latitude);
         sb.append(", longitude=").append(longitude);

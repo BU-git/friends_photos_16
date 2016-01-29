@@ -11,6 +11,11 @@ import com.bionic.fp.exception.AppException;
 public class NonUniqueResultException extends AppException {
 
     public NonUniqueResultException(final String message) {
-        super(message);
+        super("Broken business logic of the application. " + message);
     }
+
+	public NonUniqueResultException(final String message, Exception e) {
+		super("Broken business logic of the application. " + message, e);
+	}
+
 }

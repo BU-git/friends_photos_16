@@ -7,25 +7,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="accounts_events")
-@NamedQueries({
-        @NamedQuery(
-                name= AccountEvent.GET_BY_ACCOUNT_ID_AND_EVENT_ID,
-                query="SELECT ae FROM AccountEvent ae WHERE ae.account.id = :accountId AND ae.event.id = :eventId"),
-        @NamedQuery(
-                name= AccountEvent.FIND_BY_EVENT_ID_AND_ROLE_ID,
-                query="SELECT ae FROM AccountEvent ae WHERE ae.event.id = :eventId AND ae.role.id = :roleId"),
-        @NamedQuery(
-                name= AccountEvent.FIND_BY_ACCOUNT_ID_AND_ROLE_ID,
-                query="SELECT ae FROM AccountEvent ae WHERE ae.account.id = :accountId AND ae.role.id = :roleId")
-})
-//@NamedEntityGraph(name = "AccountEvent.full", attributeNodes={
-//                @NamedAttributeNode("account"),
-//                @NamedAttributeNode("event"),
-//                @NamedAttributeNode("role")})
-public class AccountEvent {
-    @Transient public static final String GET_BY_ACCOUNT_ID_AND_EVENT_ID = "AccountEvent.findByAccountIdAndEventId";
-    @Transient public static final String FIND_BY_EVENT_ID_AND_ROLE_ID = "AccountEvent.findByEventIdAndRoleId";
-    @Transient public static final String FIND_BY_ACCOUNT_ID_AND_ROLE_ID = "AccountEvent.findByAccountIdAndRoleId";
+public class AccountEvent extends BaseEntity implements IdEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +25,12 @@ public class AccountEvent {
     private Role role;
 
     public AccountEvent() {
+    }
+
+    public AccountEvent(final Event event, final Account account, final Role role) {
+        this.event = event;
+        this.account = account;
+        this.role = role;
     }
 
     public Long getId() {

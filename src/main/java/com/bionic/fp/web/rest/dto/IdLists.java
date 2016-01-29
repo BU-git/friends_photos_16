@@ -1,6 +1,8 @@
 package com.bionic.fp.web.rest.dto;
 
+import com.bionic.fp.Constants.RestConstants.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
@@ -12,12 +14,12 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class IdLists {
 
-    private List<Long> accounts;
-    private List<Long> events;
-    private List<Long> photos;
-    private List<Long> comments;
-    private List<Integer> types;
-    private List<Integer> roles;
+    @JsonProperty(ACCOUNT.LIST) private List<Long> accounts;
+    @JsonProperty(EVENT.LIST)   private List<Long> events;
+    @JsonProperty(PHOTO.LIST)   private List<Long> photos;
+    @JsonProperty(COMMENT.LIST) private List<Long> comments;
+    @JsonProperty(TYPE.LIST)    private List<Long> types;
+    @JsonProperty(ROLE.LIST)    private List<Long> roles;
 
     public IdLists() {
     }
@@ -54,19 +56,19 @@ public class IdLists {
         this.comments = comments;
     }
 
-    public List<Integer> getTypes() {
+    public List<Long> getTypes() {
         return types;
     }
 
-    public void setTypes(List<Integer> types) {
+    public void setTypes(List<Long> types) {
         this.types = types;
     }
 
-    public List<Integer> getRoles() {
+    public List<Long> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Integer> roles) {
+    public void setRoles(List<Long> roles) {
         this.roles = roles;
     }
 }

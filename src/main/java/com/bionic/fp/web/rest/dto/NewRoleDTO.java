@@ -16,7 +16,7 @@ public class NewRoleDTO {
     @JsonProperty(EVENT.ID)
     private Long eventId;
     @JsonProperty(ROLE.ID)
-    private Integer roleId;
+    private Long roleId;
 
     public NewRoleDTO() {
     }
@@ -38,11 +38,11 @@ public class NewRoleDTO {
         this.eventId = eventId;
     }
 
-    public Integer getRoleId() {
+    public Long getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Integer roleId) {
+    public void setRoleId(Long roleId) {
         this.roleId = roleId;
     }
 }
