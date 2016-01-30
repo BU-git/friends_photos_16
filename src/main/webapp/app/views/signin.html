@@ -1,0 +1,32 @@
+<!-- @namespace AuthController -->
+<div class="pre-form col l3">
+    <form name="signinForm" ng-submit="authCtrl.login(user)" class="col l12 user-menu-form">
+        <div class="row user-menu-form-fields">
+            <p class="sing-in-caption">sing in</p>
+            <div class="input-field col s12">
+                <input id="email" type="email" class="validate" ng-model="user.email">
+                <label for="email">E-mail</label>
+            </div>
+            <div class="input-field col s12">
+                <input id="password" type="password" class="validate" ng-model="user.password">
+                <label for="password">Password</label>
+            </div>
+        </div>
+
+        <!-- submit button -->
+        <button class="btn waves-effect waves-light" type="submit" name="action">
+            Sing in with <span>friends photos</span>
+        </button>
+
+        <p class="sing-social-caption">or use social</p>
+        <div class="row">
+            <div class="col l6">
+                <a class="btn waves-effect waves-light btn-fb flaticon-facebook55"
+                   ng-click="authCtrl.login('facebook')">Sing in with</a>
+            </div>
+            <div class="col l6">
+                <a class="btn waves-effect waves-light btn-vk flaticon-vk3">Sing in with</a>
+            </div>
+        </div>
+    </form>
+</div>

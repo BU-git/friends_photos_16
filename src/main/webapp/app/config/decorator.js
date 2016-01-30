@@ -52,12 +52,29 @@
 
         $provide.decorator('$state', ['$delegate', function ($delegate) {
             $delegate.history = [];
-            $delegate.goToPrev = function () {debugger
-                if ($delegate.history.length) {
-
-                }
-            };
             return $delegate;
+        }]);
+
+        $provide.decorator('$mdDialog', ['$delegate', '$rootScope', function ($mdDialog, $rootScope) {
+            $mdDialog.showCarousel = function (e, event, photos, index) {
+                $mdDialog.show({
+                    template:
+                        '<md-dialog class="carousel-modal" aria-label="List Photos">' +
+                            '<carousel event="event" photos="photos" index="{{index}}" layout="row">' +
+                        '</md-dialog>',
+                    parent: angular.element(document.body),
+                    targetEvent: e,
+                    clickOutsideToClose: true,
+                    fullscreen: true,
+                    scope: angular.extend($rootScope.$new(true), {
+                        event: event,
+                        photos: photos,
+                        index: index
+                    })
+                });
+            };
+
+            return $mdDialog;
         }]);
     }
 

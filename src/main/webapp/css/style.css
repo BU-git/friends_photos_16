@@ -1,0 +1,380 @@
+@font-face {
+  font-family: Pdftext;
+  src: url(../fonts/pfdintextcomppro-medium-webfont.ttf); }
+.row {
+  margin-bottom: 0; }
+
+.container {
+  max-width: 1200px;
+  width: 100%; }
+
+.google-play-btn {
+  position: relative;
+  height: 47px;
+  margin: 10px 0; }
+  .google-play-btn:before {
+    content: '';
+    width: 137px;
+    height: 47px;
+    position: absolute;
+    background: url("../img/spt.png") no-repeat;
+    background-position: -10px -592px;
+    width: 137px;
+    height: 47px; }
+
+.app-store-btn {
+  position: relative;
+  height: 47px;
+  margin: 10px 0; }
+  .app-store-btn:before {
+    content: '';
+    width: 137px;
+    height: 47px;
+    position: absolute;
+    background: url("../img/spt.png") no-repeat;
+    background-position: -178px -538px;
+    width: 137px;
+    height: 47px; }
+
+input:focus {
+  border-bottom: 1px solid #336e08 !important;
+  box-shadow: none !important; }
+
+input {
+  margin: 0 !important;
+  height: 2.5rem !important; }
+
+label {
+  font-size: 14px;
+  font-family: Roboto Light; }
+
+.active {
+  color: #336e08 !important; }
+
+.input-field {
+  margin-top: 10px !important; }
+
+body {
+  background: url(../img/main-bg.jpg);
+  background-size: cover;
+  background-attachment: fixed; }
+  body .logo-small {
+    position: relative;
+    height: 45px; }
+    body .logo-small::before {
+      content: '';
+      position: absolute;
+      width: 71px;
+      height: 45px;
+      background: url("../img/spt.png") no-repeat;
+      background-position: -220px -393px;
+      width: 71px;
+      height: 45px; }
+  body .main-title-small, body .motto-small {
+    text-transform: uppercase;
+    font-family: Roboto;
+    font-weight: 400;
+    font-size: 17px;
+    color: #fff;
+    margin: 0;
+    font-weight: bolder; }
+  body .motto-small {
+    font-size: 11px; }
+  body .user-menu-container {
+    background: rgba(0, 0, 0, 0.7); }
+    body .user-menu-container .container .pre-form {
+      padding: 0; }
+      body .user-menu-container .container .pre-form .user-menu-form {
+        background: #fff;
+        padding: 20px;
+        line-height: 1; }
+        body .user-menu-container .container .pre-form .user-menu-form .user-menu-form-fields {
+          margin-bottom: 10px; }
+        body .user-menu-container .container .pre-form .user-menu-form .sing-in-caption, body .user-menu-container .container .pre-form .user-menu-form .user-name {
+          text-transform: uppercase;
+          margin: 0;
+          padding-left: .75rem;
+          font-size: 24px;
+          font-family: Roboto;
+          font-weight: 400;
+          color: #336e08; }
+        body .user-menu-container .container .pre-form .user-menu-form .user-name {
+          text-transform: none !important;
+          text-decoration: underline; }
+        body .user-menu-container .container .pre-form .user-menu-form .user-menu li a {
+          font-size: 14px;
+          font-family: Roboto Light;
+          font-weight: 300;
+          color: #5b5b5b;
+          padding: 13px 11px;
+          display: block; }
+          body .user-menu-container .container .pre-form .user-menu-form .user-menu li a:hover {
+            background: #e6e6e6; }
+        body .user-menu-container .container .pre-form .user-menu-form .btn {
+          width: 100%;
+          background-color: #336e08;
+          font-size: 14px;
+          text-transform: inherit;
+          font-family: Roboto;
+          font-weight: 400;
+          padding: 0 1.2rem;
+          position: relative;
+          -webkit-border-radius: 0;
+          -moz-border-radius: 0;
+          border-radius: 0; }
+          body .user-menu-container .container .pre-form .user-menu-form .btn span {
+            text-transform: uppercase; }
+          body .user-menu-container .container .pre-form .user-menu-form .btn:before {
+            position: absolute;
+            right: 7px; }
+        body .user-menu-container .container .pre-form .user-menu-form .sing-social-caption, body .user-menu-container .container .pre-form .user-menu-form .user-name {
+          text-transform: uppercase;
+          font-size: 24px;
+          font-family: Roboto;
+          font-weight: 400;
+          color: #336e08; }
+        body .user-menu-container .container .pre-form .user-menu-form .btn-fb {
+          background-color: #3b5998;
+          padding: 0 30px 0 9px; }
+        body .user-menu-container .container .pre-form .user-menu-form .btn-vk {
+          background-color: #4c75a3;
+          padding: 0 30px 0 9px; }
+    body .user-menu-container .container .logo {
+      position: relative;
+      height: 0px;
+      margin: 8% 0;
+      padding-left: 10%; }
+      body .user-menu-container .container .logo:before {
+        content: '';
+        width: 304px;
+        height: 194px;
+        background: url("../img/spt.png") no-repeat;
+        background-position: -10px -108px;
+        width: 304px;
+        height: 194px;
+        position: absolute; }
+    body .user-menu-container .container .applications {
+      margin: 10% 0;
+      line-height: 0.9;
+      height: 0px; }
+      body .user-menu-container .container .applications .main-title {
+        text-transform: uppercase;
+        font-family: Pdftext;
+        font-size: 72px;
+        color: #fff;
+        margin: 0;
+        position: relative; }
+        body .user-menu-container .container .applications .main-title:before {
+          content: '';
+          width: 84px;
+          height: 71px;
+          position: absolute;
+          right: 95px;
+          top: -45px;
+          background: url("../img/spt.png") no-repeat;
+          background-position: -220px -312px;
+          width: 84px;
+          height: 71px; }
+      body .user-menu-container .container .applications .motto {
+        text-transform: uppercase;
+        font-family: Pdftext;
+        font-size: 22px;
+        color: #fff;
+        margin: 0; }
+  body .white-bg {
+    background: #fff;
+    color: #474747;
+    font-family: Roboto Light;
+    font-weight: 300;
+    padding-top: 10px; }
+    body .white-bg .message-box {
+      margin: 15% 0;
+      max-width: 324px;
+      width: 100%;
+      -webkit-border-radius: 14px;
+      -moz-border-radius: 14px;
+      border-radius: 14px; }
+    body .white-bg .text-caption {
+      font-size: 30px;
+      color: #336e08; }
+    body .white-bg .text-body {
+      font-size: 18px; }
+    body .white-bg .description {
+      padding-left: 25px; }
+    body .white-bg .search-label {
+      text-transform: uppercase;
+      margin: 27px 0 0 0;
+      font-size: 30px;
+      font-family: Roboto Light;
+      font-weight: 300;
+      color: #336e08; }
+    body .white-bg .search-field {
+      padding: 0; }
+    body .white-bg .sort-title {
+      float: left;
+      margin: 0; }
+    body .white-bg .sorting-menu {
+      overflow: inherit;
+      margin-bottom: 20px; }
+      body .white-bg .sorting-menu .tab a {
+        font-size: 14px;
+        font-family: Roboto Light;
+        font-weight: 300;
+        text-transform: lowercase !important;
+        color: #5b5b5b; }
+      body .white-bg .sorting-menu .tab .active {
+        font-size: 14px !important;
+        border-right: 2px solid #336e08; }
+      body .white-bg .sorting-menu .indicator {
+        background: #336e08; }
+    body .white-bg .event-box {
+      position: relative;
+      overflow: hidden; }
+      body .white-bg .event-box .status-bar-up, body .white-bg .event-box .status-bar-down {
+        position: absolute;
+        left: 23px;
+        color: #fff;
+        font-size: 14px;
+        font-family: Roboto;
+        font-weight: 400;
+        background: rgba(0, 0, 0, 0.3);
+        width: 100%; }
+      body .white-bg .event-box .status-bar-up {
+        top: 0; }
+      body .white-bg .event-box .status-bar-down {
+        bottom: 6px; }
+  body footer {
+    background: #252525;
+    padding: 25px; }
+    body footer a {
+      color: #fff;
+      text-transform: uppercase;
+      font-size: 14px;
+      font-family: Roboto Light;
+      font-weight: 300;
+      padding: 28px 0; }
+    body footer .logo-bu {
+      padding: 15px;
+      margin: 20px 0;
+      position: relative; }
+      body footer .logo-bu:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        width: 158px;
+        height: 44px;
+        background: url("../img/spt.png") no-repeat;
+        background-position: -10px -538px;
+        width: 158px;
+        height: 44px; }
+
+@media screen and (min-width: 320px) and (max-width: 400px) {
+  .user-menu-container .logo {
+    padding: 1px; } }
+@media screen and (min-width: 320px) and (max-width: 992px) {
+  .logo-bu-box {
+    margin-top: 20px; } }
+@media screen and (min-width: 601px) {
+  .user-menu-container {
+    margin-top: 45px; } }
+.effect {
+  position: relative; }
+
+.eff {
+  overflow: hidden; }
+  .eff .caption {
+    position: absolute;
+    top: -5px;
+    left: 23px;
+    background: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    opacity: 0;
+    -o-transition: all 0.5s linear 0s;
+    -webkit-transition: all 0.5s linear 0s;
+    -moz-transition: all 0.5s linear 0s;
+    -o-transition: all 0.5s linear 0s;
+    transition: all 0.5s linear 0s; }
+    .eff .caption h4 {
+      font-size: 36px;
+      font-family: Roboto Light;
+      font-weight: 300;
+      text-transform: uppercase;
+      text-align: center;
+      padding-bottom: 20px;
+      margin-top: 100px;
+      position: relative;
+      left: 300px;
+      opacity: 0;
+      -o-transition: all 0.3s linear 0s;
+      -webkit-transition: all 0.3s linear 0s;
+      -moz-transition: all 0.3s linear 0s;
+      -o-transition: all 0.3s linear 0s;
+      transition: all 0.3s linear 0s; }
+    .eff .caption p {
+      text-align: center;
+      padding: 0px 10px;
+      text-align: left;
+      opacity: 0;
+      -o-transition: all 0.3s linear 0s;
+      -webkit-transition: all 0.3s linear 0s;
+      -moz-transition: all 0.3s linear 0s;
+      -o-transition: all 0.3s linear 0s;
+      transition: all 0.3s linear 0s; }
+      .eff .caption p:nth-child(3) {
+        font-family: Roboto;
+        font-weight: 400;
+        font-size: 14px;
+        margin: 50px 0 10px 0; }
+      .eff .caption p:nth-child(4) {
+        font-family: Roboto Light;
+        font-weight: 300;
+        font-size: 12px;
+        margin: 0; }
+    .eff .caption .view-more-btn, .eff .caption .add-btn {
+      width: 120px;
+      text-align: center;
+      display: block;
+      padding: 20px 0px;
+      margin: 170px auto 0 auto;
+      position: relative;
+      opacity: 0;
+      left: -300px;
+      -o-transition: all 0.3s linear 0s;
+      -webkit-transition: all 0.3s linear 0s;
+      -moz-transition: all 0.3s linear 0s;
+      -o-transition: all 0.3s linear 0s;
+      transition: all 0.3s linear 0s; }
+      .eff .caption .view-more-btn::before, .eff .caption .add-btn::before {
+        content: '';
+        position: absolute;
+        width: 64px;
+        height: 64px;
+        background: url("../img/spt.png") no-repeat;
+        background-position: -157px -595px;
+        width: 64px;
+        height: 64px; }
+    .eff .caption .add-btn::before {
+      content: '';
+      position: absolute;
+      width: 64px;
+      height: 64px;
+      background: url("../img/spt.png") no-repeat;
+      background-position: -220px -448px;
+      width: 64px;
+      height: 64px; }
+  .eff:hover h4, .eff:hover .view-more-btn, .eff:hover .add-btn {
+    left: 0px;
+    opacity: 1; }
+  .eff:hover .caption, .eff:hover p {
+    opacity: 1; }
+  .eff:hover .status-bar-down {
+    opacity: 0; }
+  .eff:hover .status-bar-up {
+    background: transparent; }
+
+iframe {
+  margin: 30px; }
+
+/*# sourceMappingURL=style.css.map */

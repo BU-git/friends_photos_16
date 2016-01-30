@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     angular
@@ -41,9 +41,9 @@
                 eventsService.getById(ctrl.eventId).then(function (event) {
                     ctrl.event = event;
                 });
-                photosService.getEventPhotos(ctrl.eventId).then(function (photos) {
-                    ctrl.photos = photos;
-                });
+                //photosService.getEventPhotos(ctrl.eventId).then(function (photos) {
+                //    ctrl.photos = photos;
+                //});
             } else {
                 ctrl.event = testEvent;
                 ctrl.photos = [];
@@ -56,11 +56,11 @@
                     .uploadPhotos(eventId, ctrl.photos.filter(function (file) {
                         return file instanceof File;
                     }))
-                    .then(function success (result) {
+                    .then(function success(result) {
                         ctrl.uploadedPhotos = result;
-                    }, function error () {
+                    }, function error() {
                         debugger
-                    }, function progress (count) {
+                    }, function progress(count) {
                         ctrl.uploadedPhotos = count;
                     });
             });

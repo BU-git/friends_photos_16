@@ -1,29 +1,38 @@
-<div class="container container-header">
-    <div class="logo-image pull-left">
-        <img src="../../images/logo.jpg">
-    </div>
+<section class="hide-on-med-and-up">
+    <section class="row">
+        <a href="#" class="col s3 logo-small"></a>
+        <section class="col s9">
+            <p class="main-title-small">friends photos</p>
+            <p class="motto-small slogan">easiest way to share common photos with friends</p>
+        </section>
+    </section>
+    <section class="row">
+        <a href="#" target="_blank" class="col s6 google-play-btn"></a>
+        <a href="#" target="_blank" class="col s6 app-store-btn"></a>
+    </section>
+</section>
 
-    <div class="user-box pull-right">
-        <i class="fa fa-user fa-2x"></i> FirstName LastName
-    </div>
-</div>
-
-<div class="container-header-underline"></div>
-
-<div class="navbar-container">
-    <nav class="navbar navbar-inverse">
-        <div class="container">
-            <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
-                <ul class="nav navbar-nav">
-                    <li ui-sref-active="active">
-                        <md-button ui-sref="home.events">My events</md-button>
-                    </li>
-                    <li ui-sref-active="active">
-                        <md-button ui-sref="home.search">Search</md-button>
-                    </li>
-                </ul>
-            </div>
-            <!--/.nav-collapse -->
-        </div>
-    </nav>
-</div>
+<section class="user-menu-container">
+    <section class="row">
+        <section class="row">
+            <section class="container row">
+                <div ui-view="usermenu">
+                    <signin></signin>
+                </div>
+                <div class="hide-on-small-only col m6 l9">
+                    <div class="logo col l6"></div>
+                    <div class="applications col l6">
+                        <div class="row">
+                            <a href="#" target="_blank" class="google-play-btn col s12 l4"></a>
+                            <a href="#" target="_blank" class="app-store-btn col s12 l4"></a>
+                        </div>
+                        <div class="row">
+                            <p class="main-title col l12">friends photos</p>
+                            <p class="motto col l12">easiest way to share common photos with friends</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </section>
+</section>

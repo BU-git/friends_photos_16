@@ -13,9 +13,12 @@
             controller: Controller,
             controllerAs: 'ctrl',
             bindToController: {
-                photos: '='
+                event: '=',
+                photos: '=',
+                index: '@'
             },
-            template: '<img ng-src="photos/{{ctrl.photos[ctrl.current]}}/file" ng-click="ctrl.next()" flex>',
+            template:
+                '<img photo="ctrl.photos[ctrl.index]" ng-click="ctrl.next()">',
             link: link
         };
         return directive;
@@ -25,12 +28,13 @@
         function Controller() {
             var ctrl = this;
             angular.extend(ctrl, {
-                current: 0,
+                index: angular.isDefined(ctrl.index) ? parseInt(ctrl.index) : 0,
                 next: next
             });
 
             function next() {
-                ctrl.current = (ctrl.current == ctrl.photos.length - 1) ? 0 : ctrl.current + 1;
+                ctrl.index = parseInt(ctrl.index);
+                ctrl.index = (ctrl.index == ctrl.photos.length - 1) ? 0 : ctrl.index + 1;
             }
         }
     }

@@ -57,9 +57,14 @@
                 init($window, $q).then(function () {
                     FB.getLoginStatus(function(res) {
                         if (res.status === 'connected' && res.authResponse) {
-                            $http.form('accounts/fb', {
-                                fbId: res.authResponse.userID,
-                                fbToken: res.authResponse.accessToken
+                            $http.post('api/v1/auth/fb', {
+                                "token": res.authResponse.accessToken,
+                                "social_id": res.authResponse.userID,
+                                "email": "email@gmail.com",
+                                "username": "Dude",
+                                "first_name": "Du",
+                                "last_name": "De",
+                                "image_url": "http://facebook.com/image.jpg"
                             }).then(function (res) {
                                 deferred.resolve(res);
                             });

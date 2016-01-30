@@ -1,4 +1,4 @@
-<img ng-src="photos/{{event.photos[0]}}/file" ng-click="showCarousel()">
+<img photo="event.photos[0]" ng-click="showCarousel($event, event, event.photos, 0)">
 <div class="event-name">
     <span ng-bind="event.name"></span>
     <a class="pull-right" ui-sref="home.events.edit({id: event.event_id})">

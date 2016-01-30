@@ -1,15 +1,48 @@
-<div class="container">
-    <div class="row">
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" ng-repeat="event in ctrl.events">
-            <event-preview event="event"></event-preview>
-        </div>
+<!-- namespace EventsController -->
+<section class="col l12 white-bg">
+    <div class="container row">
+        <section class="col s12 l4">
+            <section class="col s12">
+                <p class="search-label">my events</p>
+            </section>
+            <section class="input-field col s12">
+                <input id="search-box" type="search" class="search-field">
+                <label for="search-box">Пошук по ключовим словам або тегам</label>
+            </section>
+        </section>
+        <section class="col s12 l7">
+            <ul class="tabs sorting-menu">
+                <li class="tab col s2 disabled"><a href="#">відсортувати по:</a></li>
+                <li class="tab col s2"><a href="#" class="active">даті створення</a></li>
+                <li class="tab col s2"><a href="#">кількості фото</a></li>
+                <li class="tab col s2"><a href="#">кількості учасників</a></li>
+                <li class="tab col s2"><a href="#">алфавіту</a></li>
+            </ul>
+        </section>
     </div>
-</div>
-<div style="width: 84px; height: 84px; position: fixed; bottom: 0; right: 0;">
-    <md-button class="md-fab"
-               aria-label="Create event"
-               ui-sref="home.events.create"
-               style="background-color: #437246;">
-        <md-icon md-font-set="material-icons">add_a_photo</md-icon>
-    </md-button>
-</div>
+    <div class="container row">
+        <section class="event-box col s12 m6 eff effect" ng-repeat="event in ctrl.events">
+            <img ng-src="api/v1/photos/{{event.photos[0]}}/file" alt="event" class="event">
+
+            <div class="status-bar-up row">
+                <p class="timestamp col s10">28.02.15 - {{::event.photos.length}} photos, 51 people 51</p>
+
+                <p class="status col s2">Open</p>
+            </div>
+            <div class="status-bar-down row">
+                <p class="timestamp col s12">{{::event.description}}</p>
+            </div>
+            <div class="caption row">
+                <h4 class="col s12">Переглянути фотоальбом</h4>
+                <a class="view-more-btn" href="#" title="View More"></a>
+
+                <p class="col s12">Boombox 10 years concert</p>
+
+                <p class="col s12">Вже 28 червня рівняни зможуть сповна насолодитися творчістю гурту "Бумбокс", який
+                    цього року відзначає 10-річний ювілей. Музиканти обіцяють, що концерт у Рівному буде особливим і з
+                    сюрпризом. Це стане справжнім святом для усіх фанатів гурту і тих, хто обожнює "живі" виступи.</p>
+            </div>
+        </section>
+    </div>
+</section>
+

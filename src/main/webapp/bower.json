@@ -18,5 +18,25 @@
     "bootstrap": "~3.3.6",
     "font-awesome": "~4.5.0",
     "lodash": "~3.10.1"
+  },
+  "overrides": {
+    "angular": {
+      "main": "angular.js"
+    },
+    "angular-animate": {
+      "main": "angular-animate.js"
+    },
+    "angular-loading-bar": {
+      "main": "build/loading-bar.js"
+    },
+    "angular-translate": {
+      "main": "angular-translate.js"
+    },
+    "angular-ui-router": {
+      "main": "release/angular-ui-router.js"
+    },
+    "jquery": {
+      "main": ""
+    }
   }
 }

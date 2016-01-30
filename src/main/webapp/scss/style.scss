@@ -1,0 +1,490 @@
+$white-color: #fff;
+$main-font: Roboto;
+$font-light: Roboto Light;
+$main-color: #336e08;
+$fb-color: #3b5998;
+$vk-color: #4c75a3;
+$text-color: #474747;
+$footer-color: #252525;
+$grey-color: #5b5b5b;
+$black-color: #000;
+$logo-font: Pdftext;
+
+@font-face{
+	font-family: Pdftext;
+	src: url(../fonts/pfdintextcomppro-medium-webfont.ttf);
+}
+
+.row{
+	margin-bottom: 0;
+}
+
+.container{
+	max-width: 1200px;
+	width: 100%;
+}
+
+.google-play-btn{
+	position: relative;
+	height: 47px;
+	margin: 10px 0;
+	&:before{
+		content: '';
+		width: 137px;
+		height: 47px;
+		position: absolute;
+		background: url('../img/spt.png') no-repeat;
+		background-position: -10px -592px; width: 137px; height: 47px;
+	}
+}
+.app-store-btn{
+	position: relative;
+	height: 47px;
+	margin: 10px 0;
+	&:before{
+		content: '';
+		width: 137px;
+		height: 47px;
+		position: absolute;
+		background: url('../img/spt.png') no-repeat;
+		background-position: -178px -538px; width: 137px; height: 47px;
+	}
+}
+
+input:focus{
+	border-bottom: 1px solid $main-color !important;
+	box-shadow: none !important;
+}
+
+input{
+	margin: 0 !important;
+	height: 2.5rem !important;
+}
+
+label{
+	font-size: 14px;
+	font-family: $font-light;			
+}
+
+.active{
+	color: $main-color !important;
+}
+
+.input-field {
+	margin-top: 10px !important;
+}
+
+body{
+	.logo-small{
+		position: relative;
+		height: 45px;
+		&::before{
+			content: '';
+			position: absolute;
+			width: 71px;
+			height: 45px;
+			background: url('../img/spt.png') no-repeat;
+			background-position: -220px -393px; width: 71px; height: 45px;		
+		}
+	}
+	.main-title-small, .motto-small{
+		text-transform: uppercase;
+		font-family: $main-font;
+		font-weight: 400;
+		font-size: 17px;
+		color: $white-color;
+		margin: 0;
+		font-weight: bolder;	
+	}
+	.motto-small{
+		font-size: 11px;
+	}
+	background: url(../img/main-bg.jpg);
+	background-size: cover;
+	background-attachment: fixed;
+	.user-menu-container{
+		background: rgba(0, 0, 0, 0.7);
+		.container{
+			.pre-form{
+				padding: 0;	
+				.user-menu-form{
+					background: $white-color;
+					padding: 20px;
+					line-height: 1;
+					.user-menu-form-fields {
+						margin-bottom: 10px;
+					}
+					.sing-in-caption{
+						text-transform: uppercase;
+						margin: 0;
+						padding-left: .75rem;
+						font-size: 24px;
+						font-family: $main-font;
+						font-weight: 400;
+						color: $main-color;
+					}
+					.user-name{
+						@extend .sing-social-caption;
+						@extend .sing-in-caption;
+						text-transform: none !important;
+						text-decoration: underline;
+					}
+					.user-menu{
+						li{						
+							a{
+								font-size: 14px;
+								font-family: $font-light;
+								font-weight: 300;
+								color: $grey-color;
+								padding: 13px 11px;
+								display: block;
+								&:hover{
+									background: darken($white-color, 10%);
+								}
+							}
+						}
+					}
+
+					.btn{	
+						width: 100%;			
+						background-color: $main-color;
+						font-size: 14px;
+						text-transform: inherit;
+						font-family: $main-font;
+						font-weight: 400;
+						padding: 0 1.2rem;
+						position: relative;
+						-webkit-border-radius: 0;
+						-moz-border-radius: 0;
+						border-radius: 0;
+						span{
+							text-transform: uppercase;
+						}
+						&:before{
+							position: absolute;
+							right: 7px;
+						}
+					}
+					.sing-social-caption{
+						text-transform: uppercase;
+						font-size: 24px;
+						font-family: $main-font;
+						font-weight: 400;
+						color: $main-color;
+					}
+					.btn-fb{
+						background-color: $fb-color;
+						padding: 0 30px 0 9px;
+					}
+					.btn-vk{
+						background-color: $vk-color;
+						padding: 0 30px 0 9px;
+					}
+				}
+			}
+			.logo{
+				position: relative;
+				height: 0px;
+				margin: 8% 0;
+				padding-left: 10%;
+				&:before{
+					content: '';
+					width: 304px;
+					height: 194px;
+					background: url('../img/spt.png') no-repeat;
+					background-position: -10px -108px; width: 304px; height: 194px;				
+					position: absolute;				
+				}			
+			}
+			.applications{
+				margin: 10% 0;
+				line-height: 0.9;
+				height: 0px;
+
+				.main-title{
+					text-transform: uppercase;
+					font-family: $logo-font;
+					font-size: 72px;
+					color: $white-color;
+					margin: 0;
+					position: relative;
+					&:before{
+						content: '';
+						width: 84px;
+						height: 71px;
+						position: absolute;
+						right: 95px;
+						top: -45px;
+						background: url('../img/spt.png') no-repeat;
+						background-position: -220px -312px; width: 84px; height: 71px;		
+					}				
+				}
+				.motto{
+					text-transform: uppercase;
+					font-family: $logo-font;
+					font-size: 22px;
+					color: $white-color;
+					margin: 0;
+				}
+			}
+		}
+	}	
+	.white-bg{
+		background: $white-color;
+		color: $text-color;
+		font-family: $font-light;
+		font-weight: 300;
+		padding-top: 10px;
+		.message-box{
+			margin: 15% 0;
+			max-width: 324px;
+			width: 100%;
+			-webkit-border-radius: 14px;
+			-moz-border-radius: 14px;
+			border-radius: 14px;
+		}
+		.text-caption{
+			font-size: 30px;
+			color: $main-color;
+		}
+		.text-body{
+			font-size: 18px;
+		}
+		.description{
+			padding-left: 25px;				
+		}
+		.search-label{
+			text-transform: uppercase;			
+			margin: 27px 0 0 0;		
+			font-size: 30px;
+			font-family: $font-light;
+			font-weight: 300;
+			color: $main-color;
+		}	
+		.search-field{
+			padding: 0;
+		}
+		.sort-title{
+			float: left;
+			margin: 0;
+		}
+		.sorting-menu{		
+			overflow: inherit;
+			margin-bottom: 20px;			
+			.tab{				
+				a{
+				 	font-size: 14px;
+					font-family: $font-light;
+					font-weight: 300;
+					text-transform: lowercase !important;
+					color: $grey-color;					
+				}
+				.active{
+					font-size: 14px !important;
+					border-right: 2px solid $main-color;										
+				}
+			}
+			.indicator{
+				background: $main-color;			
+			}
+		}
+		.event-box{			
+			position: relative;
+			overflow: hidden;
+			.event{
+			}
+			.status-bar-up, .status-bar-down{
+				position: absolute;
+				left: 23px;
+				color: $white-color;
+				font-size: 14px;
+				font-family: $main-font;
+				font-weight: 400;
+				background: rgba($black-color, .3);
+				width: 100%;
+			}
+			.status-bar-up{
+				top: 0;				
+			}
+			.status-bar-down{
+				bottom: 6px;
+			}
+		}
+	}
+	footer{
+		background: $footer-color;
+		padding: 25px;
+		a{
+			color: $white-color;
+			text-transform: uppercase;
+			font-size: 14px;
+			font-family: $font-light;
+			font-weight: 300;
+			padding: 28px 0;
+		}
+		.logo-bu{
+			padding: 15px;
+			margin: 20px 0;
+			position: relative;			
+			&:before{
+				content: '';
+				position: absolute;
+				top: 0;
+				width:  158px;
+				height: 44px;
+				background: url('../img/spt.png') no-repeat;
+				background-position: -10px -538px; width: 158px; height: 44px;		
+			}
+		}
+		
+	}	
+}
+
+@media screen and (min-width: 320px) and (max-width: 400px){
+	.user-menu-container{
+		.logo{
+			padding: 1px;
+		}
+	}
+}
+
+@media screen and (min-width: 320px) and (max-width: 992px){
+	.logo-bu-box{
+		margin-top: 20px;
+	}
+}
+
+@media screen and (min-width: 601px){
+	.user-menu-container{
+		margin-top: 45px;
+	}
+}
+
+.effect {
+  position: relative;
+} 
+
+.eff {
+  overflow: hidden;
+	.caption {
+	  position: absolute;
+	  top: -5px;
+	  left: 23px;
+	  background: rgba($black-color, .5);
+	  width: 100%;
+	  height: 100%;
+	  color: $white-color;
+	  opacity: 0;
+	  -o-transition: all 0.5s linear 0s;
+	  -webkit-transition: all 0.5s linear 0s;
+	  -moz-transition: all 0.5s linear 0s;
+	  -o-transition: all 0.5s linear 0s;
+	  transition: all 0.5s linear 0s;
+	  h4 {
+		  font-size: 36px;
+		  font-family: $font-light;
+		  font-weight: 300;
+		  text-transform: uppercase;
+		  text-align: center;
+		  padding-bottom: 20px;
+		  margin-top: 100px;
+		  position: relative;
+		  left: 300px;
+		  opacity: 0;
+		  -o-transition: all 0.3s linear 0s;
+		  -webkit-transition: all 0.3s linear 0s;
+		  -moz-transition: all 0.3s linear 0s;
+		  -o-transition: all 0.3s linear 0s;
+		  transition: all 0.3s linear 0s;
+		}
+		p {  
+			  text-align: center;  
+			  padding: 0px 10px;
+			  text-align: left;
+			  opacity: 0;
+			  -o-transition: all 0.3s linear 0s;
+			  -webkit-transition: all 0.3s linear 0s;
+			  -moz-transition: all 0.3s linear 0s;
+			  -o-transition: all 0.3s linear 0s;
+			  transition: all 0.3s linear 0s;
+			  &:nth-child(3){
+				font-family: $main-font;
+				font-weight: 400;
+				font-size: 14px;	
+				margin: 50px 0 10px 0;
+			  }
+			  &:nth-child(4){
+				font-family: $font-light;
+				font-weight: 300;
+				font-size: 12px;
+				margin: 0;
+			  }
+		}
+		.view-more-btn, .add-btn{
+		  width: 120px;
+		  text-align: center;
+		  display: block;		  
+		  padding: 20px 0px;		  
+		  margin: 170px auto 0 auto;
+		  position: relative;
+		  opacity: 0;
+		  left: -300px;
+		  -o-transition: all 0.3s linear 0s;
+		  -webkit-transition: all 0.3s linear 0s;
+		  -moz-transition: all 0.3s linear 0s;
+		  -o-transition: all 0.3s linear 0s;
+		  transition: all 0.3s linear 0s;
+		  &::before{
+			content: '';
+			position: absolute;
+			width: 64px;
+			height: 64px;
+			background: url('../img/spt.png') no-repeat;
+			background-position: -157px -595px; width: 64px; height: 64px;
+		  }
+		}
+		.add-btn{
+			&::before{
+				content: '';
+				position: absolute;
+				width: 64px;
+				height: 64px;
+				background: url('../img/spt.png') no-repeat;
+				background-position: -220px -448px; width: 64px; height: 64px;
+			}
+		}
+	}
+	&:hover h4, &:hover .view-more-btn, &:hover .add-btn{
+  		left: 0px;
+  		opacity: 1;
+  	}
+  	&:hover .caption,
+	&:hover p {
+  		opacity: 1;
+	}
+	&:hover .status-bar-down{
+		opacity: 0;
+	}
+	&:hover .status-bar-up{
+		background: transparent;	
+	}             
+}
+
+iframe{
+	margin: 30px;
+}
+
+// .message, .fph-logo, .phone, .logo-bu, .appstore-btn, 
+// .gplay-btn, .arrow, .fph-logo-small, .add-btn, .next-btn
+// { display: inline-block; background: url('spt.png') no-repeat; overflow: hidden; text-indent: -9999px; text-align: left; }
+ 
+// .message { background-position: -10px -0px; width: 324px; height: 98px; }
+// .fph-logo { background-position: -10px -108px; width: 304px; height: 194px; }
+// .phone { background-position: -10px -312px; width: 200px; height: 216px; }
+// .logo-bu { background-position: -10px -538px; width: 158px; height: 44px; }
+// .appstore-btn { background-position: -178px -538px; width: 137px; height: 47px; }
+// .gplay-btn { background-position: -10px -592px; width: 137px; height: 47px; }
+// .arrow { background-position: -220px -312px; width: 84px; height: 71px; }
+// .fph-logo-small { background-position: -220px -393px; width: 71px; height: 45px; }
+// .add-btn { background-position: -220px -448px; width: 64px; height: 64px; }
+// .next-btn { background-position: -157px -595px; width: 64px; height: 64px; }
