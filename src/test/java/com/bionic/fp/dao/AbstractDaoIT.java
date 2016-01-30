@@ -9,6 +9,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
+import static com.bionic.fp.Constants.RoleConstants.ADMIN;
+import static com.bionic.fp.Constants.RoleConstants.MEMBER;
+import static com.bionic.fp.Constants.RoleConstants.OWNER;
 import static org.junit.Assert.*;
 
 /**
@@ -27,6 +33,12 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
     @Autowired protected CommentDAO commentDAO;
     @Autowired protected PhotoDAO photoDAO;
     @Autowired protected RoleDAO roleDAO;
+
+
+    //////////////////////////////////////////////
+    //                 ACCOUNT                  //
+    //////////////////////////////////////////////
+
 
     protected Account getSavedAccount() {
         Account account = this.getNewEmailAccount();
@@ -51,6 +63,22 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
         return new Account(generateEmail(), generateUsername(), generatePassword());
     }
 
+    protected Account fb(final Account account) {
+        account.setFbId("fb" + String.valueOf(System.currentTimeMillis()));
+        account.setProfileImageUrl(String.format("https://www.facebook.com/%s.jpg", account.getFbId()));
+        account.setFbProfileUrl(String.format("https://www.facebook.com/%s", account.getFbId()));
+        account.setFbToken(String.format("T#%s", account.getFbId()));
+        return account;
+    }
+
+    protected Account vk(final Account account) {
+        account.setVkId("vk" + String.valueOf(System.currentTimeMillis()));
+        account.setProfileImageUrl(String.format("https://www.vk.com/%s.jpg", account.getVkId()));
+        account.setVkProfileUrl(String.format("https://www.vk.com/%s", account.getVkId()));
+        account.setVkToken(String.format("T#%s", account.getVkId()));
+        return account;
+    }
+
     protected String generateEmail() {
         return String.format("yaya%d@gmail.com", System.currentTimeMillis());
     }
@@ -62,6 +90,12 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
     protected String generatePassword() {
         return String.format("secret%d", System.currentTimeMillis());
     }
+
+
+    //////////////////////////////////////////////
+    //                  EVENT                   //
+    //////////////////////////////////////////////
+
 
     protected Event save(final Account owner, final Event event) {
         assertNull(event.getId());
@@ -95,6 +129,12 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
         return save(owner, event);
     }
 
+
+    //////////////////////////////////////////////
+    //              ACCOUNT-EVENT               //
+    //////////////////////////////////////////////
+
+
     protected AccountEvent getSavedAccountEvent(final Account account, final Event event, Role role) {
         assertNotNull(event.getId());
         assertNotNull(account.getId());
@@ -113,5 +153,48 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
         assertNotNull(accountEvent.getCreated());
         assertFalse(accountEvent.isDeleted());
         return accountEvent;
+    }
+
+
+    //////////////////////////////////////////////
+    //                  PHOTO                   //
+    //////////////////////////////////////////////
+
+
+    protected Photo getSavedPhoto(final Event event, final Account owner) {
+        Photo photo = new Photo();
+        photo.setName("photo" + System.currentTimeMillis());
+        photo.setUrl("/fp/" + photo.getName().hashCode());
+        photo.setEvent(event);
+        photo.setOwner(owner);
+        return this.photoDAO.create(photo);
+    }
+
+
+    //////////////////////////////////////////////
+    //                  ROLE                    //
+    //////////////////////////////////////////////
+
+
+    protected Role getRoleOwner() {
+        return this.roleDAO.getOrThrow(OWNER);
+    }
+
+    protected Role getRoleAdmin() {
+        return this.roleDAO.getOrThrow(ADMIN);
+    }
+
+    protected Role getRoleMember() {
+        return this.roleDAO.getOrThrow(MEMBER);
+    }
+
+
+    //////////////////////////////////////////////
+    //                  OTHER                   //
+    //////////////////////////////////////////////
+
+
+    protected void assertEqualsDate(final LocalDateTime expected, final LocalDateTime actual) {
+        assertTrue(Duration.between(expected, actual).getSeconds() < 1L);
     }
 }

@@ -2,6 +2,7 @@ package com.bionic.fp.dao;
 
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
+import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
 import org.junit.Test;
 
@@ -22,6 +23,7 @@ public class EventDAOIT extends AbstractDaoIT {
     public void testGetByIdSuccess() {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
+        Photo photo = getSavedPhoto(event, owner);
 
         Event actual = this.eventDAO.read(event.getId());
         assertNotNull(actual);
@@ -32,6 +34,7 @@ public class EventDAOIT extends AbstractDaoIT {
     public void testSoftDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
+        Photo photo = getSavedPhoto(event, owner);
 
         assertEventIsNotDeleted(owner.getId(), event);
 
@@ -44,6 +47,7 @@ public class EventDAOIT extends AbstractDaoIT {
     public void testSoftDeleteAndRecoverSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
+        Photo photo = getSavedPhoto(event, owner);
 
         assertEventIsNotDeleted(owner.getId(), event);
 
@@ -60,6 +64,7 @@ public class EventDAOIT extends AbstractDaoIT {
     public void testDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
+        Photo photo = getSavedPhoto(event, owner);
 
         assertEventIsNotDeleted(owner.getId(), event);
 
@@ -74,6 +79,7 @@ public class EventDAOIT extends AbstractDaoIT {
     public void testDeleteAfterSoftDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
+        Photo photo = getSavedPhoto(event, owner);
 
         assertEventIsNotDeleted(owner.getId(), event);
 
@@ -174,6 +180,50 @@ public class EventDAOIT extends AbstractDaoIT {
         assertTrue(events.contains(event2));
     }
 
+    @Test
+    public void testGetByNameAndDescriptionVisibleSuccess() throws Exception {
+        Account owner = getSavedAccount();
+        Event event1 = getNewEventMin();
+        Event event2 = getNewEventMin();
+        Event event3 = getNewEventMin();
+        LocalDateTime now = LocalDateTime.now();
+        event1.setName("The first event starts at " + now);
+        event2.setName("The second event starts at " + now);
+        event3.setName("The third event starts at " + now);
+        event1.setDescription("The first event starts at " + now);
+        event2.setDescription("The second event starts at " + now);
+        event3.setDescription("The third event starts at " + now);
+        event1 = save(owner, event1);
+        event2 = save(owner, event2);
+        event3 = save(owner, event3);
+
+        List<Event> events = this.eventDAO.get("at " + now, "at " + now);
+
+        assertEquals(3, events.size());
+        assertTrue(events.contains(event1));
+        assertTrue(events.contains(event2));
+        assertTrue(events.contains(event3));
+
+        event1.setVisible(false);
+        this.eventDAO.update(event1);
+        assertNotNull(event1.getModified());
+
+        events = this.eventDAO.get("at " + now, "at " + now);
+
+        assertEquals(2, events.size());
+        assertTrue(events.contains(event2));
+        assertTrue(events.contains(event3));
+
+        event3.setVisible(false);
+        this.eventDAO.update(event3);
+        assertNotNull(event3.getModified());
+
+        events = this.eventDAO.get("at " + now, "at " + now);
+
+        assertEquals(1, events.size());
+        assertTrue(events.contains(event2));
+    }
+
     protected void assertEqualsEvent(final Event expected, final Event actual) {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getName(), actual.getName());
@@ -220,8 +270,10 @@ public class EventDAOIT extends AbstractDaoIT {
         assertTrue(this.accountEventDAO.getEvents(ownerId, OWNER).isEmpty());
         assertTrue(this.accountEventDAO.getByAccountAndRole(ownerId, OWNER).isEmpty());
 
+        assertTrue(this.photoDAO.getPhotosByEvent(eventId).isEmpty());
+        assertTrue(this.photoDAO.getPhotosByAccountInEvent(ownerId, eventId).isEmpty());
+
 //        this.commentDAO.getCommentsByEvent(eventId) todo this
-//        this.photoDAO.getPhotosByEvent(eventId) todo this
     }
 
     private void assertEventIsNotDeleted(final Long accountId, final Long eventId) {
@@ -240,7 +292,9 @@ public class EventDAOIT extends AbstractDaoIT {
         assertFalse(this.accountEventDAO.getEvents(accountId, OWNER).isEmpty());
         assertFalse(this.accountEventDAO.getByAccountAndRole(accountId, OWNER).isEmpty());
 
+        assertFalse(this.photoDAO.getPhotosByEvent(eventId).isEmpty());
+        assertFalse(this.photoDAO.getPhotosByAccountInEvent(accountId, eventId).isEmpty());
+
 //        this.commentDAO.getCommentsByEvent(eventId) todo this
-//        this.photoDAO.getPhotosByEvent(eventId) todo this
     }
 }

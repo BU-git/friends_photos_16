@@ -1,6 +1,11 @@
 package com.bionic.fp.domain;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,17 +15,11 @@ import java.util.List;
         attributeNodes = @NamedAttributeNode("comments")
 )
 @NamedQueries({
-        @NamedQuery(name = Photo.FIND_BY_OWNER_ID,
-                query = "SELECT p FROM Photo p WHERE p.owner.id = :ownerId"),
-        @NamedQuery(name = Photo.FIND_BY_EVENT_ID,
-                query = "SELECT p FROM Photo p WHERE p.event.id = :eventId"),
         @NamedQuery(name = Photo.FIND_COMMENTS,
                 query = "SELECT p FROM Photo p JOIN FETCH p.comments WHERE p.id = :photoId")
 })
 public class Photo extends BaseEntity implements IdEntity<Long> {
 
-    @Transient public static final String FIND_BY_OWNER_ID = "Photo.findByOwnerId";
-    @Transient public static final String FIND_BY_EVENT_ID = "Photo.findByEventId";
     @Transient public static final String FIND_COMMENTS = "Photo.findComments";
 
     @Id
@@ -32,9 +31,9 @@ public class Photo extends BaseEntity implements IdEntity<Long> {
     private String url;
     @Column(name = "preview_url")
     private String previewUrl;
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Event event;
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Account owner;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "photos_comments",
@@ -45,7 +44,6 @@ public class Photo extends BaseEntity implements IdEntity<Long> {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -82,13 +80,31 @@ public class Photo extends BaseEntity implements IdEntity<Long> {
     public List<Comment> getComments() {
         return comments;
     }
-    public void addComment(Comment comment) {
-        comments.add(comment);
-    }
-
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Photo photo = (Photo) o;
+
+        if (name != null ? !name.equals(photo.name) : photo.name != null) return false;
+        if (url != null ? !url.equals(photo.url) : photo.url != null) return false;
+        return previewUrl != null ? previewUrl.equals(photo.previewUrl) : photo.previewUrl == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (url != null ? url.hashCode() : 0);
+        result = 31 * result + (previewUrl != null ? previewUrl.hashCode() : 0);
+        return result;
+    }
+
     @Override
     public String toString() {
         return "Photo{" +

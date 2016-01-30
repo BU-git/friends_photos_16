@@ -3,7 +3,6 @@ package com.bionic.fp.dao.impl;
 import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.domain.*;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.persistence.criteria.*;
@@ -17,7 +16,6 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
  * @author Sergiy Gabriel
  */
 @Repository
-@Transactional
 public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements EventDAO {
 
     private static final String VISIBLE = "visible";
@@ -44,7 +42,7 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
 
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(isNotDeleted(event));
-        predicates.add(cb.isTrue(event.get(VISIBLE))); // todo: make test
+        predicates.add(cb.isTrue(event.get(VISIBLE)));
 
         if(isNotEmpty(name)) {
             predicates.add(cb.like(event.get(NAME), "%"+name+"%"));

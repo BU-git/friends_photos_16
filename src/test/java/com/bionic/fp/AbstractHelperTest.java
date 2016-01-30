@@ -20,9 +20,8 @@ public class AbstractHelperTest {
 
     protected Event getNewEventMin() {
         Event event = new Event();
-        LocalDateTime now = LocalDateTime.now();
-        event.setName("Nano is " + now.getNano());
-        event.setDescription("Today is " + now);
+        event.setName("Name is " + System.currentTimeMillis());
+        event.setDescription("Today is " + System.currentTimeMillis());
         event.setEventType(getPrivateEventType());
 
         assertFalse(event.isDeleted());

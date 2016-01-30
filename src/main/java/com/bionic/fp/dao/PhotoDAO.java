@@ -20,4 +20,5 @@ public interface PhotoDAO extends GenericDAO<Photo, Long> {
 
 	List<Photo> getPhotosByOwner(Long ownerId);
 
+	List<Photo> getPhotosByAccountInEvent(Long accountId, Long eventId);
 }

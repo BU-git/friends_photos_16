@@ -59,6 +59,8 @@ public class Account extends BaseEntity implements IdEntity<Long> {
 
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<AccountEvent> events;
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Photo> photos;
 
     public Account() {}
 
@@ -182,6 +184,14 @@ public class Account extends BaseEntity implements IdEntity<Long> {
 
     public void setEvents(List<AccountEvent> events) {
         this.events = events;
+    }
+
+    public List<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<Photo> photos) {
+        this.photos = photos;
     }
 
     @Override

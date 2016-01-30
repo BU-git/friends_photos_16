@@ -2,6 +2,7 @@ package com.bionic.fp.dao;
 
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
+import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
 import org.junit.Test;
 
@@ -19,6 +20,7 @@ public class AccountDaoIT extends AbstractDaoIT {
     public void testSoftDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
+        Photo photo = getSavedPhoto(event, owner);
 
         assertAccountIsNotDeleted(owner, event);
 
@@ -31,6 +33,7 @@ public class AccountDaoIT extends AbstractDaoIT {
     public void testSoftDeleteAndRecoverSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
+        Photo photo = getSavedPhoto(event, owner);
 
         assertAccountIsNotDeleted(owner, event);
 
@@ -47,6 +50,7 @@ public class AccountDaoIT extends AbstractDaoIT {
     public void testDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
+        Photo photo = getSavedPhoto(event, owner);
 
         assertAccountIsNotDeleted(owner, event);
 
@@ -61,6 +65,7 @@ public class AccountDaoIT extends AbstractDaoIT {
     public void testDeleteAfterSoftDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
+        Photo photo = getSavedPhoto(event, owner);
 
         assertAccountIsNotDeleted(owner, event);
 
@@ -73,6 +78,48 @@ public class AccountDaoIT extends AbstractDaoIT {
         assertAccountIsDeleted(owner, event);
 
         this.accountDAO.delete(owner.getId());
+    }
+
+    @Test
+    public void testGetByEmailSuccess() throws Exception {
+        Account account = getSavedAccount();
+
+        Account actual = this.accountDAO.getByEmail(account.getEmail());
+
+        assertNotNull(actual);
+        assertEqualsAccount(account, actual);
+
+        this.accountDAO.setDeleted(account.getId(), true);
+
+        assertNull(this.accountDAO.getByEmail(account.getEmail()));
+    }
+
+    @Test
+    public void testGetByFbSuccess() throws Exception {
+        Account account = save(fb(getNewEmailAccount()));
+
+        Account actual = this.accountDAO.getByFbId(account.getFbId());
+
+        assertNotNull(actual);
+        assertEqualsAccount(account, actual);
+
+        this.accountDAO.setDeleted(account.getId(), true);
+
+        assertNull(this.accountDAO.getByFbId(account.getFbId()));
+    }
+
+    @Test
+    public void testGetByVkSuccess() throws Exception {
+        Account account = save(vk(getNewEmailAccount()));
+
+        Account actual = this.accountDAO.getByVkId(account.getVkId());
+
+        assertNotNull(actual);
+        assertEqualsAccount(account, actual);
+
+        this.accountDAO.setDeleted(account.getId(), true);
+
+        assertNull(this.accountDAO.getByVkId(account.getVkId()));
     }
 
     protected void assertEqualsAccount(final Account expected, final Account actual) {
@@ -129,8 +176,10 @@ public class AccountDaoIT extends AbstractDaoIT {
         assertTrue(this.accountEventDAO.getEvents(ownerId, OWNER).isEmpty());
         assertTrue(this.accountEventDAO.getByAccountAndRole(ownerId, OWNER).isEmpty());
 
+        assertTrue(this.photoDAO.getPhotosByOwner(ownerId).isEmpty());
+        assertTrue(this.photoDAO.getPhotosByAccountInEvent(ownerId, eventId).isEmpty());
+
 //        this.commentDAO.getCommentsByOwner(ownerId) todo this
-//        this.photoDAO.getPhotosByOwner(ownerId) todo this
     }
 
     private void assertAccountIsNotDeleted(final Long ownerId, final Long eventId) {
@@ -149,7 +198,9 @@ public class AccountDaoIT extends AbstractDaoIT {
         assertFalse(this.accountEventDAO.getEvents(ownerId, OWNER).isEmpty());
         assertFalse(this.accountEventDAO.getByAccountAndRole(ownerId, OWNER).isEmpty());
 
+        assertFalse(this.photoDAO.getPhotosByOwner(ownerId).isEmpty());
+        assertFalse(this.photoDAO.getPhotosByAccountInEvent(ownerId, eventId).isEmpty());
+
 //        this.commentDAO.getCommentsByOwner(ownerId) todo this
-//        this.photoDAO.getPhotosByOwner(ownerId); todo this
     }
 }

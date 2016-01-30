@@ -24,8 +24,8 @@ import static java.util.Optional.ofNullable;
 public class GenericDaoJpaImpl<T extends BaseEntity & IdEntity<PK>, PK extends Serializable> implements GenericDAO<T, PK> {
 
     protected static final String HINT_LOAD_GRAPH = "javax.persistence.loadgraph";
-    private static final String FIELD_ID = "id";
-    private static final String FIELD_DELETED = "deleted";
+    private static final String ID = "id";
+    private static final String DELETED = "deleted";
 
     protected Class<T> entityClass;
 
@@ -46,11 +46,7 @@ public class GenericDaoJpaImpl<T extends BaseEntity & IdEntity<PK>, PK extends S
 
     @Override
     public T read(PK id) {
-        CriteriaBuilder cb = this.em.getCriteriaBuilder();
-        CriteriaQuery<T> query = cb.createQuery(entityClass);
-        Root<T> entity = query.from(entityClass);
-        query.where(cb.and(isNotDeleted(entity), equalId(entity, id)));
-        return this.getSingleResult(this.em.createQuery(query));
+        return this.getSingleResult(this.em.createQuery(this.getQuery(ID, id)));
     }
 
     @Override
@@ -120,12 +116,27 @@ public class GenericDaoJpaImpl<T extends BaseEntity & IdEntity<PK>, PK extends S
         return hints;
     }
 
-    protected <S extends BaseEntity, X extends BaseEntity> Predicate isNotDeleted(final From<S, X> entity) {
-        return this.em.getCriteriaBuilder().isFalse(entity.get(FIELD_DELETED));
+    protected <X extends BaseEntity> Predicate isNotDeleted(final From<T, X> entity) {
+        return this.em.getCriteriaBuilder().isFalse(entity.get(DELETED));
     }
 
-    protected <S extends IdEntity<PK>, X extends IdEntity<PK>> Predicate equalId(final From<S, X> entity, final PK id) {
-        return this.em.getCriteriaBuilder().equal(entity.get(FIELD_ID), id);
+    protected <X extends IdEntity<PK>> Predicate equalId(final From<T, X> entity, final PK id) {
+        return this.em.getCriteriaBuilder().equal(entity.get(ID), id);
+    }
+
+    /**
+     * Returns a query for the general case when this entity is not deleted
+     * and its property equivalent to the value
+     *
+     * @param propertyName the property name of the entity
+     * @param value the value of the property
+     * @return a query
+     */
+    protected CriteriaQuery<T> getQuery(final String propertyName, final Object value) {
+        CriteriaBuilder cb = this.em.getCriteriaBuilder();
+        CriteriaQuery<T> query = cb.createQuery(entityClass);
+        Root<T> entity = query.from(entityClass);
+        return query.where(cb.and(isNotDeleted(entity), cb.equal(entity.get(propertyName), value)));
     }
 
     private T get(PK id) {
