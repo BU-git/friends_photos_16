@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     angular
@@ -12,7 +12,7 @@
             return {
                 responseError: function (err) {
                     var $state = $injector.get('$state');
-                    if (err.status === 401) $state.go('account.login');
+                    if (err.status === 401) $state.go('home');
                     return $q.reject(err);
                 }
             };

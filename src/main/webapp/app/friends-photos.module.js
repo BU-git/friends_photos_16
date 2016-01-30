@@ -4,10 +4,10 @@
     angular
         .module('friends_photos', [
             'ngMaterial',
-            'ui.router',
-            'nemLogging',
-            'uiGmapgoogle-maps',
-            'cfp.loadingBar'
+            'ui.router'
+            //'nemLogging',
+            //'uiGmapgoogle-maps',
+            //'cfp.loadingBar'
         ]);
 
 })();

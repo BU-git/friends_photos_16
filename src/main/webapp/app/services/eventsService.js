@@ -5,9 +5,9 @@
         .module('friends_photos')
         .service('eventsService', eventsService);
 
-    eventsService.$inject = ['$http', '$q', 'cfpLoadingBar'];
+    eventsService.$inject = ['$http', '$q', 'API_ENDPOINT'];
 
-    function eventsService($http, $q, cfpLoadingBar) {
+    function eventsService($http, $q, API_ENDPOINT) {
         var service = this;
         // export public properties and functions
         angular.extend(service, {
@@ -19,38 +19,27 @@
 
         function getById(id) {
             id = parseInt(id);
-            return $http.get('events/' + id).then(function (res) {
+            return $http.get(API_ENDPOINT + 'events/' + id).then(function (res) {
                 return res.data;
             });
         }
 
         function getList() {
             var deferred = $q.defer();
-            var events = [];
-            cfpLoadingBar.start();
-            deferred.promise.then(function () {
-                cfpLoadingBar.complete();
-            });
-            $http.get('events').then(function (res) {
-                var list = res.data.events;
-                loadSequence(events, list, list.length - 1, 10, deferred);
+            $http.get(API_ENDPOINT + 'events/accounts/self/owner').then(function (res) {
+                loadSequence(res.data.events, res.data.events.length - 1, 10, deferred);
             });
             return deferred.promise;
         }
 
-        function loadSequence(events, list, pointer, limit, deferred) {
-            if (pointer === list.length - limit) {
+        function loadSequence(events, pointer, limit, deferred) {
+            if (pointer === events.length - limit || pointer < 0) {
                 deferred.resolve(events);
             } else {
-                var eventId = list[pointer].event_id;
-                $http.get('events/' + eventId).then(function (res) {
-                    return res.data;
-                }).then(function (event) {
-                    $http.get('events/' + eventId + '/photos/id').then(function (res) {
-                        angular.extend(event, res.data);
-                        events.push(event);
-                        loadSequence(events, list, --pointer, limit, deferred)
-                    });
+                var eventId = events[pointer].event_id;
+                $http.get(API_ENDPOINT + 'photos/id/events/' + eventId).then(function (res) {
+                    angular.extend(events[pointer], res.data);
+                    loadSequence(events, --pointer, limit, deferred)
                 });
             }
         }

@@ -8,7 +8,7 @@
     config.$inject = ['$urlRouterProvider', '$stateProvider'];
 
     function config($urlRouterProvider, $stateProvider) {
-        $urlRouterProvider.when('', '/events');
+        //$urlRouterProvider.when('', '/events');
 
         // home state
         $stateProvider
@@ -17,6 +17,12 @@
                 views: {
                     header: {
                         templateUrl: 'app/views/header.html'
+                    },
+                    content: {
+                        templateUrl: 'app/views/index.html'
+                    },
+                    footer: {
+                        templateUrl: 'app/views/footer.html'
                     }
                 }
             })
@@ -55,6 +61,18 @@
 
             // event states
             .state('home.events', {
+                url: '/events',
+                views: {
+                    'content@': {
+                        template: '<events action="list">'
+                       // templateUrl: 'app/views/events.html'
+                    },
+                    'usermenu': {
+                        templateUrl: 'app/views/usermenu.html'
+                    }
+                }
+            })
+            .state('home.events.preview', {
                 url: '/events',
                 views: {
                     'content@': {
