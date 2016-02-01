@@ -9,8 +9,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 import static com.bionic.fp.Constants.RoleConstants.ADMIN;
 import static com.bionic.fp.Constants.RoleConstants.MEMBER;
@@ -33,7 +37,7 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
     @Autowired protected CommentDAO commentDAO;
     @Autowired protected PhotoDAO photoDAO;
     @Autowired protected RoleDAO roleDAO;
-
+    @PersistenceContext protected EntityManager em;
 
     //////////////////////////////////////////////
     //                 ACCOUNT                  //
@@ -172,6 +176,36 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
 
 
     //////////////////////////////////////////////
+    //                 COMMENT                  //
+    //////////////////////////////////////////////
+
+
+    protected Comment getSavedEventComment(final Event event, final Account author) {
+        Comment comment = getNewComment(author);
+        comment = this.commentDAO.create(comment);
+        this.em.refresh(event);
+        event.getComments().add(comment);
+        this.em.flush();
+        return comment;
+    }
+
+    protected Comment getSavedPhotoComment(final Photo photo, final Account author) {
+        Comment comment = getNewComment(author);
+        comment = this.commentDAO.create(comment);
+        this.em.refresh(photo);
+        photo.getComments().add(comment);
+        return comment;
+    }
+
+    protected Comment getNewComment(final Account author) {
+        Comment comment = new Comment();
+        comment.setText("Some test" + System.currentTimeMillis());
+        comment.setAuthor(author);
+        return comment;
+    }
+
+
+    //////////////////////////////////////////////
     //                  ROLE                    //
     //////////////////////////////////////////////
 
@@ -196,5 +230,25 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
 
     protected void assertEqualsDate(final LocalDateTime expected, final LocalDateTime actual) {
         assertTrue(Duration.between(expected, actual).getSeconds() < 1L);
+    }
+
+    protected  <T extends BaseEntity & IdEntity<Long>> void assertEqualsEntities(final List<T> actual, final T ... expected) {
+        if(actual == null || (expected == null && !actual.isEmpty()) || (expected != null && expected.length != actual.size())) {
+            fail();
+        }
+        for (T entity : expected) {
+            Optional<T> optional = actual.stream().parallel()
+                    .filter(e -> entity.getId().equals(e.getId())).findFirst();
+            if(optional.isPresent()) {
+                assertEqualsEntity(entity, optional.get());
+            } else {
+                fail();
+            }
+        }
+
+    }
+
+    protected void assertEqualsEntity(BaseEntity expected, BaseEntity actual) {
+        // nothing
     }
 }

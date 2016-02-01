@@ -25,6 +25,7 @@ public class RoleDaoImpl extends GenericDaoJpaImpl<Role, Long> implements RoleDA
     public RoleDaoImpl() {}
 
     @Override
+    @Deprecated
     public Role getOwner() throws RoleNotFoundException  {
         return this.getOrThrow(1L);
     }

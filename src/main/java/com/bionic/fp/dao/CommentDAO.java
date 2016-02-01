@@ -26,4 +26,12 @@ public interface CommentDAO extends GenericDAO<Comment, Long> {
      * @return a list of the comments of the photo
      */
     List<Comment> getCommentsByPhoto(Long photoId);
+
+    /**
+     * Returns a list of the comments of the author
+     *
+     * @param authorId the author ID
+     * @return a list of the comments of the author
+     */
+    List<Comment> getCommentsByAuthor(Long authorId);
 }

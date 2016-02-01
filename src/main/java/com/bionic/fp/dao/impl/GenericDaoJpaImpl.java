@@ -116,11 +116,11 @@ public class GenericDaoJpaImpl<T extends BaseEntity & IdEntity<PK>, PK extends S
         return hints;
     }
 
-    protected <X extends BaseEntity> Predicate isNotDeleted(final From<T, X> entity) {
+    protected <S extends BaseEntity, X extends BaseEntity> Predicate isNotDeleted(final From<S, X> entity) {
         return this.em.getCriteriaBuilder().isFalse(entity.get(DELETED));
     }
 
-    protected <X extends IdEntity<PK>> Predicate equalId(final From<T, X> entity, final PK id) {
+    protected <S extends IdEntity<PK>, X extends IdEntity<PK>> Predicate equalId(final From<S, X> entity, final PK id) {
         return this.em.getCriteriaBuilder().equal(entity.get(ID), id);
     }
 

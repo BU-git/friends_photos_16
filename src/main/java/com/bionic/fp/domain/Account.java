@@ -5,19 +5,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "accounts")
-@NamedEntityGraph(name = "Account.events",
-        attributeNodes = @NamedAttributeNode(value = "events", subgraph = "events"),
-        subgraphs = @NamedSubgraph(name = "events", attributeNodes = @NamedAttributeNode("event")))
-@NamedQueries({
-        @NamedQuery(name= Account.GET_BY_EMAIL, query="SELECT a FROM Account a WHERE a.email=:email"),
-        @NamedQuery(name= Account.GET_BY_FB_ID, query="SELECT a FROM Account a WHERE a.fbId=:fbId"),
-        @NamedQuery(name= Account.GET_BY_VK_ID, query="SELECT a FROM Account a WHERE a.vkId=:vkId")
-})
 public class Account extends BaseEntity implements IdEntity<Long> {
-
-    @Transient public static final String GET_BY_EMAIL = "Account.getByEmail";
-    @Transient public static final String GET_BY_FB_ID = "Account.getByFbId";
-    @Transient public static final String GET_BY_VK_ID = "Account.getByVkId";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,15 +40,12 @@ public class Account extends BaseEntity implements IdEntity<Long> {
     @Column(name = "vk_profile_url")
     private String vkProfileUrl;
 
-//    private boolean guest;
-//
-//	@Column(name = "active")
-//    private boolean active = true;
-
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<AccountEvent> events;
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Photo> photos;
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
 
     public Account() {}
 
@@ -162,22 +147,6 @@ public class Account extends BaseEntity implements IdEntity<Long> {
         this.vkProfileUrl = vkProfileUrl;
     }
 
-//    public boolean isGuest() {
-//        return guest;
-//    }
-//
-//    public void setGuest(boolean guest) {
-//        this.guest = guest;
-//    }
-//
-//    public boolean isActive() {
-//        return active;
-//    }
-//
-//    public void setActive(boolean active) {
-//        this.active = active;
-//    }
-
     public List<AccountEvent> getEvents() {
         return events;
     }
@@ -192,6 +161,14 @@ public class Account extends BaseEntity implements IdEntity<Long> {
 
     public void setPhotos(List<Photo> photos) {
         this.photos = photos;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     @Override

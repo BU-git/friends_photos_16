@@ -9,20 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "events")
-@NamedEntityGraphs({
-        @NamedEntityGraph(name = "Event.accounts",
-                attributeNodes = @NamedAttributeNode(value = "accounts", subgraph = "accounts"),
-                subgraphs = @NamedSubgraph(name = "accounts", attributeNodes = @NamedAttributeNode("account"))),
-        @NamedEntityGraph(name="Event.photos", attributeNodes={@NamedAttributeNode("photos")}),
-        @NamedEntityGraph(name="Event.comments", attributeNodes={@NamedAttributeNode("comments")})
-})
-@NamedQueries({
-        @NamedQuery(name = Event.FIND_COMMENTS,
-                query = "SELECT e FROM Event e JOIN FETCH e.comments WHERE e.id = :eventId")
-})
 public class Event extends BaseEntity implements IdEntity<Long> {
-
-    @Transient public static final String FIND_COMMENTS = "Event.findComments";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,8 +44,8 @@ public class Event extends BaseEntity implements IdEntity<Long> {
     private List<Photo> photos = new ArrayList<>();
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "events_comments",
-            joinColumns = {@JoinColumn(name = "event_id")},
-            inverseJoinColumns = {@JoinColumn(name = "comment_id")})
+            joinColumns = {@JoinColumn(name = "event_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "comment_id", referencedColumnName = "id", unique = true)})
     private List<Comment> comments;
 
     public Event() {

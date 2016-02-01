@@ -11,16 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "photos")
-@NamedEntityGraph(name = "Photo.comments",
-        attributeNodes = @NamedAttributeNode("comments")
-)
-@NamedQueries({
-        @NamedQuery(name = Photo.FIND_COMMENTS,
-                query = "SELECT p FROM Photo p JOIN FETCH p.comments WHERE p.id = :photoId")
-})
 public class Photo extends BaseEntity implements IdEntity<Long> {
-
-    @Transient public static final String FIND_COMMENTS = "Photo.findComments";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,8 +28,8 @@ public class Photo extends BaseEntity implements IdEntity<Long> {
     private Account owner;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "photos_comments",
-            joinColumns = {@JoinColumn(name = "photo_id")},
-            inverseJoinColumns = {@JoinColumn(name = "comment_id")})
+            joinColumns = {@JoinColumn(name = "photo_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "comment_id", referencedColumnName = "id", unique = true)})
     private List<Comment> comments = new ArrayList<>();
 
     public Long getId() {

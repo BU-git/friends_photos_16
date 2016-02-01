@@ -27,10 +27,7 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
     @Override
     @Deprecated
     public Event getWithAccounts(final Long eventId) {
-        EntityGraph graph = this.em.getEntityGraph("Event.accounts");
-        Map<String, Object> hints = new HashMap<>();
-        hints.put("javax.persistence.loadgraph", graph);
-        return this.em.find(Event.class, eventId, hints);
+        return this.getSingleResult(this.em.createQuery(this.getQuery("id", eventId)).setHint(HINT_LOAD_GRAPH, getGraph("accounts")));
     }
 
     @Override
