@@ -207,19 +207,19 @@ public class AccountService {
         return ofNullable(this.get(accountId)).orElseThrow(() -> new AccountNotFoundException(accountId));
     }
 
-    /**
-     * Returns an account with its events by the account ID.
-     *
-     * @param accountId the account ID
-     * @return an account with its events and null otherwise
-     * @throws InvalidParameterException if the account ID is invalid
-     * todo: delete it
-     */
-    @Deprecated
-    public Account getWithEvents(final Long accountId) throws InvalidParameterException {
-        checkAccount(accountId);
-        return this.accountDAO.getWithEvents(accountId);
-    }
+//    /**
+//     * Returns an account with its events by the account ID.
+//     *
+//     * @param accountId the account ID
+//     * @return an account with its events and null otherwise
+//     * @throws InvalidParameterException if the account ID is invalid
+//     * todo: delete it
+//     */
+//    @Deprecated
+//    public Account getWithEvents(final Long accountId) throws InvalidParameterException {
+//        checkAccount(accountId);
+//        return this.accountDAO.getWithEvents(accountId);
+//    }
 
     /**
      * Checks an email

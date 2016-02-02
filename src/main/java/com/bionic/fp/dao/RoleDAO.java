@@ -1,7 +1,6 @@
 package com.bionic.fp.dao;
 
 import com.bionic.fp.domain.Role;
-import com.bionic.fp.exception.logic.impl.RoleNotFoundException;
 
 import java.util.List;
 
@@ -10,13 +9,10 @@ import java.util.List;
  */
 public interface RoleDAO extends GenericDAO<Role, Long> {
 
-    Role getOwner() throws RoleNotFoundException;
+    /**
+     * Returns a list of all roles
+     *
+     * @return a list of roles
+     */
     List<Role> getAllRoles();
-
-//    Role getAdmin();
-
-//    Role getAnonymous();
-
-//    Role getGuest();
-
 }

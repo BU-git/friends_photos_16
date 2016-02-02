@@ -355,30 +355,6 @@ public class EventServiceIT extends AbstractIT {
     }
 
     @Test
-    public void testGetByIdWithAccountsSuccess() {
-        Account owner = getSavedAccount();
-        Event event = getSavedEventMax(owner);
-
-        Event actual = this.eventService.getWithAccounts(event.getId());
-        assertNotNull(actual);
-
-        assertEquals(actual.getId(), event.getId());
-        assertEquals(actual.getName(), event.getName());
-        assertEquals(actual.getDescription(), event.getDescription());
-        assertEquals(actual.getEventType(), event.getEventType());
-        assertEquals(actual.getLatitude(), event.getLatitude());
-        assertEquals(actual.getLongitude(), event.getLongitude());
-        assertEquals(actual.getRadius(), event.getRadius());
-        assertEquals(actual.isVisible(), event.isVisible());
-        assertEquals(actual.isGeoServicesEnabled(), event.isGeoServicesEnabled());
-        assertCustomEqualsDate(event.getCreated(), actual.getCreated());
-
-        assertFalse(actual.getAccounts().isEmpty());
-        assertFalse(event.getAccounts().isEmpty());
-        assertEquals(actual.getAccounts().size(), event.getAccounts().size());
-    }
-
-    @Test
     public void testAddAccountToEventSuccess() {
         Account owner = getSavedAccount();
         Account user1 = getSavedAccount();
@@ -386,10 +362,10 @@ public class EventServiceIT extends AbstractIT {
         Event event = getSavedEventMax(owner);
         Role role = this.roleService.getOwner();
 
-        assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(1, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user2.getId()).size());
 
         this.eventService.addOrUpdateAccountToEvent(user1.getId(), event.getId(), role, null);
 
@@ -402,10 +378,10 @@ public class EventServiceIT extends AbstractIT {
         assertNull(user1.getModified());
         assertNull(user2.getModified());
 
-        assertEquals(2, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(2, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user2.getId()).size());
 
         this.eventService.addOrUpdateAccountToEvent(user2.getId(), event.getId(), role, null);
 
@@ -418,18 +394,18 @@ public class EventServiceIT extends AbstractIT {
         assertNull(user1.getModified());
         assertNull(user2.getModified());
 
-        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user2.getId()).size());
 
         Event newEvent = getSavedEventMax(user2);
 
-        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getAccounts(newEvent.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(user2.getId()).size());
 
         this.eventService.addOrUpdateAccountToEvent(owner.getId(), newEvent.getId(), role, null);
 
@@ -443,11 +419,11 @@ public class EventServiceIT extends AbstractIT {
         assertNull(user1.getModified());
         assertNull(user2.getModified());
 
-        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(2, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
-        assertEquals(2, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(2, this.accountEventService.getAccounts(newEvent.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(user2.getId()).size());
 
         this.eventService.addOrUpdateAccountToEvent(user1.getId(), newEvent.getId(), role, null);
 
@@ -461,11 +437,11 @@ public class EventServiceIT extends AbstractIT {
         assertNull(user1.getModified());
         assertNull(user2.getModified());
 
-        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(3, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
-        assertEquals(2, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(2, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(3, this.accountEventService.getAccounts(newEvent.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(user2.getId()).size());
     }
 
     @Test
@@ -476,10 +452,10 @@ public class EventServiceIT extends AbstractIT {
         Event event = getSaved(setPrivate(getNewEventMax()), owner);
         Role role = this.roleService.getOwner();
 
-        assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(1, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user2.getId()).size());
 
         this.eventService.addOrUpdateAccountToEvent(user1.getId(), event.getId(), role, event.getPassword());
 
@@ -492,10 +468,10 @@ public class EventServiceIT extends AbstractIT {
         assertNull(user1.getModified());
         assertNull(user2.getModified());
 
-        assertEquals(2, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(2, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user2.getId()).size());
 
         this.eventService.addOrUpdateAccountToEvent(user2.getId(), event.getId(), role, event.getPassword());
 
@@ -508,18 +484,18 @@ public class EventServiceIT extends AbstractIT {
         assertNull(user1.getModified());
         assertNull(user2.getModified());
 
-        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user2.getId()).size());
 
         Event newEvent = getSavedEventMax(user2);
 
-        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getAccounts(newEvent.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(user2.getId()).size());
 
         this.eventService.addOrUpdateAccountToEvent(owner.getId(), newEvent.getId(), role, event.getPassword());
 
@@ -533,11 +509,11 @@ public class EventServiceIT extends AbstractIT {
         assertNull(user1.getModified());
         assertNull(user2.getModified());
 
-        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(2, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
-        assertEquals(2, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(2, this.accountEventService.getAccounts(newEvent.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(user2.getId()).size());
 
         this.eventService.addOrUpdateAccountToEvent(user1.getId(), newEvent.getId(), role, event.getPassword());
 
@@ -551,11 +527,11 @@ public class EventServiceIT extends AbstractIT {
         assertNull(user1.getModified());
         assertNull(user2.getModified());
 
-        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(3, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
-        assertEquals(2, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(2, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(3, this.accountEventService.getAccounts(newEvent.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(user2.getId()).size());
     }
 
     @Test(expected = InvalidParameterException.class)
@@ -566,10 +542,10 @@ public class EventServiceIT extends AbstractIT {
         Event event = getSaved(setPrivate(getNewEventMax()), owner);
         Role role = this.roleService.getOwner();
 
-        assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(1, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user2.getId()).size());
 
         this.eventService.addOrUpdateAccountToEvent(user1.getId(), event.getId(), role, null);
     }
@@ -582,10 +558,10 @@ public class EventServiceIT extends AbstractIT {
         Event event = getSaved(setPrivate(getNewEventMax()), owner);
         Role role = this.roleService.getOwner();
 
-        assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(1, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user2.getId()).size());
 
         this.eventService.addOrUpdateAccountToEvent(user1.getId(), event.getId(), role, event.getPassword() + "!");
     }
@@ -598,9 +574,9 @@ public class EventServiceIT extends AbstractIT {
         Role roleAdmin = getRoleAdmin();
         Role roleMember = getRoleMember();
 
-        assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user.getId()).getEvents().size());
+        assertEquals(1, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user.getId()).size());
 
         this.eventService.addOrUpdateAccountToEvent(user.getId(), event.getId(), roleMember, null);
 
@@ -614,9 +590,9 @@ public class EventServiceIT extends AbstractIT {
 
         assertEquals(roleMember, accountEvent.getRole());
 
-        assertEquals(2, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user.getId()).getEvents().size());
+        assertEquals(2, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user.getId()).size());
 
         this.eventService.addOrUpdateAccountToEvent(user.getId(), event.getId(), roleAdmin, null);
 
@@ -630,9 +606,9 @@ public class EventServiceIT extends AbstractIT {
 
         assertEquals(roleAdmin, accountEvent.getRole());
 
-        assertEquals(2, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user.getId()).getEvents().size());
+        assertEquals(2, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user.getId()).size());
     }
 
     @Test(expected = InvalidParameterException.class)
@@ -643,9 +619,9 @@ public class EventServiceIT extends AbstractIT {
         Role roleOwner = getRoleOwner();
         Role roleMember = getRoleMember();
 
-        assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user.getId()).getEvents().size());
+        assertEquals(1, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user.getId()).size());
 
         this.eventService.addOrUpdateAccountToEvent(user.getId(), event.getId(), roleMember, null);
 
@@ -659,9 +635,9 @@ public class EventServiceIT extends AbstractIT {
 
         assertEquals(roleMember, accountEvent.getRole());
 
-        assertEquals(2, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user.getId()).getEvents().size());
+        assertEquals(2, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user.getId()).size());
 
         this.eventService.addOrUpdateAccountToEvent(user.getId(), event.getId(), roleOwner, null);
     }
@@ -673,7 +649,6 @@ public class EventServiceIT extends AbstractIT {
         Account user2 = getSavedAccount();
         Event event = getSavedEventMax(owner);
 
-//        List<Account> accounts = this.eventService.getAccounts(event.getId());
         List<Account> accounts = this.accountEventService.getAccounts(event.getId());
         assertNotNull(accounts);
         assertEquals(1, accounts.size());
@@ -685,7 +660,6 @@ public class EventServiceIT extends AbstractIT {
 
         this.eventService.addOrUpdateAccountToEvent(user1.getId(), event.getId(), this.roleService.getOwner(), null);
 
-//        accounts = this.eventService.getAccounts(event.getId());
         accounts = this.accountEventService.getAccounts(event.getId());
         assertNotNull(accounts);
         assertEquals(2, accounts.size());
@@ -695,7 +669,6 @@ public class EventServiceIT extends AbstractIT {
 
         this.eventService.addOrUpdateAccountToEvent(user2.getId(), event.getId(), this.roleService.getOwner(), null);
 
-//        accounts = this.eventService.getAccounts(event.getId());
         accounts = this.accountEventService.getAccounts(event.getId());
         assertNotNull(accounts);
         assertEquals(3, accounts.size());

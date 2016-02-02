@@ -289,7 +289,6 @@ public class EventRestControllerIT extends AbstractIT {
         .then()
             .statusCode(SC_CREATED);
 
-//        List<Event> events = this.accountService.getEvents(owner.getId());
         List<Event> events = this.accountEventService.getEvents(owner.getId());
         assertNotNull(events);
         assertEquals(1, events.size());
@@ -664,15 +663,15 @@ public class EventRestControllerIT extends AbstractIT {
 
         Account user = getSavedAccount();
 
-        assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user.getId()).getEvents().size());
+        assertEquals(1, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user.getId()).size());
 
         this.eventService.addOrUpdateAccountToEvent(user.getId(), event.getId(), MEMBER, null);
 
-        assertEquals(2, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user.getId()).getEvents().size());
+        assertEquals(2, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user.getId()).size());
 
         given()
             .body(eventDto)
@@ -691,10 +690,10 @@ public class EventRestControllerIT extends AbstractIT {
         Account user2 = getSavedAccount();
         Event event = getSaved(getNewEventMax(), owner);
 
-        assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(1, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user2.getId()).size());
 
         given()
             .header(tokenHeader, getToken(user1))
@@ -703,10 +702,10 @@ public class EventRestControllerIT extends AbstractIT {
         .then()
             .statusCode(SC_CREATED);
 
-        assertEquals(2, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(2, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user2.getId()).size());
 
         given()
             .header(tokenHeader, getToken(user2))
@@ -715,18 +714,18 @@ public class EventRestControllerIT extends AbstractIT {
         .then()
             .statusCode(SC_CREATED);
 
-        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user2.getId()).size());
 
         Event newEvent = getSaved(getNewEventMax(), user2);
 
-        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getAccounts(newEvent.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(user2.getId()).size());
 
         given()
             .header(tokenHeader, getToken(owner))
@@ -735,11 +734,11 @@ public class EventRestControllerIT extends AbstractIT {
         .then()
             .statusCode(SC_CREATED);
 
-        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(2, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
-        assertEquals(2, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(2, this.accountEventService.getAccounts(newEvent.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(user2.getId()).size());
 
         given()
             .header(tokenHeader, getToken(user1))
@@ -748,11 +747,11 @@ public class EventRestControllerIT extends AbstractIT {
         .then()
             .statusCode(SC_CREATED);
 
-        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(3, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
-        assertEquals(2, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(2, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(3, this.accountEventService.getAccounts(newEvent.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(user2.getId()).size());
     }
 
     @Test
@@ -762,10 +761,10 @@ public class EventRestControllerIT extends AbstractIT {
         Account user2 = getSavedAccount();
         Event event = getSaved(setPrivate(getNewEventMax()), owner);
 
-        assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(1, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user2.getId()).size());
 
         given().
             queryParam(EVENT.PASSWORD, event.getPassword()).
@@ -775,10 +774,10 @@ public class EventRestControllerIT extends AbstractIT {
         then().
             statusCode(SC_CREATED);
 
-        assertEquals(2, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(2, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user2.getId()).size());
 
         given().
             queryParam(EVENT.PASSWORD, event.getPassword()).
@@ -788,18 +787,18 @@ public class EventRestControllerIT extends AbstractIT {
         then().
             statusCode(SC_CREATED);
 
-        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user2.getId()).size());
 
         Event newEvent = getSaved(setPrivate(getNewEventMax()), user2);
 
-        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getAccounts(newEvent.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(user2.getId()).size());
 
         given().
             queryParam(EVENT.PASSWORD, event.getPassword()).
@@ -809,11 +808,11 @@ public class EventRestControllerIT extends AbstractIT {
         then().
             statusCode(SC_CREATED);
 
-        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(2, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
-        assertEquals(2, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(1, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(2, this.accountEventService.getAccounts(newEvent.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(user2.getId()).size());
 
         given().
             queryParam(EVENT.PASSWORD, event.getPassword()).
@@ -823,11 +822,11 @@ public class EventRestControllerIT extends AbstractIT {
         then().
             statusCode(SC_CREATED);
 
-        assertEquals(3, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(3, this.eventService.getWithAccounts(newEvent.getId()).getAccounts().size());
-        assertEquals(2, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(2, this.accountService.getWithEvents(user1.getId()).getEvents().size());
-        assertEquals(2, this.accountService.getWithEvents(user2.getId()).getEvents().size());
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(3, this.accountEventService.getAccounts(newEvent.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(user1.getId()).size());
+        assertEquals(2, this.accountEventService.getEvents(user2.getId()).size());
     }
 
     @Test
@@ -836,9 +835,9 @@ public class EventRestControllerIT extends AbstractIT {
         Account user1 = getSavedAccount();
         Event event = getSaved(setPrivate(getNewEventMax()), owner);
 
-        assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
+        assertEquals(1, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user1.getId()).size());
 
         // no password
 
@@ -849,9 +848,9 @@ public class EventRestControllerIT extends AbstractIT {
         then().
             statusCode(SC_BAD_REQUEST);
 
-        assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
+        assertEquals(1, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user1.getId()).size());
 
         // incorrect password
 
@@ -863,9 +862,9 @@ public class EventRestControllerIT extends AbstractIT {
         then().
             statusCode(SC_BAD_REQUEST);
 
-        assertEquals(1, this.eventService.getWithAccounts(event.getId()).getAccounts().size());
-        assertEquals(1, this.accountService.getWithEvents(owner.getId()).getEvents().size());
-        assertEquals(0, this.accountService.getWithEvents(user1.getId()).getEvents().size());
+        assertEquals(1, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
+        assertEquals(0, this.accountEventService.getEvents(user1.getId()).size());
     }
 
     private String getToken(final Account account) {

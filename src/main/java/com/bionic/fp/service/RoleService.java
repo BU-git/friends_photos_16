@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
 
+import static com.bionic.fp.Constants.RoleConstants.OWNER;
 import static com.bionic.fp.util.Checks.check;
 import static java.util.Optional.ofNullable;
 
@@ -76,7 +77,7 @@ public class RoleService {
     }
 
     public Role getOwner() {
-        return this.roleDAO.getOwner();
+        return this.roleDAO.getOrThrow(OWNER);
     }
 
     public List<Role> getAllRoles() {

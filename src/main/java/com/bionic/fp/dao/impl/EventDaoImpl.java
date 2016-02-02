@@ -4,7 +4,6 @@ import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.domain.*;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.*;
 import javax.persistence.criteria.*;
 import java.util.*;
 
@@ -23,12 +22,6 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
     private static final String DESCRIPTION = "description";
 
     public EventDaoImpl() {}
-
-    @Override
-    @Deprecated
-    public Event getWithAccounts(final Long eventId) {
-        return this.getSingleResult(this.em.createQuery(this.getQuery("id", eventId)).setHint(HINT_LOAD_GRAPH, getGraph("accounts")));
-    }
 
     @Override
     public List<Event> get(final String name, final String description) {

@@ -53,7 +53,7 @@ public class EventService {
         check(event.getId() == null, "When creating an event it should not have ID");
         this.validation(event);
 
-        Role role = this.roleDAO.getOwner();
+        Role role = this.roleDAO.getOrThrow(OWNER);
         Account owner = this.accountDAO.getOrThrow(ownerId);
         this.eventDAO.create(event);
         AccountEvent conn = new AccountEvent(event, owner, role);
@@ -180,20 +180,6 @@ public class EventService {
      */
     public Event getOrThrow(final Long eventId) throws InvalidParameterException, EventNotFoundException {
         return ofNullable(this.get(eventId)).orElseThrow(() -> new EventNotFoundException(eventId));
-    }
-
-    /**
-     * Returns an event from database by event ID and null otherwise.
-     * Also pulls the owner and accounts of the event
-     *
-     * @param eventId the event ID
-     * @return the event and null otherwise
-     * @throws InvalidParameterException if the event ID is invalid
-     */
-    @Deprecated
-    public Event getWithAccounts(final Long eventId) throws InvalidParameterException {
-        checkEvent(eventId);
-        return this.eventDAO.getWithAccounts(eventId);
     }
 
     /**

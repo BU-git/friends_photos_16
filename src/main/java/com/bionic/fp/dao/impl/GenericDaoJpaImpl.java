@@ -104,22 +104,47 @@ public class GenericDaoJpaImpl<T extends BaseEntity & IdEntity<PK>, PK extends S
         this.update(t);
     }
 
+    /**
+     * Returns the entity graph by the attributes of the entity
+     *
+     * @param attributeName the attribute names of the entity
+     * @return the entity graph
+     */
     protected EntityGraph<T> getGraph(final String ... attributeName) {
         EntityGraph<T> graph = em.createEntityGraph(entityClass);
         graph.addAttributeNodes(attributeName);
         return graph;
     }
 
+    /**
+     * Returns the hints for EAGER loading of the attributes of the entity
+     *
+     * @param attributeName the attribute names of the entity
+     * @return the hints
+     */
     protected Map<String, Object> getHints(final String ... attributeName) {
         Map<String, Object> hints = new HashMap<>();
         hints.put(HINT_LOAD_GRAPH, getGraph(attributeName));
         return hints;
     }
 
+    /**
+     * Returns the predicate that checks the entity is not deleted
+     *
+     * @param entity the entity
+     * @return the predicate
+     */
     protected <S extends BaseEntity, X extends BaseEntity> Predicate isNotDeleted(final From<S, X> entity) {
         return this.em.getCriteriaBuilder().isFalse(entity.get(DELETED));
     }
 
+    /**
+     * Returns the predicate that checks the entity has the specified ID
+     *
+     * @param entity the entity
+     * @param id the entity ID
+     * @return the predicate
+     */
     protected <S extends IdEntity<PK>, X extends IdEntity<PK>> Predicate equalId(final From<S, X> entity, final PK id) {
         return this.em.getCriteriaBuilder().equal(entity.get(ID), id);
     }

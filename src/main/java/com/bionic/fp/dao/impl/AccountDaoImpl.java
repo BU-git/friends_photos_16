@@ -4,10 +4,6 @@ import com.bionic.fp.dao.AccountDAO;
 import com.bionic.fp.domain.Account;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.*;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * This is an implementation of {@link AccountDaoImpl}
  *
@@ -21,12 +17,6 @@ public class AccountDaoImpl extends GenericDaoJpaImpl<Account, Long> implements 
     private static final String VK_ID = "vkId";
 
     public AccountDaoImpl() {}
-
-    @Override
-    @Deprecated
-    public Account getWithEvents(final Long accountId) {
-        return this.getSingleResult(this.em.createQuery(this.getQuery("id", accountId)).setHint(HINT_LOAD_GRAPH, getGraph("events")));
-    }
 
     @Override
     public Account getByEmail(final String email) {

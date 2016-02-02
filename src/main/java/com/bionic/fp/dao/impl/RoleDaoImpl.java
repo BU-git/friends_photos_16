@@ -2,17 +2,12 @@ package com.bionic.fp.dao.impl;
 
 import com.bionic.fp.dao.RoleDAO;
 import com.bionic.fp.domain.Role;
-import com.bionic.fp.exception.logic.impl.RoleNotFoundException;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import java.time.LocalDateTime;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
-
-import static java.util.Optional.ofNullable;
-
 
 /**
  * Created by Yevhenii on 11/16/2015.
@@ -20,20 +15,14 @@ import static java.util.Optional.ofNullable;
 @Repository
 public class RoleDaoImpl extends GenericDaoJpaImpl<Role, Long> implements RoleDAO {
 
-    public static final String SELECT_ALL_ROLES = "SELECT r FROM Role r";
-
     public RoleDaoImpl() {}
 
     @Override
-    @Deprecated
-    public Role getOwner() throws RoleNotFoundException  {
-        return this.getOrThrow(1L);
-    }
-
-    @Override
     public List<Role> getAllRoles() {
-        TypedQuery<Role> allRolesQuery = em.createQuery(SELECT_ALL_ROLES, Role.class);
-        return allRolesQuery.getResultList();
+        CriteriaBuilder cb = this.em.getCriteriaBuilder();
+        CriteriaQuery<Role> query = cb.createQuery(Role.class);
+        Root<Role> role = query.from(Role.class);
+        return this.em.createQuery(query.where(isNotDeleted(role))).getResultList();
     }
 
 }

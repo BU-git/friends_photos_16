@@ -15,16 +15,6 @@ import java.util.List;
 public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
 
     /**
-     * Returns an account-event with its account and event by the specified id.
-     * Queries an account-event with setting EAGER for its account and event
-     *
-     * @param id the unique identifier
-     * @return an account-event with its account and null if the account-event doesn't exist
-     */
-//    @Deprecated
-//    AccountEvent getWithAccountEvent(Long id);
-
-    /**
      * Returns an account-event by the specified account ID and event ID.
      *
      * @param accountId the account ID
@@ -104,7 +94,4 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
      */
     List<Event> getEvents(Long accountId, Long roleId);
 
-//    void setDeletedByEvent(Long eventId, boolean value);
-//
-//    void setDeletedByAccount(Long accountId, boolean value);
 }

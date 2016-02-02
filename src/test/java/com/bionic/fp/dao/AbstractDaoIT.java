@@ -104,7 +104,7 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
     protected Event save(final Account owner, final Event event) {
         assertNull(event.getId());
 
-        Role role = this.roleDAO.getOwner();
+        Role role = this.roleDAO.getOrThrow(OWNER);
 
         Event actual = this.eventDAO.create(event);
 
@@ -145,7 +145,7 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
         if(role != null) {
             assertNotNull(role.getId());
         } else {
-            role = this.roleDAO.getOwner();
+            role = this.roleDAO.getOrThrow(OWNER);
         }
         assertNotNull(account.getCreated());
         assertNotNull(event.getCreated());
