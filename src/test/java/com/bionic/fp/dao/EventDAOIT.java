@@ -63,7 +63,7 @@ public class EventDAOIT extends AbstractDaoIT {
         assertEventIsNotDeleted(owner.getId(), event);
     }
 
-    @Test(expected = EntityNotFoundException.class) @Ignore //todo: fix physically delete comment
+    @Test(expected = EntityNotFoundException.class) //@Ignore //todo: fix physically delete comment
     public void testDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
@@ -79,7 +79,7 @@ public class EventDAOIT extends AbstractDaoIT {
         this.eventDAO.delete(event.getId());
     }
 
-    @Test(expected = EntityNotFoundException.class) @Ignore //todo: fix physically delete comment
+    @Test(expected = EntityNotFoundException.class) //@Ignore //todo: fix physically delete comment
     public void testDeleteAfterSoftDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);

@@ -58,7 +58,7 @@ public class EventService {
         this.eventDAO.create(event);
         AccountEvent conn = new AccountEvent(event, owner, role);
         this.accountEventDAO.create(conn);
-        event.getAccounts().add(conn);
+//        event.getAccounts().add(conn);  // forcing JPA to populate all accounts
         return event.getId();
     }
 

@@ -151,7 +151,7 @@ public class CommentDaoIT extends AbstractDaoIT {
         assertCommentIsNotDeleted(comment2, owner, null, photo);
     }
 
-    @Test(expected = EntityNotFoundException.class) @Ignore //todo: fix physically delete
+    @Test(expected = EntityNotFoundException.class) //@Ignore //todo: fix physically delete
     public void testDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
@@ -172,7 +172,7 @@ public class CommentDaoIT extends AbstractDaoIT {
         this.commentDAO.delete(comment2.getId());
     }
 
-    @Test(expected = EntityNotFoundException.class) @Ignore //todo: fix physically delete
+    @Test(expected = EntityNotFoundException.class) //@Ignore //todo: fix physically delete
     public void testDeleteAfterSoftDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);

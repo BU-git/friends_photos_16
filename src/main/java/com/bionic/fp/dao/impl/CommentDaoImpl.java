@@ -5,22 +5,10 @@ import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Comment;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
-import com.bionic.fp.exception.logic.impl.EventNotFoundException;
+import com.bionic.fp.exception.logic.EntityNotFoundException;
 import org.springframework.stereotype.Repository;
-
-import javax.persistence.EntityGraph;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
 
 /**
  * This is an implementation of {@link CommentDAO}
@@ -65,4 +53,17 @@ public class CommentDaoImpl extends GenericDaoJpaImpl<Comment, Long> implements 
                 equalId(author, authorId), isNotDeleted(author), isNotDeleted(comment)))).getResultList();
     }
 
+    @Override
+    public void delete(final Long id) throws EntityNotFoundException {
+        int rows = this.em.createNativeQuery("DELETE FROM photos_comments WHERE comment_id = ?")
+                .setParameter(1, id).executeUpdate();
+        if(rows == 0) {
+            rows = this.em.createNativeQuery("DELETE FROM events_comments WHERE comment_id = ?")
+                    .setParameter(1, id).executeUpdate();
+            if(rows == 0) throw new EntityNotFoundException(id.toString());
+        }
+        rows = this.em.createNativeQuery("DELETE FROM comments WHERE id = ?")
+                .setParameter(1, id).executeUpdate();
+        if(rows == 0) throw new EntityNotFoundException(id.toString());
+    }
 }
