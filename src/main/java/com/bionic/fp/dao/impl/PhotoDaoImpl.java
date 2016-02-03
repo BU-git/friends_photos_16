@@ -48,19 +48,19 @@ public class PhotoDaoImpl extends GenericDaoJpaImpl<Photo, Long> implements Phot
 		Join<Photo, Event> event = photo.join(EVENT);
 		Join<Photo, Account> owner = photo.join(OWNER);
 
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(isNotDeleted(photo));
-		predicates.add(isNotDeleted(owner));
-		predicates.add(isNotDeleted(event));
+		Predicate predicate = cb.conjunction();
+		predicate = cb.and(predicate, isNotDeleted(photo));
 
 		if(ownerId != null) {
-			predicates.add(equalId(owner, ownerId));
+			predicate = cb.and(predicate, equalId(owner, ownerId));
+			predicate = cb.and(predicate, isNotDeleted(owner));
 		}
 		if(eventId != null) {
-			predicates.add(equalId(event, eventId));
+			predicate = cb.and(predicate, equalId(event, eventId));
+			predicate = cb.and(predicate, isNotDeleted(event));
 		}
 
-		return query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+		return query.where(predicate);
 	}
 
 }

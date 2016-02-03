@@ -29,16 +29,20 @@ public class CommentInfo {
     public CommentInfo() {
     }
 
-    public CommentInfo(final Long id, final String text, final Long authorId, final LocalDateTime date) {
+    public CommentInfo(final Long id, final String text, final LocalDateTime date) {
         this.id = id;
         this.text = text;
-        this.authorId = authorId;
         this.date = date;
     }
 
+    public CommentInfo(final Long id, final String text, final LocalDateTime date, final Long authorId) {
+        this(id, text, date);
+        this.authorId = authorId;
+    }
+
     public CommentInfo(final Comment comment) {
-        this(comment.getId(),comment.getText(),
-                comment.getAuthor() != null ? comment.getAuthor().getId() : null, comment.getCreated());
+        this(comment.getId(),comment.getText(), comment.getCreated(),
+                (comment.getAuthor() != null && !comment.getAuthor().isDeleted()) ? comment.getAuthor().getId() : null);
     }
 
     public Long getId() {

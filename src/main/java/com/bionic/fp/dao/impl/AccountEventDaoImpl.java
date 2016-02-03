@@ -2,6 +2,7 @@ package com.bionic.fp.dao.impl;
 
 import com.bionic.fp.dao.AccountEventDAO;
 import com.bionic.fp.domain.*;
+import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,6 +93,19 @@ public class AccountEventDaoImpl extends GenericDaoJpaImpl<AccountEvent, Long> i
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void setDeleted(Long id, boolean value) throws EntityNotFoundException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void delete(final Long accountId, final Long eventId) throws AccountEventNotFoundException {
+        AccountEvent accountEvent = this.getOrThrow(accountId, eventId);
+        this.em.refresh(accountEvent);
+        this.em.remove(accountEvent);
+//        super.delete(accountEvent.getId());
+    }
+
     private AccountEvent getOrThrow(final Long accountId, final Long eventId) throws AccountEventNotFoundException {
         return ofNullable(this.get(accountId, eventId)).orElseThrow(() ->
                 new AccountEventNotFoundException(accountId, eventId));
@@ -110,23 +124,22 @@ public class AccountEventDaoImpl extends GenericDaoJpaImpl<AccountEvent, Long> i
         Join<AccountEvent, Account> account = accountEvent.join(ACCOUNT);
         Join<AccountEvent, Role> role = accountEvent.join(ROLE);
 
-        List<Predicate> predicates = new ArrayList<>();
-        predicates.add(isNotDeleted(accountEvent));
-        predicates.add(isNotDeleted(account));
-        predicates.add(isNotDeleted(event));
-        predicates.add(isNotDeleted(role));
+        Predicate predicate = cb.conjunction();
+//        predicate = cb.and(predicate, isNotDeleted(accountEvent)); // unsupported for account-event
 
         if(accountId != null) {
-            predicates.add(equalId(account, accountId));
+            predicate = cb.and(predicate, equalId(account, accountId));
         }
         if(eventId != null) {
-            predicates.add(equalId(event, eventId));
+            predicate = cb.and(predicate, equalId(event, eventId));
         }
         if(roleId != null) {
-            predicates.add(equalId(role, roleId));
+            predicate = cb.and(predicate, equalId(role, roleId));
         }
-
-        return query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+        predicate = cb.and(predicate, isNotDeleted(account));
+        predicate = cb.and(predicate, isNotDeleted(event));
+        predicate = cb.and(predicate, isNotDeleted(role));
+        return query.where(predicate);
     }
 
 }

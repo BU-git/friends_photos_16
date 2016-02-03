@@ -4,6 +4,7 @@ import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Role;
+import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
 
 import java.util.List;
 
@@ -94,4 +95,12 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
      */
     List<Event> getEvents(Long accountId, Long roleId);
 
+    /**
+     * Deletes an account-event
+     *
+     * @param accountId the account ID
+     * @param eventId the event ID
+     * @throws AccountEventNotFoundException if the account-event doesn't exist
+     */
+    void delete(Long accountId, Long eventId) throws AccountEventNotFoundException;
 }

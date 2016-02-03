@@ -5,6 +5,7 @@ import com.bionic.fp.domain.AccountEvent;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Role;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -16,7 +17,7 @@ import static org.junit.Assert.*;
  */
 public class AccountEventDaoIT extends AbstractDaoIT {
 
-    @Test
+    @Test @Ignore // Unsupported soft delete for account-event
     public void testSoftDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
@@ -30,7 +31,7 @@ public class AccountEventDaoIT extends AbstractDaoIT {
         assertAccountEventIsDeleted(accountEvent, owner, event, role);
     }
 
-    @Test
+    @Test @Ignore // Unsupported soft delete for account-event
     public void testSoftDeleteAndRecoverSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
@@ -64,7 +65,7 @@ public class AccountEventDaoIT extends AbstractDaoIT {
         this.accountEventDAO.delete(accountEvent.getId());
     }
 
-    @Test(expected = EntityNotFoundException.class)
+    @Test(expected = EntityNotFoundException.class) @Ignore // Unsupported soft delete for account-event
     public void testDeleteAfterSoftDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);

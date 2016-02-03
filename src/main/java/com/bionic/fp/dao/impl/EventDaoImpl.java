@@ -32,18 +32,17 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
 
         Root<Event> event = query.from(Event.class);
 
-        List<Predicate> predicates = new ArrayList<>();
-        predicates.add(isNotDeleted(event));
-        predicates.add(cb.isTrue(event.get(VISIBLE)));
+        Predicate predicate = cb.conjunction();
+        predicate = cb.and(predicate, isNotDeleted(event));
+        predicate = cb.and(predicate, cb.isTrue(event.get(VISIBLE)));
 
         if(isNotEmpty(name)) {
-            predicates.add(cb.like(event.get(NAME), "%"+name+"%"));
+            predicate = cb.and(predicate, cb.like(event.get(NAME), "%"+name+"%"));
         }
         if(isNotEmpty(description)) {
-            predicates.add(cb.like(event.get(DESCRIPTION), "%"+description+"%"));
+            predicate = cb.and(predicate, cb.like(event.get(DESCRIPTION), "%"+description+"%"));
         }
 
-        return this.em.createQuery(query.where(cb.and(predicates.toArray(new Predicate[predicates.size()]))))
-                .getResultList();
+        return this.em.createQuery(query.where(predicate)).getResultList();
     }
 }

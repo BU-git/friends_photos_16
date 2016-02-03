@@ -221,8 +221,17 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
     }
 
     protected  <T extends BaseEntity & IdEntity<Long>> void assertEqualsEntities(final List<T> actual, final T ... expected) {
-        if(actual == null || (expected == null && !actual.isEmpty()) || expected == null || (expected.length != actual.size())) {
-            fail();
+        if(actual == null) {
+            fail("actual == null");
+        }
+        if(expected == null && !actual.isEmpty()) {
+            fail("expected == null && !actual.isEmpty()");
+        }
+        if(expected == null) {
+            fail("expected == null");
+        }
+        if(expected.length != actual.size()) {
+            fail("expected.length != actual.size()");
         }
         for (T entity : expected) {
             Optional<T> optional = actual.stream().parallel()
