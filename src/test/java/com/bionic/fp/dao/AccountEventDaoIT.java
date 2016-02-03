@@ -99,11 +99,6 @@ public class AccountEventDaoIT extends AbstractDaoIT {
         assertFalse(this.accountEventDAO.getEvents(owner.getId()).isEmpty());
         assertFalse(this.accountEventDAO.getEvents(owner.getId(), role.getId()).isEmpty());
         assertFalse(this.accountEventDAO.getByAccountAndRole(owner.getId(), role.getId()).isEmpty());
-
-//        this.commentDAO.getCommentsByOwner(ownerId) todo this
-//        this.commentDAO.getCommentsByEvent(eventId) todo this
-//        this.photoDAO.getPhotosByOwner(ownerId) todo this
-//        this.photoDAO.getPhotosByEvent(eventId) todo this
     }
 
     private void assertAccountEventIsDeleted(final AccountEvent accountEvent, final Account owner, final Event event, final Role role) {
@@ -124,11 +119,6 @@ public class AccountEventDaoIT extends AbstractDaoIT {
         assertTrue(this.accountEventDAO.getEvents(owner.getId()).isEmpty());
         assertTrue(this.accountEventDAO.getEvents(owner.getId(), role.getId()).isEmpty());
         assertTrue(this.accountEventDAO.getByAccountAndRole(owner.getId(), role.getId()).isEmpty());
-
-//        this.commentDAO.getCommentsByOwner(ownerId) todo this
-//        this.commentDAO.getCommentsByEvent(eventId) todo this
-//        this.photoDAO.getPhotosByOwner(ownerId) todo this
-//        this.photoDAO.getPhotosByEvent(eventId) todo this
     }
 
 }

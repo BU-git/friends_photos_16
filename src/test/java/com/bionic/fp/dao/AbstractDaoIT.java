@@ -1,16 +1,11 @@
 package com.bionic.fp.dao;
 
 import com.bionic.fp.AbstractHelperTest;
-import com.bionic.fp.dao.*;
 import com.bionic.fp.domain.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,7 +23,6 @@ import static org.junit.Assert.*;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring/test-dao-root-context.xml")
-@Transactional
 public abstract class AbstractDaoIT extends AbstractHelperTest {
 
     @Autowired protected EventDAO eventDAO;
@@ -37,7 +31,6 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
     @Autowired protected CommentDAO commentDAO;
     @Autowired protected PhotoDAO photoDAO;
     @Autowired protected RoleDAO roleDAO;
-    @PersistenceContext protected EntityManager em;
 
     //////////////////////////////////////////////
     //                 ACCOUNT                  //
@@ -182,18 +175,13 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
 
     protected Comment getSavedEventComment(final Event event, final Account author) {
         Comment comment = getNewComment(author);
-        comment = this.commentDAO.create(comment);
-        this.em.refresh(event);
-        event.getComments().add(comment);
-        this.em.flush();
+        this.commentDAO.createEventComment(event.getId(), comment);
         return comment;
     }
 
     protected Comment getSavedPhotoComment(final Photo photo, final Account author) {
         Comment comment = getNewComment(author);
-        comment = this.commentDAO.create(comment);
-        this.em.refresh(photo);
-        photo.getComments().add(comment);
+        this.commentDAO.createPhotoComment(photo.getId(), comment);
         return comment;
     }
 
@@ -233,7 +221,7 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
     }
 
     protected  <T extends BaseEntity & IdEntity<Long>> void assertEqualsEntities(final List<T> actual, final T ... expected) {
-        if(actual == null || (expected == null && !actual.isEmpty()) || (expected != null && expected.length != actual.size())) {
+        if(actual == null || (expected == null && !actual.isEmpty()) || expected == null || (expected.length != actual.size())) {
             fail();
         }
         for (T entity : expected) {
@@ -245,10 +233,13 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
                 fail();
             }
         }
-
     }
 
-    protected void assertEqualsEntity(BaseEntity expected, BaseEntity actual) {
-        // nothing
+    protected <T extends BaseEntity & IdEntity<Long>> void assertEqualsEntity(T expected, T actual) {
+        assertNotNull(expected);
+        assertNotNull(actual);
+        assertEquals(expected.getId(), actual.getId());
+        assertEqualsDate(expected.getCreated(), actual.getCreated());
+        assertEquals(expected, actual);
     }
 }

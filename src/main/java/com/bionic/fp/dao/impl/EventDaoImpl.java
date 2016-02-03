@@ -3,6 +3,7 @@ package com.bionic.fp.dao.impl;
 import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.domain.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.*;
 import java.util.*;
@@ -15,6 +16,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
  * @author Sergiy Gabriel
  */
 @Repository
+@Transactional
 public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements EventDAO {
 
     private static final String VISIBLE = "visible";

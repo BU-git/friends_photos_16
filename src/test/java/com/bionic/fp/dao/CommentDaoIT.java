@@ -107,24 +107,32 @@ public class CommentDaoIT extends AbstractDaoIT {
         assertCommentIsDeleted(comment2, owner, null, photo);
 
         Comment comment3 = getSavedEventComment(event, owner);
-        assertEqualsEntities(this.commentDAO.getCommentsByAuthor(owner.getId()), comment3);
-        assertEqualsEntities(this.commentDAO.getCommentsByEvent(event.getId()), comment3);
-        assertEqualsEntities(this.commentDAO.getCommentsByPhoto(photo.getId()));
-
         Comment comment4 = getSavedEventComment(event, owner);
-        assertEqualsEntities(this.commentDAO.getCommentsByAuthor(owner.getId()), comment3, comment4);
-        assertEqualsEntities(this.commentDAO.getCommentsByEvent(event.getId()), comment3, comment4);
-        assertEqualsEntities(this.commentDAO.getCommentsByPhoto(photo.getId()));
-
         Comment comment5 = getSavedPhotoComment(photo, owner);
-        assertEqualsEntities(this.commentDAO.getCommentsByAuthor(owner.getId()), comment3, comment4, comment5);
-        assertEqualsEntities(this.commentDAO.getCommentsByEvent(event.getId()), comment3, comment4);
-        assertEqualsEntities(this.commentDAO.getCommentsByPhoto(photo.getId()), comment5);
-
         Comment comment6 = getSavedPhotoComment(photo, owner);
         assertEqualsEntities(this.commentDAO.getCommentsByAuthor(owner.getId()), comment3, comment4, comment5,comment6);
         assertEqualsEntities(this.commentDAO.getCommentsByEvent(event.getId()), comment3, comment4);
         assertEqualsEntities(this.commentDAO.getCommentsByPhoto(photo.getId()), comment5, comment6);
+
+        this.commentDAO.setDeleted(comment3.getId(), true);
+        assertEqualsEntities(this.commentDAO.getCommentsByAuthor(owner.getId()), comment4, comment5,comment6);
+        assertEqualsEntities(this.commentDAO.getCommentsByEvent(event.getId()), comment4);
+        assertEqualsEntities(this.commentDAO.getCommentsByPhoto(photo.getId()), comment5, comment6);
+
+        this.commentDAO.setDeleted(comment4.getId(), true);
+        assertEqualsEntities(this.commentDAO.getCommentsByAuthor(owner.getId()), comment5,comment6);
+        assertEqualsEntities(this.commentDAO.getCommentsByEvent(event.getId()));
+        assertEqualsEntities(this.commentDAO.getCommentsByPhoto(photo.getId()), comment5, comment6);
+
+        this.commentDAO.setDeleted(comment5.getId(), true);
+        assertEqualsEntities(this.commentDAO.getCommentsByAuthor(owner.getId()),comment6);
+        assertEqualsEntities(this.commentDAO.getCommentsByEvent(event.getId()));
+        assertEqualsEntities(this.commentDAO.getCommentsByPhoto(photo.getId()), comment6);
+
+        this.commentDAO.setDeleted(comment6.getId(), true);
+        assertEqualsEntities(this.commentDAO.getCommentsByAuthor(owner.getId()));
+        assertEqualsEntities(this.commentDAO.getCommentsByEvent(event.getId()));
+        assertEqualsEntities(this.commentDAO.getCommentsByPhoto(photo.getId()));
     }
 
     @Test
@@ -151,7 +159,7 @@ public class CommentDaoIT extends AbstractDaoIT {
         assertCommentIsNotDeleted(comment2, owner, null, photo);
     }
 
-    @Test(expected = EntityNotFoundException.class) //@Ignore //todo: fix physically delete
+    @Test(expected = EntityNotFoundException.class)
     public void testDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
@@ -172,7 +180,7 @@ public class CommentDaoIT extends AbstractDaoIT {
         this.commentDAO.delete(comment2.getId());
     }
 
-    @Test(expected = EntityNotFoundException.class) //@Ignore //todo: fix physically delete
+    @Test(expected = EntityNotFoundException.class)
     public void testDeleteAfterSoftDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
@@ -197,16 +205,6 @@ public class CommentDaoIT extends AbstractDaoIT {
 
         this.commentDAO.delete(comment1.getId());
         this.commentDAO.delete(comment2.getId());
-    }
-
-    @Override
-    protected void assertEqualsEntity(BaseEntity expected, BaseEntity actual) {
-        Comment expectedComment = (Comment) expected;
-        Comment actualComment = (Comment) actual;
-        assertEquals(expectedComment.getId(), actualComment.getId());
-        assertEqualsDate(expectedComment.getCreated(), actualComment.getCreated());
-        assertEquals(expectedComment.getText(), actualComment.getText());
-        assertEquals(expectedComment.getAuthor().getId(), actualComment.getAuthor().getId());
     }
 
     private void assertCommentIsNotDeleted(final Comment comment, final Account owner, final Event event, final Photo photo) {

@@ -10,6 +10,7 @@ import org.junit.Test;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.bionic.fp.Constants.RoleConstants.MEMBER;
 import static com.bionic.fp.Constants.RoleConstants.OWNER;
 import static org.junit.Assert.*;
 
@@ -28,14 +29,15 @@ public class EventDAOIT extends AbstractDaoIT {
 
         Event actual = this.eventDAO.read(event.getId());
         assertNotNull(actual);
-        assertEqualsEvent(event, actual);
+        assertEqualsEntity(event, actual);
     }
 
     @Test
     public void testSoftDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
+        Account another = getSavedAccount();
         Event event = getSavedEventMax(owner);
-        Photo photo = getSavedPhoto(event, owner);
+        getSavedPhoto(event, owner);
         getSavedEventComment(event, owner);
 
         assertEventIsNotDeleted(owner.getId(), event);
@@ -43,6 +45,33 @@ public class EventDAOIT extends AbstractDaoIT {
         this.eventDAO.setDeleted(event.getId(), true);
 
         assertEventIsDeleted(owner.getId(), event);
+
+        Event event1 = getSavedEventMax(owner);
+        Event event2 = getSavedEventMax(another);
+        getSavedAccountEvent(owner, event2, getRoleMember());
+        getSavedAccountEvent(another, event1, getRoleMember());
+        assertEqualsEntities(this.accountEventDAO.getEvents(owner.getId()), event1, event2);
+        assertEqualsEntities(this.accountEventDAO.getEvents(another.getId()), event2, event1);
+        assertEqualsEntities(this.accountEventDAO.getEvents(owner.getId(), OWNER), event1);
+        assertEqualsEntities(this.accountEventDAO.getEvents(owner.getId(), MEMBER), event2);
+        assertEqualsEntities(this.accountEventDAO.getEvents(another.getId(), OWNER), event2);
+        assertEqualsEntities(this.accountEventDAO.getEvents(another.getId(), MEMBER), event1);
+
+        this.eventDAO.setDeleted(event1.getId(), true);
+        assertEqualsEntities(this.accountEventDAO.getEvents(owner.getId()), event2);
+        assertEqualsEntities(this.accountEventDAO.getEvents(another.getId()), event2);
+        assertEqualsEntities(this.accountEventDAO.getEvents(owner.getId(), OWNER));
+        assertEqualsEntities(this.accountEventDAO.getEvents(owner.getId(), MEMBER), event2);
+        assertEqualsEntities(this.accountEventDAO.getEvents(another.getId(), OWNER), event2);
+        assertEqualsEntities(this.accountEventDAO.getEvents(another.getId(), MEMBER));
+
+        this.eventDAO.setDeleted(event2.getId(), true);
+        assertEqualsEntities(this.accountEventDAO.getEvents(owner.getId()));
+        assertEqualsEntities(this.accountEventDAO.getEvents(another.getId()));
+        assertEqualsEntities(this.accountEventDAO.getEvents(owner.getId(), OWNER));
+        assertEqualsEntities(this.accountEventDAO.getEvents(owner.getId(), MEMBER));
+        assertEqualsEntities(this.accountEventDAO.getEvents(another.getId(), OWNER));
+        assertEqualsEntities(this.accountEventDAO.getEvents(another.getId(), MEMBER));
     }
 
     @Test
@@ -229,20 +258,8 @@ public class EventDAOIT extends AbstractDaoIT {
         assertTrue(events.contains(event2));
     }
 
-    protected void assertEqualsEvent(final Event expected, final Event actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getName(), actual.getName());
-        assertEquals(expected.getDescription(), actual.getDescription());
-        assertEquals(expected.getEventType(), actual.getEventType());
-        assertEquals(expected.getLatitude(), actual.getLatitude());
-        assertEquals(expected.getLongitude(), actual.getLongitude());
-        assertEquals(expected.getRadius(), actual.getRadius());
-        assertEquals(expected.isVisible(), actual.isVisible());
-        assertEquals(expected.isGeoServicesEnabled(), actual.isGeoServicesEnabled());
-    }
-
     private void assertEventIsNotDeleted(final Long accountId, final Event event) {
-        assertEqualsEvent(event, this.eventDAO.read(event.getId()));
+        assertEqualsEntity(event, this.eventDAO.read(event.getId()));
         assertEventIsNotDeleted(accountId, event.getId());
         assertFalse(this.eventDAO.get(event.getName(), null).isEmpty());
         assertFalse(this.eventDAO.get(null, event.getDescription()).isEmpty());

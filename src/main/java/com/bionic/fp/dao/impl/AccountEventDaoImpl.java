@@ -4,6 +4,7 @@ import com.bionic.fp.dao.AccountEventDAO;
 import com.bionic.fp.domain.*;
 import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import static java.util.stream.Collectors.toList;
  * @author Sergiy Gabriel
  */
 @Repository
+@Transactional
 public class AccountEventDaoImpl extends GenericDaoJpaImpl<AccountEvent, Long> implements AccountEventDAO {
 
     private static final String ACCOUNT = "account";

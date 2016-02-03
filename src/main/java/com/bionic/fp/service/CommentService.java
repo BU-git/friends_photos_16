@@ -4,8 +4,6 @@ import com.bionic.fp.dao.CommentDAO;
 import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.dao.PhotoDAO;
 import com.bionic.fp.domain.Comment;
-import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.auth.impl.IncorrectPasswordException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
@@ -97,9 +95,10 @@ public class CommentService {
         checkEvent(eventId);
         validation(comment);
         check(comment.getId() == null, "The comment is already exists");
-        Event event = this.eventDAO.getOrThrow(eventId);
-        Comment actual = this.commentDAO.create(comment);
-        event.getComments().add(actual);
+//        Event event = this.eventDAO.getOrThrow(eventId);
+//        Comment actual = this.commentDAO.create(comment);
+//        event.getComments().add(actual);
+        this.commentDAO.createEventComment(eventId, comment);
     }
 
     /**
@@ -114,9 +113,10 @@ public class CommentService {
         checkPhoto(photoId);
         validation(comment);
         check(comment.getId() == null, "The comment is already exists");
-        Photo photo = this.photoDAO.getOrThrow(photoId);
-        Comment actual = this.commentDAO.create(comment);
-        photo.getComments().add(actual);
+//        Photo photo = this.photoDAO.getOrThrow(photoId);
+//        Comment actual = this.commentDAO.create(comment);
+//        photo.getComments().add(actual);
+        this.commentDAO.createPhotoComment(photoId, comment);
     }
 
     //////////////////////////////////////////////

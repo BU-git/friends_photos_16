@@ -178,24 +178,41 @@ public class Account extends BaseEntity implements IdEntity<Long> {
 
         Account account = (Account) o;
 
-//        if (password != null ? !password.equals(account.password) : account.password != null) return false;   // password in DB is encoded
         if (userName != null ? !userName.equals(account.userName) : account.userName != null) return false;
         if (email != null ? !email.equals(account.email) : account.email != null) return false;
+        if (profileImageUrl != null ? !profileImageUrl.equals(account.profileImageUrl) : account.profileImageUrl != null)
+            return false;
         if (fbId != null ? !fbId.equals(account.fbId) : account.fbId != null) return false;
-        return !(vkId != null ? !vkId.equals(account.vkId) : account.vkId != null);
+        if (fbProfileUrl != null ? !fbProfileUrl.equals(account.fbProfileUrl) : account.fbProfileUrl != null)
+            return false;
+        if (fbToken != null ? !fbToken.equals(account.fbToken) : account.fbToken != null) return false;
+        if (vkId != null ? !vkId.equals(account.vkId) : account.vkId != null) return false;
+        if (vkToken != null ? !vkToken.equals(account.vkToken) : account.vkToken != null) return false;
+        return vkProfileUrl != null ? vkProfileUrl.equals(account.vkProfileUrl) : account.vkProfileUrl == null;
+    }
 
+    @Override
+    public int hashCode() {
+        int result = userName != null ? userName.hashCode() : 0;
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (profileImageUrl != null ? profileImageUrl.hashCode() : 0);
+        result = 31 * result + (fbId != null ? fbId.hashCode() : 0);
+        result = 31 * result + (fbProfileUrl != null ? fbProfileUrl.hashCode() : 0);
+        result = 31 * result + (fbToken != null ? fbToken.hashCode() : 0);
+        result = 31 * result + (vkId != null ? vkId.hashCode() : 0);
+        result = 31 * result + (vkToken != null ? vkToken.hashCode() : 0);
+        result = 31 * result + (vkProfileUrl != null ? vkProfileUrl.hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
         return "Account{" +
                 "id=" + id +
-//                ", active=" + active +
                 ", email='" + email + '\'' +
                 ", fbID='" + fbId + '\'' +
                 ", fbProfile='" + fbProfileUrl + '\'' +
                 ", fbToken='" + fbToken + '\'' +
-//                ", guest=" + guest +
                 ", password='" + password + '\'' +
                 ", profileImageURL='" + profileImageUrl + '\'' +
                 ", userName='" + userName + '\'' +

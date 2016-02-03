@@ -1,12 +1,16 @@
 package com.bionic.fp.dao;
 
 import com.bionic.fp.domain.Account;
+import com.bionic.fp.domain.Comment;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.List;
+
+import static com.bionic.fp.Constants.RoleConstants.MEMBER;
 import static com.bionic.fp.Constants.RoleConstants.OWNER;
 import static org.junit.Assert.*;
 
@@ -25,11 +29,42 @@ public class AccountDaoIT extends AbstractDaoIT {
         getSavedEventComment(event, owner);
         getSavedPhotoComment(photo, owner);
 
-        assertAccountIsNotDeleted(owner, event);
+        assertAccountIsNotDeleted(owner, true, true, true, OWNER);
+        assertAccountIsNotDeleted(owner, event, true);
 
         this.accountDAO.setDeleted(owner.getId(), true);
 
-        assertAccountIsDeleted(owner, event);
+        assertAccountIsDeleted(owner, true, true, true, OWNER);
+        assertAccountIsDeleted(owner, event, true);
+
+        Account account1 = getSavedAccount();
+        Account account2 = getSavedAccount();
+        Event event1 = getSavedEventMax(account1);
+        Event event2 = getSavedEventMax(account2);
+        getSavedAccountEvent(account1, event2, getRoleMember());
+        getSavedAccountEvent(account2, event1, getRoleMember());
+        assertEqualsEntities(this.accountEventDAO.getAccounts(event1.getId()), account1, account2);
+        assertEqualsEntities(this.accountEventDAO.getAccounts(event2.getId()), account1, account2);
+        assertEqualsEntities(this.accountEventDAO.getAccounts(event1.getId(), OWNER), account1);
+        assertEqualsEntities(this.accountEventDAO.getAccounts(event1.getId(), MEMBER), account2);
+        assertEqualsEntities(this.accountEventDAO.getAccounts(event2.getId(), OWNER), account2);
+        assertEqualsEntities(this.accountEventDAO.getAccounts(event2.getId(), MEMBER), account1);
+
+        this.accountDAO.setDeleted(account2.getId(), true);
+        assertEqualsEntities(this.accountEventDAO.getAccounts(event1.getId()), account1);
+        assertEqualsEntities(this.accountEventDAO.getAccounts(event2.getId()), account1);
+        assertEqualsEntities(this.accountEventDAO.getAccounts(event1.getId(), OWNER), account1);
+        assertEqualsEntities(this.accountEventDAO.getAccounts(event1.getId(), MEMBER));
+        assertEqualsEntities(this.accountEventDAO.getAccounts(event2.getId(), OWNER));
+        assertEqualsEntities(this.accountEventDAO.getAccounts(event2.getId(), MEMBER), account1);
+
+        this.accountDAO.setDeleted(account1.getId(), true);
+        assertEqualsEntities(this.accountEventDAO.getAccounts(event1.getId()));
+        assertEqualsEntities(this.accountEventDAO.getAccounts(event2.getId()));
+        assertEqualsEntities(this.accountEventDAO.getAccounts(event1.getId(), OWNER));
+        assertEqualsEntities(this.accountEventDAO.getAccounts(event1.getId(), MEMBER));
+        assertEqualsEntities(this.accountEventDAO.getAccounts(event2.getId(), OWNER));
+        assertEqualsEntities(this.accountEventDAO.getAccounts(event2.getId(), MEMBER));
     }
 
     @Test
@@ -40,51 +75,59 @@ public class AccountDaoIT extends AbstractDaoIT {
         getSavedEventComment(event, owner);
         getSavedPhotoComment(photo, owner);
 
-        assertAccountIsNotDeleted(owner, event);
+        assertAccountIsNotDeleted(owner, true, true, true, OWNER);
+        assertAccountIsNotDeleted(owner, event, true);
 
         this.accountDAO.setDeleted(owner.getId(), true);
 
-        assertAccountIsDeleted(owner, event);
+        assertAccountIsDeleted(owner, true, true, true, OWNER);
+        assertAccountIsDeleted(owner, event, true);
 
         this.accountDAO.setDeleted(owner.getId(), false);
 
-        assertAccountIsNotDeleted(owner, event);
+        assertAccountIsNotDeleted(owner, true, true, true, OWNER);
+        assertAccountIsNotDeleted(owner, event, true);
     }
 
-    @Test(expected = EntityNotFoundException.class) @Ignore //todo: fix physically delete comment
+    @Test(expected = EntityNotFoundException.class)
     public void testDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
-        Photo photo = getSavedPhoto(event, owner);
-        getSavedEventComment(event, owner);
-        getSavedPhotoComment(photo, owner);
+        getSavedPhoto(event, owner);
+//        getSavedEventComment(event, owner);   //fix physically delete account comments if it's necessary
+//        getSavedPhotoComment(photo, owner);
 
-        assertAccountIsNotDeleted(owner, event);
+        assertAccountIsNotDeleted(owner, true, true, false, OWNER);
+        assertAccountIsNotDeleted(owner, event, true);
 
         this.accountDAO.delete(owner.getId());
 
-        assertAccountIsDeleted(owner, event);
+        assertAccountIsDeleted(owner, true, true, false, OWNER);
+        assertAccountIsDeleted(owner, event, true);
 
         this.accountDAO.delete(owner.getId());
     }
 
-    @Test(expected = EntityNotFoundException.class) @Ignore //todo: fix physically delete comment
+    @Test(expected = EntityNotFoundException.class)
     public void testDeleteAfterSoftDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
-        Photo photo = getSavedPhoto(event, owner);
-        getSavedEventComment(event, owner);
-        getSavedPhotoComment(photo, owner);
+        getSavedPhoto(event, owner);
+//        getSavedEventComment(event, owner);   //fix physically delete account comments if it's necessary
+//        getSavedPhotoComment(photo, owner);
 
-        assertAccountIsNotDeleted(owner, event);
+        assertAccountIsNotDeleted(owner, true, true, false, OWNER);
+        assertAccountIsNotDeleted(owner, event, true);
 
         this.accountDAO.setDeleted(owner.getId(), true);
 
-        assertAccountIsDeleted(owner, event);
+        assertAccountIsDeleted(owner, true, true, false, OWNER);
+        assertAccountIsDeleted(owner, event, true);
 
         this.accountDAO.delete(owner.getId());
 
-        assertAccountIsDeleted(owner, event);
+        assertAccountIsDeleted(owner, true, true, false, OWNER);
+        assertAccountIsDeleted(owner, event, true);
 
         this.accountDAO.delete(owner.getId());
     }
@@ -96,7 +139,7 @@ public class AccountDaoIT extends AbstractDaoIT {
         Account actual = this.accountDAO.getByEmail(account.getEmail());
 
         assertNotNull(actual);
-        assertEqualsAccount(account, actual);
+        assertEqualsEntity(account, actual);
 
         this.accountDAO.setDeleted(account.getId(), true);
 
@@ -110,7 +153,7 @@ public class AccountDaoIT extends AbstractDaoIT {
         Account actual = this.accountDAO.getByFbId(account.getFbId());
 
         assertNotNull(actual);
-        assertEqualsAccount(account, actual);
+        assertEqualsEntity(account, actual);
 
         this.accountDAO.setDeleted(account.getId(), true);
 
@@ -124,92 +167,74 @@ public class AccountDaoIT extends AbstractDaoIT {
         Account actual = this.accountDAO.getByVkId(account.getVkId());
 
         assertNotNull(actual);
-        assertEqualsAccount(account, actual);
+        assertEqualsEntity(account, actual);
 
         this.accountDAO.setDeleted(account.getId(), true);
 
         assertNull(this.accountDAO.getByVkId(account.getVkId()));
     }
 
-    protected void assertEqualsAccount(final Account expected, final Account actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getEmail(), actual.getEmail());
-        if(expected.getUserName() != null) {
-            assertEquals(expected.getUserName(), actual.getUserName());
-        } else {
-            assertNull(actual.getUserName());
+    private void assertAccountIsNotDeleted(final Account account, boolean events, boolean photos, boolean comments, Long ... roles) {
+        Account actual = this.accountDAO.read(account.getId());
+        assertEqualsEntity(account, actual);
+        actual = this.accountDAO.getOrThrow(account.getId());
+        assertEqualsEntity(account, actual);
+        if(events) {
+            assertFalse(this.accountEventDAO.getEvents(account.getId()).isEmpty());
+            if (roles != null) {
+                for (Long role : roles) {
+                    assertFalse(this.accountEventDAO.getEvents(account.getId(), role).isEmpty());
+                    assertFalse(this.accountEventDAO.getByAccountAndRole(account.getId(), role).isEmpty());
+                }
+            }
         }
-        if(expected.getProfileImageUrl() != null) {
-            assertEquals(expected.getProfileImageUrl(), actual.getProfileImageUrl());
-        } else {
-            assertNull(actual.getProfileImageUrl());
+        if(photos) {
+            assertFalse(this.photoDAO.getPhotosByOwner(account.getId()).isEmpty());
         }
-        if(expected.getFbId() != null) {
-            assertEquals(expected.getFbId(), actual.getFbId());
-        }else {
-            assertNull(actual.getFbId());
-        }
-
-        if(expected.getVkId() != null) {
-            assertEquals(expected.getVkId(), actual.getVkId());
-        } else {
-            assertNull(actual.getVkId());
+        if(comments) {
+            assertFalse(this.commentDAO.getCommentsByAuthor(account.getId()).isEmpty());
         }
     }
 
-    private void assertAccountIsNotDeleted(final Account owner, final Event event) {
-        assertEqualsAccount(owner, this.accountDAO.read(owner.getId()));
-        assertAccountIsNotDeleted(owner.getId(), event.getId());
-    }
 
-    private void assertAccountIsDeleted(final Account owner, final Event event) {
-        assertAccountIsDeleted(owner.getId(), event.getId());
-    }
-
-    private void assertAccountIsDeleted(final Long ownerId, final Long eventId) {
-        assertNull(this.accountDAO.read(ownerId));
+    private void assertAccountIsDeleted(final Account account, boolean events, boolean photos, boolean comments, Long ... roles) {
+        assertNull(this.accountDAO.read(account.getId()));
         try {
-            this.accountDAO.getOrThrow(ownerId);
+            this.accountDAO.getOrThrow(account.getId());
             fail();
         } catch (EntityNotFoundException ignored){}
-
-        assertNull(this.accountEventDAO.get(ownerId, eventId));
-        assertNull(this.accountEventDAO.getRole(ownerId, eventId));
-        assertNull(this.accountEventDAO.getWithAccountEvent(ownerId, eventId));
-
-        assertTrue(this.accountEventDAO.getAccounts(eventId).isEmpty());
-        assertTrue(this.accountEventDAO.getAccounts(eventId, OWNER).isEmpty());
-        assertTrue(this.accountEventDAO.getByEventAndRole(eventId, OWNER).isEmpty());
-
-        assertTrue(this.accountEventDAO.getEvents(ownerId).isEmpty());
-        assertTrue(this.accountEventDAO.getEvents(ownerId, OWNER).isEmpty());
-        assertTrue(this.accountEventDAO.getByAccountAndRole(ownerId, OWNER).isEmpty());
-
-        assertTrue(this.photoDAO.getPhotosByOwner(ownerId).isEmpty());
-        assertTrue(this.photoDAO.getPhotosByAccountInEvent(ownerId, eventId).isEmpty());
-
-        assertTrue(this.commentDAO.getCommentsByAuthor(ownerId).isEmpty());
+        if(events) {
+            assertTrue(this.accountEventDAO.getEvents(account.getId()).isEmpty());
+            if(roles != null) {
+                for (Long role : roles) {
+                    assertTrue(this.accountEventDAO.getEvents(account.getId(), role).isEmpty());
+                    assertTrue(this.accountEventDAO.getByAccountAndRole(account.getId(), role).isEmpty());
+                }
+            }
+        }
+        if(photos) {
+            assertTrue(this.photoDAO.getPhotosByOwner(account.getId()).isEmpty());
+        }
+        if(comments) {
+            assertTrue(this.commentDAO.getCommentsByAuthor(account.getId()).isEmpty());
+        }
     }
 
-    private void assertAccountIsNotDeleted(final Long ownerId, final Long eventId) {
-        assertNotNull(this.accountDAO.read(ownerId));
-        assertNotNull(this.accountDAO.getOrThrow(ownerId));
+    private void assertAccountIsDeleted(final Account account, final Event event, boolean photos) {
+        assertNull(this.accountEventDAO.get(account.getId(), event.getId()));
+        assertNull(this.accountEventDAO.getRole(account.getId(), event.getId()));
+        assertNull(this.accountEventDAO.getWithAccountEvent(account.getId(), event.getId()));
+        if(photos) {
+            assertTrue(this.photoDAO.getPhotosByAccountInEvent(account.getId(), event.getId()).isEmpty());
+        }
+    }
 
-        assertNotNull(this.accountEventDAO.get(ownerId, eventId));
-        assertNotNull(this.accountEventDAO.getRole(ownerId, eventId));
-        assertNotNull(this.accountEventDAO.getWithAccountEvent(ownerId, eventId));
-
-        assertFalse(this.accountEventDAO.getAccounts(eventId).isEmpty());
-        assertFalse(this.accountEventDAO.getAccounts(eventId, OWNER).isEmpty());
-        assertFalse(this.accountEventDAO.getByEventAndRole(eventId, OWNER).isEmpty());
-
-        assertFalse(this.accountEventDAO.getEvents(ownerId).isEmpty());
-        assertFalse(this.accountEventDAO.getEvents(ownerId, OWNER).isEmpty());
-        assertFalse(this.accountEventDAO.getByAccountAndRole(ownerId, OWNER).isEmpty());
-
-        assertFalse(this.photoDAO.getPhotosByOwner(ownerId).isEmpty());
-        assertFalse(this.photoDAO.getPhotosByAccountInEvent(ownerId, eventId).isEmpty());
-
-        assertFalse(this.commentDAO.getCommentsByAuthor(ownerId).isEmpty());
+    private void assertAccountIsNotDeleted(final Account account, final Event event, boolean photos) {
+        assertNotNull(this.accountEventDAO.get(account.getId(), event.getId()));
+        assertNotNull(this.accountEventDAO.getRole(account.getId(), event.getId()));
+        assertNotNull(this.accountEventDAO.getWithAccountEvent(account.getId(), event.getId()));
+        if(photos) {
+            assertFalse(this.photoDAO.getPhotosByAccountInEvent(account.getId(), event.getId()).isEmpty());
+        }
     }
 }

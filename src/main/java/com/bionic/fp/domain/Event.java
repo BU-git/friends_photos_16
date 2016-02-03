@@ -42,7 +42,8 @@ public class Event extends BaseEntity implements IdEntity<Long> {
     private List<AccountEvent> accounts = new ArrayList<>();
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Photo> photos = new ArrayList<>();
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(name = "events_comments",
             joinColumns = {@JoinColumn(name = "event_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "comment_id", referencedColumnName = "id", unique = true)})
@@ -184,7 +185,6 @@ public class Event extends BaseEntity implements IdEntity<Long> {
         if (latitude != null ? !latitude.equals(event.latitude) : event.latitude != null) return false;
         if (longitude != null ? !longitude.equals(event.longitude) : event.longitude != null) return false;
         return !(radius != null ? !radius.equals(event.radius) : event.radius != null);
-
     }
 
     @Override

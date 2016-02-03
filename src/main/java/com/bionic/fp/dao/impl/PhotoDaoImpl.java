@@ -5,6 +5,7 @@ import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.List;
  * @author Sergiy Gabriel
  */
 @Repository
+@Transactional
 public class PhotoDaoImpl extends GenericDaoJpaImpl<Photo, Long> implements PhotoDAO {
 
 	private static final String OWNER = "owner";

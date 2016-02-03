@@ -7,6 +7,8 @@ import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.criteria.*;
 import java.util.List;
 
@@ -16,6 +18,7 @@ import java.util.List;
  * @author Sergiy Gabriel
  */
 @Repository
+@Transactional
 public class CommentDaoImpl extends GenericDaoJpaImpl<Comment, Long> implements CommentDAO {
 
     private static final String AUTHOR = "author";
@@ -66,4 +69,24 @@ public class CommentDaoImpl extends GenericDaoJpaImpl<Comment, Long> implements 
                 .setParameter(1, id).executeUpdate();
         if(rows == 0) throw new EntityNotFoundException(id.toString());
     }
+
+    @Override
+    public void createEventComment(final Long eventId, final Comment comment) {
+        Comment actual = super.create(comment);
+        super.em.createNativeQuery("INSERT INTO events_comments (event_id, comment_id) VALUES (?,?)")
+                .setParameter(1, eventId)
+                .setParameter(2, actual.getId())
+                .executeUpdate();
+
+    }
+
+    @Override
+    public void createPhotoComment(final Long photoId, final Comment comment) {
+        Comment actual = super.create(comment);
+        super.em.createNativeQuery("INSERT INTO photos_comments (photo_id, comment_id) VALUES (?,?)")
+                .setParameter(1, photoId)
+                .setParameter(2, actual.getId())
+                .executeUpdate();
+    }
+
 }

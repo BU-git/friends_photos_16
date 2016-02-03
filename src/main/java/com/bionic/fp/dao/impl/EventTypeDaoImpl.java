@@ -4,6 +4,7 @@ import com.bionic.fp.dao.EventTypeDAO;
 import com.bionic.fp.domain.EventType;
 import com.bionic.fp.exception.logic.impl.EventTypeNotFoundException;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,6 +20,7 @@ import static java.util.Optional.ofNullable;
  * @author Sergiy Gabriel
  */
 @Repository
+@Transactional
 public class EventTypeDaoImpl extends GenericDaoJpaImpl<EventType, Long> implements EventTypeDAO {
 
     public EventTypeDaoImpl() {}

@@ -5,6 +5,7 @@ import com.bionic.fp.domain.BaseEntity;
 import com.bionic.fp.domain.IdEntity;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.critical.NonUniqueResultException;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.persistence.criteria.*;
@@ -21,6 +22,7 @@ import static java.util.Optional.ofNullable;
  *
  * @author Sergiy Gabriel
  */
+@Transactional
 public class GenericDaoJpaImpl<T extends BaseEntity & IdEntity<PK>, PK extends Serializable> implements GenericDAO<T, PK> {
 
     protected static final String HINT_LOAD_GRAPH = "javax.persistence.loadgraph";
