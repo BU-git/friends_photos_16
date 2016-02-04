@@ -19,4 +19,15 @@ public interface EventDAO extends GenericDAO<Event, Long> {
      * @return a list of events
      */
     List<Event> get(String name, String description);
+
+    /**
+     * Returns a list of events which are within the specified radius from the specified coordinates
+     * http://www.plumislandmedia.net/mysql/haversine-mysql-nearest-loc/
+     *
+     * @param latitude the latitude of the centre
+     * @param longitude the longitude of the centre
+     * @param radius the radius
+     * @return a list of events
+     */
+    List<Event> get(double latitude, double longitude, float radius);
 }

@@ -8,6 +8,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.bionic.fp.Constants.RoleConstants.MEMBER;
@@ -256,6 +257,21 @@ public class EventDAOIT extends AbstractDaoIT {
 
         assertEquals(1, events.size());
         assertTrue(events.contains(event2));
+    }
+
+    @Test
+    public void testGetByCoordinatesSuccess() throws Exception {
+        Account owner = getSavedAccount();
+        List<Event> events = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Event event = getNewEventMin();
+            event.setLatitude(i * 0.1);
+            event.setLongitude(i * 0.1);
+            events.add(save(owner, event));
+        }
+        List<Event> actual = this.eventDAO.get(0.5, 0.5, 100);
+        System.out.println(actual);
+        assertEquals(events.size(), actual.size());
     }
 
     private void assertEventIsNotDeleted(final Long accountId, final Event event) {

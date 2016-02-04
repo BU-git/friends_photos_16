@@ -5,6 +5,7 @@ import com.bionic.fp.domain.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Query;
 import javax.persistence.criteria.*;
 import java.util.*;
 
@@ -44,5 +45,14 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
         }
 
         return this.em.createQuery(query.where(predicate)).getResultList();
+    }
+
+    @Override
+    public List<Event> get(final double latitude, final double longitude, final float radius) {
+        return this.em.createNamedQuery(Event.FIND_BY_RADIUS, Event.class)
+                .setParameter("latitude", latitude)
+                .setParameter("longitude", longitude)
+                .setParameter("radius", radius)
+                .getResultList();
     }
 }
