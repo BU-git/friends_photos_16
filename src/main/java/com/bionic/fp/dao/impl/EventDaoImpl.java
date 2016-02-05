@@ -23,6 +23,8 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
     private static final String VISIBLE = "visible";
     private static final String NAME = "name";
     private static final String DESCRIPTION = "description";
+    private static final String LATITUDE = "latitude";
+    private static final String LONGITUDE = "longitude";
 
     public EventDaoImpl() {}
 
@@ -53,6 +55,20 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
                 .setParameter("latitude", latitude)
                 .setParameter("longitude", longitude)
                 .setParameter("radius", radius)
+                .getResultList();
+    }
+
+    @Override
+    public List<Event> get(final double latMin, final double lngMin,
+                           final double latMax, final double lngMax) {
+        CriteriaBuilder cb = this.em.getCriteriaBuilder();
+        CriteriaQuery<Event> query = cb.createQuery(Event.class);
+        Root<Event> event = query.from(Event.class);
+        return this.em.createQuery(query.where(
+                cb.isTrue(event.get(VISIBLE)),
+                isNotDeleted(event),
+                cb.between(event.get(LATITUDE), latMin, latMax),
+                cb.between(event.get(LONGITUDE), lngMin, lngMax)))
                 .getResultList();
     }
 }

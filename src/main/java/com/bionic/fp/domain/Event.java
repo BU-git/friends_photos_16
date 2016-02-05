@@ -15,7 +15,7 @@ import java.util.List;
         "WHERE e.visible = TRUE " +
             "AND e.deleted = FALSE " +
             "AND e.lat BETWEEN :latitude - (:radius / 111.045) AND :latitude + (:radius / 111.045) " +
-            "AND e.lng BETWEEN :longitude - (:radius / 111.045 * COS(RADIANS(:latitude))) AND :longitude + (:radius / 111.045 * COS(RADIANS(:latitude))) " +
+            "AND e.lng BETWEEN :longitude - (:radius / (111.045 * COS(RADIANS(:latitude)))) AND :longitude + (:radius / (111.045 * COS(RADIANS(:latitude)))) " +
         "HAVING (111.045 * DEGREES(ACOS(COS(RADIANS(:latitude)) * COS(RADIANS(e.lat)) * COS(RADIANS(:longitude - e.lng)) + SIN(RADIANS(:latitude)) * SIN(RADIANS(e.lat))))) < :radius")
 })
 public class Event extends BaseEntity implements IdEntity<Long> {

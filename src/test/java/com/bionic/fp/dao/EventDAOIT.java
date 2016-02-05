@@ -4,7 +4,7 @@ import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
-import org.junit.Ignore;
+import com.bionic.fp.util.GeoUtils;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
@@ -13,6 +13,7 @@ import java.util.List;
 
 import static com.bionic.fp.Constants.RoleConstants.MEMBER;
 import static com.bionic.fp.Constants.RoleConstants.OWNER;
+import static java.lang.Math.*;
 import static org.junit.Assert.*;
 
 /**
@@ -21,6 +22,13 @@ import static org.junit.Assert.*;
  * @author Sergiy Gabriel
  */
 public class EventDAOIT extends AbstractDaoIT {
+
+    /**
+     * 111.045 km per degree of latitude
+     * @see <a href="http://www.plumislandmedia.net/mysql/haversine-mysql-nearest-loc/">
+     *     http://www.plumislandmedia.net/mysql/haversine-mysql-nearest-loc/</a>
+     */
+    private static final double KM_PER_DEGREE_LATITUDE = 111.045;
 
     @Test
     public void testGetByIdSuccess() {
@@ -261,17 +269,31 @@ public class EventDAOIT extends AbstractDaoIT {
 
     @Test
     public void testGetByCoordinatesSuccess() throws Exception {
+        float  epsilon = 0.01f;
         Account owner = getSavedAccount();
         List<Event> events = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Event event = getNewEventMin();
-            event.setLatitude(i * 0.1);
-            event.setLongitude(i * 0.1);
-            events.add(save(owner, event));
-        }
-        List<Event> actual = this.eventDAO.get(0.5, 0.5, 100);
-        System.out.println(actual);
-        assertEquals(events.size(), actual.size());
+        Event event1 = getNewEventMin(); event1.setLatitude(50.445385); event1.setLongitude(30.501502); // 0
+        Event event2 = getNewEventMin(); event2.setLatitude(50.445173); event2.setLongitude(30.502908); // ~100m
+        Event event3 = getNewEventMin(); event3.setLatitude(50.444961); event3.setLongitude(30.504249); // ~200m
+        Event event4 = getNewEventMin(); event4.setLatitude(50.444727); event4.setLongitude(30.505630); // ~300m
+        Event event5 = getNewEventMin(); event5.setLatitude(50.444507); event5.setLongitude(30.507001); // ~400m
+        events.add(save(owner, event1));
+        events.add(save(owner, event2));
+        events.add(save(owner, event3));
+        events.add(save(owner, event4));
+        events.add(save(owner, event5));
+
+        List<Event> actual = this.eventDAO.get(event3.getLatitude(), event3.getLongitude(), (0.2f + epsilon));
+        assertEqualsEntities(actual, event1, event2, event3, event4, event5);
+
+        actual = this.eventDAO.get(event3.getLatitude(), event3.getLongitude(), (0.1f + epsilon));
+        assertEqualsEntities(actual, event2, event3, event4);
+
+        actual = this.eventDAO.get(event2.getLatitude(), event2.getLongitude(), (0.1f + epsilon));
+        assertEqualsEntities(actual, event1, event2, event3);
+
+        actual = this.eventDAO.get(event2.getLatitude(), event2.getLongitude(), (0.2f + epsilon));
+        assertEqualsEntities(actual, event1, event2, event3, event4);
     }
 
     private void assertEventIsNotDeleted(final Long accountId, final Event event) {

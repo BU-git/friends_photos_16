@@ -22,7 +22,8 @@ public interface EventDAO extends GenericDAO<Event, Long> {
 
     /**
      * Returns a list of events which are within the specified radius from the specified coordinates
-     * http://www.plumislandmedia.net/mysql/haversine-mysql-nearest-loc/
+     * @see <a href="http://www.plumislandmedia.net/mysql/haversine-mysql-nearest-loc/">
+     *     http://www.plumislandmedia.net/mysql/haversine-mysql-nearest-loc/</a>
      *
      * @param latitude the latitude of the centre
      * @param longitude the longitude of the centre
@@ -30,4 +31,15 @@ public interface EventDAO extends GenericDAO<Event, Long> {
      * @return a list of events
      */
     List<Event> get(double latitude, double longitude, float radius);
+
+    /**
+     * Returns a list of events in the coordinate range
+     *
+     * @param latMin the minimal latitude
+     * @param lngMin the minimal longitude
+     * @param latMax the maximal latitude
+     * @param lngMax the maximal longitude
+     * @return a list of events
+     */
+    List<Event> get(double latMin, double lngMin,double latMax, double lngMax);
 }
