@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * Class representing authentication response
  * Created by Schotkin Alexandr on 16.11.2015.
  */
-@Deprecated
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AuthResponse {
     public static final int AUTHENTICATED = 0;
