@@ -20,11 +20,31 @@
 
     * ### [Get the user info] (FriendsPhotosRESTAPI.md/#get-the-user-info-1)
 
-	* ### [Get a list of events of the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-of-the-account-1)
+    * ### [Get a list of accounts belonging to the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-accounts-belonging-to-the-event-1)
+
+    * ### [Get a list of account ids belonging to the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-account-ids-belonging-to-the-event-1)
+
+    * ### [Get the owner of the event] (FriendsPhotosRESTAPI.md/#get-the-owner-of-the-event-1)
+
+    * ### [Get the owner id of the event] (FriendsPhotosRESTAPI.md/#get-the-owner-id-of-the-event-1)
+
+    * ### [~~Update the user info~~] (FriendsPhotosRESTAPI.md/#update-the-user-info-1)
+
+    * ### [~~Delete an account~~] (FriendsPhotosRESTAPI.md/#delete-an-account-1)
+
+* ## [Interaction with events] (FriendsPhotosRESTAPI.md/#interaction-with-events-1)
+
+	* ### [Get an event] (FriendsPhotosRESTAPI.md/#get-an-event-1)
+
+	* ### [Get a list of events] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-1)
+
+	* ### [Get a list of event ids] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-1)
+
+    * ### [Get a list of events of the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-of-the-account-1)
 
 	* ### [Get a list of events of the user] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-of-the-user-1)
 
-	* ### [Get a list of events owned by the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-owned-by-the-account-1)
+    * ### [Get a list of events owned by the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-owned-by-the-account-1)
 
 	* ### [Get a list of events owned by the user] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-owned-by-the-user-1)
 
@@ -44,45 +64,25 @@
 
 	* ### [Get a list of event ids where the user has the specified role] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-where-the-user-has-the-specified-role-1)
 
-	* ### [Get a list of photos of the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-photos-of-the-account-1)
+	* ### [~~Get a list of events which are within the specified radius from the specified coordinates~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-which-are-within-the-specified-radius-from-the-specified-coordinates-1)
 
-	* ### [Get a list of photos of the user] (FriendsPhotosRESTAPI.md/#get-a-list-of-photos-of-the-user-1)
-
-	* ### [Get a list of photo ids of the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-photo-ids-of-the-account-1)
-
-* ## [Interaction with events] (FriendsPhotosRESTAPI.md/#interaction-with-events-1)
-
-	* ### [Get an event] (FriendsPhotosRESTAPI.md/#get-an-event-1)
-
-	* ### [Get a list of events] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-1)
-
-	* ### [Get a list of event ids] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-1)
-
-	* ### [Get a list of accounts belonging to the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-accounts-belonging-to-the-event-1)
+	* ### [~~Get a list of events in the specified coordinate range~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-in-the-specified-coordinate-range-1)
 	
-	* ### [Get a list of account ids belonging to the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-account-ids-belonging-to-the-event-1)
-	
-	* ### [Get a list of photos of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-photos-of-the-event-1)
-
-	* ### [Get a list of photo ids of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-photo-ids-of-the-event-1)
-	
-	* ### [Get a list of comments of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-event-1)
-
-	* ### [Get a list of comment ids of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-event-1)
-
-	* ### [Get the owner of the event] (FriendsPhotosRESTAPI.md/#get-the-owner-of-the-event-1)
-
-	* ### [Get the owner id of the event] (FriendsPhotosRESTAPI.md/#get-the-owner-id-of-the-event-1)
-
 	* ### [Create an event] (FriendsPhotosRESTAPI.md/#create-an-event-1)
 
 	* ### [Add the user to the event] (FriendsPhotosRESTAPI.md/#add-the-user-to-the-event-1)
 
 	* ### [Add a comment to the event] (FriendsPhotosRESTAPI.md/#add-a-comment-to-the-event-1)
+	
+	* ### [~~Add a photo to the event~~] (FriendsPhotosRESTAPI.md/#add-a-photo-to-the-event-1)
 
 	* ### [Update the event] (FriendsPhotosRESTAPI.md/#update-the-event-1)
 
 	* ### [Change the role of the participant in the event] (FriendsPhotosRESTAPI.md/#change-the-role-of-the-participant-in-the-event-1)
+	
+	* ### [~~Remove an account from the event~~] (FriendsPhotosRESTAPI.md/#remove-an-account-from-the-event-1)
+	
+	* ### [~~Remove the user from the event~~] (FriendsPhotosRESTAPI.md/#remove-the-user-from-the-event-1)
 
 	* ### [Delete the event] (FriendsPhotosRESTAPI.md/#delete-the-event-1)
 
@@ -91,21 +91,74 @@
 	* ### [Get a photo] (FriendsPhotosRESTAPI.md/#get-a-photo-1)
 
 	* ### [Get a photo file] (FriendsPhotosRESTAPI.md/#get-a-photo-file-1)
+	
+	* ### [Get a list of photos of the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-photos-of-the-account-1)
+	
+    * ### [Get a list of photo ids of the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-photo-ids-of-the-account-1)
+    
+    * ### [Get a list of photos of the user] (FriendsPhotosRESTAPI.md/#get-a-list-of-photos-of-the-user-1)
+    
+    * ### [Get a list of photo ids of the user] (FriendsPhotosRESTAPI.md/#get-a-list-of-photo-ids-of-the-user-1)
+    
+    * ### [Get a list of photos of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-photos-of-the-event-1)
+    
+    * ### [Get a list of photo ids of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-photo-ids-of-the-event-1)
+    
+    * ### [~~Get a list of photos of the account in the event~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-photos-of-the-account-in-the-event-1)
+    	
+    * ### [~~Get a list of photo ids of the account in the event~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-photo-ids-of-the-account-in-the-event-1)
+    
+    * ### [~~Get a list of photos of the user in the event~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-photos-of-the-user-in-the-event-1)
+    
+    * ### [~~Get a list of photo ids of the user in the event~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-photo-ids-of-the-user-in-the-event-1)
 
-	* ### [Create a photo] (FriendsPhotosRESTAPI.md/#create-a-photo-1)
+	* ### [Create a photo (@see Add a photo to the event)] (FriendsPhotosRESTAPI.md/#create-a-photo-1)
 
 	* ### [Add a comment to the photo] (FriendsPhotosRESTAPI.md/#add-a-comment-to-the-photo-1)
 
-	* ### [Update the photo] (FriendsPhotosRESTAPI.md/#update-the-photo-1)
+	* ### [~~Update the photo~~] (FriendsPhotosRESTAPI.md/#update-the-photo-1)
+	
+	* ### [~~Delete the photo~~] (FriendsPhotosRESTAPI.md/#delete-the-photo-1)
 
 * ## [Interaction with roles] (FriendsPhotosRESTAPI.md/#interaction-with-roles-1)
 
+	* ### [~~Get a role~~] (FriendsPhotosRESTAPI.md/#get-a-role-1)
+	
 	* ### [Get a list of all roles] (FriendsPhotosRESTAPI.md/#get-a-list-of-all-roles-1)
 
 	* ### [Get a role of the account in the event] (FriendsPhotosRESTAPI.md/#get-a-role-of-the-account-in-the-event-1)
 
 	* ### [Get a role id of the account in the event] (FriendsPhotosRESTAPI.md/#get-a-role-id-of-the-account-in-the-event-1)
+	
+	* ### [~~Create a role~~] (FriendsPhotosRESTAPI.md/#create-a-role-1)
+	
+	* ### [~~Update the role~~] (FriendsPhotosRESTAPI.md/#update-the-role-1)
+    	
+    * ### [~~Delete the role~~] (FriendsPhotosRESTAPI.md/#delete-the-role-1)
 
+* ## [Interaction with comments] (FriendsPhotosRESTAPI.md/#interaction-with-comments-1)
+
+    * ### [~~Get a comments~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-account-1)
+    
+    * ### [~~Get a list of comments of the account~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-account-1)
+
+	* ### [~~Get a list of comment ids of the account~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-account-1)
+
+    * ### [~~Get a list of comments of the user~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-user-1)
+
+	* ### [~~Get a list of comment ids of the user~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-user-1)
+
+    * ### [Get a list of comments of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-event-1)
+
+	* ### [Get a list of comment ids of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-event-1)
+
+    * ### [Get a list of comments of the photo] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-photo-1)
+
+	* ### [~~Get a list of comment ids of the photo~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-photo-1)
+	 
+	* ### [~~Update the comment~~] (FriendsPhotosRESTAPI.md/#update-the-comment-1)
+	
+	* ### [~~Delete the comment~~] (FriendsPhotosRESTAPI.md/#delete-the-comment-1)
 
 # FriendsPhotos REST API
 
@@ -339,8 +392,384 @@
 		username | true | the username
         image_url | true | the user image url
         email | true | the user email
+        
+    * ### Get a list of accounts belonging to the event
+        
+        #### @GET
+        #### /api/v1/accounts/events/{event_id}
 
-	* ### Get a list of events of the account
+        ##### Path Params:
+
+        Path Key | Value
+        -------- | -----
+        event_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+        ---------- | -------- | -----------
+        event_id | true | the event id
+        
+        ##### Params:
+
+        Key | Value
+        --- | -----
+        ~~fields~~ | username,image_url
+
+        <p/>
+
+        Param Name | Required | Description
+        ---------- | -------- | -----------
+        ~~fields~~ | false | what fields should return the request, separated by commas, the order of insertion is not important
+
+        ##### Response:
+
+        Status | Description
+        ------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+
+            {
+                "account_id": 4,
+                "username": "Dude",
+                "image_url": "http://dude2016.jpg"
+            }
+
+        Param Name | Nullable | Description
+        ---------- | -------- | -----------
+        account_id | true | the owner id of the event
+        username | true | the owner username of the event
+        image_url | true | the owner image url of the event
+    
+    * ### Get a list of account ids belonging to the event
+
+        #### @GET
+        #### /api/v1/accounts/id/events/{event_id}
+
+        ##### Path Params:
+
+        Path Key | Value
+        -------- | -----
+        event_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+        ---------- | -------- | -----------
+        event_id | true | the event id
+
+        ##### Response:
+
+        Status | Description
+        ------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+
+            {
+                "accounts": [15, 16, 17, ...]
+            }
+
+        Param Name | Nullable | Description
+        ---------- | -------- | -----------
+        accounts | false | the list of account ids
+        
+    * ### Get the owner of the event
+
+    	#### @GET
+        #### /api/v1/accounts/owner/events/{event_id}
+
+        ##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        event_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        event_id | true | the event id
+
+        ##### Params:
+
+        Key | Value
+		--- | -----
+        ~~fields~~ | username,image_url
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        ~~fields~~ | false | what fields should return the request, separated by commas, the order of insertion is not important
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+        404 | NOT FOUND
+
+        	{
+            	"account_id": 4,
+    			"username": "Dude",
+				"image_url": "http://dude2016.jpg"
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        account_id | true | the owner id of the event
+		username | true | the owner username of the event
+        image_url | true | the owner image url of the event
+
+	* ### Get the owner id of the event
+
+    	#### @GET
+        #### /api/v1/accounts/id/owner/events/{event_id}
+
+        ##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        event_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        event_id | true | the event id
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+        404 | NOT FOUND
+
+        	{
+            	"id": 8
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        id | false | the owner id of the event
+        
+    * ### ~~Update the user info~~
+    
+        #### @PUT
+        #### /api/v1/accounts/self
+        
+        Header | Value
+        ------ | -----
+        Content-Type | application/json
+        
+        ##### Body:
+
+			{
+                "username": "Dude",
+                "image_url": "http://dude2016.jpg",
+                "email": "email@gmail.com"
+            }
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+		username | false | the username
+        image_url | false | the user image url
+        email | false | the user email
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        400 | BAD REQUEST
+        401 | UNAUTHORIZED
+        
+    * ### ~~Delete an account~~
+
+    	#### @DELETE
+        #### /api/v1/accounts/{account_id}
+
+        ##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        account_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        account_id | true | the account id
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        204 | NO CONTENT
+        401 | UNAUTHORIZED
+        403 | FORBIDDEN
+
+* ## Interaction with events
+
+	* ### Get an event
+
+    	#### @GET
+        #### /api/v1/events/{event_id}
+
+		##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        event_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        event_id | true | the event id
+
+        ##### Params:
+
+        Key | Value
+		--- | -----
+        fields | event_id,name,type_id
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        fields | false | what fields should return the request, separated by commas, the order of insertion is not important
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+        404 | NOT FOUND
+
+			{
+                "event_id": 16,
+                "name": "NY 2016",
+                "description": "Happy New Year!",
+                "date": "2015-11-21 17:41:03",
+                "expire_date": "2015-12-21 17:41:03",
+                "type_id": 1,
+                "lat": 10.0,
+                "lng": 20.0,
+                "radius": 0.1,
+                "geo": false
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        event_id | true | the event id
+		name | true | the event name
+        description | true | the event description
+        date | true | the create date of the event
+        expire_date | true | the expire date of the event
+        type_id | true | the event type id
+        lat | true | the event latitude
+        lng | true | the event longitude
+        radius | true | the event radius
+        geo | true | are the geo services enabled for the event?
+
+	* ### Get a list of events
+
+    	#### @GET
+        #### /api/v1/events
+
+        ##### Params:
+
+        Key | Value
+		--- | -----
+        name | NY 2016
+        description | enjoy
+        fields | event_id,name,type_id
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        name | false | the event name
+        description | false | the event description
+        fields | false | what fields should return the request, separated by commas, the order of insertion is not important
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+
+        	{
+            	"events": [
+                	{
+                    	"event_id": 16,
+                        "name": "NY 2016",
+  						"description": "Happy New Year!",
+  						"date": "2015-11-21 17:41:03",
+                        "expire_date": "2015-12-21 17:41:03",
+  						"type_id": 1,
+  						"lat": 10.0,
+  						"lng": 20.0,
+                        "radius": 0.1,
+  						"geo": false
+                    }, ...
+                ]
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        events | false | the list of events
+        event_id | true | the event id
+		name | true | the event name
+        description | true | the event description
+        date | true | the create date of the event
+        expire_date | true | the expire date of the event
+        type_id | true | the event type id
+        lat | true | the event latitude
+        lng | true | the event longitude
+        radius | true | the event radius
+        geo | true | are the geo services enabled for the event?
+
+	* ### Get a list of event ids
+
+    	#### @GET
+        #### /api/v1/events/id
+
+        ##### Params:
+
+        Key | Value
+		--- | -----
+        name | NY 2016
+        description | enjoy
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        name | false | the event name
+        description | false | the event description
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+
+        	{
+            	"events": [15, 16, 17, ...]
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        events | false | the list of events
+    
+    * ### Get a list of events of the account
 
     	#### @GET
         #### /api/v1/events/accounts/{account_id}
@@ -889,242 +1318,44 @@
 		---------- | -------- | -----------
         events | false | the list of event ids
 
-	* ### Get a list of photos of the account
+	* ### ~~Get a list of events which are within the specified radius from the specified coordinates~~
 
     	#### @GET
-        #### /api/v1/photos/accounts/{account_id}
-
-        ##### Path Params:
-
-        Path Key | Value
-		-------- | -----
-        account_id | 14
-
-        <p/>
-
-        Param Name | Required | Description
-		---------- | -------- | -----------
-        account_id | true | the account id
-
+        #### /api/v1/events/geo/radius
+        
         ##### Params:
-
+      
         Key | Value
-		--- | -----
-        ~~fields~~ | photo_id,name,event_id
+        --- | -----
+        ~~fields~~ | event_id,name,type_id
 
         <p/>
 
         Param Name | Required | Description
-		---------- | -------- | -----------
+        ---------- | -------- | -----------
         ~~fields~~ | false | what fields should return the request, separated by commas, the order of insertion is not important
 
-        ##### Response:
-
-        Status | Description
-		------ | -----------
-        200 | OK
-        401 | UNAUTHORIZED
+        Header | Value
+        ------ | -----
+        Content-Type | application/json
+        
+        ##### Body:
 
 			{
-            	"photos": [
-                	{
-                	    "photo_id": 11,
-                        "name": "NY 2016",
-  						"event_id": 56,
-  						"owner_id": 78
-                    }, ...
-                ]
-			}
-
-        Param Name | Nullable | Description
-		---------- | -------- | -----------
-        photos | false | the list of photos
-        photo_id | true | the photo id
-        name | true | the photo name
-        event_id | true | the id of the event where there is the photo
-        owner_id | true | the id of the owner of the photo
-
-    * ### Get a list of photos of the user
-
-    	#### @GET
-        #### /api/v1/photos/accounts/self
-
-        ##### Params:
-
-        Key | Value
-		--- | -----
-        ~~fields~~ | photo_id,name,event_id
-
-        <p/>
+                "center": {
+                    "lat": 30.05,
+                    "lng": 50.03
+                },
+                "radius": 0.1
+            }
 
         Param Name | Required | Description
 		---------- | -------- | -----------
-        ~~fields~~ | false | what fields should return the request, separated by commas, the order of insertion is not important
-
-        ##### Response:
-
-        Status | Description
-		------ | -----------
-        200 | OK
-        401 | UNAUTHORIZED
-
-			{
-            	"photos": [
-                	{
-                        "photo_id": 11,
-                        "name": "NY 2016",
-                        "event_id": 56,
-                        "owner_id": 78
-                    }, ...
-                ]
-			}
-
-        Param Name | Nullable | Description
-		---------- | -------- | -----------
-        photos | false | the list of photos
-        photo_id | true | the photo id
-        name | true | the photo name
-        event_id | true | the id of the event where there is the photo
-        owner_id | true | the id of the owner of the photo
-
-	* ### Get a list of photo ids of the account
-
-    	#### @GET
-        #### /api/v1/photos/id/accounts/{account_id}
-
-        ##### Path Params:
-
-        Path Key | Value
-		-------- | -----
-        account_id | 14
-
-        <p/>
-
-        Param Name | Required | Description
-		---------- | -------- | -----------
-        account_id | true | the account id
-
-        ##### Response:
-
-        Status | Description
-		------ | -----------
-        200 | OK
-        401 | UNAUTHORIZED
-
-			{
-            	"photos": [15, 4, 84, ...]
-			}
-
-        Param Name | Nullable | Description
-		---------- | -------- | -----------
-        photos | false | the list of photo ids
-
-    * ### Get a list of photo ids of the user
-
-    	#### @GET
-        #### /api/v1/photos/id/accounts/self
-
-        ##### Response:
-
-        Status | Description
-		------ | -----------
-        200 | OK
-        401 | UNAUTHORIZED
-
-			{
-            	"photos": [15, 4, 84, ...]
-			}
-
-        Param Name | Nullable | Description
-		---------- | -------- | -----------
-        photos | false | the list of photo ids
-
-* ## Interaction with events
-
-	* ### Get an event
-
-    	#### @GET
-        #### /api/v1/events/{event_id}
-
-		##### Path Params:
-
-        Path Key | Value
-		-------- | -----
-        event_id | 14
-
-        <p/>
-
-        Param Name | Required | Description
-		---------- | -------- | -----------
-        event_id | true | the event id
-
-        ##### Params:
-
-        Key | Value
-		--- | -----
-        fields | event_id,name,type_id
-
-        <p/>
-
-        Param Name | Required | Description
-		---------- | -------- | -----------
-        fields | false | what fields should return the request, separated by commas, the order of insertion is not important
-
-        ##### Response:
-
-        Status | Description
-		------ | -----------
-        200 | OK
-        401 | UNAUTHORIZED
-        404 | NOT FOUND
-
-			{
-                "event_id": 16,
-                "name": "NY 2016",
-                "description": "Happy New Year!",
-                "date": "2015-11-21 17:41:03",
-                "expire_date": "2015-12-21 17:41:03",
-                "type_id": 1,
-                "lat": 10.0,
-                "lng": 20.0,
-                "radius": 0.1,
-                "geo": false
-			}
-
-        Param Name | Nullable | Description
-		---------- | -------- | -----------
-        event_id | true | the event id
-		name | true | the event name
-        description | true | the event description
-        date | true | the create date of the event
-        expire_date | true | the expire date of the event
-        type_id | true | the event type id
-        lat | true | the event latitude
-        lng | true | the event longitude
-        radius | true | the event radius
-        geo | true | are the geo services enabled for the event?
-
-	* ### Get a list of events
-
-    	#### @GET
-        #### /api/v1/events
-
-        ##### Params:
-
-        Key | Value
-		--- | -----
-        name | NY 2016
-        description | enjoy
-        fields | event_id,name,type_id
-
-        <p/>
-
-        Param Name | Required | Description
-		---------- | -------- | -----------
-        name | false | the event name
-        description | false | the event description
-        fields | false | what fields should return the request, separated by commas, the order of insertion is not important
-
+		center | true | the center coordinate
+        lat | true | the latitude
+        lng | true | the longitude
+        radius | true | the radius (km)
+        
         ##### Response:
 
         Status | Description
@@ -1163,25 +1394,47 @@
         radius | true | the event radius
         geo | true | are the geo services enabled for the event?
 
-	* ### Get a list of event ids
+    * ### ~~Get a list of events in the specified coordinate range~~
 
     	#### @GET
-        #### /api/v1/events/id
-
+        #### /api/v1/events/geo/range
+        
         ##### Params:
-
+      
         Key | Value
-		--- | -----
-        name | NY 2016
-        description | enjoy
+        --- | -----
+        ~~fields~~ | event_id,name,type_id
 
         <p/>
 
         Param Name | Required | Description
-		---------- | -------- | -----------
-        name | false | the event name
-        description | false | the event description
+        ---------- | -------- | -----------
+        ~~fields~~ | false | what fields should return the request, separated by commas, the order of insertion is not important
 
+        Header | Value
+        ------ | -----
+        Content-Type | application/json
+        
+        ##### Body:
+
+			{
+                "sw": {
+                    "lat": 30.05,
+                    "lng": 50.03
+                },
+                "ne": {
+                    "lat": 32.05,
+                    "lng": 52.03
+                }
+            }
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+		sw | true | the South-West coordinate
+		ne | true | the North-East coordinate
+        lat | true | the latitude
+        lng | true | the longitude
+        
         ##### Response:
 
         Status | Description
@@ -1190,337 +1443,36 @@
         401 | UNAUTHORIZED
 
         	{
-            	"events": [15, 16, 17, ...]
+            	"events": [
+                	{
+                    	"event_id": 16,
+                        "name": "NY 2016",
+  						"description": "Happy New Year!",
+  						"date": "2015-11-21 17:41:03",
+                        "expire_date": "2015-12-21 17:41:03",
+  						"type_id": 1,
+  						"lat": 10.0,
+  						"lng": 20.0,
+                        "radius": 0.1,
+  						"geo": false
+                    }, ...
+                ]
 			}
 
         Param Name | Nullable | Description
 		---------- | -------- | -----------
         events | false | the list of events
-        
-    * ### Get a list of accounts belonging to the event
-    
-        #### @GET
-        #### /api/v1/accounts/events/{event_id}
-
-        ##### Path Params:
-
-        Path Key | Value
-        -------- | -----
-        event_id | 14
-
-        <p/>
-
-        Param Name | Required | Description
-        ---------- | -------- | -----------
         event_id | true | the event id
-        
-        ##### Params:
-
-        Key | Value
-        --- | -----
-        ~~fields~~ | username,image_url
-
-        <p/>
-
-        Param Name | Required | Description
-        ---------- | -------- | -----------
-        ~~fields~~ | false | what fields should return the request, separated by commas, the order of insertion is not important
-
-        ##### Response:
-
-        Status | Description
-        ------ | -----------
-        200 | OK
-        401 | UNAUTHORIZED
-
-            {
-                "account_id": 4,
-                "username": "Dude",
-                "image_url": "http://dude2016.jpg"
-            }
-
-        Param Name | Nullable | Description
-        ---------- | -------- | -----------
-        account_id | true | the owner id of the event
-        username | true | the owner username of the event
-        image_url | true | the owner image url of the event
-
-	* ### Get a list of account ids belonging to the event
-
-    	#### @GET
-        #### /api/v1/accounts/id/events/{event_id}
-
-        ##### Path Params:
-
-        Path Key | Value
-		-------- | -----
-        event_id | 14
-
-        <p/>
-
-        Param Name | Required | Description
-		---------- | -------- | -----------
-        event_id | true | the event id
-
-        ##### Response:
-
-        Status | Description
-		------ | -----------
-        200 | OK
-        401 | UNAUTHORIZED
-
-        	{
-            	"accounts": [15, 16, 17, ...]
-			}
-
-        Param Name | Nullable | Description
-		---------- | -------- | -----------
-        accounts | false | the list of account ids
-
-	* ### Get a list of photos of the event
-
-    	#### @GET
-        #### /api/v1/photos/events/{event_id}
-
-        ##### Path Params:
-
-        Path Key | Value
-		-------- | -----
-        event_id | 14
-
-        <p/>
-
-        Param Name | Required | Description
-		---------- | -------- | -----------
-        event_id | true | the event id
-
-        ##### Params:
-
-        Key | Value
-		--- | -----
-        ~~fields~~ | photo_id,name,event_id
-
-        <p/>
-
-        Param Name | Required | Description
-		---------- | -------- | -----------
-        ~~fields~~ | false | what fields should return the request, separated by commas, the order of insertion is not important
-
-        ##### Response:
-
-        Status | Description
-		------ | -----------
-        200 | OK
-        401 | UNAUTHORIZED
-
-        	{
-            	"photos": [
-                	{
-                        "photo_id": 11,
-                        "name": "NY 2016",
-                        "event_id": 56,
-                        "owner_id": 78
-                    }, ...
-                ]
-			}
-
-        Param Name | Nullable | Description
-		---------- | -------- | -----------
-        photos | false | the list of photos
-        photo_id | true | the photo id
-        name | true | the photo name
-        event_id | true | the id of the event where there is the photo
-        owner_id | true | the id of the owner of the photo
-
-	* ### Get a list of photo ids of the event
-
-    	#### @GET
-        #### /api/v1/photos/id/events/{event_id}
-
-        ##### Path Params:
-
-        Path Key | Value
-		-------- | -----
-        event_id | 14
-
-        <p/>
-
-        Param Name | Required | Description
-		---------- | -------- | -----------
-        event_id | true | the event id
-
-        ##### Response:
-
-        Status | Description
-		------ | -----------
-        200 | OK
-        401 | UNAUTHORIZED
-
-        	{
-            	"photos": [15, 23, 8, ...]
-			}
-
-        Param Name | Nullable | Description
-		---------- | -------- | -----------
-        photos | false | the list of photo ids
-        
-    * ### Get a list of comments of the event
-    
-        #### @GET
-        #### /api/v1/comments/events/{event_id}
-    
-        ##### Path Params:
-    
-        Path Key | Value
-        -------- | -----
-        event_id | 14
-    
-        <p/>
-    
-        Param Name | Required | Description
-        ---------- | -------- | -----------
-        event_id | true | the event id
-    
-        ##### Response:
-    
-        Status | Description
-        ------ | -----------
-        200 | OK
-        401 | UNAUTHORIZED
-    
-            {
-                "comments": [
-                    {
-                        "comment_id": 12,
-                        "comment_text": "some text",
-                        "author_id": 11,
-                        "date": "2016-01-25 18:59:31"
-                    }, ...
-                ]
-            }
-    
-        Param Name | Nullable | Description
-        ---------- | -------- | -----------
-        comments | false | the list of comments
-        comment_id | false | the comment id
-        comment_text | false | the some test of the comment
-        author_id | false | the author of the comment
-        date | false | the create date
-
-	* ### Get a list of comment ids of the event
-
-    	#### @GET
-        #### /api/v1/comments/id/events/{event_id}
-
-        ##### Path Params:
-
-        Path Key | Value
-		-------- | -----
-        event_id | 14
-
-        <p/>
-
-        Param Name | Required | Description
-		---------- | -------- | -----------
-        event_id | true | the event id
-
-        ##### Response:
-
-        Status | Description
-		------ | -----------
-        200 | OK
-        401 | UNAUTHORIZED
-
-        	{
-            	"comments": [15, 23, 8, ...]
-			}
-
-        Param Name | Nullable | Description
-		---------- | -------- | -----------
-        comments | false | the list of comment ids
-
-	* ### Get the owner of the event
-
-    	#### @GET
-        #### /api/v1/accounts/owner/events/{event_id}
-
-        ##### Path Params:
-
-        Path Key | Value
-		-------- | -----
-        event_id | 14
-
-        <p/>
-
-        Param Name | Required | Description
-		---------- | -------- | -----------
-        event_id | true | the event id
-
-        ##### Params:
-
-        Key | Value
-		--- | -----
-        ~~fields~~ | username,image_url
-
-        <p/>
-
-        Param Name | Required | Description
-		---------- | -------- | -----------
-        ~~fields~~ | false | what fields should return the request, separated by commas, the order of insertion is not important
-
-        ##### Response:
-
-        Status | Description
-		------ | -----------
-        200 | OK
-        401 | UNAUTHORIZED
-        404 | NOT FOUND
-
-        	{
-            	"account_id": 4,
-    			"username": "Dude",
-				"image_url": "http://dude2016.jpg"
-			}
-
-        Param Name | Nullable | Description
-		---------- | -------- | -----------
-        account_id | true | the owner id of the event
-		username | true | the owner username of the event
-        image_url | true | the owner image url of the event
-
-	* ### Get the owner id of the event
-
-    	#### @GET
-        #### /api/v1/accounts/id/owner/events/{event_id}
-
-        ##### Path Params:
-
-        Path Key | Value
-		-------- | -----
-        event_id | 14
-
-        <p/>
-
-        Param Name | Required | Description
-		---------- | -------- | -----------
-        event_id | true | the event id
-
-        ##### Response:
-
-        Status | Description
-		------ | -----------
-        200 | OK
-        401 | UNAUTHORIZED
-        404 | NOT FOUND
-
-        	{
-            	"id": 8
-			}
-
-        Param Name | Nullable | Description
-		---------- | -------- | -----------
-        id | false | the owner id of the event
-
+		name | true | the event name
+        description | true | the event description
+        date | true | the create date of the event
+        expire_date | true | the expire date of the event
+        type_id | true | the event type id
+        lat | true | the event latitude
+        lng | true | the event longitude
+        radius | true | the event radius
+        geo | true | are the geo services enabled for the event?
+	
 	* ### Create an event
 
     	#### @POST
@@ -1651,6 +1603,64 @@
         401 | UNAUTHORIZED
         403 | FORBIDDEN
 
+        	{
+            	"id": 4
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        id | false | the comment id
+
+    * ### ~~Add a photo to the event~~
+
+    	#### @POST
+        #### /api/v1/events/{event_id}/photos
+        
+        ##### Path Params:
+        
+        Path Key | Value
+        -------- | -----
+        event_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+        ---------- | -------- | -----------
+        event_id | true | the event id
+        
+        ##### Params:
+
+        Key | Value
+		--- | -----
+        file | file
+        name | "superPhoto"
+        ~~description~~ | "look at me"
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        file | true | the image to upload
+        name | false | the original image name
+        ~~description~~ | false | the description of the image
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        201 | CREATED
+        400 | BAD REQUEST
+        401 | UNAUTHORIZED
+        403 | FORBIDDEN
+
+        	{
+            	"id": 4
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        id | false | the photo id
+
 	* ### Update the event
 
     	#### @PUT
@@ -1704,7 +1714,7 @@
 
         Status | Description
 		------ | -----------
-        201 | CREATED
+        200 | OK
         400 | BAD REQUEST
         401 | UNAUTHORIZED
         403 | FORBIDDEN
@@ -1751,6 +1761,57 @@
         400 | BAD REQUEST
         401 | UNAUTHORIZED
         403 | FORBIDDEN
+        
+    * ### ~~Remove an account from the event~~
+
+    	#### @DELETE
+        #### /api/v1/events/{event_id}/accounts/{account_id}
+
+        ##### Path Params:
+
+        Path Key | Value
+        -------- | -----
+        event_id | 14
+        account_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+        ---------- | -------- | -----------
+        event_id | true | the event id
+        account_id | true | the account id
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        204 | NO CONTENT
+        401 | UNAUTHORIZED
+        403 | FORBIDDEN
+        
+    * ### ~~Remove the user from the event~~
+
+    	#### @DELETE
+        #### /api/v1/events/{event_id}/accounts/self
+
+        ##### Path Params:
+
+        Path Key | Value
+        -------- | -----
+        event_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+        ---------- | -------- | -----------
+        event_id | true | the event id
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        204 | NO CONTENT
+        401 | UNAUTHORIZED
 
 	* ### Delete the event
 
@@ -1776,7 +1837,6 @@
         204 | NO CONTENT
         401 | UNAUTHORIZED
         403 | FORBIDDEN
-        404 | NOT FOUND ?
 
 * ## Interaction with photos
 
@@ -1828,8 +1888,8 @@
 		---------- | -------- | -----------
 		photo_id | true | the photo id
         name | true | the photo name
-        event_id | true | the id of the event where there is the photo
-        owner_id | true | the id of the owner of the photo
+        event_id | true | the id of the event where there is the photo. If you want to get the id but it is null - this means that the event was deleted
+        owner_id | true | the id of the owner of the photo. If you want to get the id but it is null - this means that the account was deleted
 
 	* ### Get a photo file
 
@@ -1857,49 +1917,421 @@
         404 | NOT FOUND
 
         > **OutputStream?!?**
-        
-    * ### Get a list of photo comments
-    
-        #### @GET
-        #### /api/v1/comments/photos/{photo_id}
+
+	* ### Get a list of photos of the account
+
+    	#### @GET
+        #### /api/v1/photos/accounts/{account_id}
 
         ##### Path Params:
 
         Path Key | Value
-        -------- | -----
-        photo_id | 14
+		-------- | -----
+        account_id | 14
 
         <p/>
 
         Param Name | Required | Description
-        ---------- | -------- | -----------
-        photo_id | true | the photo id
+		---------- | -------- | -----------
+        account_id | true | the account id
+
+        ##### Params:
+
+        Key | Value
+		--- | -----
+        ~~fields~~ | photo_id,name,event_id
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        ~~fields~~ | false | what fields should return the request, separated by commas, the order of insertion is not important
 
         ##### Response:
 
         Status | Description
-        ------ | -----------
+		------ | -----------
         200 | OK
         401 | UNAUTHORIZED
-        
-            {
-                "comments": [
-                    {
-                        "comment_id": 12,
-                        "comment_text": "some text",
-                        "author_id": 11,
-                        "date": "2016-01-25 18:59:31"
+
+			{
+            	"photos": [
+                	{
+                	    "photo_id": 11,
+                        "name": "NY 2016",
+  						"event_id": 56,
+  						"owner_id": 78
                     }, ...
                 ]
-            }
+			}
 
         Param Name | Nullable | Description
-        ---------- | -------- | -----------
-        comments | false | the list of comments
-        comment_id | false | the comment id
-        comment_text | false | the some test of the comment
-        author_id | false | the author of the comment
-        date | false | the create date
+		---------- | -------- | -----------
+        photos | false | the list of photos
+        photo_id | true | the photo id
+        name | true | the photo name
+        event_id | true | the id of the event where there is the photo. If you want to get the id but it is null - this means that the event was deleted
+        owner_id | true | the id of the owner of the photo. If you want to get the id but it is null - this means that the account was deleted
+
+	* ### Get a list of photo ids of the account
+
+    	#### @GET
+        #### /api/v1/photos/id/accounts/{account_id}
+
+        ##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        account_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        account_id | true | the account id
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+
+			{
+            	"photos": [15, 4, 84, ...]
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        photos | false | the list of photo ids
+
+    * ### Get a list of photos of the user
+
+    	#### @GET
+        #### /api/v1/photos/accounts/self
+
+        ##### Params:
+
+        Key | Value
+		--- | -----
+        ~~fields~~ | photo_id,name,event_id
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        ~~fields~~ | false | what fields should return the request, separated by commas, the order of insertion is not important
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+
+			{
+            	"photos": [
+                	{
+                        "photo_id": 11,
+                        "name": "NY 2016",
+                        "event_id": 56,
+                        "owner_id": 78
+                    }, ...
+                ]
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        photos | false | the list of photos
+        photo_id | true | the photo id
+        name | true | the photo name
+        event_id | true | the id of the event where there is the photo. If you want to get the id but it is null - this means that the event was deleted
+        owner_id | true | the id of the owner of the photo. If you want to get the id but it is null - this means that the account was deleted
+
+    * ### Get a list of photo ids of the user
+
+    	#### @GET
+        #### /api/v1/photos/id/accounts/self
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+
+			{
+            	"photos": [15, 4, 84, ...]
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        photos | false | the list of photo ids
+
+	* ### Get a list of photos of the event
+
+    	#### @GET
+        #### /api/v1/photos/events/{event_id}
+
+        ##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        event_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        event_id | true | the event id
+
+        ##### Params:
+
+        Key | Value
+		--- | -----
+        ~~fields~~ | photo_id,name,event_id
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        ~~fields~~ | false | what fields should return the request, separated by commas, the order of insertion is not important
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+
+        	{
+            	"photos": [
+                	{
+                        "photo_id": 11,
+                        "name": "NY 2016",
+                        "event_id": 56,
+                        "owner_id": 78
+                    }, ...
+                ]
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        photos | false | the list of photos
+        photo_id | true | the photo id
+        name | true | the photo name
+        event_id | true | the id of the event where there is the photo. If you want to get the id but it is null - this means that the event was deleted
+        owner_id | true | the id of the owner of the photo. If you want to get the id but it is null - this means that the account was deleted
+
+	* ### Get a list of photo ids of the event
+
+    	#### @GET
+        #### /api/v1/photos/id/events/{event_id}
+
+        ##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        event_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        event_id | true | the event id
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+
+        	{
+            	"photos": [15, 23, 8, ...]
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        photos | false | the list of photo ids
+        
+    * ### ~~Get a list of photos of the account in the event~~
+
+    	#### @GET
+        #### /api/v1/photos/events/{event_id}/accounts/{account_id}
+
+        ##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        event_id | 14
+        account_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        event_id | true | the event id
+        account_id | true | the account id
+
+        ##### Params:
+
+        Key | Value
+		--- | -----
+        ~~fields~~ | photo_id,name,event_id
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        ~~fields~~ | false | what fields should return the request, separated by commas, the order of insertion is not important
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+
+        	{
+            	"photos": [
+                	{
+                        "photo_id": 11,
+                        "name": "NY 2016",
+                        "event_id": 56,
+                        "owner_id": 78
+                    }, ...
+                ]
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        photos | false | the list of photos
+        photo_id | true | the photo id
+        name | true | the photo name
+        event_id | true | the id of the event where there is the photo. If you want to get the id but it is null - this means that the event was deleted
+        owner_id | true | the id of the owner of the photo. If you want to get the id but it is null - this means that the account was deleted
+
+    * ### ~~Get a list of photo ids of the account in the event~~
+
+    	#### @GET
+        #### /api/v1/photos/id/events/{event_id}/accounts/{account_id}
+
+        ##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        event_id | 14
+        account_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        event_id | true | the event id
+        account_id | true | the account id
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+
+        	{
+            	"photos": [15, 23, 8, ...]
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        photos | false | the list of photo ids
+    
+    * ### ~~Get a list of photos of the user in the event~~
+
+    	#### @GET
+        #### /api/v1/photos/events/{event_id}/accounts/self
+
+        ##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        event_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        event_id | true | the event id
+
+        ##### Params:
+
+        Key | Value
+		--- | -----
+        ~~fields~~ | photo_id,name,event_id
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        ~~fields~~ | false | what fields should return the request, separated by commas, the order of insertion is not important
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+
+        	{
+            	"photos": [
+                	{
+                        "photo_id": 11,
+                        "name": "NY 2016",
+                        "event_id": 56,
+                        "owner_id": 78
+                    }, ...
+                ]
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        photos | false | the list of photos
+        photo_id | true | the photo id
+        name | true | the photo name
+        event_id | true | the id of the event where there is the photo. If you want to get the id but it is null - this means that the event was deleted
+        owner_id | true | the id of the owner of the photo. If you want to get the id but it is null - this means that the account was deleted
+
+    * ### ~~Get a list of photo ids of the user in the event~~
+
+    	#### @GET
+        #### /api/v1/photos/id/events/{event_id}/accounts/self
+
+        ##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        event_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        event_id | true | the event id
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+
+        	{
+            	"photos": [15, 23, 8, ...]
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        photos | false | the list of photo ids
     
 	* ### Create a photo
 
@@ -1983,7 +2415,7 @@
         401 | UNAUTHORIZED
         403 | FORBIDDEN
 
-	* ### Update the photo
+	* ### ~~Update the photo~~
 
     	#### @PUT
         #### /api/v1/photos/{photo_id}
@@ -2023,22 +2455,81 @@
         401 | UNAUTHORIZED
         403 | FORBIDDEN
         404 | NOT FOUND
+        
+    * ### ~~Delete the photo~~
 
-        	{
-            	"photo_id": 11,
-                "name": "NY 2016",
-                "event_id": 56,
-                "owner_id": 78
-			}
+    	#### @DELETE
+        #### /api/v1/photos/{photo_id}
+
+        ##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        photo_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        photo_id | true | the photo id
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        204 | NO CONTENT
+        401 | UNAUTHORIZED
+        403 | FORBIDDEN
+
+* ## Interaction with roles
+
+    * ### ~~Get a role~~
+
+    	#### @GET
+        #### /api/v1/roles/{role_id}
+
+		##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        role_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        role_id | true | the role id
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+        404 | NOT FOUND
+
+			{
+                "role_id": 1,
+                "role": "OWNER",
+                "can_assign_roles": true,
+                "can_change_settings": true,
+                "can_view_photos": true,
+                "can_add_comments": true,
+                "can_view_comments": true,
+                "can_add_photos": true
+            }
 
         Param Name | Nullable | Description
 		---------- | -------- | -----------
-		photo_id | true | the photo id
-        name | false | the photo name
-        event_id | false | the id of the event where there is the photo
-        owner_id | false | the id of the owner of the photo
-
-* ## Interaction with roles
+        roles | false | the list of roles
+        role_id | false | the role id
+        role | false | the role name
+        can_assign_roles | false | can assign the role of the participant in the event
+        can_change_settings | false | can change settings in the event
+        can_view_photos | false | can view photos in the event
+        can_add_comments | false | can add comments to the event
+        can_view_comments | false | can view comments in the event
+        can_add_photos | false | can add photos to the event
 
 	* ### Get a list of all roles
 
@@ -2162,3 +2653,527 @@
         Param Name | Nullable | Description
 		---------- | -------- | -----------
         id | false | the role id
+        
+    * ### ~~Create a role~~
+
+    	#### @POST
+        #### /api/v1/roles/
+
+       	Header | Value
+		------ | -----
+		Content-Type | application/json
+
+        ##### Body:
+
+			{
+                "role": "NEW",
+                "can_assign_roles": true,
+                "can_change_settings": false,
+                "can_view_photos": true,
+                "can_add_comments": false,
+                "can_view_comments": true,
+                "can_add_photos": false
+            }
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        role | true | the role name
+        can_assign_roles | true | can assign the role of the participant in the event
+        can_change_settings | true | can change settings in the event
+        can_view_photos | true | can view photos in the event
+        can_add_comments | true | can add comments to the event
+        can_view_comments | true | can view comments in the event
+        can_add_photos | true | can add photos to the event
+        
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        201 | CREATED
+        400 | BAD REQUEST
+        401 | UNAUTHORIZED
+
+        	{
+            	"id": 4
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        id | false | the role id
+
+    * ### ~~Update the role~~
+
+    	#### @PUT
+        #### /api/v1/roles/{role_id}
+
+        Header | Value
+		------ | -----
+		Content-Type | application/json
+
+        ##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        role_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        role_id | true | the role id
+
+        ##### Body:
+
+			{
+                "role": "NEW",
+                "can_assign_roles": true,
+                "can_change_settings": false,
+                "can_view_photos": true,
+                "can_add_comments": false,
+                "can_view_comments": true,
+                "can_add_photos": false
+            }
+
+        Param Name | Required | Description
+        ---------- | -------- | -----------
+        role | false | the role name
+        can_assign_roles | false | can assign the role of the participant in the event
+        can_change_settings | false | can change settings in the event
+        can_view_photos | false | can view photos in the event
+        can_add_comments | false | can add comments to the event
+        can_view_comments | false | can view comments in the event
+        can_add_photos | false | can add photos to the event
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        400 | BAD REQUEST
+        401 | UNAUTHORIZED
+        403 | FORBIDDEN
+        404 | NOT FOUND
+
+    * ### ~~Delete the role~~
+
+    	#### @DELETE
+        #### /api/v1/roles/{role_id}
+
+        ##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        role_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        role_id | true | the role id
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        204 | NO CONTENT
+        401 | UNAUTHORIZED
+        403 | FORBIDDEN
+        
+* ## Interaction with comments
+
+    * ### ~~Get a comment~~
+
+    	#### @GET
+        #### /api/v1/comments/{comment_id}
+
+		##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        comment_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        comment_id | true | the comment id
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+        404 | NOT FOUND
+
+			{
+                "comment_id": 12,
+                "comment_text": "some text",
+                "date": "2016-01-25 18:59:31",
+                "author_id": 11,
+                "event_id": 14,
+                "photo_id": 14
+            }
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        comment_id | false | the comment id
+        comment_text | false | the some test of the comment
+        date | false | the create date
+        author_id | false | the author id of the comment. If you want to get the id but it is null - this means that the account was deleted
+        event_id | true | the event id, if this comment belongs the event. If you want to get the id but it is null - this means that the event was deleted
+        photo_id | true | the photo id, if this comment belongs the photo. If you want to get the id but it is null - this means that the photo was deleted
+
+    * ### ~~Get a list of comments of the account~~
+    
+        #### @GET
+        #### /api/v1/comments/accounts/{account_id}
+    
+        ##### Path Params:
+    
+        Path Key | Value
+        -------- | -----
+        account_id | 14
+    
+        <p/>
+    
+        Param Name | Required | Description
+        ---------- | -------- | -----------
+        account_id | true | the account id
+    
+        ##### Response:
+    
+        Status | Description
+        ------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+    
+            {
+                "comments": [
+                    {
+                        "comment_id": 12,
+                        "comment_text": "some text",
+                        "date": "2016-01-25 18:59:31",
+                        "author_id": 11,
+                        "event_id": 14,
+                        "photo_id": 14
+                    }, ...
+                ]
+            }
+    
+        Param Name | Nullable | Description
+        ---------- | -------- | -----------
+        comments | false | the list of comments
+        comment_id | false | the comment id
+        comment_text | false | the some test of the comment
+        date | false | the create date
+        author_id | false | the author id of the comment
+        event_id | true | the event id, if this comment belongs the event. If you want to get the id but it is null - this means that the event was deleted
+        photo_id | true | the photo id, if this comment belongs the photo. If you want to get the id but it is null - this means that the photo was deleted
+
+	* ### ~~Get a list of comment ids of the account~~
+
+    	#### @GET
+        #### /api/v1/comments/id/accounts/{account_id}
+
+        ##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        account_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        account_id | true | the account id
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+
+        	{
+            	"comments": [15, 23, 8, ...]
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        comments | false | the list of comment ids
+
+    * ### ~~Get a list of comments of the user~~
+    
+        #### @GET
+        #### /api/v1/comments/accounts/self
+    
+        ##### Response:
+    
+        Status | Description
+        ------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+    
+            {
+                "comments": [
+                    {
+                        "comment_id": 12,
+                        "comment_text": "some text",
+                        "date": "2016-01-25 18:59:31",
+                        "author_id": 11,
+                        "event_id": 14,
+                        "photo_id": 14
+                    }, ...
+                ]
+            }
+    
+        Param Name | Nullable | Description
+        ---------- | -------- | -----------
+        comments | false | the list of comments
+        comment_id | false | the comment id
+        comment_text | false | the some test of the comment
+        date | false | the create date
+        author_id | false | the author id of the comment
+        event_id | true | the event id, if this comment belongs the event. If you want to get the id but it is null - this means that the event was deleted
+        photo_id | true | the photo id, if this comment belongs the photo. If you want to get the id but it is null - this means that the photo was deleted
+
+	* ### ~~Get a list of comment ids of the user~~
+
+    	#### @GET
+        #### /api/v1/comments/id/accounts/self
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+
+        	{
+            	"comments": [15, 23, 8, ...]
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        comments | false | the list of comment ids
+    
+    * ### Get a list of comments of the event
+    
+        #### @GET
+        #### /api/v1/comments/events/{event_id}
+    
+        ##### Path Params:
+    
+        Path Key | Value
+        -------- | -----
+        event_id | 14
+    
+        <p/>
+    
+        Param Name | Required | Description
+        ---------- | -------- | -----------
+        event_id | true | the event id
+    
+        ##### Response:
+    
+        Status | Description
+        ------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+    
+            {
+                "comments": [
+                    {
+                        "comment_id": 12,
+                        "comment_text": "some text",
+                        "date": "2016-01-25 18:59:31",
+                        "author_id": 11,
+                        "event_id": 14
+                    }, ...
+                ]
+            }
+    
+        Param Name | Nullable | Description
+        ---------- | -------- | -----------
+        comments | false | the list of comments
+        comment_id | false | the comment id
+        comment_text | false | the some test of the comment
+        date | false | the create date
+        author_id | true | the author id of the comment. If you want to get the id but it is null - this means that the account was deleted
+        event_id | false | the event id
+
+	* ### Get a list of comment ids of the event
+
+    	#### @GET
+        #### /api/v1/comments/id/events/{event_id}
+
+        ##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        event_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        event_id | true | the event id
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+
+        	{
+            	"comments": [15, 23, 8, ...]
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        comments | false | the list of comment ids
+     
+    * ### Get a list of comments of the photo
+    
+        #### @GET
+        #### /api/v1/comments/photos/{photo_id}
+
+        ##### Path Params:
+
+        Path Key | Value
+        -------- | -----
+        photo_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+        ---------- | -------- | -----------
+        photo_id | true | the photo id
+
+        ##### Response:
+
+        Status | Description
+        ------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+
+            {
+                "comments": [
+                    {
+                        "comment_id": 12,
+                        "comment_text": "some text",
+                        "date": "2016-01-25 18:59:31",
+                        "author_id": 11,
+                        "photo_id": 14
+                    }, ...
+                ]
+            }
+    
+        Param Name | Nullable | Description
+        ---------- | -------- | -----------
+        comments | false | the list of comments
+        comment_id | false | the comment id
+        comment_text | false | the some test of the comment
+        date | false | the create date
+        author_id | true | the author id of the comment. If you want to get the id but it is null - this means that the account was deleted
+        photo_id | false | the photo id
+
+    * ### ~~Get a list of comment ids of the photo~~
+
+    	#### @GET
+        #### /api/v1/comments/id/photos/{photo_id}
+
+        ##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        photo_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        photo_id | true | the photo id
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        401 | UNAUTHORIZED
+
+        	{
+            	"comments": [15, 23, 8, ...]
+			}
+
+        Param Name | Nullable | Description
+		---------- | -------- | -----------
+        comments | false | the list of comment ids
+        
+    * ### ~~Update the comment~~
+
+    	#### @PUT
+        #### /api/v1/comments/{comment_id}
+
+        Header | Value
+		------ | -----
+		Content-Type | application/json
+
+        ##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        comment_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        comment_id | true | the comment id
+
+        ##### Body:
+
+			{
+                "comment_text": "some text"
+            }
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        comment_text | false | the some test of the comment
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        200 | OK
+        400 | BAD REQUEST
+        401 | UNAUTHORIZED
+        403 | FORBIDDEN
+        404 | NOT FOUND
+
+    * ### ~~Delete the comment~~
+
+    	#### @DELETE
+        #### /api/v1/comments/{comment_id}
+
+        ##### Path Params:
+
+        Path Key | Value
+		-------- | -----
+        comment_id | 14
+
+        <p/>
+
+        Param Name | Required | Description
+		---------- | -------- | -----------
+        comment_id | true | the comment id
+
+        ##### Response:
+
+        Status | Description
+		------ | -----------
+        204 | NO CONTENT
+        401 | UNAUTHORIZED
+        403 | FORBIDDEN
