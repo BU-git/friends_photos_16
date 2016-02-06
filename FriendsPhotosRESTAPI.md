@@ -4,96 +4,96 @@
 
 * ## [Authentication] (FriendsPhotosRESTAPI.md/#authentication-1)
 
-	* ### [Authentication using email] (FriendsPhotosRESTAPI.md/#authentication-using-email-1)
-
-	* ### [Register using email] (FriendsPhotosRESTAPI.md/#register-using-email-1)
-
-	* ### [Authentication via facebook] (FriendsPhotosRESTAPI.md/#authentication-via-facebook-1)
-
-	* ### [~~Authentication via vkontakte~~] (FriendsPhotosRESTAPI.md/#authentication-via-vkontakte-1)
-
-	* ### [Logout] (FriendsPhotosRESTAPI.md/#logout-1)
+    * ### [Authentication using email] (FriendsPhotosRESTAPI.md/#authentication-using-email-1)
+    
+    * ### [Register using email] (FriendsPhotosRESTAPI.md/#register-using-email-1)
+    
+    * ### [Authentication via facebook] (FriendsPhotosRESTAPI.md/#authentication-via-facebook-1)
+    
+    * ### [~~Authentication via vkontakte~~] (FriendsPhotosRESTAPI.md/#authentication-via-vkontakte-1)
+    
+    * ### [Logout] (FriendsPhotosRESTAPI.md/#logout-1)
 
 * ## [Interaction with accounts] (FriendsPhotosRESTAPI.md/#interaction-with-accounts-1)
 
-	* ### [Get an account] (FriendsPhotosRESTAPI.md/#get-an-account-1)
-
+    * ### [Get an account] (FriendsPhotosRESTAPI.md/#get-an-account-1)
+    
     * ### [Get the user info] (FriendsPhotosRESTAPI.md/#get-the-user-info-1)
-
+    
     * ### [Get a list of accounts belonging to the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-accounts-belonging-to-the-event-1)
-
+    
     * ### [Get a list of account ids belonging to the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-account-ids-belonging-to-the-event-1)
-
+    
     * ### [Get the owner of the event] (FriendsPhotosRESTAPI.md/#get-the-owner-of-the-event-1)
-
+    
     * ### [Get the owner id of the event] (FriendsPhotosRESTAPI.md/#get-the-owner-id-of-the-event-1)
-
+    
     * ### [~~Update the user info~~] (FriendsPhotosRESTAPI.md/#update-the-user-info-1)
-
+    
     * ### [~~Delete an account~~] (FriendsPhotosRESTAPI.md/#delete-an-account-1)
 
 * ## [Interaction with events] (FriendsPhotosRESTAPI.md/#interaction-with-events-1)
 
-	* ### [Get an event] (FriendsPhotosRESTAPI.md/#get-an-event-1)
-
-	* ### [Get a list of events] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-1)
-
-	* ### [Get a list of event ids] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-1)
-
+    * ### [Get an event] (FriendsPhotosRESTAPI.md/#get-an-event-1)
+    
+    * ### [Get a list of events] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-1)
+    
+    * ### [Get a list of event ids] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-1)
+    
     * ### [Get a list of events of the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-of-the-account-1)
-
-	* ### [Get a list of events of the user] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-of-the-user-1)
-
+    
+    * ### [Get a list of events of the user] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-of-the-user-1)
+    
     * ### [Get a list of events owned by the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-owned-by-the-account-1)
-
-	* ### [Get a list of events owned by the user] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-owned-by-the-user-1)
-
-	* ### [Get a list of events where the account has the specified role] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-where-the-account-has-the-specified-role-1)
-
-	* ### [Get a list of events where the user has the specified role] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-where-the-user-has-the-specified-role-1)
-
-	* ### [Get a list of event ids of the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-of-the-account-1)
-
-	* ### [Get a list of event ids of the user] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-of-the-user-1)
-
-	* ### [Get a list of event ids owned by the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-owned-by-the-account-1)
-
-	* ### [Get a list of event ids owned by the user] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-owned-by-the-user-1)
-
-	* ### [Get a list of event ids where the account has the specified role] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-where-the-account-has-the-specified-role-1)
-
-	* ### [Get a list of event ids where the user has the specified role] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-where-the-user-has-the-specified-role-1)
-
-	* ### [~~Get a list of events which are within the specified radius from the specified coordinates~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-which-are-within-the-specified-radius-from-the-specified-coordinates-1)
-
-	* ### [~~Get a list of events in the specified coordinate range~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-in-the-specified-coordinate-range-1)
-	
-	* ### [Create an event] (FriendsPhotosRESTAPI.md/#create-an-event-1)
-
-	* ### [Add the user to the event] (FriendsPhotosRESTAPI.md/#add-the-user-to-the-event-1)
-
-	* ### [Add a comment to the event] (FriendsPhotosRESTAPI.md/#add-a-comment-to-the-event-1)
-	
-	* ### [~~Add a photo to the event~~] (FriendsPhotosRESTAPI.md/#add-a-photo-to-the-event-1)
-
-	* ### [Update the event] (FriendsPhotosRESTAPI.md/#update-the-event-1)
-
-	* ### [Change the role of the participant in the event] (FriendsPhotosRESTAPI.md/#change-the-role-of-the-participant-in-the-event-1)
-	
-	* ### [~~Remove an account from the event~~] (FriendsPhotosRESTAPI.md/#remove-an-account-from-the-event-1)
-	
-	* ### [~~Remove the user from the event~~] (FriendsPhotosRESTAPI.md/#remove-the-user-from-the-event-1)
-
-	* ### [Delete the event] (FriendsPhotosRESTAPI.md/#delete-the-event-1)
+    
+    * ### [Get a list of events owned by the user] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-owned-by-the-user-1)
+    
+    * ### [Get a list of events where the account has the specified role] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-where-the-account-has-the-specified-role-1)
+    
+    * ### [Get a list of events where the user has the specified role] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-where-the-user-has-the-specified-role-1)
+    
+    * ### [Get a list of event ids of the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-of-the-account-1)
+    
+    * ### [Get a list of event ids of the user] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-of-the-user-1)
+    
+    * ### [Get a list of event ids owned by the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-owned-by-the-account-1)
+    
+    * ### [Get a list of event ids owned by the user] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-owned-by-the-user-1)
+    
+    * ### [Get a list of event ids where the account has the specified role] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-where-the-account-has-the-specified-role-1)
+    
+    * ### [Get a list of event ids where the user has the specified role] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-where-the-user-has-the-specified-role-1)
+    
+    * ### [~~Get a list of events which are within the specified radius from the specified coordinates~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-which-are-within-the-specified-radius-from-the-specified-coordinates-1)
+    
+    * ### [~~Get a list of events in the specified coordinate range~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-in-the-specified-coordinate-range-1)
+    
+    * ### [Create an event] (FriendsPhotosRESTAPI.md/#create-an-event-1)
+    
+    * ### [Add the user to the event] (FriendsPhotosRESTAPI.md/#add-the-user-to-the-event-1)
+    
+    * ### [Add a comment to the event] (FriendsPhotosRESTAPI.md/#add-a-comment-to-the-event-1)
+    
+    * ### [~~Add a photo to the event~~] (FriendsPhotosRESTAPI.md/#add-a-photo-to-the-event-1)
+    
+    * ### [Update the event] (FriendsPhotosRESTAPI.md/#update-the-event-1)
+    
+    * ### [Change the role of the participant in the event] (FriendsPhotosRESTAPI.md/#change-the-role-of-the-participant-in-the-event-1)
+    
+    * ### [~~Remove an account from the event~~] (FriendsPhotosRESTAPI.md/#remove-an-account-from-the-event-1)
+    
+    * ### [~~Remove the user from the event~~] (FriendsPhotosRESTAPI.md/#remove-the-user-from-the-event-1)
+    
+    * ### [Delete the event] (FriendsPhotosRESTAPI.md/#delete-the-event-1)
 
 * ## [Interaction with photos] (FriendsPhotosRESTAPI.md/#interaction-with-photos-1)
 
-	* ### [Get a photo] (FriendsPhotosRESTAPI.md/#get-a-photo-1)
-
-	* ### [Get a photo file] (FriendsPhotosRESTAPI.md/#get-a-photo-file-1)
-	
-	* ### [Get a list of photos of the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-photos-of-the-account-1)
-	
+    * ### [Get a photo] (FriendsPhotosRESTAPI.md/#get-a-photo-1)
+    
+    * ### [Get a photo file] (FriendsPhotosRESTAPI.md/#get-a-photo-file-1)
+    
+    * ### [Get a list of photos of the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-photos-of-the-account-1)
+    
     * ### [Get a list of photo ids of the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-photo-ids-of-the-account-1)
     
     * ### [Get a list of photos of the user] (FriendsPhotosRESTAPI.md/#get-a-list-of-photos-of-the-user-1)
@@ -105,35 +105,35 @@
     * ### [Get a list of photo ids of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-photo-ids-of-the-event-1)
     
     * ### [~~Get a list of photos of the account in the event~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-photos-of-the-account-in-the-event-1)
-    	
+        
     * ### [~~Get a list of photo ids of the account in the event~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-photo-ids-of-the-account-in-the-event-1)
     
     * ### [~~Get a list of photos of the user in the event~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-photos-of-the-user-in-the-event-1)
     
     * ### [~~Get a list of photo ids of the user in the event~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-photo-ids-of-the-user-in-the-event-1)
-
-	* ### [Create a photo (@see Add a photo to the event)] (FriendsPhotosRESTAPI.md/#create-a-photo-1)
-
-	* ### [Add a comment to the photo] (FriendsPhotosRESTAPI.md/#add-a-comment-to-the-photo-1)
-
-	* ### [~~Update the photo~~] (FriendsPhotosRESTAPI.md/#update-the-photo-1)
-	
-	* ### [~~Delete the photo~~] (FriendsPhotosRESTAPI.md/#delete-the-photo-1)
+    
+    * ### [Create a photo (@see Add a photo to the event)] (FriendsPhotosRESTAPI.md/#create-a-photo-1)
+    
+    * ### [Add a comment to the photo] (FriendsPhotosRESTAPI.md/#add-a-comment-to-the-photo-1)
+    
+    * ### [~~Update the photo~~] (FriendsPhotosRESTAPI.md/#update-the-photo-1)
+    
+    * ### [~~Delete the photo~~] (FriendsPhotosRESTAPI.md/#delete-the-photo-1)
 
 * ## [Interaction with roles] (FriendsPhotosRESTAPI.md/#interaction-with-roles-1)
 
-	* ### [~~Get a role~~] (FriendsPhotosRESTAPI.md/#get-a-role-1)
-	
-	* ### [Get a list of all roles] (FriendsPhotosRESTAPI.md/#get-a-list-of-all-roles-1)
-
-	* ### [Get a role of the account in the event] (FriendsPhotosRESTAPI.md/#get-a-role-of-the-account-in-the-event-1)
-
-	* ### [Get a role id of the account in the event] (FriendsPhotosRESTAPI.md/#get-a-role-id-of-the-account-in-the-event-1)
-	
-	* ### [~~Create a role~~] (FriendsPhotosRESTAPI.md/#create-a-role-1)
-	
-	* ### [~~Update the role~~] (FriendsPhotosRESTAPI.md/#update-the-role-1)
-    	
+    * ### [~~Get a role~~] (FriendsPhotosRESTAPI.md/#get-a-role-1)
+    
+    * ### [Get a list of all roles] (FriendsPhotosRESTAPI.md/#get-a-list-of-all-roles-1)
+    
+    * ### [Get a role of the account in the event] (FriendsPhotosRESTAPI.md/#get-a-role-of-the-account-in-the-event-1)
+    
+    * ### [Get a role id of the account in the event] (FriendsPhotosRESTAPI.md/#get-a-role-id-of-the-account-in-the-event-1)
+    
+    * ### [~~Create a role~~] (FriendsPhotosRESTAPI.md/#create-a-role-1)
+    
+    * ### [~~Update the role~~] (FriendsPhotosRESTAPI.md/#update-the-role-1)
+        
     * ### [~~Delete the role~~] (FriendsPhotosRESTAPI.md/#delete-the-role-1)
 
 * ## [Interaction with comments] (FriendsPhotosRESTAPI.md/#interaction-with-comments-1)
@@ -141,24 +141,25 @@
     * ### [~~Get a comments~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-account-1)
     
     * ### [~~Get a list of comments of the account~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-account-1)
-
-	* ### [~~Get a list of comment ids of the account~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-account-1)
-
+    
+    * ### [~~Get a list of comment ids of the account~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-account-1)
+    
     * ### [~~Get a list of comments of the user~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-user-1)
-
-	* ### [~~Get a list of comment ids of the user~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-user-1)
-
+    
+    * ### [~~Get a list of comment ids of the user~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-user-1)
+    
     * ### [Get a list of comments of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-event-1)
-
-	* ### [Get a list of comment ids of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-event-1)
-
+    
+    * ### [Get a list of comment ids of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-event-1)
+    
     * ### [Get a list of comments of the photo] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-photo-1)
+    
+    * ### [~~Get a list of comment ids of the photo~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-photo-1)
+     
+    * ### [~~Update the comment~~] (FriendsPhotosRESTAPI.md/#update-the-comment-1)
+    
+    * ### [~~Delete the comment~~] (FriendsPhotosRESTAPI.md/#delete-the-comment-1)
 
-	* ### [~~Get a list of comment ids of the photo~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-photo-1)
-	 
-	* ### [~~Update the comment~~] (FriendsPhotosRESTAPI.md/#update-the-comment-1)
-	
-	* ### [~~Delete the comment~~] (FriendsPhotosRESTAPI.md/#delete-the-comment-1)
 
 # FriendsPhotos REST API
 
