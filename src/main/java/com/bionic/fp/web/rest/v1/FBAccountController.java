@@ -27,13 +27,14 @@ import static com.bionic.fp.Constants.RestConstants.PARAM.FB_TOKEN;
 import static com.bionic.fp.Constants.RestConstants.PATH.ACCOUNTS;
 import static com.bionic.fp.Constants.RestConstants.PATH.API;
 import static com.bionic.fp.Constants.RestConstants.PATH.FB;
+import static com.bionic.fp.Constants.RestConstants.PATH.V1;
 import static com.bionic.fp.util.Checks.check;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping(API+ACCOUNTS+FB)
+@RequestMapping(API+V1+ACCOUNTS+FB)
 public class FBAccountController {
     private static final String DEBUG_TOKEN_URL =
             "https://graph.facebook.com/debug_token?input_token=%s&access_token=%s|%s";
