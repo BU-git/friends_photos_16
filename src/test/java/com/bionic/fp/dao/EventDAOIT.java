@@ -4,7 +4,6 @@ import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
-import com.bionic.fp.util.GeoUtils;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
@@ -13,7 +12,6 @@ import java.util.List;
 
 import static com.bionic.fp.Constants.RoleConstants.MEMBER;
 import static com.bionic.fp.Constants.RoleConstants.OWNER;
-import static java.lang.Math.*;
 import static org.junit.Assert.*;
 
 /**
@@ -101,7 +99,7 @@ public class EventDAOIT extends AbstractDaoIT {
         assertEventIsNotDeleted(owner.getId(), event);
     }
 
-    @Test(expected = EntityNotFoundException.class) //@Ignore //todo: fix physically delete comment
+    @Test
     public void testDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
@@ -117,7 +115,7 @@ public class EventDAOIT extends AbstractDaoIT {
         this.eventDAO.delete(event.getId());
     }
 
-    @Test(expected = EntityNotFoundException.class) //@Ignore //todo: fix physically delete comment
+    @Test
     public void testDeleteAfterSoftDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);

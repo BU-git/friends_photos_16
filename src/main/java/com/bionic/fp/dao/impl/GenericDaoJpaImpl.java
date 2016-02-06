@@ -4,7 +4,6 @@ import com.bionic.fp.dao.GenericDAO;
 import com.bionic.fp.domain.BaseEntity;
 import com.bionic.fp.domain.IdEntity;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
-import com.bionic.fp.exception.logic.critical.NonUniqueResultException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
@@ -59,10 +58,11 @@ public class GenericDaoJpaImpl<T extends BaseEntity & IdEntity<PK>, PK extends S
     }
 
     @Override
-    public void delete(PK id) throws EntityNotFoundException {
-        T t = ofNullable(this.get(id)).orElseThrow(() -> new EntityNotFoundException(id.toString()));
-        this.em.refresh(t); // workaround, forcing JPA to populate all relationships so that they can be correctly removed
-        this.em.remove(t);
+    public void delete(PK id) {
+        ofNullable(this.get(id)).ifPresent(entity -> {
+            this.em.refresh(entity); // workaround, forcing JPA to populate all relationships so that they can be correctly removed
+            this.em.remove(entity);
+        });
     }
 
     /**
@@ -70,15 +70,12 @@ public class GenericDaoJpaImpl<T extends BaseEntity & IdEntity<PK>, PK extends S
      *
      * @param query the query
      * @return a single result or null
-     * @throws NonUniqueResultException
      */
     protected <E> E getSingleResult(final TypedQuery<E> query) throws NonUniqueResultException {
         try {
             return query.getSingleResult();
         } catch (NoResultException ignored) {
             return null;
-        } catch (javax.persistence.NonUniqueResultException e) {
-            throw new NonUniqueResultException(e.getMessage(), e);
         }
     }
 
@@ -98,12 +95,14 @@ public class GenericDaoJpaImpl<T extends BaseEntity & IdEntity<PK>, PK extends S
      *
      * @param id the entity id
      * @param value the value
-     * @throws EntityNotFoundException if the entity doesn't exist
      */
-    public void setDeleted(final PK id, final boolean value) throws EntityNotFoundException {
-        T t = ofNullable(this.get(id)).orElseThrow(() -> new EntityNotFoundException(id.toString()));
-        t.setDeleted(value);
-        this.update(t);
+    public void setDeleted(final PK id, final boolean value) {
+        ofNullable(this.get(id)).ifPresent(entity -> {
+            if(entity.isDeleted() != value) {
+                entity.setDeleted(value);
+                this.update(entity);
+            }
+        });
     }
 
     /**

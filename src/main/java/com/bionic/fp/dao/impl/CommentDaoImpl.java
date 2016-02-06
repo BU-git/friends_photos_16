@@ -57,17 +57,15 @@ public class CommentDaoImpl extends GenericDaoJpaImpl<Comment, Long> implements 
     }
 
     @Override
-    public void delete(final Long id) throws EntityNotFoundException {
+    public void delete(final Long id) {
         int rows = this.em.createNativeQuery("DELETE FROM photos_comments WHERE comment_id = ?")
                 .setParameter(1, id).executeUpdate();
         if(rows == 0) {
-            rows = this.em.createNativeQuery("DELETE FROM events_comments WHERE comment_id = ?")
+            this.em.createNativeQuery("DELETE FROM events_comments WHERE comment_id = ?")
                     .setParameter(1, id).executeUpdate();
-            if(rows == 0) throw new EntityNotFoundException(id.toString());
         }
-        rows = this.em.createNativeQuery("DELETE FROM comments WHERE id = ?")
+        this.em.createNativeQuery("DELETE FROM comments WHERE id = ?")
                 .setParameter(1, id).executeUpdate();
-        if(rows == 0) throw new EntityNotFoundException(id.toString());
     }
 
     @Override

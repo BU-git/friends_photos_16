@@ -5,13 +5,10 @@ import com.bionic.fp.domain.Comment;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.bionic.fp.Constants.RoleConstants.OWNER;
 import static org.junit.Assert.*;
 
 /**
@@ -188,7 +185,7 @@ public class PhotoDaoIT extends AbstractDaoIT {
         assertPhotoIsNotDeleted(photo, event, owner, comment);
     }
 
-    @Test(expected = EntityNotFoundException.class)
+    @Test
     public void testDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
@@ -204,7 +201,7 @@ public class PhotoDaoIT extends AbstractDaoIT {
         this.photoDAO.delete(photo.getId());
     }
 
-    @Test(expected = EntityNotFoundException.class)
+    @Test
     public void testDeleteAfterSoftDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);

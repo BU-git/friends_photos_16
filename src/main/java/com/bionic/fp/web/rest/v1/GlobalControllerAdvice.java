@@ -4,7 +4,6 @@ import com.bionic.fp.exception.AppException;
 import com.bionic.fp.exception.auth.AuthenticationException;
 import com.bionic.fp.exception.auth.impl.EmailAlreadyExistException;
 import com.bionic.fp.exception.auth.impl.IncorrectPasswordException;
-import com.bionic.fp.exception.logic.critical.NonUniqueResultException;
 import com.bionic.fp.exception.permission.PermissionsDeniedException;
 import com.bionic.fp.exception.permission.UserDoesNotExistInEventException;
 import com.bionic.fp.exception.auth.impl.InvalidSessionException;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.persistence.NonUniqueResultException;
 import java.io.IOException;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -89,7 +89,7 @@ public class GlobalControllerAdvice {
     }
 
     @ExceptionHandler(NonUniqueResultException.class)
-    @ResponseStatus(CONFLICT)
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
     @ResponseBody
     public ErrorInfo nonUniqueResultExceptionHandler(NonUniqueResultException e){
         return new ErrorInfo(e.getMessage());

@@ -1,14 +1,10 @@
 package com.bionic.fp.dao;
 
 import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.Comment;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import java.util.List;
 
 import static com.bionic.fp.Constants.RoleConstants.MEMBER;
 import static com.bionic.fp.Constants.RoleConstants.OWNER;
@@ -89,7 +85,7 @@ public class AccountDaoIT extends AbstractDaoIT {
         assertAccountIsNotDeleted(owner, event, true);
     }
 
-    @Test(expected = EntityNotFoundException.class)
+    @Test
     public void testDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
@@ -108,7 +104,7 @@ public class AccountDaoIT extends AbstractDaoIT {
         this.accountDAO.delete(owner.getId());
     }
 
-    @Test(expected = EntityNotFoundException.class)
+    @Test
     public void testDeleteAfterSoftDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);

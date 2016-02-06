@@ -49,7 +49,7 @@ public class AccountEventDaoIT extends AbstractDaoIT {
         assertAccountEventIsNotDeleted(accountEvent, owner, event, role);
     }
 
-    @Test(expected = EntityNotFoundException.class)
+    @Test
     public void testDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
@@ -65,7 +65,8 @@ public class AccountEventDaoIT extends AbstractDaoIT {
         this.accountEventDAO.delete(accountEvent.getId());
     }
 
-    @Test(expected = EntityNotFoundException.class) @Ignore // Unsupported soft delete for account-event
+    @Test
+    @Ignore // Unsupported soft delete for account-event
     public void testDeleteAfterSoftDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);

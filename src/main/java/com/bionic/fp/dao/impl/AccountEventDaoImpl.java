@@ -94,16 +94,17 @@ public class AccountEventDaoImpl extends GenericDaoJpaImpl<AccountEvent, Long> i
     }
 
     @Override
-    public void setDeleted(Long id, boolean value) throws EntityNotFoundException {
+    public void setDeleted(Long id, boolean value) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void delete(final Long accountId, final Long eventId) throws AccountEventNotFoundException {
-        AccountEvent accountEvent = this.getOrThrow(accountId, eventId);
-        this.em.refresh(accountEvent);
-        this.em.remove(accountEvent);
-//        super.delete(accountEvent.getId());
+    public void delete(final Long accountId, final Long eventId) {
+        ofNullable(this.get(accountId, eventId)).ifPresent(entity -> {
+            this.em.refresh(entity);
+            this.em.remove(entity);
+//        super.delete(entity.getId());
+        });
     }
 
     private AccountEvent getOrThrow(final Long accountId, final Long eventId) throws AccountEventNotFoundException {

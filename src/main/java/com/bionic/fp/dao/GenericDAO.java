@@ -25,9 +25,8 @@ public interface GenericDAO<T extends BaseEntity, PK extends Serializable> {
 
     /**
      * Delete object from DataBase
-     * @throws EntityNotFoundException if the entity ID doesn't exist
      */
-    void delete(PK id) throws EntityNotFoundException;
+    void delete(PK id);
 
     /**
      * Looks for entity with given id.
@@ -46,8 +45,6 @@ public interface GenericDAO<T extends BaseEntity, PK extends Serializable> {
      *
      * @param id entity unique identifier.
      * @param value for isSoftDeleted parameter.
-     * @throws EntityNotFoundException if no entity is found
-     *                                 by given id.
      */
-    void setDeleted(final PK id, final boolean value) throws EntityNotFoundException;
+    void setDeleted(final PK id, final boolean value);
 }
