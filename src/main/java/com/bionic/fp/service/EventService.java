@@ -190,7 +190,7 @@ public class EventService {
      * @return a list of events
      */
     public List<Event> get(final String name, final String description) {
-        return this.eventDAO.get(name, description);
+        return this.eventDAO.get(true, name, description);
     }
 
     //////////////////////////////////////////////

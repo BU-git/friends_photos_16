@@ -5,7 +5,6 @@ import com.bionic.fp.domain.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Query;
 import javax.persistence.criteria.*;
 import java.util.*;
 
@@ -25,11 +24,12 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
     private static final String DESCRIPTION = "description";
     private static final String LATITUDE = "latitude";
     private static final String LONGITUDE = "longitude";
+    private static final String GEO = "geoServicesEnabled";
 
     public EventDaoImpl() {}
 
     @Override
-    public List<Event> get(final String name, final String description) {
+    public List<Event> get(final Boolean visible, final String name, final String description) {
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
         CriteriaQuery<Event> query = cb.createQuery(Event.class);
 
@@ -37,38 +37,45 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
 
         Predicate predicate = cb.conjunction();
         predicate = cb.and(predicate, isNotDeleted(event));
-        predicate = cb.and(predicate, cb.isTrue(event.get(VISIBLE)));
-
+        if(visible != null) {
+            predicate = cb.and(predicate, cb.equal(event.get(VISIBLE), visible));
+        }
         if(isNotEmpty(name)) {
-            predicate = cb.and(predicate, cb.like(event.get(NAME), "%"+name+"%"));
+            predicate = cb.and(predicate, cb.like(cb.lower(event.get(NAME)), "%"+name.toLowerCase()+"%"));
         }
         if(isNotEmpty(description)) {
-            predicate = cb.and(predicate, cb.like(event.get(DESCRIPTION), "%"+description+"%"));
+            predicate = cb.and(predicate, cb.like(cb.lower(event.get(DESCRIPTION)), "%"+description.toLowerCase()+"%"));
         }
 
         return this.em.createQuery(query.where(predicate)).getResultList();
     }
 
     @Override
-    public List<Event> get(final double latitude, final double longitude, final float radius) {
+    public List<Event> get(final Boolean visible, final double latitude, final double longitude, final float radius) {
         return this.em.createNamedQuery(Event.FIND_BY_RADIUS, Event.class)
                 .setParameter("latitude", latitude)
                 .setParameter("longitude", longitude)
                 .setParameter("radius", radius)
+                .setParameter("visible", visible)
                 .getResultList();
     }
 
     @Override
-    public List<Event> get(final double latMin, final double lngMin,
-                           final double latMax, final double lngMax) {
+    public List<Event> get(final Boolean visible, final double latMin, final double lngMin,
+                                                  final double latMax, final double lngMax) {
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
         CriteriaQuery<Event> query = cb.createQuery(Event.class);
         Root<Event> event = query.from(Event.class);
-        return this.em.createQuery(query.where(
-                cb.isTrue(event.get(VISIBLE)),
-                isNotDeleted(event),
-                cb.between(event.get(LATITUDE), latMin, latMax),
-                cb.between(event.get(LONGITUDE), lngMin, lngMax)))
-                .getResultList();
+
+        Predicate predicate = cb.conjunction();
+        predicate = cb.and(predicate, isNotDeleted(event));
+        if(visible != null) {
+            predicate = cb.and(predicate, cb.equal(event.get(VISIBLE), visible));
+        }
+        predicate = cb.and(predicate, cb.isTrue(event.get(GEO)));
+        predicate = cb.and(predicate, cb.between(event.get(LATITUDE), latMin, latMax));
+        predicate = cb.and(predicate, cb.between(event.get(LONGITUDE), lngMin, lngMax));
+
+        return this.em.createQuery(query.where(predicate)).getResultList();
     }
 }

@@ -6,6 +6,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,6 +25,7 @@ import static org.junit.Assert.*;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring/test-dao-root-context.xml")
+@Transactional
 public abstract class AbstractDaoIT extends AbstractHelperTest {
 
     @Autowired protected EventDAO eventDAO;
@@ -231,7 +234,7 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
             fail("expected == null");
         }
         if(expected.length != actual.size()) {
-            fail("expected.length != actual.size()");
+            fail(String.format("expected.length[%d] != actual.size()[%d]", expected.length, actual.size()));
         }
         for (T entity : expected) {
             Optional<T> optional = actual.stream().parallel()

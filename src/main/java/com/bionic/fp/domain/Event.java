@@ -12,8 +12,9 @@ import java.util.List;
 @NamedNativeQueries({
     @NamedNativeQuery(name = Event.FIND_BY_RADIUS, resultClass=Event.class, query =
         "SELECT * FROM events as e " +
-        "WHERE e.visible = TRUE " +
-            "AND e.deleted = FALSE " +
+            "WHERE e.deleted = FALSE " +
+            "AND e.geo = TRUE " +
+            "AND (:visible is NULL OR e.visible = :visible) " +
             "AND e.lat BETWEEN :latitude - (:radius / 111.045) AND :latitude + (:radius / 111.045) " +
             "AND e.lng BETWEEN :longitude - (:radius / (111.045 * COS(RADIANS(:latitude)))) AND :longitude + (:radius / (111.045 * COS(RADIANS(:latitude)))) " +
         "HAVING (111.045 * DEGREES(ACOS(COS(RADIANS(:latitude)) * COS(RADIANS(e.lat)) * COS(RADIANS(:longitude - e.lng)) + SIN(RADIANS(:latitude)) * SIN(RADIANS(e.lat))))) < :radius")

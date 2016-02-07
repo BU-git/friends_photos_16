@@ -7,8 +7,8 @@ import com.bionic.fp.exception.logic.EntityNotFoundException;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static com.bionic.fp.Constants.RoleConstants.MEMBER;
 import static com.bionic.fp.Constants.RoleConstants.OWNER;
@@ -145,18 +145,16 @@ public class EventDAOIT extends AbstractDaoIT {
         event1.setName("The first event starts at " + now);
         event2.setName("The second event starts at " + now);
         event3.setName("The third event starts at " + now);
-        event1 = save(owner, event1);
-        event2 = save(owner, event2);
-        event3 = save(owner, event3);
+        Stream.of(event1, event2, event3).forEach(event -> save(owner, event));
 
-        List<Event> events = this.eventDAO.get("at " + now, null);
+        List<Event> events = this.eventDAO.get(true, "at " + now, null);
 
         assertEquals(3, events.size());
         assertTrue(events.contains(event1));
         assertTrue(events.contains(event2));
         assertTrue(events.contains(event3));
 
-        events = this.eventDAO.get("d event starts at " + now, null);
+        events = this.eventDAO.get(true, "d event starts at " + now, null);
 
         assertEquals(2, events.size());
         assertTrue(events.contains(event2));
@@ -173,18 +171,16 @@ public class EventDAOIT extends AbstractDaoIT {
         event1.setDescription("The first event starts at " + now);
         event2.setDescription("The second event starts at " + now);
         event3.setDescription("The third event starts at " + now);
-        event1 = save(owner, event1);
-        event2 = save(owner, event2);
-        event3 = save(owner, event3);
+        Stream.of(event1, event2, event3).forEach(event -> save(owner, event));
 
-        List<Event> events = this.eventDAO.get(null, "at " + now);
+        List<Event> events = this.eventDAO.get(true, null, "at " + now);
 
         assertEquals(3, events.size());
         assertTrue(events.contains(event1));
         assertTrue(events.contains(event2));
         assertTrue(events.contains(event3));
 
-        events = this.eventDAO.get(null, "d event starts at " + now);
+        events = this.eventDAO.get(true, null, "d event starts at " + now);
 
         assertEquals(2, events.size());
         assertTrue(events.contains(event2));
@@ -204,18 +200,16 @@ public class EventDAOIT extends AbstractDaoIT {
         event1.setDescription("The first event starts at " + now);
         event2.setDescription("The second event starts at " + now);
         event3.setDescription("The third event starts at " + now);
-        event1 = save(owner, event1);
-        event2 = save(owner, event2);
-        event3 = save(owner, event3);
+        Stream.of(event1, event2, event3).forEach(event -> save(owner, event));
 
-        List<Event> events = this.eventDAO.get("at " + now, "at " + now);
+        List<Event> events = this.eventDAO.get(true, "at " + now, "at " + now);
 
         assertEquals(3, events.size());
         assertTrue(events.contains(event1));
         assertTrue(events.contains(event2));
         assertTrue(events.contains(event3));
 
-        events = this.eventDAO.get("second", "d event starts at " + now);
+        events = this.eventDAO.get(true, "second", "d event starts at " + now);
 
         assertEquals(1, events.size());
         assertTrue(events.contains(event2));
@@ -234,11 +228,9 @@ public class EventDAOIT extends AbstractDaoIT {
         event1.setDescription("The first event starts at " + now);
         event2.setDescription("The second event starts at " + now);
         event3.setDescription("The third event starts at " + now);
-        event1 = save(owner, event1);
-        event2 = save(owner, event2);
-        event3 = save(owner, event3);
+        Stream.of(event1, event2, event3).forEach(event -> save(owner, event));
 
-        List<Event> events = this.eventDAO.get("at " + now, "at " + now);
+        List<Event> events = this.eventDAO.get(true, "at " + now, "at " + now);
 
         assertEquals(3, events.size());
         assertTrue(events.contains(event1));
@@ -249,7 +241,7 @@ public class EventDAOIT extends AbstractDaoIT {
         this.eventDAO.update(event1);
         assertNotNull(event1.getModified());
 
-        events = this.eventDAO.get("at " + now, "at " + now);
+        events = this.eventDAO.get(true, "at " + now, "at " + now);
 
         assertEquals(2, events.size());
         assertTrue(events.contains(event2));
@@ -259,7 +251,7 @@ public class EventDAOIT extends AbstractDaoIT {
         this.eventDAO.update(event3);
         assertNotNull(event3.getModified());
 
-        events = this.eventDAO.get("at " + now, "at " + now);
+        events = this.eventDAO.get(true, "at " + now, "at " + now);
 
         assertEquals(1, events.size());
         assertTrue(events.contains(event2));
@@ -269,44 +261,42 @@ public class EventDAOIT extends AbstractDaoIT {
     public void testGetByCoordinatesSuccess() throws Exception {
         float  epsilon = 0.01f;
         Account owner = getSavedAccount();
-        List<Event> events = new ArrayList<>();
         Event event1 = getNewEventMin(); event1.setLatitude(50.445385); event1.setLongitude(30.501502); // 0
         Event event2 = getNewEventMin(); event2.setLatitude(50.445173); event2.setLongitude(30.502908); // ~100m
         Event event3 = getNewEventMin(); event3.setLatitude(50.444961); event3.setLongitude(30.504249); // ~200m
         Event event4 = getNewEventMin(); event4.setLatitude(50.444727); event4.setLongitude(30.505630); // ~300m
         Event event5 = getNewEventMin(); event5.setLatitude(50.444507); event5.setLongitude(30.507001); // ~400m
-        events.add(save(owner, event1));
-        events.add(save(owner, event2));
-        events.add(save(owner, event3));
-        events.add(save(owner, event4));
-        events.add(save(owner, event5));
+        Stream.of(event1, event2, event3, event4, event5).unordered().forEach(event -> {
+            event.setGeoServicesEnabled(true);
+            save(owner, event);
+        });
 
-        List<Event> actual = this.eventDAO.get(event3.getLatitude(), event3.getLongitude(), (0.2f + epsilon));
+        List<Event> actual = this.eventDAO.get(true, event3.getLatitude(), event3.getLongitude(), (0.2f + epsilon));
         assertEqualsEntities(actual, event1, event2, event3, event4, event5);
 
-        actual = this.eventDAO.get(event3.getLatitude(), event3.getLongitude(), (0.1f + epsilon));
+        actual = this.eventDAO.get(true, event3.getLatitude(), event3.getLongitude(), (0.1f + epsilon));
         assertEqualsEntities(actual, event2, event3, event4);
 
-        actual = this.eventDAO.get(event2.getLatitude(), event2.getLongitude(), (0.1f + epsilon));
+        actual = this.eventDAO.get(true, event2.getLatitude(), event2.getLongitude(), (0.1f + epsilon));
         assertEqualsEntities(actual, event1, event2, event3);
 
-        actual = this.eventDAO.get(event2.getLatitude(), event2.getLongitude(), (0.2f + epsilon));
+        actual = this.eventDAO.get(true, event2.getLatitude(), event2.getLongitude(), (0.2f + epsilon));
         assertEqualsEntities(actual, event1, event2, event3, event4);
     }
 
     private void assertEventIsNotDeleted(final Long accountId, final Event event) {
         assertEqualsEntity(event, this.eventDAO.read(event.getId()));
         assertEventIsNotDeleted(accountId, event.getId());
-        assertFalse(this.eventDAO.get(event.getName(), null).isEmpty());
-        assertFalse(this.eventDAO.get(null, event.getDescription()).isEmpty());
-        assertFalse(this.eventDAO.get(event.getName(), event.getDescription()).isEmpty());
+        assertFalse(this.eventDAO.get(true, event.getName(), null).isEmpty());
+        assertFalse(this.eventDAO.get(true, null, event.getDescription()).isEmpty());
+        assertFalse(this.eventDAO.get(true, event.getName(), event.getDescription()).isEmpty());
     }
 
     private void assertEventIsDeleted(final Long accountId, final Event event) {
         assertEventIsDeleted(accountId, event.getId());
-        assertTrue(this.eventDAO.get(event.getName(), null).isEmpty());
-        assertTrue(this.eventDAO.get(null, event.getDescription()).isEmpty());
-        assertTrue(this.eventDAO.get(event.getName(), event.getDescription()).isEmpty());
+        assertTrue(this.eventDAO.get(true, event.getName(), null).isEmpty());
+        assertTrue(this.eventDAO.get(true, null, event.getDescription()).isEmpty());
+        assertTrue(this.eventDAO.get(true, event.getName(), event.getDescription()).isEmpty());
     }
 
     private void assertEventIsDeleted(final Long ownerId, final Long eventId) {
