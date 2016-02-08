@@ -298,14 +298,14 @@ public class EventController {
         if(eventDto.getVisible() != null) {
             event.setVisible(eventDto.getVisible());
         }
-        event.setLongitude(eventDto.getLongitude());
-        event.setLatitude(eventDto.getLatitude());
-        event.setRadius(eventDto.getRadius());
+        if(eventDto.getLocation() != null) {
+            event.setLocation(eventDto.getLocation());
+        }
         if(eventDto.getGeo() != null) {
             event.setGeoServicesEnabled(eventDto.getGeo());
         }
-        if(eventDto.getIsPrivate() != null) {
-            event.setIsPrivate(eventDto.getIsPrivate());
+        if(eventDto.getPrivate() != null) {
+            event.setPrivate(eventDto.getPrivate());
             event.setPassword(eventDto.getPassword());
         }
 
@@ -384,20 +384,14 @@ public class EventController {
         if(eventDto.getVisible() != null) {
             event.setVisible(eventDto.getVisible());
         }
-        if(eventDto.getLongitude() != null) {
-            event.setLongitude(eventDto.getLongitude());
-        }
-        if(eventDto.getLatitude() != null) {
-            event.setLatitude(eventDto.getLatitude());
-        }
-        if(eventDto.getRadius() != null) {
-            event.setRadius(eventDto.getRadius());
+        if(eventDto.getLocation() != null) {
+            event.setLocation(eventDto.getLocation());
         }
         if(eventDto.getGeo() != null) {
             event.setGeoServicesEnabled(eventDto.getGeo());
         }
-        if(eventDto.getIsPrivate() != null) {
-            event.setIsPrivate(eventDto.getIsPrivate());
+        if(eventDto.getPrivate() != null) {
+            event.setPrivate(eventDto.getPrivate());
         }
         // todo: checks logic
         if(eventDto.getPassword() != null) {

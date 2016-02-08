@@ -22,6 +22,7 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
     private static final String VISIBLE = "visible";
     private static final String NAME = "name";
     private static final String DESCRIPTION = "description";
+    private static final String COORDINATE = "coordinate";
     private static final String LATITUDE = "latitude";
     private static final String LONGITUDE = "longitude";
     private static final String GEO = "geoServicesEnabled";
@@ -51,18 +52,17 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
     }
 
     @Override
-    public List<Event> get(final Boolean visible, final double latitude, final double longitude, final float radius) {
+    public List<Event> get(final Boolean visible, final Coordinate coordinate, final float radius) {
         return this.em.createNamedQuery(Event.FIND_BY_RADIUS, Event.class)
-                .setParameter("latitude", latitude)
-                .setParameter("longitude", longitude)
+                .setParameter("latitude", coordinate.getLatitude())
+                .setParameter("longitude", coordinate.getLongitude())
                 .setParameter("radius", radius)
                 .setParameter("visible", visible)
                 .getResultList();
     }
 
     @Override
-    public List<Event> get(final Boolean visible, final double latMin, final double lngMin,
-                                                  final double latMax, final double lngMax) {
+    public List<Event> get(final Boolean visible, final Coordinate sw, final Coordinate ne) {
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
         CriteriaQuery<Event> query = cb.createQuery(Event.class);
         Root<Event> event = query.from(Event.class);
@@ -73,8 +73,8 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
             predicate = cb.and(predicate, cb.equal(event.get(VISIBLE), visible));
         }
         predicate = cb.and(predicate, cb.isTrue(event.get(GEO)));
-        predicate = cb.and(predicate, cb.between(event.get(LATITUDE), latMin, latMax));
-        predicate = cb.and(predicate, cb.between(event.get(LONGITUDE), lngMin, lngMax));
+        predicate = cb.and(predicate, cb.between(event.get(COORDINATE).get(LATITUDE), sw.getLatitude(), ne.getLatitude()));
+        predicate = cb.and(predicate, cb.between(event.get(COORDINATE).get(LONGITUDE), sw.getLongitude(), ne.getLongitude()));
 
         return this.em.createQuery(query.where(predicate)).getResultList();
     }

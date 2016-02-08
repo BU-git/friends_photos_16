@@ -1,9 +1,6 @@
 package com.bionic.fp;
 
-import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.EventType;
-import com.bionic.fp.domain.Photo;
+import com.bionic.fp.domain.*;
 
 import java.time.LocalDateTime;
 import java.util.Random;
@@ -39,13 +36,10 @@ public class AbstractHelperTest {
     }
 
     protected Event getNewEventMax() {
-        Random random = new Random();
         Event event = getNewEventMin();
         event.setVisible(true);
-        event.setLatitude(random.nextDouble());
-        event.setLongitude(random.nextDouble());
-        event.setRadius(0.1f);
-        event.setGeoServicesEnabled(false);
+        event.setLocation(getNewCoordinate());
+        event.setGeoServicesEnabled(true);
 
         assertFalse(event.isDeleted());
 
@@ -65,5 +59,10 @@ public class AbstractHelperTest {
         photo.setOwner(owner);
         photo.setCreated(now);
         return photo;
+    }
+
+    protected Coordinate getNewCoordinate() {
+        Random random = new Random();
+        return new Coordinate(random.nextDouble(), random.nextDouble());
     }
 }

@@ -34,8 +34,7 @@ public class EventServiceIT extends AbstractIT {
         event.setDescription("testCreateEventSuccess");
         event.setEventType(privateEvent);
         event.setVisible(true);
-        event.setLatitude(15.0);
-        event.setLongitude(25.0);
+        event.setLocation(new Coordinate(15.0, 25.0));
 
         Long eventId = this.eventService.createEvent(owner.getId(), event);
 
@@ -48,9 +47,7 @@ public class EventServiceIT extends AbstractIT {
         assertEquals(actual.getName(), event.getName());
         assertEquals(actual.getDescription(), event.getDescription());
         assertEquals(actual.getEventType(), event.getEventType());
-        assertEquals(actual.getLatitude(), event.getLatitude());
-        assertEquals(actual.getLongitude(), event.getLongitude());
-        assertEquals(actual.getRadius(), event.getRadius());
+        assertEquals(actual.getLocation(), event.getLocation());
         assertEquals(actual.isVisible(), event.isVisible());
         assertEquals(actual.isGeoServicesEnabled(), event.isGeoServicesEnabled());
         assertFalse(actual.isDeleted());
@@ -196,7 +193,7 @@ public class EventServiceIT extends AbstractIT {
         this.eventService.softDelete(null);
     }
 
-    @Test(expected = EntityNotFoundException.class)
+    @Test
     public void testSoftDeleteByIdEventIdNotFoundFailure() {
         this.eventService.softDelete(Long.MAX_VALUE);
     }
@@ -227,9 +224,7 @@ public class EventServiceIT extends AbstractIT {
         assertEquals(actual.getName(), event.getName());
         assertEquals(actual.getDescription(), event.getDescription());
         assertEquals(actual.getEventType(), event.getEventType());
-        assertEquals(actual.getLatitude(), event.getLatitude());
-        assertEquals(actual.getLongitude(), event.getLongitude());
-        assertEquals(actual.getRadius(), event.getRadius());
+        assertEquals(actual.getLocation(), event.getLocation());
         assertEquals(actual.isVisible(), event.isVisible());
         assertEquals(actual.isGeoServicesEnabled(), event.isGeoServicesEnabled());
         assertCustomEqualsDate(event.getCreated(), actual.getCreated());
@@ -239,9 +234,7 @@ public class EventServiceIT extends AbstractIT {
         assertEquals(actual.getId(), event.getId());
         assertNotEquals(actual.getName(), event.getName());
         assertNotEquals(actual.getDescription(), event.getDescription());
-        assertNotEquals(actual.getLatitude(), event.getLatitude());
-        assertNotEquals(actual.getLongitude(), event.getLongitude());
-        assertNotEquals(actual.getRadius(), event.getRadius());
+        assertEquals(actual.getLocation(), event.getLocation());
         assertNotEquals(actual.isVisible(), event.isVisible());
         assertNotEquals(actual.isGeoServicesEnabled(), event.isGeoServicesEnabled());
         assertCustomEqualsDate(event.getCreated(), actual.getCreated());
@@ -254,9 +247,7 @@ public class EventServiceIT extends AbstractIT {
         assertEquals(actual.getName(), updated.getName());
         assertEquals(actual.getDescription(), updated.getDescription());
         assertEquals(actual.getEventType(), updated.getEventType());
-        assertEquals(actual.getLatitude(), updated.getLatitude());
-        assertEquals(actual.getLongitude(), updated.getLongitude());
-        assertEquals(actual.getRadius(), updated.getRadius());
+        assertEquals(actual.getLocation(), event.getLocation());
         assertEquals(actual.isVisible(), updated.isVisible());
         assertEquals(actual.isGeoServicesEnabled(), updated.isGeoServicesEnabled());
         assertCustomEqualsDate(event.getCreated(), actual.getCreated());
@@ -271,9 +262,7 @@ public class EventServiceIT extends AbstractIT {
         assertEquals(actual.getName(), updated.getName());
         assertEquals(actual.getDescription(), updated.getDescription());
         assertEquals(actual.getEventType(), updated.getEventType());
-        assertEquals(actual.getLatitude(), updated.getLatitude());
-        assertEquals(actual.getLongitude(), updated.getLongitude());
-        assertEquals(actual.getRadius(), updated.getRadius());
+        assertEquals(actual.getLocation(), event.getLocation());
         assertEquals(actual.isVisible(), updated.isVisible());
         assertEquals(actual.isGeoServicesEnabled(), updated.isGeoServicesEnabled());
         assertCustomEqualsDate(event.getCreated(), actual.getCreated());
@@ -291,9 +280,7 @@ public class EventServiceIT extends AbstractIT {
         assertEquals(newEvent.getId(), event.getId());
         assertNotEquals(newEvent.getName(), event.getName());
         assertNotEquals(newEvent.getDescription(), event.getDescription());
-        assertNotEquals(newEvent.getLatitude(), event.getLatitude());
-        assertNotEquals(newEvent.getLongitude(), event.getLongitude());
-        assertNotEquals(newEvent.getRadius(), event.getRadius());
+        assertNotEquals(newEvent.getLocation(), event.getLocation());
         assertNotEquals(newEvent.isVisible(), event.isVisible());
         assertNotEquals(newEvent.isGeoServicesEnabled(), event.isGeoServicesEnabled());
         assertNull(event.getModified());
@@ -308,9 +295,7 @@ public class EventServiceIT extends AbstractIT {
         assertEquals(newEvent.getName(), updated.getName());
         assertEquals(newEvent.getDescription(), updated.getDescription());
         assertEquals(newEvent.getEventType(), updated.getEventType());
-        assertEquals(newEvent.getLatitude(), updated.getLatitude());
-        assertEquals(newEvent.getLongitude(), updated.getLongitude());
-        assertEquals(newEvent.getRadius(), updated.getRadius());
+        assertEquals(newEvent.getLocation(), updated.getLocation());
         assertEquals(newEvent.isVisible(), updated.isVisible());
         assertEquals(newEvent.isGeoServicesEnabled(), updated.isGeoServicesEnabled());
 
@@ -322,9 +307,7 @@ public class EventServiceIT extends AbstractIT {
         assertEquals(newEvent.getName(), updated.getName());
         assertEquals(newEvent.getDescription(), updated.getDescription());
         assertEquals(newEvent.getEventType(), updated.getEventType());
-        assertEquals(newEvent.getLatitude(), updated.getLatitude());
-        assertEquals(newEvent.getLongitude(), updated.getLongitude());
-        assertEquals(newEvent.getRadius(), updated.getRadius());
+        assertEquals(newEvent.getLocation(), updated.getLocation());
         assertEquals(newEvent.isVisible(), updated.isVisible());
         assertEquals(newEvent.isGeoServicesEnabled(), updated.isGeoServicesEnabled());
     }
@@ -346,9 +329,7 @@ public class EventServiceIT extends AbstractIT {
         assertEquals(actual.getName(), event.getName());
         assertEquals(actual.getDescription(), event.getDescription());
         assertEquals(actual.getEventType(), event.getEventType());
-        assertEquals(actual.getLatitude(), event.getLatitude());
-        assertEquals(actual.getLongitude(), event.getLongitude());
-        assertEquals(actual.getRadius(), event.getRadius());
+        assertEquals(actual.getLocation(), event.getLocation());
         assertEquals(actual.isVisible(), event.isVisible());
         assertEquals(actual.isGeoServicesEnabled(), event.isGeoServicesEnabled());
         assertCustomEqualsDate(event.getCreated(), actual.getCreated());

@@ -4,7 +4,6 @@ import com.bionic.fp.util.LocalDateTimePersistenceConverter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -40,21 +39,17 @@ public class Event extends BaseEntity implements IdEntity<Long> {
     @Column(name = "expire_date")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime expireDate;
-    @Column(name = "lat")
-    private Double latitude;
-    @Column(name = "lng")
-    private Double longitude;
-    private Float radius;
+    @Embedded
+    private Coordinate location;
     @Column(name = "geo")
     private boolean geoServicesEnabled = false;
     @Column(name = "private")
     private boolean isPrivate = false;
     private String password;
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<AccountEvent> accounts = new ArrayList<>();
+    private List<AccountEvent> accounts;
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<Photo> photos = new ArrayList<>();
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Photo> photos;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(name = "events_comments",
             joinColumns = {@JoinColumn(name = "event_id", referencedColumnName = "id")},
@@ -67,119 +62,78 @@ public class Event extends BaseEntity implements IdEntity<Long> {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
-
     public EventType getEventType() {
         return eventType;
     }
-
     public void setEventType(EventType eventType) {
         this.eventType = eventType;
     }
-
     public boolean isVisible() {
         return visible;
     }
-
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
-
     public LocalDateTime getExpireDate() {
         return expireDate;
     }
-
     public void setExpireDate(LocalDateTime expireDate) {
         this.expireDate = expireDate;
     }
-
-    public Double getLatitude() {
-        return latitude;
+    public Coordinate getLocation() {
+        return location;
     }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
+    public void setLocation(Coordinate coordinate) {
+        this.location = coordinate;
     }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-
-    public Float getRadius() {
-        return radius;
-    }
-
-    public void setRadius(Float radius) {
-        this.radius = radius;
-    }
-
     public boolean isGeoServicesEnabled() {
         return geoServicesEnabled;
     }
-
     public void setGeoServicesEnabled(boolean geoServicesEnabled) {
         this.geoServicesEnabled = geoServicesEnabled;
     }
-
     public List<AccountEvent> getAccounts() {
         return accounts;
     }
-
     public void setAccounts(List<AccountEvent> accounts) {
         this.accounts = accounts;
     }
-
     public List<Photo> getPhotos() {
         return photos;
     }
-
     public void setPhotos(List<Photo> photos) {
         this.photos = photos;
     }
-
     public List<Comment> getComments() {
         return comments;
     }
-
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
-
     public boolean isPrivate() {
         return isPrivate;
     }
-
-    public void setIsPrivate(boolean isPrivate) {
-        this.isPrivate = isPrivate;
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
     }
-
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -194,9 +148,16 @@ public class Event extends BaseEntity implements IdEntity<Long> {
         if (name != null ? !name.equals(event.name) : event.name != null) return false;
         if (description != null ? !description.equals(event.description) : event.description != null) return false;
         if (eventType != null ? !eventType.equals(event.eventType) : event.eventType != null) return false;
-        if (latitude != null ? !latitude.equals(event.latitude) : event.latitude != null) return false;
-        if (longitude != null ? !longitude.equals(event.longitude) : event.longitude != null) return false;
-        return !(radius != null ? !radius.equals(event.radius) : event.radius != null);
+        return location != null ? location.equals(event.location) : event.location == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (eventType != null ? eventType.hashCode() : 0);
+        result = 31 * result + (location != null ? location.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -209,9 +170,7 @@ public class Event extends BaseEntity implements IdEntity<Long> {
         sb.append(", visible=").append(visible);
         sb.append(", date=").append(created);
         sb.append(", expireDate=").append(expireDate);
-        sb.append(", latitude=").append(latitude);
-        sb.append(", longitude=").append(longitude);
-        sb.append(", radius=").append(radius);
+        sb.append(", location=").append(location);
         sb.append(", geoServicesEnabled=").append(geoServicesEnabled);
         sb.append(", deleted=").append(deleted);
         sb.append('}');

@@ -658,10 +658,13 @@
                 "date": "2015-11-21 17:41:03",
                 "expire_date": "2015-12-21 17:41:03",
                 "type_id": 1,
-                "lat": 10.0,
-                "lng": 20.0,
-                "radius": 0.1,
-                "geo": false
+                "location": {
+                    "lat": 10.0,
+                    "lng": 20.0
+                }
+                "geo": false,
+                "private": false,
+                "visible": true
 			}
 
         Param Name | Nullable | Description
@@ -672,10 +675,12 @@
         date | true | the create date of the event
         expire_date | true | the expire date of the event
         type_id | true | the event type id
+        location | true | the event location. If the geo services are disabled, the location will not be displayed
         lat | true | the event latitude
         lng | true | the event longitude
-        radius | true | the event radius
         geo | true | are the geo services enabled for the event?
+        private | true | if true then to join the event requires a password and false otherwise
+        visible | true | is the event visible to search anyone?
 
 	* ### Get a list of events
 
@@ -708,16 +713,19 @@
         	{
             	"events": [
                 	{
-                    	"event_id": 16,
+                        "event_id": 16,
                         "name": "NY 2016",
-  						"description": "Happy New Year!",
-  						"date": "2015-11-21 17:41:03",
+                        "description": "Happy New Year!",
+                        "date": "2015-11-21 17:41:03",
                         "expire_date": "2015-12-21 17:41:03",
-  						"type_id": 1,
-  						"lat": 10.0,
-  						"lng": 20.0,
-                        "radius": 0.1,
-  						"geo": false
+                        "type_id": 1,
+                        "location": {
+                            "lat": 10.0,
+                            "lng": 20.0
+                        }
+                        "geo": false,
+                        "private": false,
+                        "visible": true
                     }, ...
                 ]
 			}
@@ -731,10 +739,12 @@
         date | true | the create date of the event
         expire_date | true | the expire date of the event
         type_id | true | the event type id
+        location | true | the event location. If the geo services are disabled, the location will not be displayed
         lat | true | the event latitude
         lng | true | the event longitude
-        radius | true | the event radius
         geo | true | are the geo services enabled for the event?
+        private | true | if true then to join the event requires a password and false otherwise
+        visible | true | is the event visible to search anyone?
 
 	* ### Get a list of event ids
 
@@ -809,16 +819,19 @@
 			{
             	"events": [
                 	{
-                    	"event_id": 16,
+                        "event_id": 16,
                         "name": "NY 2016",
-  						"description": "Happy New Year!",
-  						"date": "2015-11-21 17:41:03",
+                        "description": "Happy New Year!",
+                        "date": "2015-11-21 17:41:03",
                         "expire_date": "2015-12-21 17:41:03",
-  						"type_id": 1,
-  						"lat": 10.0,
-  						"lng": 20.0,
-                        "radius": 0.1,
-  						"geo": false
+                        "type_id": 1,
+                        "location": {
+                            "lat": 10.0,
+                            "lng": 20.0
+                        }
+                        "geo": false,
+                        "private": false,
+                        "visible": true
                     }, ...
                 ]
 			}
@@ -832,10 +845,12 @@
         date | true | the create date of the event
         expire_date | true | the expire date of the event
         type_id | true | the event type id
+        location | true | the event location. If the geo services are disabled, the location will not be displayed
         lat | true | the event latitude
         lng | true | the event longitude
-        radius | true | the event radius
         geo | true | are the geo services enabled for the event?
+        private | true | if true then to join the event requires a password and false otherwise
+        visible | true | is the event visible to search anyone?
 
     * ### Get a list of events of the user
 
@@ -864,16 +879,19 @@
 			{
             	"events": [
                 	{
-                    	"event_id": 16,
+                        "event_id": 16,
                         "name": "NY 2016",
-  						"description": "Happy New Year!",
-  						"date": "2015-11-21 17:41:03",
+                        "description": "Happy New Year!",
+                        "date": "2015-11-21 17:41:03",
                         "expire_date": "2015-12-21 17:41:03",
-  						"type_id": 1,
-  						"lat": 10.0,
-  						"lng": 20.0,
-                        "radius": 0.1,
-  						"geo": false
+                        "type_id": 1,
+                        "location": {
+                            "lat": 10.0,
+                            "lng": 20.0
+                        }
+                        "geo": false,
+                        "private": false,
+                        "visible": true
                     }, ...
                 ]
 			}
@@ -887,10 +905,12 @@
         date | true | the create date of the event
         expire_date | true | the expire date of the event
         type_id | true | the event type id
+        location | true | the event location. If the geo services are disabled, the location will not be displayed
         lat | true | the event latitude
         lng | true | the event longitude
-        radius | true | the event radius
         geo | true | are the geo services enabled for the event?
+        private | true | if true then to join the event requires a password and false otherwise
+        visible | true | is the event visible to search anyone?
 
 	* ### Get a list of events owned by the account
 
@@ -931,16 +951,19 @@
 			{
             	"events": [
                 	{
-                    	"event_id": 16,
+                        "event_id": 16,
                         "name": "NY 2016",
-  						"description": "Happy New Year!",
-  						"date": "2015-11-21 17:41:03",
+                        "description": "Happy New Year!",
+                        "date": "2015-11-21 17:41:03",
                         "expire_date": "2015-12-21 17:41:03",
-  						"type_id": 1,
-  						"lat": 10.0,
-  						"lng": 20.0,
-                        "radius": 0.1,
-  						"geo": false
+                        "type_id": 1,
+                        "location": {
+                            "lat": 10.0,
+                            "lng": 20.0
+                        }
+                        "geo": false,
+                        "private": false,
+                        "visible": true
                     }, ...
                 ]
 			}
@@ -954,10 +977,12 @@
         date | true | the create date of the event
         expire_date | true | the expire date of the event
         type_id | true | the event type id
+        location | true | the event location. If the geo services are disabled, the location will not be displayed
         lat | true | the event latitude
         lng | true | the event longitude
-        radius | true | the event radius
         geo | true | are the geo services enabled for the event?
+        private | true | if true then to join the event requires a password and false otherwise
+        visible | true | is the event visible to search anyone?
 
     * ### Get a list of events owned by the user
 
@@ -986,16 +1011,19 @@
 			{
             	"events": [
                 	{
-                    	"event_id": 16,
+                        "event_id": 16,
                         "name": "NY 2016",
-  						"description": "Happy New Year!",
-  						"date": "2015-11-21 17:41:03",
+                        "description": "Happy New Year!",
+                        "date": "2015-11-21 17:41:03",
                         "expire_date": "2015-12-21 17:41:03",
-  						"type_id": 1,
-  						"lat": 10.0,
-  						"lng": 20.0,
-                        "radius": 0.1,
-  						"geo": false
+                        "type_id": 1,
+                        "location": {
+                            "lat": 10.0,
+                            "lng": 20.0
+                        }
+                        "geo": false,
+                        "private": false,
+                        "visible": true
                     }, ...
                 ]
 			}
@@ -1009,9 +1037,12 @@
         date | true | the create date of the event
         expire_date | true | the expire date of the event
         type_id | true | the event type id
+        location | true | the event location. If the geo services are disabled, the location will not be displayed
         lat | true | the event latitude
         lng | true | the event longitude
-        radius | true | the event radius
+        geo | true | are the geo services enabled for the event?
+        private | true | if true then to join the event requires a password and false otherwise
+        visible | true | is the event visible to search anyone?
 
 	* ### Get a list of events where the account has the specified role
 
@@ -1054,16 +1085,19 @@
 			{
             	"events": [
                 	{
-                    	"event_id": 16,
+                        "event_id": 16,
                         "name": "NY 2016",
-  						"description": "Happy New Year!",
-  						"date": "2015-11-21 17:41:03",
+                        "description": "Happy New Year!",
+                        "date": "2015-11-21 17:41:03",
                         "expire_date": "2015-12-21 17:41:03",
-  						"type_id": 1,
-  						"lat": 10.0,
-  						"lng": 20.0,
-                        "radius": 0.1,
-  						"geo": false
+                        "type_id": 1,
+                        "location": {
+                            "lat": 10.0,
+                            "lng": 20.0
+                        }
+                        "geo": false,
+                        "private": false,
+                        "visible": true
                     }, ...
                 ]
 			}
@@ -1077,10 +1111,12 @@
         date | true | the create date of the event
         expire_date | true | the expire date of the event
         type_id | true | the event type id
+        location | true | the event location. If the geo services are disabled, the location will not be displayed
         lat | true | the event latitude
         lng | true | the event longitude
-        radius | true | the event radius
         geo | true | are the geo services enabled for the event?
+        private | true | if true then to join the event requires a password and false otherwise
+        visible | true | is the event visible to search anyone?
 
     * ### Get a list of events where the user has the specified role
 
@@ -1121,16 +1157,19 @@
 			{
             	"events": [
                 	{
-                    	"event_id": 16,
+                        "event_id": 16,
                         "name": "NY 2016",
-  						"description": "Happy New Year!",
-  						"date": "2015-11-21 17:41:03",
+                        "description": "Happy New Year!",
+                        "date": "2015-11-21 17:41:03",
                         "expire_date": "2015-12-21 17:41:03",
-  						"type_id": 1,
-  						"lat": 10.0,
-  						"lng": 20.0,
-                        "radius": 0.1,
-  						"geo": false
+                        "type_id": 1,
+                        "location": {
+                            "lat": 10.0,
+                            "lng": 20.0
+                        }
+                        "geo": false,
+                        "private": false,
+                        "visible": true
                     }, ...
                 ]
 			}
@@ -1144,10 +1183,12 @@
         date | true | the create date of the event
         expire_date | true | the expire date of the event
         type_id | true | the event type id
+        location | true | the event location. If the geo services are disabled, the location will not be displayed
         lat | true | the event latitude
         lng | true | the event longitude
-        radius | true | the event radius
         geo | true | are the geo services enabled for the event?
+        private | true | if true then to join the event requires a password and false otherwise
+        visible | true | is the event visible to search anyone?
 
 	* ### Get a list of event ids of the account
 
@@ -1343,7 +1384,7 @@
         ##### Body:
 
 			{
-                "center": {
+                "location": {
                     "lat": 30.05,
                     "lng": 50.03
                 },
@@ -1352,7 +1393,7 @@
 
         Param Name | Required | Description
 		---------- | -------- | -----------
-		center | true | the center coordinate
+		location | true | the location
         lat | true | the latitude
         lng | true | the longitude
         radius | true | the radius (km)
@@ -1367,16 +1408,19 @@
         	{
             	"events": [
                 	{
-                    	"event_id": 16,
+                        "event_id": 16,
                         "name": "NY 2016",
-  						"description": "Happy New Year!",
-  						"date": "2015-11-21 17:41:03",
+                        "description": "Happy New Year!",
+                        "date": "2015-11-21 17:41:03",
                         "expire_date": "2015-12-21 17:41:03",
-  						"type_id": 1,
-  						"lat": 10.0,
-  						"lng": 20.0,
-                        "radius": 0.1,
-  						"geo": false
+                        "type_id": 1,
+                        "location": {
+                            "lat": 10.0,
+                            "lng": 20.0
+                        }
+                        "geo": false,
+                        "private": false,
+                        "visible": true
                     }, ...
                 ]
 			}
@@ -1390,10 +1434,12 @@
         date | true | the create date of the event
         expire_date | true | the expire date of the event
         type_id | true | the event type id
+        location | true | the event location. If the geo services are disabled, the location will not be displayed
         lat | true | the event latitude
         lng | true | the event longitude
-        radius | true | the event radius
         geo | true | are the geo services enabled for the event?
+        private | true | if true then to join the event requires a password and false otherwise
+        visible | true | is the event visible to search anyone?
 
     * ### ~~Get a list of events in the specified coordinate range~~
 
@@ -1446,16 +1492,19 @@
         	{
             	"events": [
                 	{
-                    	"event_id": 16,
+                        "event_id": 16,
                         "name": "NY 2016",
-  						"description": "Happy New Year!",
-  						"date": "2015-11-21 17:41:03",
+                        "description": "Happy New Year!",
+                        "date": "2015-11-21 17:41:03",
                         "expire_date": "2015-12-21 17:41:03",
-  						"type_id": 1,
-  						"lat": 10.0,
-  						"lng": 20.0,
-                        "radius": 0.1,
-  						"geo": false
+                        "type_id": 1,
+                        "location": {
+                            "lat": 10.0,
+                            "lng": 20.0
+                        }
+                        "geo": false,
+                        "private": false,
+                        "visible": true
                     }, ...
                 ]
 			}
@@ -1469,10 +1518,12 @@
         date | true | the create date of the event
         expire_date | true | the expire date of the event
         type_id | true | the event type id
+        location | true | the event location. If the geo services are disabled, the location will not be displayed
         lat | true | the event latitude
         lng | true | the event longitude
-        radius | true | the event radius
         geo | true | are the geo services enabled for the event?
+        private | true | if true then to join the event requires a password and false otherwise
+        visible | true | is the event visible to search anyone?
 	
 	* ### Create an event
 
@@ -1490,12 +1541,13 @@
   				"description": "Happy New Year!",
                 "type_id": 1,
   				"visible": false,
-  				"lat": 12.3,
-  				"lng": 45.46,
-                "radius": 78.9,
-                "geo": true,
                 "private": true,
                 "password": "secret"
+                "geo": true,
+  				"location": {
+                    "lat": 10.0,
+                    "lng": 20.0
+                }
 			}
 
         Param Name | Required | Description
@@ -1503,13 +1555,13 @@
         name | true | the event name
         description | true | the event description
         type_id | true | the event type id
-        visible | true | is the event visible
-        private | true | is the event private
+        private | true | if true then to join the event requires a password and false otherwise
         password | false | the event password, **it will be required if the event is private**
+        visible | true | is the event visible to search anyone?
+        location | false | the event location. If the geo services are disabled, the location will not be displayed
         geo | false | are the geo services enabled for the event?
         lat | false | the event latitude, **it will be required if the geo is true**
         lng | false | the event longitude, **it will be required if the geo is true**
-        radius | false | the event radius, **it will be required if the geo is true**
 
         ##### Response:
 
@@ -1690,26 +1742,27 @@
   				"description": "Happy New Year!",
                 "type_id": 1,
   				"visible": false,
-  				"lat": 12.3,
-  				"lng": 45.46,
-                "radius": 78.9,
-                "geo": true,
                 "private": true,
                 "password": "secret"
+                "geo": true,
+                "location": {
+                    "lat": 10.0,
+                    "lng": 20.0
+                }
 			}
 
         Param Name | Required | Description
 		---------- | -------- | -----------
-        name | false | the event name
-        description | false | the event description
-        type_id | false | the event type id
-        visible | false | is the event visible
-        private | false | is the event private
+        name | true | the event name
+        description | true | the event description
+        type_id | true | the event type id
+        visible | true | is the event visible to search anyone?
+        private | true | if true then to join the event requires a password and false otherwise
         password | false | the event password, **it will be required if the event is private**
+        location | false | the event location. If the geo services are disabled, the location will not be displayed
         geo | false | are the geo services enabled for the event?
         lat | false | the event latitude, **it will be required if the geo is true**
         lng | false | the event longitude, **it will be required if the geo is true**
-        radius | false | the event radius, **it will be required if the geo is true**
 
         ##### Response:
 

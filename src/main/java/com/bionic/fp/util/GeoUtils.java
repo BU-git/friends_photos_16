@@ -1,5 +1,6 @@
 package com.bionic.fp.util;
 
+import com.bionic.fp.domain.Coordinate;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 
@@ -42,22 +43,15 @@ public class GeoUtils {
     }
 
     /**
-     * Returns the distance between two events
+     * Returns the distance between two geographic coordinates
      *
-     * @param first the first event
-     * @param second the second event
+     * @param first the first coordinate
+     * @param second the second coordinate
      * @return the distance
      */
-    public static double getDistance(final Event first, final Event second) throws InvalidParameterException {
-        checkNotNull(first, "first event");
-        checkNotNull(second, "second event");
-        check(first.isGeoServicesEnabled(), "The geo services of the first event are disabled");
-        check(second.isGeoServicesEnabled(), "The geo services of the second event are disabled");
-        checkNotNull(first.getLatitude(), "latitude of the first event");
-        checkNotNull(first.getLongitude(), "longitude of the first event");
-        checkNotNull(second.getLatitude(), "latitude of the second event");
-        checkNotNull(second.getLongitude(), "longitude of the second event");
-
+    public static double getDistance(final Coordinate first, final Coordinate second) throws InvalidParameterException {
+        checkNotNull(first, "first coordinate");
+        checkNotNull(second, "second coordinate");
         return getDistance(first.getLatitude(), first.getLongitude(), second.getLatitude(), second.getLongitude());
     }
 }

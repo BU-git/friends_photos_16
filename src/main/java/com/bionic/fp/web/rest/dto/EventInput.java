@@ -1,5 +1,6 @@
 package com.bionic.fp.web.rest.dto;
 
+import com.bionic.fp.domain.Coordinate;
 import com.bionic.fp.domain.Event;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -14,10 +15,8 @@ public class EventInput {
 
     @JsonProperty(EVENT.NAME)           private String name;
     @JsonProperty(EVENT.DESCRIPTION)    private String description;
-    @JsonProperty(EVENT.TYPE_ID)  private Long eventTypeId;
-    @JsonProperty(EVENT.LATITUDE)       private Double latitude;
-    @JsonProperty(EVENT.LONGITUDE)      private Double longitude;
-    @JsonProperty(EVENT.RADIUS)         private Float radius;
+    @JsonProperty(EVENT.TYPE_ID)        private Long eventTypeId;
+    @JsonProperty(EVENT.LOCATION)       private Coordinate location;
     @JsonProperty(EVENT.GEO)            private Boolean geo;
     @JsonProperty(EVENT.VISIBLE)        private Boolean visible;
     @JsonProperty(EVENT.PRIVATE)        private Boolean isPrivate;
@@ -31,9 +30,7 @@ public class EventInput {
         this.description = event.getDescription();
         this.eventTypeId = event.getEventType().getId();
         this.visible = event.isVisible();
-        this.latitude = event.getLatitude();
-        this.longitude = event.getLongitude();
-        this.radius = event.getRadius();
+        this.location = event.getLocation();
         this.geo = event.isGeoServicesEnabled();
         this.isPrivate = event.isPrivate();
         this.password = event.getPassword();
@@ -42,79 +39,48 @@ public class EventInput {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
-
     public Long getEventTypeId() {
         return eventTypeId;
     }
-
     public void setEventTypeId(Long eventTypeId) {
         this.eventTypeId = eventTypeId;
     }
-
     public Boolean getVisible() {
         return visible;
     }
-
     public void setVisible(Boolean visible) {
         this.visible = visible;
     }
-
-    public Double getLatitude() {
-        return latitude;
+    public Coordinate getLocation() {
+        return location;
     }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
+    public void setLocation(Coordinate location) {
+        this.location = location;
     }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-
-    public Float getRadius() {
-        return radius;
-    }
-
-    public void setRadius(Float radius) {
-        this.radius = radius;
-    }
-
     public Boolean getGeo() {
         return geo;
     }
-
     public void setGeo(Boolean geo) {
         this.geo = geo;
     }
-
-    public Boolean getIsPrivate() {
+    public Boolean getPrivate() {
         return isPrivate;
     }
-
-    public void setIsPrivate(Boolean isPrivate) {
+    public void setPrivate(Boolean isPrivate) {
         this.isPrivate = isPrivate;
     }
-
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }

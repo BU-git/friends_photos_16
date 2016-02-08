@@ -4,10 +4,17 @@ import com.bionic.fp.AbstractHelperTest;
 import com.bionic.fp.domain.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
+import javax.transaction.TransactionManager;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,7 +32,7 @@ import static org.junit.Assert.*;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring/test-dao-root-context.xml")
-@Transactional
+//@Transactional
 public abstract class AbstractDaoIT extends AbstractHelperTest {
 
     @Autowired protected EventDAO eventDAO;
@@ -34,6 +41,8 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
     @Autowired protected CommentDAO commentDAO;
     @Autowired protected PhotoDAO photoDAO;
     @Autowired protected RoleDAO roleDAO;
+    @PersistenceContext private EntityManager em;
+    @Autowired private PlatformTransactionManager transactionManager;
 
     //////////////////////////////////////////////
     //                 ACCOUNT                  //
@@ -253,5 +262,17 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
         assertEquals(expected.getId(), actual.getId());
         assertEqualsDate(expected.getCreated(), actual.getCreated());
         assertEquals(expected, actual);
+    }
+
+    protected void clearAllTables() {
+        TransactionStatus transaction = transactionManager.getTransaction(null);
+        this.em.createNativeQuery("DELETE FROM photos_comments").executeUpdate();
+        this.em.createNativeQuery("DELETE FROM events_comments").executeUpdate();
+        this.em.createNativeQuery("DELETE FROM comments").executeUpdate();
+        this.em.createNativeQuery("DELETE FROM photos").executeUpdate();
+        this.em.createNativeQuery("DELETE FROM accounts_events").executeUpdate();
+        this.em.createNativeQuery("DELETE FROM events").executeUpdate();
+        this.em.createNativeQuery("DELETE FROM accounts").executeUpdate();
+        transactionManager.commit(transaction);
     }
 }

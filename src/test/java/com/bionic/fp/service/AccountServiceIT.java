@@ -27,7 +27,6 @@ public class AccountServiceIT extends AbstractIT {
         Account owner = getSavedAccount();
         Event event1 = getSavedEventMax(owner);
 
-//        List<Event> events = this.accountService.getEvents(owner.getId());
         List<Event> events = this.accountEventService.getEvents(owner.getId());
         assertNotNull(events);
         assertEquals(1, events.size());
@@ -36,14 +35,11 @@ public class AccountServiceIT extends AbstractIT {
             assertEquals(event.getName(), event1.getName());
             assertEquals(event.getDescription(), event1.getDescription());
             assertEquals(event.getEventType(), event1.getEventType());
-            assertEquals(event.getLongitude(), event1.getLongitude());
-            assertEquals(event.getLatitude(), event1.getLatitude());
-            assertEquals(event.getRadius(), event1.getRadius());
+            assertEquals(event.getLocation(), event1.getLocation());
         });
 
         Event event2 = getSavedEventMax(owner);
 
-//        events = this.accountService.getEvents(owner.getId());
         events = this.accountEventService.getEvents(owner.getId());
         assertNotNull(events);
         assertEquals(2, events.size());
@@ -52,7 +48,6 @@ public class AccountServiceIT extends AbstractIT {
 
         Event event3 = getSavedEventMax(owner);
 
-//        events = this.accountService.getEvents(owner.getId());
         events = this.accountEventService.getEvents(owner.getId());
         assertNotNull(events);
         assertEquals(3, events.size());

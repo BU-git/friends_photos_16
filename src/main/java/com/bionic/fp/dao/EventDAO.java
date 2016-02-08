@@ -29,23 +29,20 @@ public interface EventDAO extends GenericDAO<Event, Long> {
      *
      * @param visible the visibility of the event.
      *                Null if no need to take into account the visibility of the event
-     * @param latitude the latitude of the centre
-     * @param longitude the longitude of the centre
+     * @param coordinate the coordinate of the centre
      * @param radius the radius
      * @return a list of events
      */
-    List<Event> get(Boolean visible, double latitude, double longitude, float radius);
+    List<Event> get(Boolean visible, Coordinate coordinate, float radius);
 
     /**
      * Returns a list of events in the coordinate range
      *
      * @param visible the visibility of the event.
      *                Null if no need to take into account the visibility of the event
-     * @param latMin the minimal latitude
-     * @param lngMin the minimal longitude
-     * @param latMax the maximal latitude
-     * @param lngMax the maximal longitude
+     * @param sw the South-West coordinate
+     * @param ne the North-East coordinate
      * @return a list of events
      */
-    List<Event> get(Boolean visible, double latMin, double lngMin,double latMax, double lngMax);
+    List<Event> get(Boolean visible, Coordinate sw, Coordinate ne);
 }

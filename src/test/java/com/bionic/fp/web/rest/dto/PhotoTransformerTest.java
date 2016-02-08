@@ -1,10 +1,8 @@
 package com.bionic.fp.web.rest.dto;
 
 import com.bionic.fp.AbstractHelperTest;
-import com.bionic.fp.Constants;
 import com.bionic.fp.Constants.RestConstants.EVENT;
 import com.bionic.fp.Constants.RestConstants.PHOTO;
-import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 import org.junit.Test;
 
@@ -16,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 /**
- * todo: comment
+ * Contains unit-tests for {@link com.bionic.fp.web.rest.dto.PhotoInfo.Transformer} class
  *
  * @author Sergiy Gabriel
  */
@@ -117,7 +115,7 @@ public class PhotoTransformerTest extends AbstractHelperTest {
         }
 
         // fields=name,description
-        photoInfos = PhotoInfo.Transformer.transform(photos, String.format("%s,%s", PHOTO.NAME, PHOTO.URL));
+        photoInfos = PhotoInfo.Transformer.transform(photos, String.format("%s,%s", PHOTO.NAME, PHOTO.URL)); // todo: replace url to description or something else
         photoIterator = photos.iterator();
         photoInfoIterator = photoInfos.iterator();
         while (photoIterator.hasNext() && photoInfoIterator.hasNext()) {

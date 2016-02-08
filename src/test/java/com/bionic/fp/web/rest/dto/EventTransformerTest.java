@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * todo: comment
+ * Contains unit-tests for {@link com.bionic.fp.web.rest.dto.EventInfo.Transformer} class
  *
  * @author Sergiy Gabriel
  */
@@ -71,9 +71,7 @@ public class EventTransformerTest extends AbstractHelperTest {
         assertNull(eventInfo.getId());
         assertNull(eventInfo.getTypeId());
         assertNull(eventInfo.getVisible());
-        assertNull(eventInfo.getLatitude());
-        assertNull(eventInfo.getLongitude());
-        assertNull(eventInfo.getRadius());
+        assertNull(eventInfo.getLocation());
         assertNull(eventInfo.getGeo());
         assertNull(eventInfo.getDate());
         assertNull(eventInfo.getExpireDate());
@@ -85,9 +83,7 @@ public class EventTransformerTest extends AbstractHelperTest {
         assertNull(eventInfo.getId());
         assertNull(eventInfo.getTypeId());
         assertNull(eventInfo.getVisible());
-        assertNull(eventInfo.getLatitude());
-        assertNull(eventInfo.getLongitude());
-        assertNull(eventInfo.getRadius());
+        assertNull(eventInfo.getLocation());
         assertNull(eventInfo.getGeo());
         assertNull(eventInfo.getDate());
         assertNull(eventInfo.getExpireDate());
@@ -99,9 +95,32 @@ public class EventTransformerTest extends AbstractHelperTest {
         assertEquals(event.getId(), eventInfo.getId());
         assertNull(eventInfo.getTypeId());
         assertNull(eventInfo.getVisible());
-        assertNull(eventInfo.getLatitude());
-        assertNull(eventInfo.getLongitude());
-        assertNull(eventInfo.getRadius());
+        assertNull(eventInfo.getLocation());
+        assertNull(eventInfo.getGeo());
+        assertNull(eventInfo.getDate());
+        assertNull(eventInfo.getExpireDate());
+
+        // fields=location
+        eventInfo = EventInfo.Transformer.transform(event, EVENT.LOCATION);
+        assertNull(eventInfo.getName());
+        assertNull(eventInfo.getDescription());
+        assertNull(eventInfo.getId());
+        assertNull(eventInfo.getTypeId());
+        assertNull(eventInfo.getVisible());
+        assertEquals(event.getLocation(), eventInfo.getLocation());
+        assertNull(eventInfo.getGeo());
+        assertNull(eventInfo.getDate());
+        assertNull(eventInfo.getExpireDate());
+
+        // fields=location when geo services are disabled
+        event.setGeoServicesEnabled(false);
+        eventInfo = EventInfo.Transformer.transform(event, EVENT.LOCATION);
+        assertNull(eventInfo.getName());
+        assertNull(eventInfo.getDescription());
+        assertNull(eventInfo.getId());
+        assertNull(eventInfo.getTypeId());
+        assertNull(eventInfo.getVisible());
+        assertNull(eventInfo.getLocation());
         assertNull(eventInfo.getGeo());
         assertNull(eventInfo.getDate());
         assertNull(eventInfo.getExpireDate());
@@ -131,9 +150,7 @@ public class EventTransformerTest extends AbstractHelperTest {
             assertNull(eventInfo.getId());
             assertNull(eventInfo.getTypeId());
             assertNull(eventInfo.getVisible());
-            assertNull(eventInfo.getLatitude());
-            assertNull(eventInfo.getLongitude());
-            assertNull(eventInfo.getRadius());
+            assertNull(eventInfo.getLocation());
             assertNull(eventInfo.getGeo());
             assertNull(eventInfo.getDate());
             assertNull(eventInfo.getExpireDate());
@@ -153,9 +170,7 @@ public class EventTransformerTest extends AbstractHelperTest {
             assertNull(eventInfo.getId());
             assertNull(eventInfo.getTypeId());
             assertNull(eventInfo.getVisible());
-            assertNull(eventInfo.getLatitude());
-            assertNull(eventInfo.getLongitude());
-            assertNull(eventInfo.getRadius());
+            assertNull(eventInfo.getLocation());
             assertNull(eventInfo.getGeo());
             assertNull(eventInfo.getDate());
             assertNull(eventInfo.getExpireDate());
@@ -175,9 +190,50 @@ public class EventTransformerTest extends AbstractHelperTest {
 
             assertNull(eventInfo.getTypeId());
             assertNull(eventInfo.getVisible());
-            assertNull(eventInfo.getLatitude());
-            assertNull(eventInfo.getLongitude());
-            assertNull(eventInfo.getRadius());
+            assertNull(eventInfo.getLocation());
+            assertNull(eventInfo.getGeo());
+            assertNull(eventInfo.getDate());
+            assertNull(eventInfo.getExpireDate());
+        }
+
+        // fields=location
+        eventInfos = EventInfo.Transformer.transform(events, EVENT.LOCATION);
+        eventIterator = events.iterator();
+        eventInfoIterator = eventInfos.iterator();
+        while (eventIterator.hasNext() && eventInfoIterator.hasNext()) {
+            Event event = eventIterator.next();
+            EventInfo eventInfo = eventInfoIterator.next();
+
+            assertNull(eventInfo.getName());
+            assertNull(eventInfo.getDescription());
+            assertNull(eventInfo.getId());
+
+            assertNull(eventInfo.getTypeId());
+            assertNull(eventInfo.getVisible());
+            assertEquals(event.getLocation(), eventInfo.getLocation());
+            assertNull(eventInfo.getGeo());
+            assertNull(eventInfo.getDate());
+            assertNull(eventInfo.getExpireDate());
+        }
+
+        // fields=location when geo services are disabled
+        events.stream().unordered().parallel().forEach(e -> {
+            e.setGeoServicesEnabled(false);
+        });
+        eventInfos = EventInfo.Transformer.transform(events, EVENT.LOCATION);
+        eventIterator = events.iterator();
+        eventInfoIterator = eventInfos.iterator();
+        while (eventIterator.hasNext() && eventInfoIterator.hasNext()) {
+            Event event = eventIterator.next();
+            EventInfo eventInfo = eventInfoIterator.next();
+
+            assertNull(eventInfo.getName());
+            assertNull(eventInfo.getDescription());
+            assertNull(eventInfo.getId());
+
+            assertNull(eventInfo.getTypeId());
+            assertNull(eventInfo.getVisible());
+            assertNull(eventInfo.getLocation());
             assertNull(eventInfo.getGeo());
             assertNull(eventInfo.getDate());
             assertNull(eventInfo.getExpireDate());
@@ -190,9 +246,9 @@ public class EventTransformerTest extends AbstractHelperTest {
         assertEquals(event.getDescription(), eventInfo.getDescription());
         assertEquals(event.getEventType().getId(), eventInfo.getTypeId());
         assertEquals(event.isVisible(), eventInfo.getVisible());
-        assertEquals(event.getLatitude(), eventInfo.getLatitude());
-        assertEquals(event.getLongitude(), eventInfo.getLongitude());
-        assertEquals(event.getRadius(), eventInfo.getRadius());
+        assertEquals(event.isVisible(), eventInfo.getVisible());
+        assertEquals((Object) event.getLocation().getLatitude(), eventInfo.getLocation().getLatitude());
+        assertEquals((Object) event.getLocation().getLongitude(), eventInfo.getLocation().getLongitude());
         assertEquals(event.isGeoServicesEnabled(), eventInfo.getGeo());
         assertEquals(event.getCreated(), eventInfo.getDate());
         assertEquals(event.getExpireDate(), eventInfo.getExpireDate());

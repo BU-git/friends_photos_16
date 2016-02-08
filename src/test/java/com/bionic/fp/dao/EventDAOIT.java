@@ -1,6 +1,7 @@
 package com.bionic.fp.dao;
 
 import com.bionic.fp.domain.Account;
+import com.bionic.fp.domain.Coordinate;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
@@ -12,6 +13,7 @@ import java.util.stream.Stream;
 
 import static com.bionic.fp.Constants.RoleConstants.MEMBER;
 import static com.bionic.fp.Constants.RoleConstants.OWNER;
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.*;
 
 /**
@@ -21,12 +23,10 @@ import static org.junit.Assert.*;
  */
 public class EventDAOIT extends AbstractDaoIT {
 
-    /**
-     * 111.045 km per degree of latitude
-     * @see <a href="http://www.plumislandmedia.net/mysql/haversine-mysql-nearest-loc/">
-     *     http://www.plumislandmedia.net/mysql/haversine-mysql-nearest-loc/</a>
-     */
-    private static final double KM_PER_DEGREE_LATITUDE = 111.045;
+//    @Before
+//    public void setUp() throws Exception {
+//        clearAllTables();
+//    }
 
     @Test
     public void testGetByIdSuccess() {
@@ -261,27 +261,30 @@ public class EventDAOIT extends AbstractDaoIT {
     public void testGetByCoordinatesSuccess() throws Exception {
         float  epsilon = 0.01f;
         Account owner = getSavedAccount();
-        Event event1 = getNewEventMin(); event1.setLatitude(50.445385); event1.setLongitude(30.501502); // 0
-        Event event2 = getNewEventMin(); event2.setLatitude(50.445173); event2.setLongitude(30.502908); // ~100m
-        Event event3 = getNewEventMin(); event3.setLatitude(50.444961); event3.setLongitude(30.504249); // ~200m
-        Event event4 = getNewEventMin(); event4.setLatitude(50.444727); event4.setLongitude(30.505630); // ~300m
-        Event event5 = getNewEventMin(); event5.setLatitude(50.444507); event5.setLongitude(30.507001); // ~400m
-        Stream.of(event1, event2, event3, event4, event5).unordered().forEach(event -> {
+        List<Event> events = Stream.of(
+                new Coordinate(50.445385, 30.501502),   // ~0
+                new Coordinate(50.445173, 30.502908),   // ~100m
+                new Coordinate(50.444961, 30.504249),   // ~200m
+                new Coordinate(50.444727, 30.505630),   // ~300m
+                new Coordinate(50.444507, 30.507001)    // ~400m
+        ).sequential().map(coordinate -> {
+            Event event = getNewEventMin();
             event.setGeoServicesEnabled(true);
-            save(owner, event);
-        });
+            event.setLocation(coordinate);
+            return save(owner, event);
+        }).collect(toList());
 
-        List<Event> actual = this.eventDAO.get(true, event3.getLatitude(), event3.getLongitude(), (0.2f + epsilon));
-        assertEqualsEntities(actual, event1, event2, event3, event4, event5);
+        List<Event> actual = this.eventDAO.get(true, events.get(2).getLocation(), (0.2f + epsilon));
+        assertEqualsEntities(actual, events.toArray(new Event[events.size()]));
 
-        actual = this.eventDAO.get(true, event3.getLatitude(), event3.getLongitude(), (0.1f + epsilon));
-        assertEqualsEntities(actual, event2, event3, event4);
+        actual = this.eventDAO.get(true, events.get(2).getLocation(), (0.1f + epsilon));
+        assertEqualsEntities(actual, events.get(1), events.get(2), events.get(3));
 
-        actual = this.eventDAO.get(true, event2.getLatitude(), event2.getLongitude(), (0.1f + epsilon));
-        assertEqualsEntities(actual, event1, event2, event3);
+        actual = this.eventDAO.get(true, events.get(1).getLocation(), (0.1f + epsilon));
+        assertEqualsEntities(actual, events.get(0), events.get(1), events.get(2));
 
-        actual = this.eventDAO.get(true, event2.getLatitude(), event2.getLongitude(), (0.2f + epsilon));
-        assertEqualsEntities(actual, event1, event2, event3, event4);
+        actual = this.eventDAO.get(true, events.get(1).getLocation(), (0.2f + epsilon));
+        assertEqualsEntities(actual, events.get(0), events.get(1), events.get(2), events.get(3));
     }
 
     private void assertEventIsNotDeleted(final Long accountId, final Event event) {

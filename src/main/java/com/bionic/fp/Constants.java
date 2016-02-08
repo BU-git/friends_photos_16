@@ -62,9 +62,7 @@ public final class Constants {
             String DATE = "date";
             String EXPIRE_DATE = "expire_date";
             String TYPE_ID = "type_id";
-            String LATITUDE = "lat";
-            String LONGITUDE = "lng";
-            String RADIUS = "radius";
+            String LOCATION = "location";
             String GEO = "geo";
             String VISIBLE = "visible";
             String PRIVATE = "private";
@@ -117,6 +115,14 @@ public final class Constants {
         public interface TYPE {
             String ID = "type_id";
             String LIST = "types";
+        }
+
+        public interface GEO {
+            String LATITUDE = "lat";
+            String LONGITUDE = "lng";
+            String SW = "sw";
+            String NE = "ne";
+            String RADIUS = "radius";
         }
 
     }

@@ -246,12 +246,8 @@ public class EventRestControllerIT extends AbstractIT {
         else assertNull(actual.getTypeId());
         assertEquals(expected.isGeoServicesEnabled(), actual.getGeo());
         assertEquals(expected.isVisible(), actual.getVisible());
-        if(expected.getRadius() != null) assertEquals(expected.getRadius(), actual.getRadius());
-        else assertNull(actual.getRadius());
-        if(expected.getLatitude() != null) assertEquals(expected.getLatitude(), actual.getLatitude());
-        else assertNull(actual.getLatitude());
-        if(expected.getLongitude() != null) assertEquals(expected.getLongitude(), actual.getLongitude());
-        else assertNull(actual.getLongitude());
+        if(expected.getLocation() != null) assertEquals(expected.getLocation(), actual.getLocation());
+        else assertNull(actual.getLocation());
     }
 
     private void assertEqualsEvent(final List<EventInfo> actuals, final Event ... events) {
@@ -308,18 +304,15 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(actual.getName(), eventDto.getName());
         assertEquals(actual.getDescription(), eventDto.getDescription());
         assertEquals(actual.getEventType(), privateEvent);
-        assertEquals(actual.getLatitude(), eventDto.getLatitude());
-        assertEquals(actual.getLongitude(), eventDto.getLongitude());
-        assertEquals(actual.getRadius(), eventDto.getRadius());
+        assertEquals(actual.getLocation(), eventDto.getLocation());
+        assertEquals(actual.isGeoServicesEnabled(), true);
         // by default
         assertEquals(actual.isVisible(), true);
-        assertEquals(actual.isGeoServicesEnabled(), false);
 
         Account actualOwner = getEventOwner(actual.getId());
         assertEquals(actualOwner.getId(), owner.getId());
         assertEquals(actualOwner.getEmail(), owner.getEmail());
         assertEquals(actualOwner.getUserName(), owner.getUserName());
-//        assertEquals(actualOwner.getPassword(), owner.getPassword());
     }
 
     @Test
@@ -526,11 +519,9 @@ public class EventRestControllerIT extends AbstractIT {
         assertNotEquals(event.getName(), eventDto.getName());
         assertNotEquals(event.getDescription(), eventDto.getDescription());
         // todo: when there will be more types
-//        assertNotEquals(event.getEventType().getId(), eventDto.getTypeId());
-        assertNotEquals(event.getLatitude(), eventDto.getLatitude());
-        assertNotEquals(event.getLongitude(), eventDto.getLongitude());
-        assertNotEquals(event.getRadius(), eventDto.getRadius());
-        assertNotEquals(event.isGeoServicesEnabled(), eventDto.getGeo());
+//        assertNotEquals(event.getEventType().getId(), eventDto.getEventTypeId());
+        assertNotEquals(event.getLocation(), eventDto.getLocation());
+//        assertNotEquals(event.isGeoServicesEnabled(), eventDto.getGeo()); // todo
         assertNotEquals(event.isVisible(), eventDto.getVisible());
 
         given()
@@ -547,9 +538,7 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(event.getName(), eventDto.getName());
         assertEquals(event.getDescription(), eventDto.getDescription());
         assertEquals(event.getEventType().getId(), eventDto.getEventTypeId());
-        assertEquals(event.getLatitude(), eventDto.getLatitude());
-        assertEquals(event.getLongitude(), eventDto.getLongitude());
-        assertEquals(event.getRadius(), eventDto.getRadius());
+        assertEquals(event.getLocation(), eventDto.getLocation());
         assertEquals(event.isGeoServicesEnabled(), eventDto.getGeo());
         assertEquals(event.isVisible(), eventDto.getVisible());
 
@@ -560,10 +549,8 @@ public class EventRestControllerIT extends AbstractIT {
         assertNotEquals(event.getName(), eventDto.getName());
         assertNotEquals(event.getDescription(), eventDto.getDescription());
         // todo: when there will be more types
-//        assertNotEquals(event.getEventType().getId(), eventDto.getTypeId());
-        assertNotEquals(event.getLatitude(), eventDto.getLatitude());
-        assertNotEquals(event.getLongitude(), eventDto.getLongitude());
-        assertNotEquals(event.getRadius(), eventDto.getRadius());
+//        assertNotEquals(event.getEventType().getId(), eventDto.getEventTypeId());
+        assertNotEquals(event.getLocation(), eventDto.getLocation());
         assertNotEquals(event.isGeoServicesEnabled(), eventDto.getGeo());
         assertNotEquals(event.isVisible(), eventDto.getVisible());
 
@@ -581,9 +568,7 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(event.getName(), eventDto.getName());
         assertNotEquals(event.getDescription(), eventDto.getDescription());
         assertNotEquals(event.getEventType().getId(), eventDto.getEventTypeId());
-        assertNotEquals(event.getLatitude(), eventDto.getLatitude());
-        assertNotEquals(event.getLongitude(), eventDto.getLongitude());
-        assertNotEquals(event.getRadius(), eventDto.getRadius());
+        assertNotEquals(event.getLocation(), eventDto.getLocation());
         assertNotEquals(event.isGeoServicesEnabled(), eventDto.getGeo());
         assertNotEquals(event.isVisible(), eventDto.getVisible());
     }

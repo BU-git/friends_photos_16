@@ -100,7 +100,7 @@ public abstract class AbstractIT extends AbstractHelperTest {
     }
 
     protected Event setPrivate(final Event event) {
-        event.setIsPrivate(true);
+        event.setPrivate(true);
         event.setPassword("secret");
         return event;
     }
@@ -152,10 +152,9 @@ public abstract class AbstractIT extends AbstractHelperTest {
     protected Event updateEvent(final Event event) {
         event.setName(event.getName() + "_up");
         event.setDescription(event.getDescription() + "_up");
-        event.setLatitude(event.getLatitude() == null ? 0 : event.getLatitude() + 1);
-        event.setLongitude(event.getLongitude() == null ? 0 : event.getLongitude() + 1);
-        event.setRadius(event.getRadius() == null ? 0 : event.getRadius() + 1);
-        event.setVisible(!event.isVisible());
+//        event.setLatitude(event.getLatitude() == null ? 0 : event.getLatitude() + 1);
+//        event.setLongitude(event.getLongitude() == null ? 0 : event.getLongitude() + 1); // todo
+//        event.setVisible(!event.isVisible()); // todo
         event.setGeoServicesEnabled(!event.isGeoServicesEnabled());
         event.setCreated(event.getCreated());
 
