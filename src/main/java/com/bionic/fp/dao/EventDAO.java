@@ -1,6 +1,7 @@
 package com.bionic.fp.dao;
 
 import com.bionic.fp.domain.*;
+import com.bionic.fp.util.GeoUtils.DistanceUnitPerDegree;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ public interface EventDAO extends GenericDAO<Event, Long> {
      * @param radius the radius
      * @return a list of events
      */
-    List<Event> get(Boolean visible, Coordinate coordinate, float radius);
+    List<Event> get(Boolean visible, Coordinate coordinate, float radius, DistanceUnitPerDegree distanceUnit);
 
     /**
      * Returns a list of events in the coordinate range

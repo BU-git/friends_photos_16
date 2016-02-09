@@ -64,9 +64,9 @@
     
     * ### [Get a list of event ids where the user has the specified role] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-where-the-user-has-the-specified-role-1)
     
-    * ### [~~Get a list of events which are within the specified radius from the specified coordinates~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-which-are-within-the-specified-radius-from-the-specified-coordinates-1)
+    * ### [Get a list of events which are within the specified radius from the specified coordinates] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-which-are-within-the-specified-radius-from-the-specified-coordinates-1)
     
-    * ### [~~Get a list of events in the specified coordinate range~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-in-the-specified-coordinate-range-1)
+    * ### [Get a list of events in the specified coordinate range] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-in-the-specified-coordinate-range-1)
     
     * ### [Create an event] (FriendsPhotosRESTAPI.md/#create-an-event-1)
     
@@ -1360,10 +1360,10 @@
 		---------- | -------- | -----------
         events | false | the list of event ids
 
-	* ### ~~Get a list of events which are within the specified radius from the specified coordinates~~
+	* ### Get a list of events which are within the specified radius from the specified coordinate
 
     	#### @GET
-        #### /api/v1/events/geo/radius
+        #### /api/v1/events/location/radius
         
         ##### Params:
       
@@ -1441,10 +1441,10 @@
         private | true | if true then to join the event requires a password and false otherwise
         visible | true | is the event visible to search anyone?
 
-    * ### ~~Get a list of events in the specified coordinate range~~
+    * ### Get a list of events in the specified coordinate range
 
     	#### @GET
-        #### /api/v1/events/geo/range
+        #### /api/v1/events/location/range
         
         ##### Params:
       

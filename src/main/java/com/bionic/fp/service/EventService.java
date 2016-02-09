@@ -14,6 +14,7 @@ import java.util.List;
 
 import static com.bionic.fp.Constants.RoleConstants.OWNER;
 import static com.bionic.fp.util.Checks.*;
+import static com.bionic.fp.util.GeoUtils.DistanceUnitPerDegree.KM;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -193,6 +194,33 @@ public class EventService {
         return this.eventDAO.get(true, name, description);
     }
 
+    /**
+     * Returns a list of events which are within the specified radius from the specified coordinate
+     *
+     * @param coordinate the center coordinate
+     * @param radius the radius (KM)
+     * @return a list of events
+     * @throws InvalidParameterException if the incoming parameters are incorrect
+     */
+    public List<Event> get(final Coordinate coordinate, final float radius) throws InvalidParameterException {
+        checkNotNull(coordinate, "coordinate");
+        return this.eventDAO.get(true, coordinate, radius, KM);
+    }
+
+    /**
+     * Returns a list of events in the specified coordinate range
+     *
+     * @param sw the South-West coordinate
+     * @param ne the North-East coordinate
+     * @return a list of events
+     * @throws InvalidParameterException if the incoming parameters are incorrect
+     */
+    public List<Event> get(final Coordinate sw, final Coordinate ne) throws InvalidParameterException {
+        checkNotNull(sw, "South-West coordinate");
+        checkNotNull(ne, "North-East coordinate");
+        return this.eventDAO.get(true, sw, ne);
+    }
+
     //////////////////////////////////////////////
     //                 PRIVATE                  //
     //////////////////////////////////////////////
@@ -209,5 +237,4 @@ public class EventService {
         check(event.getEventType() != null, "The type of the event should not be null");
         check(event.getDescription() != null, "The description of the event should not be null");
     }
-
 }

@@ -43,6 +43,9 @@ public final class Constants {
             String FILE = "/file";
             String ID = "/id";
             String SELF = "/self";
+            String LOCATION = "/location";
+            String RADIUS = "/radius";
+            String RANGE = "/range";
         }
 
         public interface PARAM {
@@ -123,6 +126,7 @@ public final class Constants {
             String SW = "sw";
             String NE = "ne";
             String RADIUS = "radius";
+            String RANGE = "range";
         }
 
     }

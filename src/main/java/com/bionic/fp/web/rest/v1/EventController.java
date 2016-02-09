@@ -268,6 +268,40 @@ public class EventController {
         return this.getEventIds(userId, roleId);
     }
 
+    /**
+     * Returns a list of events which are within the specified radius from the specified coordinate
+     *
+     * @param locationDto the dto which contains the center coordinate and the radius
+     * @return a list of events
+     */
+    @RequestMapping(value = LOCATION+RADIUS, method = GET, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    @ResponseBody
+    public final EntityInfoLists findEventsInRadius(@RequestBody final LocationDto locationDto,
+                                                    @RequestParam(value = FIELDS, required = false) final String fields) {
+        EntityInfoLists body = new EntityInfoLists();
+        body.setEvents(EventInfo.Transformer.transform(
+                this.eventService.get(locationDto.getLocation(), locationDto.getRadius()), fields));
+        return body;
+    }
+
+    /**
+     * Returns a list of events in the specified coordinate range
+     *
+     * @param locationDto the dto which contains the South-West and North-East coordinates
+     * @return a list of events
+     */
+    @RequestMapping(value = LOCATION+RANGE, method = GET, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    @ResponseBody
+    public final EntityInfoLists findEventsInRange(@RequestBody final LocationDto locationDto,
+                                                   @RequestParam(value = FIELDS, required = false) final String fields) {
+        EntityInfoLists body = new EntityInfoLists();
+        body.setEvents(EventInfo.Transformer.transform(
+                this.eventService.get(locationDto.getSw(), locationDto.getNe()), fields));
+        return body;
+    }
+
 
     //***************************************
     //                 @POST

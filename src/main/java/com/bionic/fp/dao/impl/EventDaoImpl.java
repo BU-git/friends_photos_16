@@ -2,6 +2,7 @@ package com.bionic.fp.dao.impl;
 
 import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.domain.*;
+import com.bionic.fp.util.GeoUtils.DistanceUnitPerDegree;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +23,7 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
     private static final String VISIBLE = "visible";
     private static final String NAME = "name";
     private static final String DESCRIPTION = "description";
-    private static final String COORDINATE = "coordinate";
+    private static final String LOCATION = "location";
     private static final String LATITUDE = "latitude";
     private static final String LONGITUDE = "longitude";
     private static final String GEO = "geoServicesEnabled";
@@ -52,12 +53,14 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
     }
 
     @Override
-    public List<Event> get(final Boolean visible, final Coordinate coordinate, final float radius) {
+    public List<Event> get(final Boolean visible, final Coordinate coordinate,
+                           final float radius, final DistanceUnitPerDegree distanceUnit) {
         return this.em.createNamedQuery(Event.FIND_BY_RADIUS, Event.class)
                 .setParameter("latitude", coordinate.getLatitude())
                 .setParameter("longitude", coordinate.getLongitude())
                 .setParameter("radius", radius)
                 .setParameter("visible", visible)
+                .setParameter("distance_unit", distanceUnit.getDistance())
                 .getResultList();
     }
 
@@ -73,8 +76,8 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
             predicate = cb.and(predicate, cb.equal(event.get(VISIBLE), visible));
         }
         predicate = cb.and(predicate, cb.isTrue(event.get(GEO)));
-        predicate = cb.and(predicate, cb.between(event.get(COORDINATE).get(LATITUDE), sw.getLatitude(), ne.getLatitude()));
-        predicate = cb.and(predicate, cb.between(event.get(COORDINATE).get(LONGITUDE), sw.getLongitude(), ne.getLongitude()));
+        predicate = cb.and(predicate, cb.between(event.get(LOCATION).get(LATITUDE), sw.getLatitude(), ne.getLatitude()));
+        predicate = cb.and(predicate, cb.between(event.get(LOCATION).get(LONGITUDE), sw.getLongitude(), ne.getLongitude()));
 
         return this.em.createQuery(query.where(predicate)).getResultList();
     }

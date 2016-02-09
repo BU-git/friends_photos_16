@@ -27,9 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.bionic.fp.Constants.RestConstants.PATH.API;
-import static com.bionic.fp.Constants.RestConstants.PATH.AUTH;
-import static com.bionic.fp.Constants.RestConstants.PATH.V1;
+import static com.bionic.fp.Constants.RestConstants.PATH.*;
+import static com.bionic.fp.Constants.RestConstants.PATH.FB;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 /**
@@ -103,6 +102,7 @@ public class StatefulWebSecurityConfiguration extends WebSecurityConfigurerAdapt
             .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers(API+V1+AUTH+"/**").permitAll()
+                .antMatchers(API+V1+ACCOUNTS+FB+"/**").permitAll() // todo: temporarily
                 .antMatchers(API+V1+"/**").authenticated()
                 .anyRequest().permitAll();
 

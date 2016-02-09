@@ -79,16 +79,16 @@ public class AuthenticationController {
     /**
      * Endpoint used to authentication by facebook
      */
-//    @RequestMapping(value = FB, method = POST, produces = APPLICATION_JSON_VALUE)
-//    @ResponseStatus(OK)
-//    @ResponseBody
-//    public AuthenticationResponse facebook(@RequestBody final AuthenticationSocialRequest authRequest,
-//                                           final HttpServletRequest request, final HttpServletResponse response) {
-//        Account account = this.accountService.getOrCreateFbAccount(authRequest);
-//        User user = new User(account);
-//        this.authenticationStrategy.saveAuthentication(user, request, response);
-//        return new AuthenticationResponse(this.tokenUtils.generateToken(user), user.getId());
-//    }
+    @RequestMapping(value = FB, method = POST, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    @ResponseBody
+    public AuthenticationResponse facebook(@RequestBody final AuthenticationSocialRequest authRequest,
+                                           final HttpServletRequest request, final HttpServletResponse response) {
+        Account account = this.accountService.getOrCreateFbAccount(authRequest);
+        User user = new User(account);
+        this.authenticationStrategy.saveAuthentication(user, request, response);
+        return new AuthenticationResponse(this.tokenUtils.generateToken(user), user.getId());
+    }
 
     /**
      * Endpoint used to logout

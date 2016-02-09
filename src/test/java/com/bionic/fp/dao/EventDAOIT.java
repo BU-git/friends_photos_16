@@ -5,6 +5,8 @@ import com.bionic.fp.domain.Coordinate;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
+import com.bionic.fp.util.GeoUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
@@ -13,6 +15,8 @@ import java.util.stream.Stream;
 
 import static com.bionic.fp.Constants.RoleConstants.MEMBER;
 import static com.bionic.fp.Constants.RoleConstants.OWNER;
+import static com.bionic.fp.util.GeoUtils.DistanceUnitPerDegree.KM;
+import static com.bionic.fp.util.GeoUtils.getDistance;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.*;
 
@@ -22,11 +26,6 @@ import static org.junit.Assert.*;
  * @author Sergiy Gabriel
  */
 public class EventDAOIT extends AbstractDaoIT {
-
-//    @Before
-//    public void setUp() throws Exception {
-//        clearAllTables();
-//    }
 
     @Test
     public void testGetByIdSuccess() {
@@ -259,7 +258,11 @@ public class EventDAOIT extends AbstractDaoIT {
 
     @Test
     public void testGetByCoordinatesSuccess() throws Exception {
-        float  epsilon = 0.01f;
+        // delete existed events
+        this.eventDAO.get(true, new Coordinate(50, 30), (float) getDistance(50, 30, 51, 31, KM), KM)
+                .stream().unordered().map(Event::getId).forEach(id -> this.eventDAO.delete(id));
+
+        float  e = 0.003f;    // 3m
         Account owner = getSavedAccount();
         List<Event> events = Stream.of(
                 new Coordinate(50.445385, 30.501502),   // ~0
@@ -274,17 +277,201 @@ public class EventDAOIT extends AbstractDaoIT {
             return save(owner, event);
         }).collect(toList());
 
-        List<Event> actual = this.eventDAO.get(true, events.get(2).getLocation(), (0.2f + epsilon));
-        assertEqualsEntities(actual, events.toArray(new Event[events.size()]));
+        assertEqualsEntities(eventDAO.get(true, events.get(2).getLocation(), (0.2f+e), KM), events.toArray(new Event[events.size()]));
+        assertEqualsEntities(eventDAO.get(true, events.get(2).getLocation(), (0.1f+e), KM), events.get(1), events.get(2), events.get(3));
+        assertEqualsEntities(eventDAO.get(true, events.get(1).getLocation(), (0.1f+e), KM), events.get(0), events.get(1), events.get(2));
+        assertEqualsEntities(eventDAO.get(true, events.get(1).getLocation(), (0.2f+e), KM), events.get(0), events.get(1), events.get(2), events.get(3));
+    }
 
-        actual = this.eventDAO.get(true, events.get(2).getLocation(), (0.1f + epsilon));
-        assertEqualsEntities(actual, events.get(1), events.get(2), events.get(3));
+    @Test
+    public void testGetByCoordinatesVisibleSuccess() throws Exception {
+        // delete existed events
+        this.eventDAO.get(true, new Coordinate(50, 30), (float) getDistance(50, 30, 51, 31, KM), KM)
+                .stream().unordered().map(Event::getId).forEach(id -> this.eventDAO.delete(id));
 
-        actual = this.eventDAO.get(true, events.get(1).getLocation(), (0.1f + epsilon));
-        assertEqualsEntities(actual, events.get(0), events.get(1), events.get(2));
+        float  e = 0.003f;    // 3m
+        Account owner = getSavedAccount();
+        List<Event> events = Stream.of(
+                new Coordinate(50.445385, 30.501502),   // ~0
+                new Coordinate(50.445173, 30.502908),   // ~100m
+                new Coordinate(50.444961, 30.504249),   // ~200m
+                new Coordinate(50.444727, 30.505630),   // ~300m
+                new Coordinate(50.444507, 30.507001)    // ~400m
+        ).sequential().map(coordinate -> {
+            Event event = getNewEventMin();
+            event.setGeoServicesEnabled(true);
+            event.setLocation(coordinate);
+            return save(owner, event);
+        }).collect(toList());
 
-        actual = this.eventDAO.get(true, events.get(1).getLocation(), (0.2f + epsilon));
-        assertEqualsEntities(actual, events.get(0), events.get(1), events.get(2), events.get(3));
+        Stream.of(events.get(1), events.get(3)).unordered().forEach(event -> {
+            event.setVisible(false);
+            this.eventDAO.update(event);
+        });
+
+        assertEqualsEntities(eventDAO.get(null, events.get(2).getLocation(), (0.2f+e), KM), events.toArray(new Event[events.size()]));
+        assertEqualsEntities(eventDAO.get(true, events.get(2).getLocation(), (0.2f+e), KM), events.get(0), events.get(2), events.get(4));
+        assertEqualsEntities(eventDAO.get(false,events.get(2).getLocation(), (0.2f+e), KM), events.get(1), events.get(3));
+
+        assertEqualsEntities(eventDAO.get(null, events.get(2).getLocation(), (0.1f+e), KM), events.get(1), events.get(2), events.get(3));
+        assertEqualsEntities(eventDAO.get(true, events.get(2).getLocation(), (0.1f+e), KM), events.get(2));
+        assertEqualsEntities(eventDAO.get(false,events.get(2).getLocation(), (0.1f+e), KM), events.get(1), events.get(3));
+
+        assertEqualsEntities(eventDAO.get(null, events.get(1).getLocation(), (0.1f+e), KM), events.get(0), events.get(1), events.get(2));
+        assertEqualsEntities(eventDAO.get(true, events.get(1).getLocation(), (0.1f+e), KM), events.get(0), events.get(2));
+        assertEqualsEntities(eventDAO.get(false,events.get(1).getLocation(), (0.1f+e), KM), events.get(1));
+
+        assertEqualsEntities(eventDAO.get(null, events.get(1).getLocation(), (0.2f+e), KM), events.get(0), events.get(1), events.get(2), events.get(3));
+        assertEqualsEntities(eventDAO.get(true, events.get(1).getLocation(), (0.2f+e), KM), events.get(0), events.get(2));
+        assertEqualsEntities(eventDAO.get(false,events.get(1).getLocation(), (0.2f+e), KM), events.get(1), events.get(3));
+    }
+
+    @Test
+    @Ignore
+    public void testGetByCoordinatesVisibleForMemberEventSuccess() throws Exception {
+        // delete existed events
+        this.eventDAO.get(true, new Coordinate(50, 30), (float) getDistance(50, 30, 51, 31, KM), KM)
+                .stream().unordered().map(Event::getId).forEach(id -> this.eventDAO.delete(id));
+
+        float  e = 0.003f;    // 3m
+
+        List<Event> events = Stream.of(
+                new Coordinate(50.445385, 30.501502),   // ~0
+                new Coordinate(50.445173, 30.502908),   // ~100m
+                new Coordinate(50.444961, 30.504249),   // ~200m
+                new Coordinate(50.444727, 30.505630),   // ~300m
+                new Coordinate(50.444507, 30.507001)    // ~400m
+        ).sequential().map(coordinate -> {
+            Event event = getNewEventMin();
+            event.setGeoServicesEnabled(true);
+            event.setLocation(coordinate);
+            return event;
+        }).collect(toList());
+
+        Account owner1 = getSavedAccount();
+        Account owner2 = getSavedAccount();
+
+        save(owner1, events.get(0));
+        save(owner1, events.get(1));
+        save(owner1, events.get(2)); getSavedAccountEvent(owner2, events.get(2), getRoleMember());
+        save(owner2, events.get(3));
+        save(owner2, events.get(4));
+
+        Stream.of(events.get(1), events.get(3)).unordered().forEach(event -> {
+            event.setVisible(false);
+            this.eventDAO.update(event);
+        });
+
+        // todo
+    }
+
+    @Test
+    public void testGetByCoordinatesDeletedSuccess() throws Exception {
+        // delete existed events
+        this.eventDAO.get(true, new Coordinate(50, 30), (float) getDistance(50, 30, 51, 31, KM), KM)
+                .stream().unordered().map(Event::getId).forEach(id -> this.eventDAO.delete(id));
+
+        float  e = 0.003f;    // 3m
+        Account owner = getSavedAccount();
+        List<Event> events = Stream.of(
+                new Coordinate(50.445385, 30.501502),   // ~0
+                new Coordinate(50.445173, 30.502908),   // ~100m
+                new Coordinate(50.444961, 30.504249),   // ~200m
+                new Coordinate(50.444727, 30.505630),   // ~300m
+                new Coordinate(50.444507, 30.507001)    // ~400m
+        ).sequential().map(coordinate -> {
+            Event event = getNewEventMin();
+            event.setGeoServicesEnabled(true);
+            event.setLocation(coordinate);
+            return save(owner, event);
+        }).collect(toList());
+
+        Stream.of(events.get(1), events.get(3)).unordered().map(Event::getId)
+                .forEach(id -> this.eventDAO.setDeleted(id, true));
+
+        assertEqualsEntities(eventDAO.get(null, events.get(2).getLocation(), (0.2f+e), KM), events.get(0), events.get(2), events.get(4));
+        assertEqualsEntities(eventDAO.get(true, events.get(2).getLocation(), (0.2f+e), KM), events.get(0), events.get(2), events.get(4));
+        assertEqualsEntities(eventDAO.get(false,events.get(2).getLocation(), (0.2f+e), KM));
+
+        assertEqualsEntities(eventDAO.get(null, events.get(2).getLocation(), (0.1f+e), KM), events.get(2));
+        assertEqualsEntities(eventDAO.get(true, events.get(2).getLocation(), (0.1f+e), KM), events.get(2));
+        assertEqualsEntities(eventDAO.get(false,events.get(2).getLocation(), (0.1f+e), KM));
+
+        assertEqualsEntities(eventDAO.get(null, events.get(1).getLocation(), (0.1f+e), KM), events.get(0), events.get(2));
+        assertEqualsEntities(eventDAO.get(true, events.get(1).getLocation(), (0.1f+e), KM), events.get(0), events.get(2));
+        assertEqualsEntities(eventDAO.get(false,events.get(1).getLocation(), (0.1f+e), KM));
+
+        assertEqualsEntities(eventDAO.get(null, events.get(1).getLocation(), (0.2f+e), KM), events.get(0), events.get(2));
+        assertEqualsEntities(eventDAO.get(true, events.get(1).getLocation(), (0.2f+e), KM), events.get(0), events.get(2));
+        assertEqualsEntities(eventDAO.get(false,events.get(1).getLocation(), (0.2f+e), KM));
+    }
+
+    @Test
+    public void testGetByRangeSuccess() throws Exception {
+        // delete existed events
+        this.eventDAO.get(true, new Coordinate(50, 30), (float) getDistance(50, 30, 51, 31, KM), KM)
+                .stream().unordered().map(Event::getId).forEach(id -> this.eventDAO.delete(id));
+
+        Account owner = getSavedAccount();
+        List<Event> events = Stream.of(
+                new Coordinate(50.01, 30.06),
+                new Coordinate(50.02, 30.07),
+                new Coordinate(50.03, 30.08),
+                new Coordinate(50.04, 30.09),
+                new Coordinate(50.05, 30.10)
+        ).sequential().map(coordinate -> {
+            Event event = getNewEventMin();
+            event.setGeoServicesEnabled(true);
+            event.setLocation(coordinate);
+            return save(owner, event);
+        }).collect(toList());
+
+        assertEqualsEntities(this.eventDAO.get(true, new Coordinate(50.01, 30.06), new Coordinate(50.05, 30.10)), events.toArray(new Event[events.size()]));
+        assertEqualsEntities(this.eventDAO.get(true, new Coordinate(50.02, 30.07), new Coordinate(50.04, 30.09)), events.get(1), events.get(2), events.get(3));
+        assertEqualsEntities(this.eventDAO.get(true, new Coordinate(50.01, 30.06), new Coordinate(50.03, 30.08)), events.get(0), events.get(1), events.get(2));
+        assertEqualsEntities(this.eventDAO.get(true, new Coordinate(50.01, 30.06), new Coordinate(50.04, 30.09)), events.get(0), events.get(1), events.get(2), events.get(3));
+    }
+
+    @Test
+    public void testGetByRangeVisibleSuccess() throws Exception {
+        // delete existed events
+        this.eventDAO.get(true, new Coordinate(50, 30), (float) getDistance(50, 30, 51, 31, KM), KM)
+                .stream().unordered().map(Event::getId).forEach(id -> this.eventDAO.delete(id));
+
+        Account owner = getSavedAccount();
+        List<Event> events = Stream.of(
+                new Coordinate(50.01, 30.06),
+                new Coordinate(50.02, 30.07),
+                new Coordinate(50.03, 30.08),
+                new Coordinate(50.04, 30.09),
+                new Coordinate(50.05, 30.10)
+        ).sequential().map(coordinate -> {
+            Event event = getNewEventMin();
+            event.setGeoServicesEnabled(true);
+            event.setLocation(coordinate);
+            return save(owner, event);
+        }).collect(toList());
+
+        Stream.of(events.get(1), events.get(3)).unordered().forEach(event -> {
+            event.setVisible(false);
+            this.eventDAO.update(event);
+        });
+
+        assertEqualsEntities(eventDAO.get(null, new Coordinate(50.01, 30.06), new Coordinate(50.05, 30.10)), events.toArray(new Event[events.size()]));
+        assertEqualsEntities(eventDAO.get(true, new Coordinate(50.01, 30.06), new Coordinate(50.05, 30.10)), events.get(0), events.get(2), events.get(4));
+        assertEqualsEntities(eventDAO.get(false,new Coordinate(50.01, 30.06), new Coordinate(50.05, 30.10)), events.get(1), events.get(3));
+
+        assertEqualsEntities(eventDAO.get(null, new Coordinate(50.02, 30.07), new Coordinate(50.04, 30.09)), events.get(1), events.get(2), events.get(3));
+        assertEqualsEntities(eventDAO.get(true, new Coordinate(50.02, 30.07), new Coordinate(50.04, 30.09)), events.get(2));
+        assertEqualsEntities(eventDAO.get(false,new Coordinate(50.02, 30.07), new Coordinate(50.04, 30.09)), events.get(1), events.get(3));
+
+        assertEqualsEntities(eventDAO.get(null, new Coordinate(50.01, 30.06), new Coordinate(50.03, 30.08)), events.get(0), events.get(1), events.get(2));
+        assertEqualsEntities(eventDAO.get(true, new Coordinate(50.01, 30.06), new Coordinate(50.03, 30.08)), events.get(0), events.get(2));
+        assertEqualsEntities(eventDAO.get(false,new Coordinate(50.01, 30.06), new Coordinate(50.03, 30.08)), events.get(1));
+
+        assertEqualsEntities(eventDAO.get(null, new Coordinate(50.01, 30.06), new Coordinate(50.04, 30.09)), events.get(0), events.get(1), events.get(2), events.get(3));
+        assertEqualsEntities(eventDAO.get(true, new Coordinate(50.01, 30.06), new Coordinate(50.04, 30.09)), events.get(0), events.get(2));
+        assertEqualsEntities(eventDAO.get(false,new Coordinate(50.01, 30.06), new Coordinate(50.04, 30.09)), events.get(1), events.get(3));
     }
 
     private void assertEventIsNotDeleted(final Long accountId, final Event event) {
