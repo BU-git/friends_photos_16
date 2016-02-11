@@ -217,6 +217,27 @@ public class PhotoController {
 	//                 @POST
 	//***************************************
 
+	/**
+	 * Saves a photo file to filesystem
+	 * and save photo info to DB.
+	 *
+	 * @param file the file
+	 * @param eventId the event id
+	 * @param name the photo name
+	 * @param description the photo description
+	 * @return a photo
+	 */
+	@RequestMapping(method = POST, consumes = MULTIPART_FORM_DATA_VALUE, produces = APPLICATION_JSON_VALUE)
+	@ResponseStatus(CREATED)
+	@ResponseBody
+	public PhotoInfo createPhoto(@RequestParam(PHOTO.FILE) final MultipartFile file,
+								 @RequestParam(EVENT.ID) final Long eventId,
+								 @RequestParam(value = PHOTO.NAME, required = false) final String name,
+								 @RequestParam(value = PHOTO.DESCRIPTION, required = false) final String description) throws IOException {
+		Long userId = this.methodSecurityService.getUserId();
+		Photo photo = this.photoService.saveToFileSystem(eventId, userId, file, name);
+		return new PhotoInfo(photo);
+	}
 
 	/**
 	 * Adds a comment to the photo
