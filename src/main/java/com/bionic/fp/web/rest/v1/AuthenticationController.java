@@ -87,7 +87,9 @@ public class AuthenticationController {
         User user = this.getAuthenticatedUser(email, password);
         this.authenticationStrategy.saveAuthentication(user, request, response);
         String token = this.tokenUtils.generateToken(user);
-        return new AuthenticationResponse(token, user.getId());
+		AuthenticationResponse authResponse = new AuthenticationResponse(token, user.getId());
+		authResponse.setEmail(email);
+        return authResponse;
     }
 
     /**
@@ -101,7 +103,9 @@ public class AuthenticationController {
         Account account = this.accountService.getOrCreateFbAccount(authRequest);
         User user = new User(account);
         this.authenticationStrategy.saveAuthentication(user, request, response);
-        return new AuthenticationResponse(this.tokenUtils.generateToken(user), user.getId());
+		AuthenticationResponse authResponse = new AuthenticationResponse(this.tokenUtils.generateToken(user), user.getId());
+		authResponse.setEmail(user.getEmail());
+        return authResponse;
     }
 
     /**
