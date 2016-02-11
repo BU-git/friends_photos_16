@@ -15,6 +15,7 @@ public class AuthenticationResponse {
 
     @JsonProperty(ACCOUNT.TOKEN) private String token;
     @JsonProperty(PARAM.USER_ID) private Long userId;
+	@JsonProperty(PARAM.EMAIL) private String email;
 
     public AuthenticationResponse() {
         super();

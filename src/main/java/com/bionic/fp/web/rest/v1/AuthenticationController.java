@@ -1,6 +1,7 @@
 package com.bionic.fp.web.rest.v1;
 
 import com.bionic.fp.domain.Account;
+import com.bionic.fp.exception.auth.impl.EmptyEmailOrPasswordException;
 import com.bionic.fp.service.AccountService;
 import com.bionic.fp.service.MethodSecurityService;
 import com.bionic.fp.web.rest.dto.AuthenticationRequest;
@@ -9,6 +10,7 @@ import com.bionic.fp.web.rest.dto.AuthenticationSocialRequest;
 import com.bionic.fp.web.security.spring.infrastructure.User;
 import com.bionic.fp.web.security.spring.infrastructure.filter.AuthenticationStrategy;
 import com.bionic.fp.web.security.spring.infrastructure.utils.TokenUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -53,9 +55,14 @@ public class AuthenticationController {
     @RequestMapping(method = POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public AuthenticationResponse authentication(@RequestBody final AuthenticationRequest authRequest,
-                                                 final HttpServletRequest request, final HttpServletResponse response) {
-        User user = this.getAuthenticatedUser(authRequest);
+    public AuthenticationResponse authentication(HttpServletRequest request,
+												 HttpServletResponse response,
+												 @RequestParam String email,
+												 @RequestParam String password) {
+		if (StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {
+			throw new EmptyEmailOrPasswordException();
+		}
+        User user = this.getAuthenticatedUser(email, password);
         this.authenticationStrategy.saveAuthentication(user, request, response);
         String token = this.tokenUtils.generateToken(user);
         return new AuthenticationResponse(token, user.getId());
@@ -64,13 +71,20 @@ public class AuthenticationController {
     /**
      * Endpoint used to register by email
      */
-    @RequestMapping(value = REGISTER, method = POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = REGISTER, method = POST, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
     @ResponseBody
-    public AuthenticationResponse register(@RequestBody final AuthenticationRequest authRequest,
-                                           final HttpServletRequest request, final HttpServletResponse response) {
-        this.accountService.registerByFP(authRequest.getEmail(), authRequest.getPassword(), authRequest.getUsername());
-        User user = this.getAuthenticatedUser(authRequest);
+    public AuthenticationResponse register(HttpServletRequest request,
+										   HttpServletResponse response,
+										   @RequestParam String email,
+										   @RequestParam String password,
+										   @RequestParam(required = false) String userName) {
+		if (StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {
+			throw new EmptyEmailOrPasswordException();
+		}
+        this.accountService.registerByFP(email, password, userName);
+
+        User user = this.getAuthenticatedUser(email, password);
         this.authenticationStrategy.saveAuthentication(user, request, response);
         String token = this.tokenUtils.generateToken(user);
         return new AuthenticationResponse(token, user.getId());
@@ -130,5 +144,13 @@ public class AuthenticationController {
         Authentication authentication = this.authenticationManager.authenticate(auth);
         return (User) authentication.getPrincipal();
     }
+
+	private User getAuthenticatedUser(final String email, final String password) {
+		UsernamePasswordAuthenticationToken auth =
+				new UsernamePasswordAuthenticationToken(email, password);
+		// Perform the authentication
+		Authentication authentication = this.authenticationManager.authenticate(auth);
+		return (User) authentication.getPrincipal();
+	}
 
 }
