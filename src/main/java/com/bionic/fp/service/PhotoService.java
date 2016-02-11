@@ -3,11 +3,13 @@ package com.bionic.fp.service;
 import com.bionic.fp.dao.PhotoDAO;
 import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.Event;
+import com.bionic.fp.domain.IdEntity;
 import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.auth.impl.IncorrectPasswordException;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.PhotoNotFoundException;
+import com.bionic.fp.util.AppUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +22,12 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static com.bionic.fp.Constants.FILE_SEPERATOR;
+import static com.bionic.fp.util.AppUtils.convert;
 import static com.bionic.fp.util.Checks.*;
 import static java.util.stream.Collectors.toList;
 
@@ -191,8 +195,7 @@ public class PhotoService {
      * @throws InvalidParameterException if incoming parameter is not valid
      */
     public List<Long> getPhotoIdsByEvent(final Long eventId) throws InvalidParameterException {
-        return this.getPhotosByEvent(eventId).stream().parallel()
-                .map(Photo::getId).collect(toList());
+        return convert(this.getPhotosByEvent(eventId));
     }
 
     /**
@@ -215,13 +218,40 @@ public class PhotoService {
      * @throws InvalidParameterException if incoming parameter is not valid
      */
     public List<Long> getPhotoIdsByAccount(final Long accountId) throws InvalidParameterException {
-        return this.getPhotosByAccount(accountId).stream().parallel()
-                .map(Photo::getId).collect(toList());
+        return convert(this.getPhotosByAccount(accountId));
     }
+
+    /**
+     * Returns a list of the photos of the account in the event
+     *
+     * @param accountId the account ID
+     * @param eventId the event ID
+     * @return a list of the photos
+     * @throws InvalidParameterException if incoming parameters are not valid
+     */
+    public List<Photo> getPhotosByAccountInEvent(final Long accountId, final Long eventId) throws InvalidParameterException {
+        checkEvent(eventId);
+        checkAccount(accountId);
+        return this.photoDAO.getPhotosByAccountInEvent(accountId, eventId);
+    }
+
+    /**
+     * Returns a list of the photo ids of the account in the event
+     *
+     * @param accountId the account ID
+     * @param eventId the event ID
+     * @return a list of the photo ids
+     * @throws InvalidParameterException if incoming parameters are not valid
+     */
+    public List<Long> getPhotoIdsByAccountInEvent(final Long accountId, final Long eventId) throws InvalidParameterException{
+        return convert(this.getPhotosByAccountInEvent(accountId, eventId));
+    }
+
 
     //////////////////////////////////////////////
     //                 PRIVATE                  //
     //////////////////////////////////////////////
+
 
     private void checkFile(final MultipartFile file) throws IncorrectPasswordException {
         checkNotNull(file, "file");

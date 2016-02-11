@@ -100,7 +100,6 @@ public interface AccountEventDAO extends GenericDAO<AccountEvent, Long> {
      *
      * @param accountId the account ID
      * @param eventId the event ID
-     * @throws AccountEventNotFoundException if the account-event doesn't exist
      */
-    void delete(Long accountId, Long eventId) throws AccountEventNotFoundException;
+    void delete(Long accountId, Long eventId);
 }

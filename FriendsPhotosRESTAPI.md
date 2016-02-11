@@ -64,7 +64,7 @@
     
     * ### [Get a list of event ids where the user has the specified role] (FriendsPhotosRESTAPI.md/#get-a-list-of-event-ids-where-the-user-has-the-specified-role-1)
     
-    * ### [Get a list of events which are within the specified radius from the specified coordinates] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-which-are-within-the-specified-radius-from-the-specified-coordinates-1)
+    * ### [Get a list of events which are within the specified radius from the specified coordinate] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-which-are-within-the-specified-radius-from-the-specified-coordinate-1)
     
     * ### [Get a list of events in the specified coordinate range] (FriendsPhotosRESTAPI.md/#get-a-list-of-events-in-the-specified-coordinate-range-1)
     
@@ -74,15 +74,15 @@
     
     * ### [Add a comment to the event] (FriendsPhotosRESTAPI.md/#add-a-comment-to-the-event-1)
     
-    * ### [~~Add a photo to the event~~] (FriendsPhotosRESTAPI.md/#add-a-photo-to-the-event-1)
+    * ### [Add a photo to the event] (FriendsPhotosRESTAPI.md/#add-a-photo-to-the-event-1)
     
     * ### [Update the event] (FriendsPhotosRESTAPI.md/#update-the-event-1)
     
     * ### [Change the role of the participant in the event] (FriendsPhotosRESTAPI.md/#change-the-role-of-the-participant-in-the-event-1)
     
-    * ### [~~Remove an account from the event~~] (FriendsPhotosRESTAPI.md/#remove-an-account-from-the-event-1)
+    * ### [Remove an account from the event] (FriendsPhotosRESTAPI.md/#remove-an-account-from-the-event-1)
     
-    * ### [~~Remove the user from the event~~] (FriendsPhotosRESTAPI.md/#remove-the-user-from-the-event-1)
+    * ### [Remove the user from the event] (FriendsPhotosRESTAPI.md/#remove-the-user-from-the-event-1)
     
     * ### [Delete the event] (FriendsPhotosRESTAPI.md/#delete-the-event-1)
 
@@ -104,16 +104,14 @@
     
     * ### [Get a list of photo ids of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-photo-ids-of-the-event-1)
     
-    * ### [~~Get a list of photos of the account in the event~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-photos-of-the-account-in-the-event-1)
+    * ### [Get a list of photos of the account in the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-photos-of-the-account-in-the-event-1)
         
-    * ### [~~Get a list of photo ids of the account in the event~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-photo-ids-of-the-account-in-the-event-1)
+    * ### [Get a list of photo ids of the account in the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-photo-ids-of-the-account-in-the-event-1)
     
-    * ### [~~Get a list of photos of the user in the event~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-photos-of-the-user-in-the-event-1)
+    * ### [Get a list of photos of the user in the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-photos-of-the-user-in-the-event-1)
     
-    * ### [~~Get a list of photo ids of the user in the event~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-photo-ids-of-the-user-in-the-event-1)
-    
-    * ### [Create a photo (@see Add a photo to the event)] (FriendsPhotosRESTAPI.md/#create-a-photo-1)
-    
+    * ### [Get a list of photo ids of the user in the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-photo-ids-of-the-user-in-the-event-1)
+
     * ### [Add a comment to the photo] (FriendsPhotosRESTAPI.md/#add-a-comment-to-the-photo-1)
     
     * ### [~~Update the photo~~] (FriendsPhotosRESTAPI.md/#update-the-photo-1)
@@ -1664,7 +1662,7 @@
 		---------- | -------- | -----------
         id | false | the comment id
 
-    * ### ~~Add a photo to the event~~
+    * ### Add a photo to the event
 
     	#### @POST
         #### /api/v1/events/{event_id}/photos
@@ -1816,7 +1814,7 @@
         401 | UNAUTHORIZED
         403 | FORBIDDEN
         
-    * ### ~~Remove an account from the event~~
+    * ### Remove an account from the event
 
     	#### @DELETE
         #### /api/v1/events/{event_id}/accounts/{account_id}
@@ -1843,7 +1841,7 @@
         401 | UNAUTHORIZED
         403 | FORBIDDEN
         
-    * ### ~~Remove the user from the event~~
+    * ### Remove the user from the event
 
     	#### @DELETE
         #### /api/v1/events/{event_id}/accounts/self
@@ -2209,7 +2207,7 @@
 		---------- | -------- | -----------
         photos | false | the list of photo ids
         
-    * ### ~~Get a list of photos of the account in the event~~
+    * ### Get a list of photos of the account in the event
 
     	#### @GET
         #### /api/v1/photos/events/{event_id}/accounts/{account_id}
@@ -2266,7 +2264,7 @@
         event_id | true | the id of the event where there is the photo. If you want to get the id but it is null - this means that the event was deleted
         owner_id | true | the id of the owner of the photo. If you want to get the id but it is null - this means that the account was deleted
 
-    * ### ~~Get a list of photo ids of the account in the event~~
+    * ### Get a list of photo ids of the account in the event
 
     	#### @GET
         #### /api/v1/photos/id/events/{event_id}/accounts/{account_id}
@@ -2300,7 +2298,7 @@
 		---------- | -------- | -----------
         photos | false | the list of photo ids
     
-    * ### ~~Get a list of photos of the user in the event~~
+    * ### Get a list of photos of the user in the event
 
     	#### @GET
         #### /api/v1/photos/events/{event_id}/accounts/self
@@ -2355,7 +2353,7 @@
         event_id | true | the id of the event where there is the photo. If you want to get the id but it is null - this means that the event was deleted
         owner_id | true | the id of the owner of the photo. If you want to get the id but it is null - this means that the account was deleted
 
-    * ### ~~Get a list of photo ids of the user in the event~~
+    * ### Get a list of photo ids of the user in the event
 
     	#### @GET
         #### /api/v1/photos/id/events/{event_id}/accounts/self
@@ -2386,52 +2384,6 @@
         Param Name | Nullable | Description
 		---------- | -------- | -----------
         photos | false | the list of photo ids
-    
-	* ### Create a photo
-
-    	#### @POST
-        #### /api/v1/photos/
-
-        ##### Params:
-
-        Key | Value
-		--- | -----
-        file | file
-        event_id | 7
-        name | "superPhoto"
-        ~~description~~ | "look at me"
-
-        <p/>
-
-        Param Name | Required | Description
-		---------- | -------- | -----------
-        file | true | the image to upload
-        event_id | true | the event id
-        name | false | the original image name
-        ~~description~~ | false | the description of the image
-
-        ##### Response:
-
-        Status | Description
-		------ | -----------
-        201 | CREATED
-        400 | BAD REQUEST
-        401 | UNAUTHORIZED
-        403 | FORBIDDEN
-
-       		{
-            	"photo_id": 11,
-                "name": "NY 2016",
-                "event_id": 56,
-                "owner_id": 78
-			}
-
-        Param Name | Nullable | Description
-		---------- | -------- | -----------
-		photo_id | true | the photo id
-        name | false | the photo name
-        event_id | false | the id of the event where there is the photo
-        owner_id | false | the id of the owner of the photo
 
 	* ### Add a comment to the photo
 

@@ -89,7 +89,10 @@ public class PhotoController {
 	@ResponseStatus(OK)
 	@ResponseBody
 	public final EntityInfoLists getAccountPhotos(@PathVariable(ACCOUNT.ID) final Long ownerId) {
-		return this.getPhotos(ownerId);
+		EntityInfoLists body = new EntityInfoLists();
+		body.setPhotos(this.photoService.getPhotosByAccount(ownerId)
+				.stream().parallel().map(PhotoInfo::new).collect(toList()));
+		return body;
 	}
 
 	/**
@@ -102,7 +105,9 @@ public class PhotoController {
 	@ResponseStatus(OK)
 	@ResponseBody
 	public final IdLists getAccountPhotoIds(@PathVariable(ACCOUNT.ID) final Long ownerId) {
-		return this.getPhotoIds(ownerId);
+		IdLists body = new IdLists();
+		body.setPhotos(this.photoService.getPhotoIdsByAccount(ownerId));
+		return body;
 	}
 
 	/**
@@ -115,8 +120,10 @@ public class PhotoController {
 	@ResponseStatus(OK)
 	@ResponseBody
 	public final EntityInfoLists getUserPhotos() {
-		Long userId = this.methodSecurityService.getUserId();
-		return this.getPhotos(userId);
+		EntityInfoLists body = new EntityInfoLists();
+		body.setPhotos(this.photoService.getPhotosByAccount(this.methodSecurityService.getUserId())
+				.stream().parallel().map(PhotoInfo::new).collect(toList()));
+		return body;
 	}
 
 	/**
@@ -129,8 +136,9 @@ public class PhotoController {
 	@ResponseStatus(OK)
 	@ResponseBody
 	public final IdLists getUserPhotoIds() {
-		Long userId = this.methodSecurityService.getUserId();
-		return this.getPhotoIds(userId);
+		IdLists body = new IdLists();
+		body.setPhotos(this.photoService.getPhotoIdsByAccount(this.methodSecurityService.getUserId()));
+		return body;
 	}
 
 	/**
@@ -160,8 +168,47 @@ public class PhotoController {
 	@ResponseBody
 	public IdLists getEventPhotoIds(@PathVariable(EVENT.ID) final Long eventId) {
 		IdLists body = new IdLists();
-		body.setPhotos(this.photoService.getPhotosByEvent(eventId).stream().parallel()
-				.map(Photo::getId).collect(toList()));
+		body.setPhotos(this.photoService.getPhotoIdsByEvent(eventId));
+		return body;
+	}
+
+	@RequestMapping(value = EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
+	@ResponseStatus(OK)
+	@ResponseBody
+	public EntityInfoLists getPhotosByAccountInEvent(@PathVariable(EVENT.ID) final Long eventId,
+													 @PathVariable(ACCOUNT.ID) final Long accountId) {
+		EntityInfoLists body = new EntityInfoLists();
+		body.setPhotos(this.photoService.getPhotosByAccountInEvent(accountId, eventId)
+				.stream().parallel().map(PhotoInfo::new).collect(toList()));
+		return body;
+	}
+
+	@RequestMapping(value = ID+EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID, method = GET, produces = APPLICATION_JSON_VALUE)
+	@ResponseStatus(OK)
+	@ResponseBody
+	public IdLists getPhotoIdsByAccountInEvent(@PathVariable(EVENT.ID) final Long eventId,
+											   @PathVariable(ACCOUNT.ID) final Long accountId) {
+		IdLists body = new IdLists();
+		body.setPhotos(this.photoService.getPhotoIdsByAccountInEvent(accountId, eventId));
+		return body;
+	}
+
+	@RequestMapping(value = EVENTS+EVENT_ID+ACCOUNTS+SELF, method = GET, produces = APPLICATION_JSON_VALUE)
+	@ResponseStatus(OK)
+	@ResponseBody
+	public EntityInfoLists getPhotosByUserInEvent(@PathVariable(EVENT.ID) final Long eventId) {
+		EntityInfoLists body = new EntityInfoLists();
+		body.setPhotos(this.photoService.getPhotosByAccountInEvent(this.methodSecurityService.getUserId(), eventId)
+				.stream().parallel().map(PhotoInfo::new).collect(toList()));
+		return body;
+	}
+
+	@RequestMapping(value = ID+EVENTS+EVENT_ID+ACCOUNTS+SELF, method = GET, produces = APPLICATION_JSON_VALUE)
+	@ResponseStatus(OK)
+	@ResponseBody
+	public IdLists getPhotoIdsByUserInEvent(@PathVariable(EVENT.ID) final Long eventId) {
+		IdLists body = new IdLists();
+		body.setPhotos(this.photoService.getPhotoIdsByAccountInEvent(this.methodSecurityService.getUserId(), eventId));
 		return body;
 	}
 
@@ -170,28 +217,6 @@ public class PhotoController {
 	//                 @POST
 	//***************************************
 
-
-	/**
-	 * Saves a photo file to filesystem
-	 * and save photo info to DB.
-	 *
-	 * @param file the file
-	 * @param eventId the event id
-	 * @param name the photo name
-	 * @param description the photo description
-	 * @return a photo
-	 */
-	@RequestMapping(method = POST, consumes = MULTIPART_FORM_DATA_VALUE, produces = APPLICATION_JSON_VALUE)
-	@ResponseStatus(CREATED)
-	@ResponseBody
-	public PhotoInfo createPhoto(@RequestParam(PHOTO.FILE) final MultipartFile file,
-								 @RequestParam(EVENT.ID) final Long eventId,
-								 @RequestParam(value = PHOTO.NAME, required = false) final String name,
-								 @RequestParam(value = PHOTO.DESCRIPTION, required = false) final String description) throws IOException {
-		Long userId = this.methodSecurityService.getUserId();
-		Photo photo = this.photoService.saveToFileSystem(eventId, userId, file, name);
-		return new PhotoInfo(photo);
-	}
 
 	/**
 	 * Adds a comment to the photo
@@ -241,19 +266,12 @@ public class PhotoController {
 	//***************************************
 
 
-	private EntityInfoLists getPhotos(final Long accountId) {
-		List<Photo> photos = this.photoService.getPhotosByOwnerId(accountId);
-		EntityInfoLists body = new EntityInfoLists();
-		body.setPhotos(photos.stream().parallel()
-				.map(PhotoInfo::new)
-				.collect(Collectors.toList()));
-		return body;
-	}
-
-	private IdLists getPhotoIds(final Long accountId) {
-		List<Long> photos = this.photoService.getPhotoIdsByOwnerId(accountId);
-		IdLists body = new IdLists();
-		body.setPhotos(photos);
-		return body;
-	}
+//	private EntityInfoLists getPhotos(final Long accountId) {
+//		List<Photo> photos = this.photoService.getPhotosByOwnerId(accountId);
+//		EntityInfoLists body = new EntityInfoLists();
+//		body.setPhotos(photos.stream().parallel()
+//				.map(PhotoInfo::new)
+//				.collect(toList()));
+//		return body;
+//	}
 }

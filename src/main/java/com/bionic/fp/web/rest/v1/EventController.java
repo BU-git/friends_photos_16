@@ -10,7 +10,9 @@ import com.bionic.fp.service.*;
 import com.bionic.fp.web.rest.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
@@ -36,6 +39,7 @@ public class EventController {
     @Autowired private AccountEventService accountEventService;
     @Autowired private EventTypeService eventTypeService;
     @Autowired private CommentService commentService;
+    @Autowired private PhotoService photoService;
     @Autowired private MethodSecurityService methodSecurityService;
 
 
@@ -371,15 +375,38 @@ public class EventController {
      * @param commentDTO the comment
      * @throws EventNotFoundException if the event is not found
      */
-    @RequestMapping(value = EVENT_ID+COMMENTS ,method = POST, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = EVENT_ID+COMMENTS ,method = POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
-    public void addComment(@PathVariable(value = EVENT.ID) final Long eventId,
+    public IdInfo addComment(@PathVariable(value = EVENT.ID) final Long eventId,
                            @RequestBody final CommentDTO commentDTO) {
         methodSecurityService.checkPermission(eventId, Role::isCanAddComments);
         Comment comment = new Comment();
         comment.setAuthor(methodSecurityService.getUser());
         comment.setText(commentDTO.getCommentText());
         commentService.addCommentToEvent(eventId, comment);
+        return new IdInfo(comment.getId()); // todo: check the id exists (not null)
+    }
+
+    /**
+     * Add a photo to the event.
+     * Save the photo file to filesystem and save photo info to DB
+     *
+     * @param eventId the event id
+     * @param file the file
+     * @param name the photo name
+     * @param description the photo description
+     * @return a photo info
+     */
+    @RequestMapping(value = EVENT_ID+PHOTOS, method = POST, consumes = MULTIPART_FORM_DATA_VALUE, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(CREATED)
+    @ResponseBody
+    public IdInfo addPhoto(@PathVariable(value = EVENT.ID) final Long eventId,
+                           @RequestParam(PHOTO.FILE) final MultipartFile file,
+                           @RequestParam(value = PHOTO.NAME, required = false) final String name,
+                           @RequestParam(value = PHOTO.DESCRIPTION, required = false) final String description) throws IOException {
+        Long userId = this.methodSecurityService.getUserId();
+        Photo photo = this.photoService.saveToFileSystem(eventId, userId, file, name);
+        return new IdInfo(photo.getId());
     }
 
 
@@ -461,16 +488,40 @@ public class EventController {
 
 
     /**
-     * todo: 400 => 404!
      * Deletes the event
      *
      * @param eventId the event id
      */
     @RequestMapping(value = EVENT_ID, method = DELETE)
     @ResponseStatus(NO_CONTENT)
-    public void deleteEventById(@PathVariable(EVENT.ID) final Long eventId) {
-        this.methodSecurityService.checkPermission(eventId, Role::isCanChangeSettings);
+    public void deleteEvent(@PathVariable(EVENT.ID) final Long eventId) {
+        this.methodSecurityService.checkPermission(eventId, Role::isCanChangeSettings); // todo: change/add a new role to be responsible for this logic (maybe OWNER)
         this.eventService.softDelete(eventId);
+    }
+
+    /**
+     * Deletes an account from the event
+     *
+     * @param eventId the event id
+     */
+    @RequestMapping(value = EVENT_ID+ACCOUNTS+ACCOUNT_ID, method = DELETE)
+    @ResponseStatus(NO_CONTENT)
+    public void deleteAccountFromEvent(@PathVariable(EVENT.ID) final Long eventId,
+                                       @PathVariable(ACCOUNT.ID) final Long accountId) {
+        this.methodSecurityService.checkPermission(eventId, Role::isCanAssignRoles); // todo: change/add a new role to be responsible for this logic
+        this.accountEventService.delete(eventId, accountId);
+    }
+
+    /**
+     * Deletes the user from the event
+     *
+     * @param eventId the event id
+     */
+    @RequestMapping(value = EVENT_ID+ACCOUNTS+SELF, method = DELETE)
+    @ResponseStatus(NO_CONTENT)
+    public void deleteUserFromEvent(@PathVariable(EVENT.ID) final Long eventId) {
+        this.methodSecurityService.checkPermission(eventId, Role::isCanAssignRoles); // todo: change/add a new role to be responsible for this logic
+        this.accountEventService.delete(eventId, this.methodSecurityService.getUserId());
     }
 
 
