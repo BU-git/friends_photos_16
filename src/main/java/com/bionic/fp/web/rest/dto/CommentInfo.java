@@ -1,6 +1,9 @@
 package com.bionic.fp.web.rest.dto;
 
+import com.bionic.fp.Constants;
 import com.bionic.fp.Constants.RestConstants.COMMENT;
+import com.bionic.fp.Constants.RestConstants.EVENT;
+import com.bionic.fp.Constants.RestConstants.PHOTO;
 import com.bionic.fp.domain.Comment;
 import com.bionic.fp.util.LocalDateTimeJsonDeserializer;
 import com.bionic.fp.util.LocalDateTimeJsonSerializer;
@@ -25,6 +28,8 @@ public class CommentInfo {
     @JsonSerialize(using = LocalDateTimeJsonSerializer.class)
     @JsonDeserialize(using = LocalDateTimeJsonDeserializer.class)
     @JsonProperty(COMMENT.DATE)         private LocalDateTime date;
+    @JsonProperty(EVENT.ID)             private Long eventId;
+    @JsonProperty(PHOTO.ID)             private Long photoId;
 
     public CommentInfo() {
     }
@@ -75,5 +80,21 @@ public class CommentInfo {
 
     public void setDate(LocalDateTime date) {
         this.date = date;
+    }
+
+    public Long getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
+    }
+
+    public Long getPhotoId() {
+        return photoId;
+    }
+
+    public void setPhotoId(Long photoId) {
+        this.photoId = photoId;
     }
 }

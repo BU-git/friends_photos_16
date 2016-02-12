@@ -1,26 +1,23 @@
 package com.bionic.fp.service;
 
-import com.bionic.fp.Constants;
 import com.bionic.fp.dao.AccountEventDAO;
 import com.bionic.fp.dao.RoleDAO;
-import com.bionic.fp.domain.Account;
 import com.bionic.fp.domain.AccountEvent;
-import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Role;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.AccountEventNotFoundException;
 import com.bionic.fp.exception.logic.impl.RoleNotFoundException;
-import com.bionic.fp.exception.permission.PermissionsDeniedException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.List;
 
 import static com.bionic.fp.Constants.RoleConstants.OWNER;
 import static com.bionic.fp.util.Checks.check;
+import static com.bionic.fp.util.Checks.checkNotNull;
+import static com.bionic.fp.util.Checks.checkRole;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -39,14 +36,55 @@ public class RoleService {
     //                  CRUD                    //
     //////////////////////////////////////////////
 
+
+    /**
+     * Returns a role by id and null otherwise
+     *
+     * @param roleId the role id
+     * @return a role
+     * @throws InvalidParameterException if incoming parameter is not valid
+     */
     public Role getRole(final Long roleId) throws InvalidParameterException {
-        check(roleId != null, "The role ID should not be null");
+        checkRole(roleId);
         return roleDAO.read(roleId);
     }
+
+    /**
+     * Saves the role and return it
+     *
+     * @param role the role
+     * @return the role
+     * @throws InvalidParameterException if incoming parameter is not valid
+     */
+    public Role create(final Role role) throws InvalidParameterException {
+        checkRole(role);
+        check(StringUtils.isNotEmpty(role.getRole()), "The role name is empty");
+        return roleDAO.create(role);
+    }
+
+    /**
+     * Updates the role and returns it or null if the role is not found
+     *
+     * @param role the role
+     * @return the updated role
+     * @throws InvalidParameterException incoming parameter is not valid
+     */
+    public Role update(final Role role) throws InvalidParameterException {
+        checkRole(role);
+        checkRole(role.getId());
+        check(StringUtils.isNotEmpty(role.getRole()), "The role name is empty");
+        Role actual = getRole(role.getId());
+        if(actual != null && !actual.equals(role)) {
+            return this.roleDAO.update(role);
+        }
+        return null;
+    }
+
 
     //////////////////////////////////////////////
     //                  Other                   //
     //////////////////////////////////////////////
+
 
     /**
      * Returns the user's role in the event by id of the user and the events, respectively
@@ -59,63 +97,34 @@ public class RoleService {
      */
     public Role getRole(final Long accountId, final Long eventId)
             throws InvalidParameterException, AccountEventNotFoundException {
-        check(accountId != null, "The account ID should not be null");
-        check(eventId != null, "The event ID should not be null");
+        checkNotNull(accountId, "account id");
+        checkNotNull(eventId, "event id");
         AccountEvent accountEvent = ofNullable(accountEventDAO.get(accountId, eventId))
                 .orElseThrow(() -> new AccountEventNotFoundException(accountId, eventId));
         return accountEvent.getRole();
-    }
-
-    public void setRole(Account account, Event event, Role role) {
-//        AccountEvent accountEvent = new AccountEvent();
-//        accountEvent.setAccount(account);
-//        accountEvent.setAccountId(account.getId());
-//        accountEvent.setEvent(event);
-//        accountEvent.setGroupId(event.getId());
-//        accountEvent.setRoleId(role.getId());
-
     }
 
     public Role getOwner() {
         return this.roleDAO.getOrThrow(OWNER);
     }
 
+    /**
+     * Returns a list of all roles
+     *
+     * @return a list of roles
+     */
     public List<Role> getAllRoles() {
         return roleDAO.getAllRoles();
     }
 
     /**
-     * todo: delete it or fixed, see {@link EventService} method addOrUpdateAccountToEvent()
+     * Returns a role by id and throws the exception otherwise
+     *
+     * @param roleId the role id
+     * @return a role
+     * @throws InvalidParameterException if incoming parameter is not valid
+     * @throws RoleNotFoundException if the role is not found
      */
-    public boolean setNewRole(Long newRoleId, Long userId, Long eventId, Long ownerId) {
-        AccountEvent accountEvent
-                = accountEventDAO.getWithAccountEvent(userId, eventId);
-
-        if (accountEvent == null) {
-            throw new AccountEventNotFoundException(userId, eventId);
-        }
-
-        // Can't downgrade owner
-        if(accountEvent.getRole().getId().equals(Constants.RoleConstants.OWNER)) {
-            throw new PermissionsDeniedException();
-        }
-
-        // Can't make more than one owner
-        if(newRoleId.equals(Constants.RoleConstants.OWNER)) {
-            throw new PermissionsDeniedException();
-        }
-
-        //todo: fixme
-//        if(accountEvent.getEvent().getOwner().getId().equals(ownerId)) {
-//            Role newRole = roleDAO.read(newRoleId);
-//            accountEvent.setRole(newRole);
-//            accountEventDAO.update(accountEvent);
-//            return true;
-//        }
-
-        throw new PermissionsDeniedException();
-    }
-
     public Role getRoleOrThrow(final Long roleId) throws InvalidParameterException, RoleNotFoundException {
         return ofNullable(getRole(roleId)).orElseThrow(() -> new RoleNotFoundException(roleId));
     }

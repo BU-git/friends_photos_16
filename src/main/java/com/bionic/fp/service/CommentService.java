@@ -4,6 +4,8 @@ import com.bionic.fp.dao.CommentDAO;
 import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.dao.PhotoDAO;
 import com.bionic.fp.domain.Comment;
+import com.bionic.fp.domain.Event;
+import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.auth.impl.IncorrectPasswordException;
 import com.bionic.fp.exception.logic.InvalidParameterException;
 import com.bionic.fp.exception.logic.impl.EventNotFoundException;
@@ -13,8 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.bionic.fp.util.Checks.*;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
@@ -67,8 +71,19 @@ public class CommentService {
      * @throws IncorrectPasswordException if incoming parameter is not valid
      */
     public List<Comment> getCommentsByEvent(final Long eventId) throws IncorrectPasswordException {
-        checkNotNull(eventId, "event id");
+        checkEvent(eventId);
         return commentDAO.getCommentsByEvent(eventId);
+    }
+
+    /**
+     * Returns a list of the comment ids of the event
+     *
+     * @param eventId the event ID
+     * @return a list of the comment ids of the event
+     * @throws IncorrectPasswordException if incoming parameter is not valid
+     */
+    public List<Long> getCommentIdsByEvent(final Long eventId) throws IncorrectPasswordException {
+        return getCommentsByEvent(eventId).stream().parallel().map(Comment::getId).collect(toList());
     }
 
     /**
@@ -79,8 +94,42 @@ public class CommentService {
      * @throws IncorrectPasswordException if incoming parameter is not valid
      */
     public List<Comment> getCommentsByPhoto(final Long photoId) throws IncorrectPasswordException {
-        checkNotNull(photoId, "photo id");
+        checkPhoto(photoId);
         return commentDAO.getCommentsByPhoto(photoId);
+    }
+
+    /**
+     * Returns a list of the comment ids of the photo
+     *
+     * @param photoId the photo ID
+     * @return a list of the comment ids of the photo
+     * @throws IncorrectPasswordException if incoming parameter is not valid
+     */
+    public List<Long> getCommentIdsByPhoto(final Long photoId) throws IncorrectPasswordException {
+        return getCommentsByPhoto(photoId).stream().parallel().map(Comment::getId).collect(toList());
+    }
+
+    /**
+     * Returns a list of the comments of the account
+     *
+     * @param accountId the account ID
+     * @return a list of the comments of the account
+     * @throws IncorrectPasswordException if incoming parameter is not valid
+     */
+    public List<Comment> getCommentsByAccount(final Long accountId) throws IncorrectPasswordException {
+        checkAccount(accountId);
+        return commentDAO.getCommentsByAuthor(accountId);
+    }
+
+    /**
+     * Returns a list of the comment ids of the account
+     *
+     * @param accountId the account ID
+     * @return a list of the comment ids of the account
+     * @throws IncorrectPasswordException if incoming parameter is not valid
+     */
+    public List<Long> getCommentIdsByAccount(final Long accountId) throws IncorrectPasswordException {
+        return getCommentsByAccount(accountId).stream().parallel().map(Comment::getId).collect(toList());
     }
 
     /**
@@ -117,6 +166,16 @@ public class CommentService {
 //        Comment actual = this.commentDAO.create(comment);
 //        photo.getComments().add(actual);
         this.commentDAO.createPhotoComment(photoId, comment);
+    }
+
+    public Photo getPhotoOf(final Long commentId) throws InvalidParameterException {
+        checkComment(commentId);
+        return this.commentDAO.getPhotoOf(commentId);
+    }
+
+    public Event getEventOf(final Long commentId) throws InvalidParameterException {
+        checkComment(commentId);
+        return this.commentDAO.getEventOf(commentId);
     }
 
     //////////////////////////////////////////////

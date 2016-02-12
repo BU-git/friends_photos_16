@@ -87,6 +87,10 @@ public class Checks {
         checkNotNull(comment, "comment");
     }
 
+    public static void checkComment(final Long commentId) throws IncorrectPasswordException {
+        checkNotNull(commentId, "comment id");
+    }
+
     public static void checkPhoto(final Photo photo) throws IncorrectPasswordException {
         checkNotNull(photo, "photo");
     }

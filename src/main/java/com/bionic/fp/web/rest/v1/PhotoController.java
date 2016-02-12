@@ -9,6 +9,7 @@ import com.bionic.fp.web.rest.dto.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,9 +26,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.*;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
  * Created by franky_str on 26.11.15.
@@ -217,6 +216,7 @@ public class PhotoController {
 	//                 @POST
 	//***************************************
 
+
 	/**
 	 * Saves a photo file to filesystem
 	 * and save photo info to DB.
@@ -226,10 +226,12 @@ public class PhotoController {
 	 * @param name the photo name
 	 * @param description the photo description
 	 * @return a photo
+	 * @deprecated see EventController.addPhoto()
 	 */
 	@RequestMapping(method = POST, consumes = MULTIPART_FORM_DATA_VALUE, produces = APPLICATION_JSON_VALUE)
 	@ResponseStatus(CREATED)
 	@ResponseBody
+	@Deprecated // see EventController.addPhoto()
 	public PhotoInfo createPhoto(@RequestParam(PHOTO.FILE) final MultipartFile file,
 								 @RequestParam(EVENT.ID) final Long eventId,
 								 @RequestParam(value = PHOTO.NAME, required = false) final String name,
@@ -266,19 +268,52 @@ public class PhotoController {
 	/**
 	 * Update a photo info
 	 *
+	 * @param photoId the photo id
 	 * @param name the photo name
-	 * @return a photo
-	 */
+	 * @param description the photo description
+     * @return a photo info
+     */
 	@RequestMapping(value = PHOTO_ID, method = PUT, produces = APPLICATION_JSON_VALUE)
 	@ResponseStatus(OK)
 	@ResponseBody
 	public PhotoInfo updatePhoto(@PathVariable(PHOTO.ID) final Long photoId,
-								 @RequestParam(value = PHOTO.NAME) final String name) {
-		check(StringUtils.isNotEmpty(name), "Param 'name' is null or empty string");
-		Photo photo = photoService.getOrThrow(photoId); // todo: 400 => 404?
-		photo.setName(name);
-		photo = photoService.update(photo);
-		return new PhotoInfo(photo);
+								 @RequestParam(value = PHOTO.NAME) final String name,
+								 @RequestParam(value = PHOTO.DESCRIPTION) final String description) {
+		Photo photo = ofNullable(photoService.get(photoId)).orElseThrow(() -> new NotFoundException(photoId));
+		Long userId = this.methodSecurityService.getUserId();
+		if(userId.equals(photo.getOwner().getId())) {
+			if(StringUtils.isNotEmpty(name) && !name.equals(photo.getName())) {
+				photo.setName(name);
+				photo = photoService.update(photo);
+			}
+			return new PhotoInfo(photo);
+		} else {
+			throw new AccessDeniedException("You don't have access to change the photo");
+		}
+	}
+
+
+	//***************************************
+	//               @DELETE
+	//***************************************
+
+
+	/**
+	 * Deletes the photo
+	 *
+	 * @param photoId the photo id
+	 */
+	@RequestMapping(value = PHOTO_ID, method = DELETE)
+	@ResponseStatus(NO_CONTENT)
+	public void deletePhoto(@PathVariable(PHOTO.ID) final Long photoId) {
+		ofNullable(photoService.get(photoId)).ifPresent(photo -> {
+			Long userId = this.methodSecurityService.getUserId();
+			if(userId.equals(photo.getOwner().getId())) {
+				this.photoService.softDelete(photoId);
+			} else {
+				throw new AccessDeniedException("You don't have access to delete the photo");
+			}
+		});
 	}
 
 
@@ -286,13 +321,4 @@ public class PhotoController {
 	//                 PRIVATE
 	//***************************************
 
-
-//	private EntityInfoLists getPhotos(final Long accountId) {
-//		List<Photo> photos = this.photoService.getPhotosByOwnerId(accountId);
-//		EntityInfoLists body = new EntityInfoLists();
-//		body.setPhotos(photos.stream().parallel()
-//				.map(PhotoInfo::new)
-//				.collect(toList()));
-//		return body;
-//	}
 }

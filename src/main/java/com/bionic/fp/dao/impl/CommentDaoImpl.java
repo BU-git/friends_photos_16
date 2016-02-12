@@ -9,6 +9,8 @@ import com.bionic.fp.exception.logic.EntityNotFoundException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.persistence.criteria.*;
 import java.util.List;
 
@@ -87,4 +89,25 @@ public class CommentDaoImpl extends GenericDaoJpaImpl<Comment, Long> implements 
                 .executeUpdate();
     }
 
+    @Override
+    public Photo getPhotoOf(final Long commentId) {
+        Query query = super.em.createNativeQuery("SELECT p.* FROM photos_comments pc LEFT JOIN photos p ON (pc.photo_id = p.id) WHERE comment_id = ?", Photo.class)
+                .setParameter(1, commentId);
+        return getSingleResult(query, Photo.class);
+    }
+
+    @Override
+    public Event getEventOf(final Long commentId) {
+        Query query = super.em.createNativeQuery("SELECT e.* FROM events_comments ec LEFT JOIN events e ON (ec.event_id = e.id) WHERE comment_id = ?", Event.class)
+                .setParameter(1, commentId);
+        return getSingleResult(query, Event.class);
+    }
+
+    private <T> T getSingleResult(Query query, Class<T> clz) {
+        try {
+            return clz.cast(query.getSingleResult());
+        } catch (NoResultException ignored) {
+            return null;
+        }
+    }
 }

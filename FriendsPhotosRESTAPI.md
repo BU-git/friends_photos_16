@@ -114,13 +114,13 @@
 
     * ### [Add a comment to the photo] (FriendsPhotosRESTAPI.md/#add-a-comment-to-the-photo-1)
     
-    * ### [~~Update the photo~~] (FriendsPhotosRESTAPI.md/#update-the-photo-1)
+    * ### [Update the photo] (FriendsPhotosRESTAPI.md/#update-the-photo-1)
     
-    * ### [~~Delete the photo~~] (FriendsPhotosRESTAPI.md/#delete-the-photo-1)
+    * ### [Delete the photo] (FriendsPhotosRESTAPI.md/#delete-the-photo-1)
 
 * ## [Interaction with roles] (FriendsPhotosRESTAPI.md/#interaction-with-roles-1)
 
-    * ### [~~Get a role~~] (FriendsPhotosRESTAPI.md/#get-a-role-1)
+    * ### [Get a role] (FriendsPhotosRESTAPI.md/#get-a-role-1)
     
     * ### [Get a list of all roles] (FriendsPhotosRESTAPI.md/#get-a-list-of-all-roles-1)
     
@@ -128,23 +128,23 @@
     
     * ### [Get a role id of the account in the event] (FriendsPhotosRESTAPI.md/#get-a-role-id-of-the-account-in-the-event-1)
     
-    * ### [~~Create a role~~] (FriendsPhotosRESTAPI.md/#create-a-role-1)
+    * ### [Create a role] (FriendsPhotosRESTAPI.md/#create-a-role-1)
     
-    * ### [~~Update the role~~] (FriendsPhotosRESTAPI.md/#update-the-role-1)
+    * ### [Update the role] (FriendsPhotosRESTAPI.md/#update-the-role-1)
         
     * ### [~~Delete the role~~] (FriendsPhotosRESTAPI.md/#delete-the-role-1)
 
 * ## [Interaction with comments] (FriendsPhotosRESTAPI.md/#interaction-with-comments-1)
 
-    * ### [~~Get a comments~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-account-1)
+    * ### [Get a comment] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-account-1)
     
-    * ### [~~Get a list of comments of the account~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-account-1)
+    * ### [Get a list of comments of the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-account-1)
     
-    * ### [~~Get a list of comment ids of the account~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-account-1)
+    * ### [Get a list of comment ids of the account] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-account-1)
     
-    * ### [~~Get a list of comments of the user~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-user-1)
+    * ### [Get a list of comments of the user] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-user-1)
     
-    * ### [~~Get a list of comment ids of the user~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-user-1)
+    * ### [Get a list of comment ids of the user] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-user-1)
     
     * ### [Get a list of comments of the event] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-event-1)
     
@@ -152,11 +152,11 @@
     
     * ### [Get a list of comments of the photo] (FriendsPhotosRESTAPI.md/#get-a-list-of-comments-of-the-photo-1)
     
-    * ### [~~Get a list of comment ids of the photo~~] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-photo-1)
+    * ### [Get a list of comment ids of the photo] (FriendsPhotosRESTAPI.md/#get-a-list-of-comment-ids-of-the-photo-1)
      
-    * ### [~~Update the comment~~] (FriendsPhotosRESTAPI.md/#update-the-comment-1)
+    * ### [Update the comment] (FriendsPhotosRESTAPI.md/#update-the-comment-1)
     
-    * ### [~~Delete the comment~~] (FriendsPhotosRESTAPI.md/#delete-the-comment-1)
+    * ### [Delete the comment] (FriendsPhotosRESTAPI.md/#delete-the-comment-1)
 
 
 # FriendsPhotos REST API
@@ -2421,7 +2421,7 @@
         401 | UNAUTHORIZED
         403 | FORBIDDEN
 
-	* ### ~~Update the photo~~
+	* ### Update the photo
 
     	#### @PUT
         #### /api/v1/photos/{photo_id}
@@ -2462,7 +2462,7 @@
         403 | FORBIDDEN
         404 | NOT FOUND
         
-    * ### ~~Delete the photo~~
+    * ### Delete the photo
 
     	#### @DELETE
         #### /api/v1/photos/{photo_id}
@@ -2489,7 +2489,7 @@
 
 * ## Interaction with roles
 
-    * ### ~~Get a role~~
+    * ### Get a role
 
     	#### @GET
         #### /api/v1/roles/{role_id}
@@ -2660,7 +2660,7 @@
 		---------- | -------- | -----------
         id | false | the role id
         
-    * ### ~~Create a role~~
+    * ### Create a role
 
     	#### @POST
         #### /api/v1/roles/
@@ -2707,7 +2707,7 @@
 		---------- | -------- | -----------
         id | false | the role id
 
-    * ### ~~Update the role~~
+    * ### Update the role
 
     	#### @PUT
         #### /api/v1/roles/{role_id}
@@ -2787,7 +2787,7 @@
         
 * ## Interaction with comments
 
-    * ### ~~Get a comment~~
+    * ### Get a comment
 
     	#### @GET
         #### /api/v1/comments/{comment_id}
@@ -2830,7 +2830,7 @@
         event_id | true | the event id, if this comment belongs the event. If you want to get the id but it is null - this means that the event was deleted
         photo_id | true | the photo id, if this comment belongs the photo. If you want to get the id but it is null - this means that the photo was deleted
 
-    * ### ~~Get a list of comments of the account~~
+    * ### Get a list of comments of the account
     
         #### @GET
         #### /api/v1/comments/accounts/{account_id}
@@ -2877,7 +2877,7 @@
         event_id | true | the event id, if this comment belongs the event. If you want to get the id but it is null - this means that the event was deleted
         photo_id | true | the photo id, if this comment belongs the photo. If you want to get the id but it is null - this means that the photo was deleted
 
-	* ### ~~Get a list of comment ids of the account~~
+	* ### Get a list of comment ids of the account
 
     	#### @GET
         #### /api/v1/comments/id/accounts/{account_id}
@@ -2909,7 +2909,7 @@
 		---------- | -------- | -----------
         comments | false | the list of comment ids
 
-    * ### ~~Get a list of comments of the user~~
+    * ### Get a list of comments of the user
     
         #### @GET
         #### /api/v1/comments/accounts/self
@@ -2944,7 +2944,7 @@
         event_id | true | the event id, if this comment belongs the event. If you want to get the id but it is null - this means that the event was deleted
         photo_id | true | the photo id, if this comment belongs the photo. If you want to get the id but it is null - this means that the photo was deleted
 
-	* ### ~~Get a list of comment ids of the user~~
+	* ### Get a list of comment ids of the user
 
     	#### @GET
         #### /api/v1/comments/id/accounts/self
@@ -3086,7 +3086,7 @@
         author_id | true | the author id of the comment. If you want to get the id but it is null - this means that the account was deleted
         photo_id | false | the photo id
 
-    * ### ~~Get a list of comment ids of the photo~~
+    * ### Get a list of comment ids of the photo
 
     	#### @GET
         #### /api/v1/comments/id/photos/{photo_id}
@@ -3118,7 +3118,7 @@
 		---------- | -------- | -----------
         comments | false | the list of comment ids
         
-    * ### ~~Update the comment~~
+    * ### Update the comment
 
     	#### @PUT
         #### /api/v1/comments/{comment_id}
@@ -3159,7 +3159,7 @@
         403 | FORBIDDEN
         404 | NOT FOUND
 
-    * ### ~~Delete the comment~~
+    * ### Delete the comment
 
     	#### @DELETE
         #### /api/v1/comments/{comment_id}

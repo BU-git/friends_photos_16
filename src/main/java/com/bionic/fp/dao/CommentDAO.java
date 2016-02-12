@@ -1,6 +1,8 @@
 package com.bionic.fp.dao;
 
 import com.bionic.fp.domain.Comment;
+import com.bionic.fp.domain.Event;
+import com.bionic.fp.domain.Photo;
 
 import java.util.List;
 
@@ -50,4 +52,20 @@ public interface CommentDAO extends GenericDAO<Comment, Long> {
      * @param comment the comment
      */
     void createPhotoComment(Long photoId, Comment comment);
+
+    /**
+     * Returns a photo which has the comment and null otherwise
+     *
+     * @param commentId the comment id
+     * @return a photo
+     */
+    Photo getPhotoOf(Long commentId);
+
+    /**
+     * Returns an event which has the comment and null otherwise
+     *
+     * @param commentId the comment id
+     * @return an event
+     */
+    Event getEventOf(Long commentId);
 }
