@@ -1,10 +1,7 @@
 package com.bionic.fp.dao.impl;
 
 import com.bionic.fp.dao.CommentDAO;
-import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.Comment;
-import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.Photo;
+import com.bionic.fp.domain.*;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,17 +92,23 @@ public class CommentDaoImpl extends GenericDaoJpaImpl<Comment, Long> implements 
     @Override
     @Transactional(readOnly = true)
     public Photo getPhotoOf(final Long commentId) {
-        Query query = super.em.createNativeQuery("SELECT p.* FROM photos_comments pc LEFT JOIN photos p ON (pc.photo_id = p.id) WHERE comment_id = ?", Photo.class)
-                .setParameter(1, commentId);
-        return getSingleResult(query, Photo.class);
+        CriteriaBuilder cb = this.em.getCriteriaBuilder();
+        CriteriaQuery<Photo> query = cb.createQuery(Photo.class);
+        Root<Photo> photo = query.from(Photo.class);
+        Join<Photo, Comment> comment = photo.join(COMMENTS);
+        return getSingleResult(this.em.createQuery(query.where(cb.and(
+                equalId(comment, commentId), isNotDeleted(photo), isNotDeleted(comment)))));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Event getEventOf(final Long commentId) {
-        Query query = super.em.createNativeQuery("SELECT e.* FROM events_comments ec LEFT JOIN events e ON (ec.event_id = e.id) WHERE comment_id = ?", Event.class)
-                .setParameter(1, commentId);
-        return getSingleResult(query, Event.class);
+        CriteriaBuilder cb = this.em.getCriteriaBuilder();
+        CriteriaQuery<Event> query = cb.createQuery(Event.class);
+        Root<Event> event = query.from(Event.class);
+        Join<Event, Comment> comment = event.join(COMMENTS);
+        return getSingleResult(this.em.createQuery(query.where(cb.and(
+                equalId(comment, commentId), isNotDeleted(event), isNotDeleted(comment)))));
     }
 
     private <T> T getSingleResult(Query query, Class<T> clz) {

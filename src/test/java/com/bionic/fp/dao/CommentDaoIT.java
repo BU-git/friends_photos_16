@@ -204,6 +204,34 @@ public class CommentDaoIT extends AbstractDaoIT {
         this.commentDAO.delete(comment2.getId());
     }
 
+    @Test
+    public void testGetPhotoOfSuccess() throws Exception {
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMax(owner);
+        Photo photo = getSavedPhoto(event, owner);
+        Comment comment1 = getSavedEventComment(event, owner);
+        Comment comment2 = getSavedPhotoComment(photo, owner);
+
+        Photo actual = this.commentDAO.getPhotoOf(comment2.getId());
+
+        assertEquals(photo, actual);
+        assertNull(this.commentDAO.getPhotoOf(comment1.getId()));
+    }
+
+    @Test
+    public void testGetEventOfSuccess() throws Exception {
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMax(owner);
+        Photo photo = getSavedPhoto(event, owner);
+        Comment comment1 = getSavedEventComment(event, owner);
+        Comment comment2 = getSavedPhotoComment(photo, owner);
+
+        Event actual = this.commentDAO.getEventOf(comment1.getId());
+
+        assertEquals(event, actual);
+        assertNull(this.commentDAO.getEventOf(comment2.getId()));
+    }
+
     private void assertCommentIsNotDeleted(final Comment comment, final Account owner, final Event event, final Photo photo) {
         Comment actual = this.commentDAO.read(comment.getId());
         assertNotNull(actual);
