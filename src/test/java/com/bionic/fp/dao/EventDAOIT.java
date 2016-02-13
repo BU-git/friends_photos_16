@@ -327,7 +327,7 @@ public class EventDAOIT extends AbstractDaoIT {
     }
 
     @Test
-    @Ignore
+    @Ignore  // business logic doesn't support this case
     public void testGetByCoordinatesVisibleForMemberEventSuccess() throws Exception {
         // delete existed events
         this.eventDAO.get(true, new Coordinate(50, 30), (float) getDistance(50, 30, 51, 31, KM), KM)

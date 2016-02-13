@@ -66,6 +66,22 @@ public class AccountEventDaoIT extends AbstractDaoIT {
     }
 
     @Test
+    public void testDeleteByAccountAndEventSuccess() throws Exception {
+        Account owner = getSavedAccount();
+        Event event = getSavedEventMax(owner);
+        AccountEvent accountEvent = this.accountEventDAO.get(owner.getId(), event.getId());
+        Role role = accountEvent.getRole();
+
+        assertAccountEventIsNotDeleted(accountEvent, owner, event, role);
+
+        this.accountEventDAO.delete(owner.getId(), event.getId());
+
+        assertAccountEventIsDeleted(accountEvent, owner, event, role);
+
+        this.accountEventDAO.delete(owner.getId(), event.getId());
+    }
+
+    @Test
     @Ignore // Unsupported soft delete for account-event
     public void testDeleteAfterSoftDeleteSuccess() throws Exception {
         Account owner = getSavedAccount();
