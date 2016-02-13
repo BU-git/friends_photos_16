@@ -70,6 +70,7 @@ public class EventService {
      * @return the event and null otherwise
      * @throws InvalidParameterException if the event ID is invalid
      */
+    @Transactional(readOnly = true)
     public Event get(final Long eventId) throws InvalidParameterException {
         checkEvent(eventId);
         return this.eventDAO.read(eventId);
@@ -179,6 +180,7 @@ public class EventService {
      * @throws InvalidParameterException if the event ID is invalid
      * @throws EventNotFoundException if the event doesn't exist
      */
+    @Transactional(readOnly = true)
     public Event getOrThrow(final Long eventId) throws InvalidParameterException, EventNotFoundException {
         return ofNullable(this.get(eventId)).orElseThrow(() -> new EventNotFoundException(eventId));
     }
@@ -190,6 +192,7 @@ public class EventService {
      * @param description the description of the event
      * @return a list of events
      */
+    @Transactional(readOnly = true)
     public List<Event> get(final String name, final String description) {
         return this.eventDAO.get(true, name, description);
     }
@@ -202,6 +205,7 @@ public class EventService {
      * @return a list of events
      * @throws InvalidParameterException if the incoming parameters are incorrect
      */
+    @Transactional(readOnly = true)
     public List<Event> get(final Coordinate coordinate, final float radius) throws InvalidParameterException {
         checkNotNull(coordinate, "coordinate");
         return this.eventDAO.get(true, coordinate, radius, KM);
@@ -215,6 +219,7 @@ public class EventService {
      * @return a list of events
      * @throws InvalidParameterException if the incoming parameters are incorrect
      */
+    @Transactional(readOnly = true)
     public List<Event> get(final Coordinate sw, final Coordinate ne) throws InvalidParameterException {
         checkNotNull(sw, "South-West coordinate");
         checkNotNull(ne, "North-East coordinate");

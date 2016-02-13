@@ -29,6 +29,7 @@ public class CommentDaoImpl extends GenericDaoJpaImpl<Comment, Long> implements 
     public CommentDaoImpl() {}
 
     @Override
+    @Transactional(readOnly = true)
     public List<Comment> getCommentsByEvent(final Long eventId) {
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
         CriteriaQuery<Comment> query = cb.createQuery(Comment.class);
@@ -39,6 +40,7 @@ public class CommentDaoImpl extends GenericDaoJpaImpl<Comment, Long> implements 
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Comment> getCommentsByPhoto(final Long photoId) {
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
         CriteriaQuery<Comment> query = cb.createQuery(Comment.class);
@@ -49,6 +51,7 @@ public class CommentDaoImpl extends GenericDaoJpaImpl<Comment, Long> implements 
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Comment> getCommentsByAuthor(final Long authorId) {
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
         CriteriaQuery<Comment> query = cb.createQuery(Comment.class);
@@ -90,6 +93,7 @@ public class CommentDaoImpl extends GenericDaoJpaImpl<Comment, Long> implements 
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Photo getPhotoOf(final Long commentId) {
         Query query = super.em.createNativeQuery("SELECT p.* FROM photos_comments pc LEFT JOIN photos p ON (pc.photo_id = p.id) WHERE comment_id = ?", Photo.class)
                 .setParameter(1, commentId);
@@ -97,6 +101,7 @@ public class CommentDaoImpl extends GenericDaoJpaImpl<Comment, Long> implements 
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Event getEventOf(final Long commentId) {
         Query query = super.em.createNativeQuery("SELECT e.* FROM events_comments ec LEFT JOIN events e ON (ec.event_id = e.id) WHERE comment_id = ?", Event.class)
                 .setParameter(1, commentId);

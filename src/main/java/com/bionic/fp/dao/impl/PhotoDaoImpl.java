@@ -26,16 +26,19 @@ public class PhotoDaoImpl extends GenericDaoJpaImpl<Photo, Long> implements Phot
 	public PhotoDaoImpl() {}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Photo> getPhotosByEvent(final Long eventId) {
 		return this.em.createQuery(this.getQuery((Long) null, eventId)).getResultList();
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Photo> getPhotosByOwner(final Long ownerId) {
 		return this.em.createQuery(this.getQuery(ownerId, null)).getResultList();
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Photo> getPhotosByAccountInEvent(final Long accountId, final Long eventId) {
 		return this.em.createQuery(this.getQuery(accountId, eventId)).getResultList();
 	}

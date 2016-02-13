@@ -46,6 +46,7 @@ public class GenericDaoJpaImpl<T extends BaseEntity & IdEntity<PK>, PK extends S
     }
 
     @Override
+    @Transactional(readOnly = true)
     public T read(PK id) {
         return this.getSingleResult(this.em.createQuery(this.getQuery(ID, id)));
     }
@@ -86,6 +87,7 @@ public class GenericDaoJpaImpl<T extends BaseEntity & IdEntity<PK>, PK extends S
      * @return an account
      * @throws EntityNotFoundException if the entity doesn't exist
      */
+    @Transactional(readOnly = true)
     public T getOrThrow(final PK id) throws EntityNotFoundException {
         return ofNullable(this.read(id)).orElseThrow(() -> new EntityNotFoundException(id.toString()));
     }

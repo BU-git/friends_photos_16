@@ -74,6 +74,7 @@ public class AccountEventService {
      * @return an account-event connection
      * @throws InvalidParameterException if incoming parameters are not valid
      */
+    @Transactional(readOnly = true)
     public AccountEvent get(final Long accountId, final Long eventId) throws InvalidParameterException {
         checkAccount(accountId);
         checkEvent(eventId);
@@ -89,6 +90,7 @@ public class AccountEventService {
      * @throws InvalidParameterException if incoming parameters are not valid
      * @throws AccountEventNotFoundException if the account-event connection is not found
      */
+    @Transactional(readOnly = true)
     public AccountEvent getOrThrow(final Long accountId, final Long eventId) throws InvalidParameterException, AccountEventNotFoundException {
         return ofNullable(this.get(accountId, eventId))
                 .orElseThrow(() -> new AccountEventNotFoundException(accountId, eventId));
@@ -101,6 +103,7 @@ public class AccountEventService {
      * @return a list of the accounts of the event
      * @throws InvalidParameterException if incoming parameter is not valid
      */
+    @Transactional(readOnly = true)
     public List<Account> getAccounts(final Long eventId) throws InvalidParameterException {
         checkEvent(eventId);
         return this.accountEventDAO.getAccounts(eventId);
@@ -113,6 +116,7 @@ public class AccountEventService {
      * @return a list of the account ids of the event
      * @throws InvalidParameterException if incoming parameter is not valid
      */
+    @Transactional(readOnly = true)
     public List<Long> getAccountIds(final Long eventId) throws InvalidParameterException {
         List<Account> accounts = this.getAccounts(eventId);
         return accounts.stream().parallel().map(Account::getId).collect(Collectors.toList());
@@ -126,6 +130,7 @@ public class AccountEventService {
      * @return a list of accounts
      * @throws InvalidParameterException if incoming parameters are not valid
      */
+    @Transactional(readOnly = true)
     public List<Account> getAccounts(final Long eventId, final Long roleId) throws InvalidParameterException {
         checkEvent(eventId);
         checkRole(roleId);
@@ -140,6 +145,7 @@ public class AccountEventService {
      * @return an ID list of accounts
      * @throws InvalidParameterException if incoming parameters are not valid
      */
+    @Transactional(readOnly = true)
     public List<Long> getAccountIds(final Long eventId, final Long roleId) throws InvalidParameterException {
         List<Account> accounts = this.getAccounts(eventId, roleId);
         return accounts.stream().parallel().map(Account::getId).collect(Collectors.toList());
@@ -152,6 +158,7 @@ public class AccountEventService {
      * @return a list of the events of the account
      * @throws InvalidParameterException if incoming parameter is not valid
      */
+    @Transactional(readOnly = true)
     public List<Event> getEvents(final Long accountId) throws InvalidParameterException {
         checkAccount(accountId);
         return this.accountEventDAO.getEvents(accountId);
@@ -164,6 +171,7 @@ public class AccountEventService {
      * @return a list of the event ids of the account
      * @throws InvalidParameterException if incoming parameter is not valid
      */
+    @Transactional(readOnly = true)
     public List<Long> getEventIds(final Long accountId) throws InvalidParameterException {
         List<Event> events = this.getEvents(accountId);
         return events.stream().parallel().map(Event::getId).collect(Collectors.toList());
@@ -177,6 +185,7 @@ public class AccountEventService {
      * @return a list of events
      * @throws InvalidParameterException if incoming parameters are not valid
      */
+    @Transactional(readOnly = true)
     public List<Event> getEvents(final Long accountId, final Long roleId) throws InvalidParameterException {
         checkAccount(accountId);
         checkRole(roleId);
@@ -191,6 +200,7 @@ public class AccountEventService {
      * @return an ID list of events
      * @throws InvalidParameterException if incoming parameters are not valid
      */
+    @Transactional(readOnly = true)
     public List<Long> getEventIds(final Long accountId, final Long roleId) throws InvalidParameterException {
         List<Event> events = this.getEvents(accountId, roleId);
         return events.stream().parallel().map(Event::getId).collect(Collectors.toList());

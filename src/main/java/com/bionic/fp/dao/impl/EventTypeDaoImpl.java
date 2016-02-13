@@ -26,6 +26,7 @@ public class EventTypeDaoImpl extends GenericDaoJpaImpl<EventType, Long> impleme
     public EventTypeDaoImpl() {}
 
     @Override
+    @Transactional(readOnly = true)
     public EventType getPrivate() throws EventTypeNotFoundException {
         return this.getOrThrow(1L);
     }

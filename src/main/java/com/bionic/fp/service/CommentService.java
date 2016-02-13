@@ -43,6 +43,7 @@ public class CommentService {
         return comment.getId();
     }
 
+    @Transactional(readOnly = true)
     public Comment get(Long id) {
         return commentDAO.read(id);
     }
@@ -70,6 +71,7 @@ public class CommentService {
      * @return a list of the comments of the event
      * @throws IncorrectPasswordException if incoming parameter is not valid
      */
+    @Transactional(readOnly = true)
     public List<Comment> getCommentsByEvent(final Long eventId) throws IncorrectPasswordException {
         checkEvent(eventId);
         return commentDAO.getCommentsByEvent(eventId);
@@ -82,6 +84,7 @@ public class CommentService {
      * @return a list of the comment ids of the event
      * @throws IncorrectPasswordException if incoming parameter is not valid
      */
+    @Transactional(readOnly = true)
     public List<Long> getCommentIdsByEvent(final Long eventId) throws IncorrectPasswordException {
         return getCommentsByEvent(eventId).stream().parallel().map(Comment::getId).collect(toList());
     }
@@ -93,6 +96,7 @@ public class CommentService {
      * @return a list of the comments of the photo
      * @throws IncorrectPasswordException if incoming parameter is not valid
      */
+    @Transactional(readOnly = true)
     public List<Comment> getCommentsByPhoto(final Long photoId) throws IncorrectPasswordException {
         checkPhoto(photoId);
         return commentDAO.getCommentsByPhoto(photoId);
@@ -105,6 +109,7 @@ public class CommentService {
      * @return a list of the comment ids of the photo
      * @throws IncorrectPasswordException if incoming parameter is not valid
      */
+    @Transactional(readOnly = true)
     public List<Long> getCommentIdsByPhoto(final Long photoId) throws IncorrectPasswordException {
         return getCommentsByPhoto(photoId).stream().parallel().map(Comment::getId).collect(toList());
     }
@@ -116,6 +121,7 @@ public class CommentService {
      * @return a list of the comments of the account
      * @throws IncorrectPasswordException if incoming parameter is not valid
      */
+    @Transactional(readOnly = true)
     public List<Comment> getCommentsByAccount(final Long accountId) throws IncorrectPasswordException {
         checkAccount(accountId);
         return commentDAO.getCommentsByAuthor(accountId);
@@ -128,6 +134,7 @@ public class CommentService {
      * @return a list of the comment ids of the account
      * @throws IncorrectPasswordException if incoming parameter is not valid
      */
+    @Transactional(readOnly = true)
     public List<Long> getCommentIdsByAccount(final Long accountId) throws IncorrectPasswordException {
         return getCommentsByAccount(accountId).stream().parallel().map(Comment::getId).collect(toList());
     }
@@ -168,11 +175,13 @@ public class CommentService {
         this.commentDAO.createPhotoComment(photoId, comment);
     }
 
+    @Transactional(readOnly = true)
     public Photo getPhotoOf(final Long commentId) throws InvalidParameterException {
         checkComment(commentId);
         return this.commentDAO.getPhotoOf(commentId);
     }
 
+    @Transactional(readOnly = true)
     public Event getEventOf(final Long commentId) throws InvalidParameterException {
         checkComment(commentId);
         return this.commentDAO.getEventOf(commentId);

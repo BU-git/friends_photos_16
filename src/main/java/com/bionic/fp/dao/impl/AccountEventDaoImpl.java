@@ -31,33 +31,39 @@ public class AccountEventDaoImpl extends GenericDaoJpaImpl<AccountEvent, Long> i
     public AccountEventDaoImpl() {}
 
     @Override
+    @Transactional(readOnly = true)
     public AccountEvent get(final Long accountId, final Long eventId) {
         return this.getSingleResult(this.em.createQuery(this.getQuery(accountId, eventId, null)));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public AccountEvent getWithAccountEvent(final Long accountId, final Long eventId) {
         return this.getSingleResult(this.em.createQuery(this.getQuery(accountId, eventId, null))
                 .setHint(HINT_LOAD_GRAPH, getGraph(ACCOUNT, EVENT, ROLE)));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Role getRole(final Long accountId, final Long eventId) {
         AccountEvent result = this.get(accountId, eventId);
         return result == null ? null : result.getRole();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<AccountEvent> getByEventAndRole(final Long eventId, final Long roleId) {
         return this.em.createQuery(this.getQuery(null, eventId, roleId)).getResultList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<AccountEvent> getByAccountAndRole(final Long accountId, final Long roleId) {
         return this.em.createQuery(this.getQuery(accountId, null, roleId)).getResultList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Account> getAccounts(final Long eventId) {
         return this.em.createQuery(this.getQuery(null, eventId, null))
                 .setHint(HINT_LOAD_GRAPH, getGraph(ACCOUNT))
@@ -67,6 +73,7 @@ public class AccountEventDaoImpl extends GenericDaoJpaImpl<AccountEvent, Long> i
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Account> getAccounts(final Long eventId, final Long roleId) {
         return this.em.createQuery(this.getQuery(null, eventId, roleId))
                 .setHint(HINT_LOAD_GRAPH, getGraph(ACCOUNT))
@@ -76,6 +83,7 @@ public class AccountEventDaoImpl extends GenericDaoJpaImpl<AccountEvent, Long> i
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Event> getEvents(final Long accountId) {
         return this.em.createQuery(this.getQuery(accountId, null, null))
                 .setHint(HINT_LOAD_GRAPH, getGraph(EVENT))
@@ -85,6 +93,7 @@ public class AccountEventDaoImpl extends GenericDaoJpaImpl<AccountEvent, Long> i
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Event> getEvents(final Long accountId, final Long roleId) {
         return this.em.createQuery(this.getQuery(accountId, null, roleId))
                 .setHint(HINT_LOAD_GRAPH, getGraph(EVENT))

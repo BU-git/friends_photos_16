@@ -61,6 +61,7 @@ public class PhotoService {
      * @param id photo ID
      * @return Photo entity from database
      */
+    @Transactional(readOnly = true)
     public Photo get(Long id) {
         return photoDAO.read(id);
     }
@@ -90,6 +91,7 @@ public class PhotoService {
      * @throws InvalidParameterException if the photo ID is invalid
      * @throws PhotoNotFoundException if the photo doesn't exist
      */
+    @Transactional(readOnly = true)
     public Photo getOrThrow(final Long photoId) throws EntityNotFoundException {
         return photoDAO.getOrThrow(photoId);
     }
@@ -100,6 +102,7 @@ public class PhotoService {
      * @param ownerId the owner ID
      * @return a list of the photos of the owner
      */
+    @Transactional(readOnly = true)
     public List<Photo> getPhotosByOwnerId(final Long ownerId) {
         return ownerId == null ? Collections.emptyList() : this.photoDAO.getPhotosByOwner(ownerId);
     }
@@ -110,6 +113,7 @@ public class PhotoService {
      * @param ownerId the owner ID
      * @return an ID list of the photos of the owner
      */
+    @Transactional(readOnly = true)
     public List<Long> getPhotoIdsByOwnerId(final Long ownerId) {
         return this.getPhotosByOwnerId(ownerId).stream().parallel().map(Photo::getId).collect(toList());
     }
@@ -169,6 +173,7 @@ public class PhotoService {
      * @param photo Photo entity
      * @return File object for REST
      * */
+    @Transactional(readOnly = true)
     public File getSingleFile(Photo photo) {
         return new File(directory + photo.getEvent().getId()
                 + FILE_SEPERATOR + photo.getOwner().getId()
@@ -182,6 +187,7 @@ public class PhotoService {
      * @return a list of the photos of the event
      * @throws InvalidParameterException if incoming parameter is not valid
      */
+    @Transactional(readOnly = true)
     public List<Photo> getPhotosByEvent(final Long eventId) throws InvalidParameterException {
         checkEvent(eventId);
         return this.photoDAO.getPhotosByEvent(eventId);
@@ -194,6 +200,7 @@ public class PhotoService {
      * @return a list of the photo ids of the event
      * @throws InvalidParameterException if incoming parameter is not valid
      */
+    @Transactional(readOnly = true)
     public List<Long> getPhotoIdsByEvent(final Long eventId) throws InvalidParameterException {
         return convert(this.getPhotosByEvent(eventId));
     }
@@ -205,6 +212,7 @@ public class PhotoService {
      * @return a list of the photos of the account
      * @throws InvalidParameterException if incoming parameter is not valid
      */
+    @Transactional(readOnly = true)
     public List<Photo> getPhotosByAccount(final Long accountId) throws InvalidParameterException {
         checkAccount(accountId);
         return this.photoDAO.getPhotosByOwner(accountId);
@@ -217,6 +225,7 @@ public class PhotoService {
      * @return a list of the photo ids of the account
      * @throws InvalidParameterException if incoming parameter is not valid
      */
+    @Transactional(readOnly = true)
     public List<Long> getPhotoIdsByAccount(final Long accountId) throws InvalidParameterException {
         return convert(this.getPhotosByAccount(accountId));
     }
@@ -229,6 +238,7 @@ public class PhotoService {
      * @return a list of the photos
      * @throws InvalidParameterException if incoming parameters are not valid
      */
+    @Transactional(readOnly = true)
     public List<Photo> getPhotosByAccountInEvent(final Long accountId, final Long eventId) throws InvalidParameterException {
         checkEvent(eventId);
         checkAccount(accountId);
@@ -243,6 +253,7 @@ public class PhotoService {
      * @return a list of the photo ids
      * @throws InvalidParameterException if incoming parameters are not valid
      */
+    @Transactional(readOnly = true)
     public List<Long> getPhotoIdsByAccountInEvent(final Long accountId, final Long eventId) throws InvalidParameterException{
         return convert(this.getPhotosByAccountInEvent(accountId, eventId));
     }

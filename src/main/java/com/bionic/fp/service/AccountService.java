@@ -56,6 +56,7 @@ public class AccountService {
      * @return the account and null otherwise
      * @throws InvalidParameterException if the account ID is invalid
      */
+    @Transactional(readOnly = true)
     public Account get(final Long accountId) throws InvalidParameterException {
         checkAccount(accountId);
         return this.accountDAO.read(accountId);
@@ -190,6 +191,7 @@ public class AccountService {
      * @return the account and null otherwise
      * @throws InvalidParameterException if the email is invalid
      */
+    @Transactional(readOnly = true)
     public Account getByEmail(final String email) throws InvalidParameterException {
         checkNotNull(email, "email");
         return this.accountDAO.getByEmail(email);
@@ -203,6 +205,7 @@ public class AccountService {
      * @throws InvalidParameterException if the account ID is invalid
      * @throws AccountNotFoundException if the account doesn't exist
      */
+    @Transactional(readOnly = true)
     public Account getOrThrow(final Long accountId) throws InvalidParameterException, AccountNotFoundException {
         return ofNullable(this.get(accountId)).orElseThrow(() -> new AccountNotFoundException(accountId));
     }

@@ -34,6 +34,7 @@ public class EventTypeService {
      * @return the event type and null otherwise
      * @throws InvalidParameterException if the event type ID is invalid
      */
+    @Transactional(readOnly = true)
     public EventType get(final Long eventTypeId) throws InvalidParameterException {
         this.validation(eventTypeId);
         return this.eventTypeDAO.read(eventTypeId);
@@ -49,6 +50,7 @@ public class EventTypeService {
      * @return the private type of the event
      * @throws EventTypeNotFoundException if the event type doesn't exist
      */
+    @Transactional(readOnly = true)
     public EventType getPrivate() throws EventTypeNotFoundException {
         return this.eventTypeDAO.getPrivate();
     }

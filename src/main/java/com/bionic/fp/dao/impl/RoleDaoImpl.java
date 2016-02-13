@@ -20,6 +20,7 @@ public class RoleDaoImpl extends GenericDaoJpaImpl<Role, Long> implements RoleDA
     public RoleDaoImpl() {}
 
     @Override
+    @Transactional(readOnly = true)
     public List<Role> getAllRoles() {
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
         CriteriaQuery<Role> query = cb.createQuery(Role.class);

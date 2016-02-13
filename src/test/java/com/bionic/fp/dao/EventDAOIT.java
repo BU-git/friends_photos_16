@@ -259,8 +259,8 @@ public class EventDAOIT extends AbstractDaoIT {
     @Test
     public void testGetByCoordinatesSuccess() throws Exception {
         // delete existed events
-        this.eventDAO.get(true, new Coordinate(50, 30), (float) getDistance(50, 30, 51, 31, KM), KM)
-                .stream().unordered().map(Event::getId).forEach(id -> this.eventDAO.delete(id));
+        this.eventDAO.get(null, new Coordinate(50, 30), new Coordinate(51, 31))
+                .stream().unordered().forEach(event -> this.eventDAO.delete(event.getId()));
 
         float  e = 0.003f;    // 3m
         Account owner = getSavedAccount();
@@ -286,8 +286,8 @@ public class EventDAOIT extends AbstractDaoIT {
     @Test
     public void testGetByCoordinatesVisibleSuccess() throws Exception {
         // delete existed events
-        this.eventDAO.get(true, new Coordinate(50, 30), (float) getDistance(50, 30, 51, 31, KM), KM)
-                .stream().unordered().map(Event::getId).forEach(id -> this.eventDAO.delete(id));
+        this.eventDAO.get(null, new Coordinate(50, 30), new Coordinate(51, 31))
+                .stream().unordered().forEach(event -> this.eventDAO.delete(event.getId()));
 
         float  e = 0.003f;    // 3m
         Account owner = getSavedAccount();
@@ -368,8 +368,8 @@ public class EventDAOIT extends AbstractDaoIT {
     @Test
     public void testGetByCoordinatesDeletedSuccess() throws Exception {
         // delete existed events
-        this.eventDAO.get(true, new Coordinate(50, 30), (float) getDistance(50, 30, 51, 31, KM), KM)
-                .stream().unordered().map(Event::getId).forEach(id -> this.eventDAO.delete(id));
+        this.eventDAO.get(null, new Coordinate(50, 30), new Coordinate(51, 31))
+                .stream().unordered().forEach(event -> this.eventDAO.delete(event.getId()));
 
         float  e = 0.003f;    // 3m
         Account owner = getSavedAccount();
@@ -409,8 +409,8 @@ public class EventDAOIT extends AbstractDaoIT {
     @Test
     public void testGetByRangeSuccess() throws Exception {
         // delete existed events
-        this.eventDAO.get(true, new Coordinate(50, 30), (float) getDistance(50, 30, 51, 31, KM), KM)
-                .stream().unordered().map(Event::getId).forEach(id -> this.eventDAO.delete(id));
+        this.eventDAO.get(null, new Coordinate(50, 30), new Coordinate(51, 31))
+                .stream().unordered().forEach(event -> this.eventDAO.delete(event.getId()));
 
         Account owner = getSavedAccount();
         List<Event> events = Stream.of(
@@ -435,8 +435,8 @@ public class EventDAOIT extends AbstractDaoIT {
     @Test
     public void testGetByRangeVisibleSuccess() throws Exception {
         // delete existed events
-        this.eventDAO.get(true, new Coordinate(50, 30), (float) getDistance(50, 30, 51, 31, KM), KM)
-                .stream().unordered().map(Event::getId).forEach(id -> this.eventDAO.delete(id));
+        this.eventDAO.get(null, new Coordinate(50, 30), new Coordinate(51, 31))
+                .stream().unordered().forEach(event -> this.eventDAO.delete(event.getId()));
 
         Account owner = getSavedAccount();
         List<Event> events = Stream.of(

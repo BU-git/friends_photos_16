@@ -44,6 +44,7 @@ public class RoleService {
      * @return a role
      * @throws InvalidParameterException if incoming parameter is not valid
      */
+    @Transactional(readOnly = true)
     public Role getRole(final Long roleId) throws InvalidParameterException {
         checkRole(roleId);
         return roleDAO.read(roleId);
@@ -95,6 +96,7 @@ public class RoleService {
      * @throws InvalidParameterException if the account id or the event id are not initialized
      * @throws AccountEventNotFoundException if the relationship between the user and the event is not found
      */
+    @Transactional(readOnly = true)
     public Role getRole(final Long accountId, final Long eventId)
             throws InvalidParameterException, AccountEventNotFoundException {
         checkNotNull(accountId, "account id");
@@ -104,6 +106,7 @@ public class RoleService {
         return accountEvent.getRole();
     }
 
+    @Transactional(readOnly = true)
     public Role getOwner() {
         return this.roleDAO.getOrThrow(OWNER);
     }
@@ -113,6 +116,7 @@ public class RoleService {
      *
      * @return a list of roles
      */
+    @Transactional(readOnly = true)
     public List<Role> getAllRoles() {
         return roleDAO.getAllRoles();
     }
@@ -125,6 +129,7 @@ public class RoleService {
      * @throws InvalidParameterException if incoming parameter is not valid
      * @throws RoleNotFoundException if the role is not found
      */
+    @Transactional(readOnly = true)
     public Role getRoleOrThrow(final Long roleId) throws InvalidParameterException, RoleNotFoundException {
         return ofNullable(getRole(roleId)).orElseThrow(() -> new RoleNotFoundException(roleId));
     }

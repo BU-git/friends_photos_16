@@ -31,6 +31,7 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
     public EventDaoImpl() {}
 
     @Override
+    @Transactional(readOnly = true)
     public List<Event> get(final Boolean visible, final String name, final String description) {
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
         CriteriaQuery<Event> query = cb.createQuery(Event.class);
@@ -53,6 +54,7 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Event> get(final Boolean visible, final Coordinate coordinate,
                            final float radius, final DistanceUnitPerDegree distanceUnit) {
         return this.em.createNamedQuery(Event.FIND_BY_RADIUS, Event.class)
@@ -65,6 +67,7 @@ public class EventDaoImpl extends GenericDaoJpaImpl<Event, Long> implements Even
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Event> get(final Boolean visible, final Coordinate sw, final Coordinate ne) {
         CriteriaBuilder cb = this.em.getCriteriaBuilder();
         CriteriaQuery<Event> query = cb.createQuery(Event.class);

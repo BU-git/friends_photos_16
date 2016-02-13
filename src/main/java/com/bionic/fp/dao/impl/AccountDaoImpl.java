@@ -21,16 +21,19 @@ public class AccountDaoImpl extends GenericDaoJpaImpl<Account, Long> implements 
     public AccountDaoImpl() {}
 
     @Override
+    @Transactional(readOnly = true)
     public Account getByEmail(final String email) {
         return this.getSingleResult(this.em.createQuery(this.getQuery(EMAIL, email)));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Account getByFbId(final String fbId) {
         return this.getSingleResult(this.em.createQuery(this.getQuery(FB_ID, fbId)));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Account getByVkId(final String vkId) {
         return this.getSingleResult(this.em.createQuery(this.getQuery(VK_ID, vkId)));
     }
