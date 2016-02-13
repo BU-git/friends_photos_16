@@ -17,6 +17,7 @@
     <link href="bower_components/angular-loading-bar/build/loading-bar.css" rel="stylesheet">
     <!-- app -->
     <link href="dist/app.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 
 </head>
 <body>
