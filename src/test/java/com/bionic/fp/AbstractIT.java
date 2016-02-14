@@ -1,5 +1,6 @@
 package com.bionic.fp;
 
+import com.bionic.fp.dao.AbstractDaoIT;
 import com.bionic.fp.dao.EventDAO;
 import com.bionic.fp.domain.*;
 import com.bionic.fp.service.*;
@@ -20,16 +21,9 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
-import java.util.Random;
 
-import static com.bionic.fp.Constants.RoleConstants.*;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertNull;
 
 /**
  * This is a general integration test
@@ -39,15 +33,7 @@ import static org.junit.Assert.assertNull;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/test-root-context.xml")
-public abstract class AbstractIT extends AbstractHelperTest {
-
-    protected static final String TO_STRING = ".toString()";
-    private static Account REGULAR_USER;
-    private static EventType PRIVATE_EVENT_TYPE;
-
-    private static Role ROLE_OWNER;
-    private static Role ROLE_ADMIN;
-    private static Role ROLE_MEMBER;
+public abstract class AbstractIT extends AbstractDaoIT {
 
     @Autowired protected EventDAO eventDAO;
     @Autowired protected EventService eventService;
@@ -64,39 +50,10 @@ public abstract class AbstractIT extends AbstractHelperTest {
         RestAssuredMockMvc.mockMvc(MockMvcBuilders.webAppContextSetup(context).build());
     }
 
-    protected Long save(final Account account) {
-        Long accountId = this.accountService.registerByFP(account.getEmail(), account.getPassword(), account.getUserName());
-        assertNotNull(accountId);
-        return accountId;
-    }
-
-    protected Account getSavedAccount() {
-        Account account = this.getNewEmailAccount();
-        account.setId(save(account));
-        return account;
-    }
-
-    protected Account getRegularUser() {
-        return REGULAR_USER != null ? REGULAR_USER : (REGULAR_USER = getSavedAccount());
-    }
-
-    protected Account getNewEmailAccount() {
-        return new Account(generateEmail(), generateUsername(), generatePassword());
-    }
-
     protected Account getNewEmailAccount(final Long accountId) {
         Account account = getNewEmailAccount();
         account.setId(accountId);
         return account;
-    }
-
-    @Override
-    protected EventType getPrivateEventType() {
-        if(PRIVATE_EVENT_TYPE == null) {
-            PRIVATE_EVENT_TYPE = this.eventTypeService.getPrivate();
-            assertNotNull(PRIVATE_EVENT_TYPE);
-        }
-        return PRIVATE_EVENT_TYPE;
     }
 
     protected Event setPrivate(final Event event) {
@@ -105,41 +62,8 @@ public abstract class AbstractIT extends AbstractHelperTest {
         return event;
     }
 
-    protected Event getSavedEventMin(final Account owner) {
-        Event event = getNewEventMin();
-
-        Long eventId = this.eventService.createEvent(owner.getId(), event);
-
-        assertNotNull(eventId);
-        assertFalse(event.isDeleted());
-        assertTrue(event.isVisible());
-        assertFalse(event.isGeoServicesEnabled());
-
-        return event;
-    }
-
-    protected Event getSavedEventMax(final Account owner) {
-        Event event = getNewEventMax();
-
-        Long eventId = this.eventService.createEvent(owner.getId(), event);
-
-        assertNotNull(eventId);
-        assertFalse(event.isDeleted());
-
-        return event;
-    }
-
-    protected Event getSaved(final Event event, final Account owner) {
-        Long eventId = this.eventService.createEvent(owner.getId(), event);
-
-        assertNotNull(eventId);
-        assertFalse(event.isDeleted());
-
-        return event;
-    }
-
     protected Event getSavedEventMaxReverse(final Account owner) {
-        Event event = updateEvent(getNewEventMax());
+        Event event = update(getNewEventMax());
 
         Long eventId = this.eventService.createEvent(owner.getId(), event);
 
@@ -149,16 +73,25 @@ public abstract class AbstractIT extends AbstractHelperTest {
         return event;
     }
 
-    protected Event updateEvent(final Event event) {
-        event.setName(event.getName() + "_up");
-        event.setDescription(event.getDescription() + "_up");
-//        event.setLatitude(event.getLatitude() == null ? 0 : event.getLatitude() + 1);
-//        event.setLongitude(event.getLongitude() == null ? 0 : event.getLongitude() + 1); // todo
-//        event.setVisible(!event.isVisible()); // todo
-        event.setGeoServicesEnabled(!event.isGeoServicesEnabled());
-        event.setCreated(event.getCreated());
+    protected Event update(final Event event) {
+        Event result = new Event();
+        result.setId(event.getId());
+        result.setVisible(event.isVisible());
+        result.setEventType(event.getEventType());  // todo: when there will be more types
+        result.setPrivate(event.isPrivate());
+        result.setPassword(event.getPassword());
+        result.setCreated(event.getCreated());
+        result.setModified(event.getModified());
+        result.setExpireDate(event.getExpireDate());
+        result.setDeleted(event.isDeleted());
 
-        return event;
+        result.setName(event.getName() + "_up");
+        result.setDescription(event.getDescription() + "_up");
+        result.setLocation(new Coordinate(event.getLocation() == null ? 0 : event.getLocation().getLatitude() + 1,
+                event.getLocation() == null ? 0 : event.getLocation().getLongitude() + 1));
+        result.setGeoServicesEnabled(!event.isGeoServicesEnabled());
+
+        return result;
     }
 
     protected Long getEventOwnerId(final Long eventId) {
@@ -203,42 +136,6 @@ public abstract class AbstractIT extends AbstractHelperTest {
                 .build();
     }
 
-    protected Role getRoleOwner() {
-        if(ROLE_OWNER == null) {
-            ROLE_OWNER = roleService.getOwner();
-            assertNotNull(ROLE_OWNER);
-        }
-        return ROLE_OWNER;
-    }
-
-    protected Role getRoleAdmin() {
-        if(ROLE_ADMIN == null) {
-            ROLE_ADMIN = roleService.getRole(ADMIN);
-            assertNotNull(ROLE_ADMIN);
-        }
-        return ROLE_ADMIN;
-    }
-
-    protected Role getRoleMember() {
-        if(ROLE_MEMBER == null) {
-            ROLE_MEMBER = roleService.getRole(MEMBER);
-            assertNotNull(ROLE_MEMBER);
-        }
-        return ROLE_MEMBER;
-    }
-
-    protected String generateEmail() {
-        return String.format("yaya%d@gmail.com", System.currentTimeMillis());
-    }
-
-    protected String generateUsername() {
-        return String.format("yaya%d", System.currentTimeMillis());
-    }
-
-    protected String generatePassword() {
-        return String.format("secret%d", System.currentTimeMillis());
-    }
-
     protected Filter getPreAuthFilter(final Account owner) {
         return new Filter() {
             @Override
@@ -261,50 +158,5 @@ public abstract class AbstractIT extends AbstractHelperTest {
 
             }
         };
-    }
-
-    protected Comment getNewComment(final Account author) {
-        Comment comment = new Comment(String.format("I am %s and now %s", author.getUserName(), LocalDateTime.now()));
-        comment.setAuthor(author);
-        return comment;
-    }
-
-    protected Photo getSavedPhoto(final Event event, final Account owner) {
-        Photo photo = getNewPhoto(event, owner);
-
-        assertNull(photo.getCreated());
-        assertNull(photo.getId());
-
-        photo = this.photoService.create(photo);
-
-        assertNotNull(photo.getCreated());
-        assertNotNull(photo.getId());
-
-        return photo;
-    }
-
-    protected Photo getNewPhoto(final Event event, final Account owner) {
-        Photo photo = new Photo();
-        String time = LocalDateTime.now().toString();
-        photo.setName(time);
-        photo.setUrl(String.format("http://fp/%d/%d/%s", event.getId(), owner.getId(), time));
-        photo.setEvent(event);
-        photo.setOwner(owner);
-        return photo;
-    }
-
-    protected <PK extends Serializable> void assertEqualsId(final List<PK> actual, final IdEntity<PK> ... expected) {
-        if(expected == null || expected.length == 0) {
-            return;
-        }
-        if(actual == null || actual.isEmpty() || expected.length != actual.size()) {
-            fail();
-        }
-        for (IdEntity<PK> entity : expected) {
-            Optional<PK> optional = actual.stream().parallel().filter(a -> entity.getId().equals(a)).findFirst();
-            if(!optional.isPresent()) {
-                fail();
-            }
-        }
     }
 }

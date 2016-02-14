@@ -424,9 +424,9 @@ public class EventController {
     @RequestMapping(value = EVENT_ID,  method = PUT, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public void updateEvent(@PathVariable(EVENT.ID) final Long eventId, @RequestBody final EventInput eventDto) {
-        this.methodSecurityService.checkPermission(eventId, Role::isCanChangeSettings);
+        Event event = this.findEventOrThrow(eventId);
 
-        Event event = this.getEventOrThrow(eventId); // todo: 400 => 404?
+        this.methodSecurityService.checkPermission(eventId, Role::isCanChangeSettings);
 
         // required parameters (should not be null)
         if(eventDto.getEventTypeId() != null) {
@@ -495,8 +495,10 @@ public class EventController {
     @RequestMapping(value = EVENT_ID, method = DELETE)
     @ResponseStatus(NO_CONTENT)
     public void deleteEvent(@PathVariable(EVENT.ID) final Long eventId) {
-        this.methodSecurityService.checkPermission(eventId, Role::isCanChangeSettings); // todo: change/add a new role to be responsible for this logic (maybe OWNER)
-        this.eventService.softDelete(eventId);
+        ofNullable(eventService.get(eventId)).ifPresent(event -> {
+            this.methodSecurityService.checkPermission(eventId, Role::isCanChangeSettings); // todo: change/add a new role to be responsible for this logic (maybe OWNER)
+            this.eventService.softDelete(eventId);
+        });
     }
 
     /**

@@ -23,6 +23,8 @@ import java.util.Optional;
 import static com.bionic.fp.Constants.RoleConstants.ADMIN;
 import static com.bionic.fp.Constants.RoleConstants.MEMBER;
 import static com.bionic.fp.Constants.RoleConstants.OWNER;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Stream.of;
 import static org.junit.Assert.*;
 
 /**
@@ -68,38 +70,6 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
         return actual;
     }
 
-    protected Account getNewEmailAccount() {
-        return new Account(generateEmail(), generateUsername(), generatePassword());
-    }
-
-    protected Account fb(final Account account) {
-        account.setFbId("fb" + String.valueOf(System.currentTimeMillis()));
-        account.setProfileImageUrl(String.format("https://www.facebook.com/%s.jpg", account.getFbId()));
-        account.setFbProfileUrl(String.format("https://www.facebook.com/%s", account.getFbId()));
-        account.setFbToken(String.format("T#%s", account.getFbId()));
-        return account;
-    }
-
-    protected Account vk(final Account account) {
-        account.setVkId("vk" + String.valueOf(System.currentTimeMillis()));
-        account.setProfileImageUrl(String.format("https://www.vk.com/%s.jpg", account.getVkId()));
-        account.setVkProfileUrl(String.format("https://www.vk.com/%s", account.getVkId()));
-        account.setVkToken(String.format("T#%s", account.getVkId()));
-        return account;
-    }
-
-    protected String generateEmail() {
-        return String.format("yaya%d@gmail.com", System.currentTimeMillis());
-    }
-
-    protected String generateUsername() {
-        return String.format("yaya%d", System.currentTimeMillis());
-    }
-
-    protected String generatePassword() {
-        return String.format("secret%d", System.currentTimeMillis());
-    }
-
 
     //////////////////////////////////////////////
     //                  EVENT                   //
@@ -138,6 +108,21 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
         return save(owner, event);
     }
 
+    protected List<Event> getSavedFiveEventsWithStep100m(Account owner) {
+        return of(
+                new Coordinate(50.445385, 30.501502),   // ~0
+                new Coordinate(50.445173, 30.502908),   // ~100m
+                new Coordinate(50.444961, 30.504249),   // ~200m
+                new Coordinate(50.444727, 30.505630),   // ~300m
+                new Coordinate(50.444507, 30.507001)    // ~400m
+        ).sequential().map(coordinate -> {
+            Event event = getNewEventMin();
+            event.setGeoServicesEnabled(true);
+            event.setLocation(coordinate);
+            return save(owner, event);
+        }).collect(toList());
+    }
+
 
     //////////////////////////////////////////////
     //              ACCOUNT-EVENT               //
@@ -171,12 +156,14 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
 
 
     protected Photo getSavedPhoto(final Event event, final Account owner) {
-        Photo photo = new Photo();
-        photo.setName("photo" + System.currentTimeMillis());
-        photo.setUrl("/fp/" + photo.getName().hashCode());
-        photo.setEvent(event);
-        photo.setOwner(owner);
-        return this.photoDAO.create(photo);
+        Photo photo = this.photoDAO.create(getNewPhoto(event, owner));
+
+        assertNotNull(photo.getCreated());
+        assertNull(photo.getModified());
+        assertNotNull(photo.getId());
+        assertFalse(photo.isDeleted());
+
+        return photo;
     }
 
 
@@ -194,13 +181,6 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
     protected Comment getSavedPhotoComment(final Photo photo, final Account author) {
         Comment comment = getNewComment(author);
         this.commentDAO.createPhotoComment(photo.getId(), comment);
-        return comment;
-    }
-
-    protected Comment getNewComment(final Account author) {
-        Comment comment = new Comment();
-        comment.setText("Some test" + System.currentTimeMillis());
-        comment.setAuthor(author);
         return comment;
     }
 
@@ -228,42 +208,6 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
     //////////////////////////////////////////////
 
 
-    protected void assertEqualsDate(final LocalDateTime expected, final LocalDateTime actual) {
-        assertTrue(Duration.between(expected, actual).getSeconds() < 1L);
-    }
-
-    protected  <T extends BaseEntity & IdEntity<Long>> void assertEqualsEntities(final List<T> actual, final T ... expected) {
-        if(actual == null) {
-            fail("actual == null");
-        }
-        if(expected == null && !actual.isEmpty()) {
-            fail("expected == null && !actual.isEmpty()");
-        }
-        if(expected == null) {
-            fail("expected == null");
-        }
-        if(expected.length != actual.size()) {
-            fail(String.format("expected.length[%d] != actual.size()[%d]", expected.length, actual.size()));
-        }
-        for (T entity : expected) {
-            Optional<T> optional = actual.stream().parallel()
-                    .filter(e -> entity.getId().equals(e.getId())).findFirst();
-            if(optional.isPresent()) {
-                assertEqualsEntity(entity, optional.get());
-            } else {
-                fail();
-            }
-        }
-    }
-
-    protected <T extends BaseEntity & IdEntity<Long>> void assertEqualsEntity(T expected, T actual) {
-        assertNotNull(expected);
-        assertNotNull(actual);
-        assertEquals(expected.getId(), actual.getId());
-        assertEqualsDate(expected.getCreated(), actual.getCreated());
-        assertEquals(expected, actual);
-    }
-
     protected void clearAllTables() {
         TransactionStatus transaction = transactionManager.getTransaction(null);
         this.em.createNativeQuery("DELETE FROM photos_comments").executeUpdate();
@@ -274,5 +218,13 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
         this.em.createNativeQuery("DELETE FROM events").executeUpdate();
         this.em.createNativeQuery("DELETE FROM accounts").executeUpdate();
         transactionManager.commit(transaction);
+    }
+
+    protected void softDeleteAllEvents() {
+        String string = null;
+        eventDAO.get(null, string, string).stream().unordered().forEach(event -> {
+            event.setDeleted(true);
+            this.eventDAO.update(event);
+        });
     }
 }

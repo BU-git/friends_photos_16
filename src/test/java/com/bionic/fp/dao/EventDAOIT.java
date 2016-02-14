@@ -264,18 +264,7 @@ public class EventDAOIT extends AbstractDaoIT {
 
         float  e = 0.003f;    // 3m
         Account owner = getSavedAccount();
-        List<Event> events = Stream.of(
-                new Coordinate(50.445385, 30.501502),   // ~0
-                new Coordinate(50.445173, 30.502908),   // ~100m
-                new Coordinate(50.444961, 30.504249),   // ~200m
-                new Coordinate(50.444727, 30.505630),   // ~300m
-                new Coordinate(50.444507, 30.507001)    // ~400m
-        ).sequential().map(coordinate -> {
-            Event event = getNewEventMin();
-            event.setGeoServicesEnabled(true);
-            event.setLocation(coordinate);
-            return save(owner, event);
-        }).collect(toList());
+        List<Event> events = getSavedFiveEventsWithStep100m(owner);
 
         assertEqualsEntities(eventDAO.get(true, events.get(2).getLocation(), (0.2f+e), KM), events.toArray(new Event[events.size()]));
         assertEqualsEntities(eventDAO.get(true, events.get(2).getLocation(), (0.1f+e), KM), events.get(1), events.get(2), events.get(3));
@@ -291,18 +280,7 @@ public class EventDAOIT extends AbstractDaoIT {
 
         float  e = 0.003f;    // 3m
         Account owner = getSavedAccount();
-        List<Event> events = Stream.of(
-                new Coordinate(50.445385, 30.501502),   // ~0
-                new Coordinate(50.445173, 30.502908),   // ~100m
-                new Coordinate(50.444961, 30.504249),   // ~200m
-                new Coordinate(50.444727, 30.505630),   // ~300m
-                new Coordinate(50.444507, 30.507001)    // ~400m
-        ).sequential().map(coordinate -> {
-            Event event = getNewEventMin();
-            event.setGeoServicesEnabled(true);
-            event.setLocation(coordinate);
-            return save(owner, event);
-        }).collect(toList());
+        List<Event> events = getSavedFiveEventsWithStep100m(owner);
 
         Stream.of(events.get(1), events.get(3)).unordered().forEach(event -> {
             event.setVisible(false);

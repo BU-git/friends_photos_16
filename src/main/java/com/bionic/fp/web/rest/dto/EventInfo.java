@@ -205,4 +205,25 @@ public class EventInfo {
     public void setPrivate(Boolean aPrivate) {
         isPrivate = aPrivate;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        EventInfo eventInfo = (EventInfo) o;
+
+        if (id != null ? !id.equals(eventInfo.id) : eventInfo.id != null) return false;
+        if (name != null ? !name.equals(eventInfo.name) : eventInfo.name != null) return false;
+        if (description != null ? !description.equals(eventInfo.description) : eventInfo.description != null)
+            return false;
+        if (date != null ? !date.equals(eventInfo.date) : eventInfo.date != null) return false;
+        if (expireDate != null ? !expireDate.equals(eventInfo.expireDate) : eventInfo.expireDate != null) return false;
+        if (typeId != null ? !typeId.equals(eventInfo.typeId) : eventInfo.typeId != null) return false;
+        if (location != null ? !location.equals(eventInfo.location) : eventInfo.location != null) return false;
+        if (geo != null ? !geo.equals(eventInfo.geo) : eventInfo.geo != null) return false;
+        if (visible != null ? !visible.equals(eventInfo.visible) : eventInfo.visible != null) return false;
+        return isPrivate != null ? isPrivate.equals(eventInfo.isPrivate) : eventInfo.isPrivate == null;
+
+    }
 }
