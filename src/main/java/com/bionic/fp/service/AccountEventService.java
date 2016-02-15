@@ -216,6 +216,6 @@ public class AccountEventService {
     public void delete(final Long eventId, final Long accountId) throws InvalidParameterException {
         checkEvent(eventId);
         checkAccount(accountId);
-        this.accountEventDAO.delete(eventId, accountId);
+        this.accountEventDAO.delete(accountId, eventId);
     }
 }
