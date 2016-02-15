@@ -144,4 +144,18 @@ public class PhotoInfo {
 	public void setEventId(Long eventId) {
 		this.eventId = eventId;
 	}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PhotoInfo photoInfo = (PhotoInfo) o;
+
+        if (photoId != null ? !photoId.equals(photoInfo.photoId) : photoInfo.photoId != null) return false;
+        if (name != null ? !name.equals(photoInfo.name) : photoInfo.name != null) return false;
+        if (ownerId != null ? !ownerId.equals(photoInfo.ownerId) : photoInfo.ownerId != null) return false;
+        return eventId != null ? eventId.equals(photoInfo.eventId) : photoInfo.eventId == null;
+
+    }
 }

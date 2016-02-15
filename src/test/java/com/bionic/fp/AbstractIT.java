@@ -6,9 +6,12 @@ import com.bionic.fp.domain.*;
 import com.bionic.fp.service.*;
 import com.bionic.fp.web.security.spring.infrastructure.User;
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -17,9 +20,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -157,5 +164,24 @@ public abstract class AbstractIT extends AbstractDaoIT {
 
             }
         };
+    }
+
+    protected Photo getSavedPhoto(final Event event, final Account owner, final File file) throws IOException {
+//        DiskFileItem diskFileItem = new DiskFileItem("file", "image/jpeg", false, file.getName(), (int) file.length(), file.getParentFile());
+//        diskFileItem.getOutputStream(); // because it will throw NPE otherwise. It is black magic of java
+//        MultipartFile multipartFile = new CommonsMultipartFile(diskFileItem);
+
+        MultipartFile multipartFile = new MockMultipartFile("file",
+                file.getName(), null, IOUtils.toByteArray(new FileInputStream(file)));
+//                file.getName(), "image/jpeg", IOUtils.toByteArray(new FileInputStream(file)));
+
+        Photo photo =  this.photoService.saveToFileSystem(event, owner, multipartFile, "photo" + System.currentTimeMillis());
+
+        assertNotNull(photo.getCreated());
+        assertNull(photo.getModified());
+        assertNotNull(photo.getId());
+        assertFalse(photo.isDeleted());
+
+        return photo;
     }
 }
