@@ -1796,14 +1796,14 @@
         Key | Value
 		--- | -----
         role_id | 2
-        password | secret
+        ~~password~~ | secret
 
         <p/>
 
         Param Name | Required | Description
 		---------- | -------- | -----------
         role_id | true | the new role id for the account
-        password | false | the event password, **it will be required if the event is private**
+        ~~password~~ | false | the event password, **it will be required if the event is private**
 
         ##### Response:
 

@@ -2,10 +2,7 @@ package com.bionic.fp.web.rest;
 
 import com.bionic.fp.AbstractIT;
 import com.bionic.fp.Constants.RoleConstants;
-import com.bionic.fp.domain.Account;
-import com.bionic.fp.domain.Coordinate;
-import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.EventType;
+import com.bionic.fp.domain.*;
 import com.bionic.fp.service.impl.SpringMethodSecurityService;
 import com.bionic.fp.web.rest.dto.*;
 import com.bionic.fp.web.rest.v1.EventController;
@@ -13,6 +10,7 @@ import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
 import com.jayway.restassured.module.mockmvc.response.MockMvcResponse;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +26,11 @@ import java.util.stream.Stream;
 
 import static com.bionic.fp.Constants.RestConstants.*;
 import static com.bionic.fp.Constants.RestConstants.PATH.*;
+import static com.bionic.fp.Constants.RoleConstants.ADMIN;
 import static com.bionic.fp.Constants.RoleConstants.MEMBER;
 import static com.bionic.fp.util.DateTimeFormatterConstants.LOCAL_DATE_TIME;
 import static com.jayway.restassured.http.ContentType.JSON;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.when;
 import static java.util.Collections.emptyList;
@@ -49,6 +49,7 @@ import static org.junit.Assert.*;
         "classpath:spring/test-spring-security.xml"})
 public class EventRestControllerIT extends AbstractIT {
 
+    private static final String TEST_IMAGE_FILE_NAME = "test-img/BearGrylls.JPG";
     @Autowired SpringMethodSecurityService springMethodSecurityService;
     @Autowired EventController eventController;
 
@@ -67,6 +68,7 @@ public class EventRestControllerIT extends AbstractIT {
     public void tearDown() throws Exception {
         softDeleteAllEvents();
     }
+
 
     //***************************************
     //                 @GET
@@ -1103,6 +1105,7 @@ public class EventRestControllerIT extends AbstractIT {
             .statusCode(SC_BAD_REQUEST);
 
         // with a non-existent ID
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(Long.MAX_VALUE);
         given()
             .body(eventDto)
             .contentType(JSON)
@@ -1156,7 +1159,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         Mockito.when(springMethodSecurityService.getUserId()).thenReturn(owner.getId());
         when()
-            .post(API+V1+EVENTS + EVENT_ID + ACCOUNTS, newEvent.getId())
+            .post(API+V1+EVENTS+EVENT_ID+ACCOUNTS, newEvent.getId())
         .then()
             .statusCode(SC_CREATED);
 
@@ -1168,7 +1171,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user1.getId());
         when()
-            .post(API+V1+EVENTS + EVENT_ID + ACCOUNTS, newEvent.getId())
+            .post(API+V1+EVENTS+EVENT_ID+ACCOUNTS, newEvent.getId())
         .then()
             .statusCode(SC_CREATED);
 
@@ -1195,7 +1198,7 @@ public class EventRestControllerIT extends AbstractIT {
         given()
             .queryParam(EVENT.PASSWORD, event.getPassword())
         .when()
-            .post(API+V1+EVENTS + EVENT_ID + ACCOUNTS, event.getId())
+            .post(API+V1+EVENTS+EVENT_ID+ACCOUNTS, event.getId())
         .then()
             .statusCode(SC_CREATED);
 
@@ -1208,7 +1211,7 @@ public class EventRestControllerIT extends AbstractIT {
         given()
             .queryParam(EVENT.PASSWORD, event.getPassword())
         .when()
-            .post(API+V1+EVENTS + EVENT_ID + ACCOUNTS, event.getId())
+            .post(API+V1+EVENTS+EVENT_ID+ACCOUNTS, event.getId())
         .then()
             .statusCode(SC_CREATED);
 
@@ -1229,7 +1232,7 @@ public class EventRestControllerIT extends AbstractIT {
         given()
             .queryParam(EVENT.PASSWORD, event.getPassword())
         .when()
-            .post(API+V1+EVENTS + EVENT_ID + ACCOUNTS, newEvent.getId())
+            .post(API+V1+EVENTS+EVENT_ID+ACCOUNTS, newEvent.getId())
         .then()
             .statusCode(SC_CREATED);
 
@@ -1243,7 +1246,7 @@ public class EventRestControllerIT extends AbstractIT {
         given()
             .queryParam(EVENT.PASSWORD, event.getPassword()).
         when()
-            .post(API+V1+EVENTS + EVENT_ID + ACCOUNTS, newEvent.getId(), user1.getId())
+            .post(API+V1+EVENTS+EVENT_ID+ACCOUNTS, newEvent.getId(), user1.getId())
         .then()
             .statusCode(SC_CREATED);
 
@@ -1266,7 +1269,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         // no password
         when()
-            .post(API+V1+EVENTS + EVENT_ID + ACCOUNTS, event.getId())
+            .post(API+V1+EVENTS+EVENT_ID+ACCOUNTS, event.getId())
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -1278,7 +1281,7 @@ public class EventRestControllerIT extends AbstractIT {
         given()
             .queryParam(EVENT.PASSWORD, event.getPassword() + "!")
         .when()
-            .post(API+V1+EVENTS + EVENT_ID + ACCOUNTS, event.getId())
+            .post(API+V1+EVENTS+EVENT_ID+ACCOUNTS, event.getId())
         .then()
             .statusCode(SC_BAD_REQUEST);
 
@@ -1287,15 +1290,229 @@ public class EventRestControllerIT extends AbstractIT {
         assertEquals(0, this.accountEventService.getEvents(user1.getId()).size());
     }
 
+    @Test
+    public void testAddUserToNoExistsEventShouldReturnBadRequest() {
+        Account user = getSavedAccount();
 
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user.getId());
+        when()
+            .post(API+V1+EVENTS+EVENT_ID+ACCOUNTS, Long.MAX_VALUE)
+        .then()
+            .statusCode(SC_BAD_REQUEST);
+    }
 
+    @Test
+    public void testAddCommentToEventSuccess() {
+        Account owner = getSavedAccount();
+        Account user = getSavedAccount();
+        Event event = getSavedEventMax(owner);
+        getSavedAccountEvent(user, event, getRoleMember());
 
+        CommentDTO ownerComment = new CommentDTO("some text" + System.currentTimeMillis());
 
+        assertEquals(0, this.commentService.getCommentsByEvent(event.getId()).size());
 
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(owner.getId());
+        MockMvcResponse response = given()
+            .body(ownerComment)
+            .contentType(JSON)
+        .when()
+            .post(API+V1+EVENTS+EVENT_ID+COMMENTS, event.getId())
+        .then()
+            .statusCode(SC_CREATED).extract().response();
 
+        IdInfo ownerCommentId = response.as(IdInfo.class);
 
+        List<Comment> comments = this.commentService.getCommentsByEvent(event.getId());
+        assertEquals(1, comments.size());
+        assertTrue(comments.stream().filter(comment ->
+                comment.getText().equals(ownerComment.getCommentText()) &&
+                        comment.getId().equals(ownerCommentId.getId())).findFirst().isPresent());
 
+        CommentDTO userComment = new CommentDTO("some text" + System.currentTimeMillis());
 
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user.getId());
+        response = given()
+            .body(userComment)
+            .contentType(JSON)
+        .when()
+            .post(API+V1+EVENTS+EVENT_ID+COMMENTS, event.getId())
+        .then()
+            .statusCode(SC_CREATED).extract().response();
+
+        IdInfo userCommentId = response.as(IdInfo.class);
+
+        comments = this.commentService.getCommentsByEvent(event.getId());
+        assertEquals(2, comments.size());
+        assertTrue(comments.stream().filter(comment ->
+                comment.getText().equals(userComment.getCommentText()) &&
+                        comment.getId().equals(userCommentId.getId())).findFirst().isPresent());
+        assertTrue(comments.stream().filter(comment ->
+                comment.getText().equals(userComment.getCommentText()) &&
+                        comment.getId().equals(userCommentId.getId())).findFirst().isPresent());
+    }
+
+    @Test
+    public void testAddCommentToEventFailureShouldReturnForbidden() {
+        Account owner = getSavedAccount();
+        Account user = getSavedAccount();
+        Event event = getSavedEventMax(owner);
+        getSavedAccountEvent(user, event, getRoleMember());
+
+        CommentDTO commentDto = new CommentDTO("some text" + System.currentTimeMillis());
+
+        // without owner ID
+        given()
+            .body(commentDto)
+            .contentType(JSON)
+        .when()
+            .post(API+V1+EVENTS+EVENT_ID+COMMENTS, event.getId())
+        .then()
+            .statusCode(SC_FORBIDDEN);
+
+        // with a non-existent user id
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(Long.MAX_VALUE);
+        given()
+            .body(commentDto)
+            .contentType(JSON)
+        .when()
+            .post(API+V1+EVENTS+EVENT_ID+COMMENTS, event.getId())
+        .then()
+            .statusCode(SC_FORBIDDEN);
+
+        // with a non-existent event id
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user.getId());
+        given()
+            .body(commentDto)
+            .contentType(JSON)
+        .when()
+            .post(API+V1+EVENTS+EVENT_ID+COMMENTS, Long.MAX_VALUE)
+        .then()
+            .statusCode(SC_FORBIDDEN);
+    }
+
+    @Test
+    public void testAddCommentToEventFailureShouldReturnBadRequest() {
+        Account user = getSavedAccount();
+        Event event = getSavedEventMax(user);
+
+        // without a request body
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user.getId());
+        given()
+            .contentType(JSON)
+        .when()
+            .post(API+V1+EVENTS+EVENT_ID+COMMENTS, event.getId())
+        .then()
+            .statusCode(SC_BAD_REQUEST);
+
+        // with an empty comment text
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user.getId());
+        given()
+            .body(new CommentDTO(""))
+            .contentType(JSON)
+        .when()
+            .post(API+V1+EVENTS+EVENT_ID+COMMENTS, event.getId())
+        .then()
+            .statusCode(SC_BAD_REQUEST);
+
+        // with a comment text is null
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user.getId());
+        given()
+            .body(new CommentDTO())
+            .contentType(JSON)
+        .when()
+            .post(API+V1+EVENTS+EVENT_ID+COMMENTS, event.getId())
+        .then()
+            .statusCode(SC_BAD_REQUEST);
+    }
+
+    @Test
+    public void testAddPhotoToEventSuccess() {
+        Account owner = getSavedAccount();
+        Account user = getSavedAccount();
+        Event event = getSavedEventMax(owner);
+        getSavedAccountEvent(user, event, getRoleMember());
+
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(owner.getId());
+
+        MockMvcResponse response = given()
+            .multiPart(getFileFromResources(TEST_IMAGE_FILE_NAME))
+            .contentType(MULTIPART_FORM_DATA_VALUE)
+        .when()
+            .post(API+V1+EVENTS+EVENT_ID+PHOTOS, event.getId())
+        .then()
+            .statusCode(SC_CREATED).extract().response();
+
+        Photo ownerPhoto = this.photoService.get(response.as(IdInfo.class).getId());
+        assertNotNull(ownerPhoto.getName());
+        assertEquals(owner.getId(), ownerPhoto.getOwner().getId());
+
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user.getId());
+        String customName = "Hello from backend side!";
+        response = given()
+            .multiPart(getFileFromResources(TEST_IMAGE_FILE_NAME))
+            .param(PHOTO.NAME, customName)
+            .contentType(MULTIPART_FORM_DATA_VALUE)
+        .when()
+            .post(API+V1+EVENTS+EVENT_ID+PHOTOS, event.getId())
+        .then()
+            .statusCode(SC_CREATED).extract().response();
+
+        Photo userPhoto = this.photoService.get(response.as(IdInfo.class).getId());
+        assertEquals(customName, userPhoto.getName());
+        assertEquals(user.getId(), userPhoto.getOwner().getId());
+    }
+
+    @Test
+    public void testAddPhotoToEventFailureShouldReturnForbidden() {
+        Account user = getSavedAccount();
+        Event event = getSavedEventMax(user);
+
+        // without owner ID
+        given()
+            .multiPart(getFileFromResources(TEST_IMAGE_FILE_NAME))
+            .contentType(MULTIPART_FORM_DATA_VALUE)
+        .when()
+            .post(API+V1+EVENTS+EVENT_ID+PHOTOS, event.getId())
+        .then()
+            .statusCode(SC_FORBIDDEN);
+
+        // with a non-existent user id
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(Long.MAX_VALUE);
+        given()
+            .multiPart(getFileFromResources(TEST_IMAGE_FILE_NAME))
+            .contentType(MULTIPART_FORM_DATA_VALUE)
+        .when()
+            .post(API+V1+EVENTS+EVENT_ID+PHOTOS, event.getId())
+        .then()
+            .statusCode(SC_FORBIDDEN);
+
+        // with a non-existent event id
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user.getId());
+        given()
+            .multiPart(getFileFromResources(TEST_IMAGE_FILE_NAME))
+            .contentType(MULTIPART_FORM_DATA_VALUE)
+        .when()
+            .post(API+V1+EVENTS+EVENT_ID+PHOTOS, Long.MAX_VALUE)
+        .then()
+            .statusCode(SC_FORBIDDEN);
+    }
+
+    @Test
+    @Ignore
+    public void testAddPhotoToEventFailureShouldReturnBadRequest() {
+        Account user = getSavedAccount();
+        Event event = getSavedEventMax(user);
+
+        // without an image file
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user.getId());
+        given()
+            .contentType(MULTIPART_FORM_DATA_VALUE)
+        .when()
+            .post(API+V1+EVENTS+EVENT_ID+PHOTOS, event.getId())
+        .then()
+            .statusCode(SC_BAD_REQUEST);
+    }
 
 
     //***************************************
@@ -1315,7 +1532,7 @@ public class EventRestControllerIT extends AbstractIT {
         // todo: when there will be more types
 //        assertNotEquals(event.getEventType().getId(), eventDto.getEventTypeId());
         assertNotEquals(event.getLocation(), eventDto.getLocation());
-        assertNotEquals(event.isGeoServicesEnabled(), eventDto.getGeo()); // todo
+        assertNotEquals(event.isGeoServicesEnabled(), eventDto.getGeo());
 
         Mockito.when(springMethodSecurityService.getUserId()).thenReturn(owner.getId());
         given()
@@ -1418,13 +1635,229 @@ public class EventRestControllerIT extends AbstractIT {
             .statusCode(SC_FORBIDDEN);
     }
 
+    @Test
+    public void testUpdateEventFailureShouldReturnBadRequest() {
+        // todo: check logic (private & password)!, (geo & location)!, maybe(event type, name, description)?
+    }
 
 
+    @Test
+    public void testChangeRoleAccountInPublicEventSuccess() {
+        Account owner = getSavedAccount();
+        Account user1 = getSavedAccount();
+        Account user2 = getSavedAccount();
+        Event event = getSavedEventMax(owner);
+        getSavedAccountEvent(user1, event, getRoleMember());
+        getSavedAccountEvent(user2, event, getRoleMember());
 
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(user1.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(user2.getId(), event.getId()));
 
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(owner.getId());
+        given()
+            .param(ROLE.ID, ADMIN)
+        .when()
+            .put(API+V1+EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID+ROLES, event.getId(), user1.getId())
+        .then()
+            .statusCode(SC_OK);
 
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(user1.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(user2.getId(), event.getId()));
 
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user1.getId());
+        given()
+            .param(ROLE.ID, ADMIN)
+        .when()
+            .put(API+V1+EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID+ROLES, event.getId(), user2.getId())
+        .then()
+            .statusCode(SC_OK);
 
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(user1.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(user2.getId(), event.getId()));
+
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user2.getId());
+        given()
+            .param(ROLE.ID, MEMBER)
+        .when()
+            .put(API+V1+EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID+ROLES, event.getId(), user1.getId())
+        .then()
+            .statusCode(SC_OK);
+
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(user1.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(user2.getId(), event.getId()));
+    }
+
+    @Test
+    public void testChangeRoleAccountInEventFailureShouldReturnForbidden() {
+        Account owner = getSavedAccount();
+        Account admin = getSavedAccount();
+        Account member = getSavedAccount();
+        Event event = getSavedEventMax(owner);
+        getSavedAccountEvent(admin, event, getRoleAdmin());
+        getSavedAccountEvent(member, event, getRoleMember());
+
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(admin.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(member.getId(), event.getId()));
+
+        // the user does not exist or the user doesn't belong to the event
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(Long.MAX_VALUE);
+        given()
+            .param(ROLE.ID, ADMIN)
+        .when()
+            .put(API+V1+EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID+ROLES, event.getId(), member.getId())
+        .then()
+            .statusCode(SC_FORBIDDEN);
+
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(admin.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(member.getId(), event.getId()));
+
+        // attempt to change the role without permission
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(member.getId());
+        given()
+            .param(ROLE.ID, MEMBER)
+        .when()
+            .put(API+V1+EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID+ROLES, event.getId(), admin.getId())
+        .then()
+            .statusCode(SC_FORBIDDEN);
+
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(admin.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(member.getId(), event.getId()));
+    }
+
+    @Test
+    public void testChangeRoleAccountInEventFailureShouldReturnBadRequest() {
+        Account owner = getSavedAccount();
+        Account admin = getSavedAccount();
+        Account member = getSavedAccount();
+        Event event = getSavedEventMax(owner);
+        getSavedAccountEvent(admin, event, getRoleAdmin());
+        getSavedAccountEvent(member, event, getRoleMember());
+
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(admin.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(member.getId(), event.getId()));
+
+        // attempt to change the role of the owner
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(admin.getId());
+        given()
+            .param(ROLE.ID, ADMIN)
+        .when()
+            .put(API+V1+EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID+ROLES, event.getId(), owner.getId())
+        .then()
+            .statusCode(SC_BAD_REQUEST);
+
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(admin.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(member.getId(), event.getId()));
+
+        // attempt to set the owner role someone else
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(admin.getId());
+        given()
+            .param(ROLE.ID, RoleConstants.OWNER)
+        .when()
+            .put(API+V1+EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID+ROLES, event.getId(), member.getId())
+        .then()
+            .statusCode(SC_BAD_REQUEST);
+
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(admin.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(member.getId(), event.getId()));
+
+        // private event
+//        Event privateEvent = save(owner, setPrivate(getNewEventMax()));
+//        getSavedAccountEvent(admin, privateEvent, getRoleAdmin());
+//        getSavedAccountEvent(member, privateEvent, getRoleMember());
+//        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), privateEvent.getId()));
+//        assertEquals(getRoleAdmin(), this.roleService.getRole(admin.getId(), privateEvent.getId()));
+//        assertEquals(getRoleMember(), this.roleService.getRole(member.getId(), privateEvent.getId()));
+//
+//        // attempt to change the role without password
+//        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(owner.getId());
+//        given()
+//            .param(ROLE.ID, MEMBER)
+//        .when()
+//            .put(API+V1+EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID+ROLES, privateEvent.getId(), admin.getId())
+//        .then()
+//            .statusCode(SC_BAD_REQUEST);
+//
+//        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), privateEvent.getId()));
+//        assertEquals(getRoleAdmin(), this.roleService.getRole(admin.getId(), privateEvent.getId()));
+//        assertEquals(getRoleMember(), this.roleService.getRole(member.getId(), privateEvent.getId()));
+//
+//        // attempt to change the role with incorrect password
+//        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(owner.getId());
+//        given()
+//            .param(ROLE.ID, MEMBER)
+//            .param(EVENT.PASSWORD, privateEvent.getPassword() + "!")
+//        .when()
+//            .put(API+V1+EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID+ROLES, privateEvent.getId(), admin.getId())
+//        .then()
+//            .statusCode(SC_BAD_REQUEST);
+//
+//        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), privateEvent.getId()));
+//        assertEquals(getRoleAdmin(), this.roleService.getRole(admin.getId(), privateEvent.getId()));
+//        assertEquals(getRoleMember(), this.roleService.getRole(member.getId(), privateEvent.getId()));
+    }
+
+    @Test
+    public void testChangeRoleAccountInPrivateEventSuccess() {
+        Account owner = getSavedAccount();
+        Account user1 = getSavedAccount();
+        Account user2 = getSavedAccount();
+        Event event = save(owner, setPrivate(getNewEventMax()));
+        getSavedAccountEvent(user1, event, getRoleMember());
+        getSavedAccountEvent(user2, event, getRoleMember());
+
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(user1.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(user2.getId(), event.getId()));
+
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(owner.getId());
+        given()
+            .param(ROLE.ID, ADMIN)
+            .param(EVENT.PASSWORD, event.getPassword())
+        .when()
+            .put(API+V1+EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID+ROLES, event.getId(), user1.getId())
+        .then()
+            .statusCode(SC_OK);
+
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(user1.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(user2.getId(), event.getId()));
+
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user1.getId());
+        given()
+            .param(ROLE.ID, ADMIN)
+            .param(EVENT.PASSWORD, event.getPassword())
+        .when()
+            .put(API+V1+EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID+ROLES, event.getId(), user2.getId())
+        .then()
+            .statusCode(SC_OK);
+
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(user1.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(user2.getId(), event.getId()));
+
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user2.getId());
+        given()
+            .param(ROLE.ID, MEMBER)
+            .param(EVENT.PASSWORD, event.getPassword())
+        .when()
+            .put(API+V1+EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID+ROLES, event.getId(), user1.getId())
+        .then()
+            .statusCode(SC_OK);
+
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(user1.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(user2.getId(), event.getId()));
+    }
 
 
     //***************************************
@@ -1463,21 +1896,153 @@ public class EventRestControllerIT extends AbstractIT {
             .statusCode(SC_FORBIDDEN);
 
         // no permission
-        Account user = getSavedAccount();
-        assertEquals(1, this.accountEventService.getAccounts(event.getId()).size());
-        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
-        assertEquals(0, this.accountEventService.getEvents(user.getId()).size());
-        this.eventService.addOrUpdateAccountToEvent(user.getId(), event.getId(), MEMBER, null);
-        assertEquals(2, this.accountEventService.getAccounts(event.getId()).size());
-        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
-        assertEquals(1, this.accountEventService.getEvents(user.getId()).size());
+        Account member = getSavedAccount();
+        getSavedAccountEvent(member, event, getRoleMember());
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(member.getId(), event.getId()));
 
-        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user.getId());
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(member.getId());
         when()
             .delete(API+V1+EVENTS+EVENT_ID, event.getId())
         .then()
             .statusCode(SC_FORBIDDEN);
     }
+
+    @Test
+    public void testRemoveAccountFromEventSuccess() {
+        Account owner = getSavedAccount();
+        Account admin = getSavedAccount();
+        Account member = getSavedAccount();
+        Event event = save(owner, setPrivate(getNewEventMax()));
+        getSavedAccountEvent(admin, event, getRoleAdmin());
+        getSavedAccountEvent(member, event, getRoleMember());
+
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(admin.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(member.getId(), event.getId()));
+
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(admin.getId());
+        when()
+            .delete(API+V1+EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID, event.getId(), member.getId())
+        .then()
+            .statusCode(SC_NO_CONTENT);
+
+        assertEquals(2, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(admin.getId(), event.getId()));
+        assertNull(this.accountEventService.get(member.getId(), event.getId()));
+
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(owner.getId());
+        when()
+            .delete(API+V1+EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID, event.getId(), admin.getId())
+        .then()
+            .statusCode(SC_NO_CONTENT);
+
+        assertEquals(1, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertNull(this.accountEventService.get(admin.getId(), event.getId()));
+        assertNull(this.accountEventService.get(member.getId(), event.getId()));
+
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(owner.getId());
+        when()
+            .delete(API+V1+EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID, event.getId(), owner.getId())
+        .then()
+            .statusCode(SC_NO_CONTENT);
+
+        assertEquals(0, this.accountEventService.getAccounts(event.getId()).size());
+        assertNull(this.accountEventService.get(owner.getId(), event.getId()));
+        assertNull(this.accountEventService.get(admin.getId(), event.getId()));
+        assertNull(this.accountEventService.get(member.getId(), event.getId()));
+    }
+
+    @Test
+    public void testRemoveAccountFromEventShouldReturnForbidden() {
+        Account owner = getSavedAccount();
+        Account admin = getSavedAccount();
+        Account member = getSavedAccount();
+        Event event = save(owner, setPrivate(getNewEventMax()));
+        getSavedAccountEvent(admin, event, getRoleAdmin());
+        getSavedAccountEvent(member, event, getRoleMember());
+
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(admin.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(member.getId(), event.getId()));
+
+        // the user does not exist or the user doesn't belong to the event
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(Long.MAX_VALUE);
+        when()
+            .delete(API+V1+EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID, event.getId(), member.getId())
+        .then()
+            .statusCode(SC_FORBIDDEN);
+
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(admin.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(member.getId(), event.getId()));
+
+        // no permission
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(member.getId());
+        when()
+            .delete(API+V1+EVENTS+EVENT_ID+ACCOUNTS+ACCOUNT_ID, event.getId(), admin.getId())
+        .then()
+            .statusCode(SC_FORBIDDEN);
+    }
+
+    @Test
+    public void testRemoveUserFromEventSuccess() {
+        Account owner = getSavedAccount();
+        Account admin = getSavedAccount();
+        Account member = getSavedAccount();
+        Event event = save(owner, setPrivate(getNewEventMax()));
+        getSavedAccountEvent(admin, event, getRoleAdmin());
+        getSavedAccountEvent(member, event, getRoleMember());
+
+        assertEquals(3, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(admin.getId(), event.getId()));
+        assertEquals(getRoleMember(), this.roleService.getRole(member.getId(), event.getId()));
+
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(member.getId());
+        when()
+            .delete(API+V1+EVENTS+EVENT_ID+ACCOUNTS+SELF, event.getId())
+        .then()
+            .statusCode(SC_NO_CONTENT);
+
+        assertEquals(2, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertEquals(getRoleAdmin(), this.roleService.getRole(admin.getId(), event.getId()));
+        assertNull(this.accountEventService.get(member.getId(), event.getId()));
+
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(admin.getId());
+        when()
+            .delete(API+V1+EVENTS+EVENT_ID+ACCOUNTS+SELF, event.getId())
+        .then()
+            .statusCode(SC_NO_CONTENT);
+
+        assertEquals(1, this.accountEventService.getAccounts(event.getId()).size());
+        assertEquals(getRoleOwner(), this.roleService.getRole(owner.getId(), event.getId()));
+        assertNull(this.accountEventService.get(admin.getId(), event.getId()));
+        assertNull(this.accountEventService.get(member.getId(), event.getId()));
+
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(owner.getId());
+        when()
+            .delete(API+V1+EVENTS+EVENT_ID+ACCOUNTS+SELF, event.getId())
+        .then()
+            .statusCode(SC_NO_CONTENT);
+
+        assertEquals(0, this.accountEventService.getAccounts(event.getId()).size());
+        assertNull(this.accountEventService.get(owner.getId(), event.getId()));
+        assertNull(this.accountEventService.get(admin.getId(), event.getId()));
+        assertNull(this.accountEventService.get(member.getId(), event.getId()));
+    }
+
+
+    //***************************************
+    //                PRIVATE
+    //***************************************
+
 
     private EventInfo convert(final Event event) {
         EventInfo result = new EventInfo(event);

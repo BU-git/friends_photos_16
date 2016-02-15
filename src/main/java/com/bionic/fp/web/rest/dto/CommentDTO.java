@@ -15,6 +15,10 @@ public class CommentDTO {
 
     public CommentDTO() {}
 
+    public CommentDTO(String commentText) {
+        this.commentText = commentText;
+    }
+
     public String getCommentText() {
         return commentText;
     }

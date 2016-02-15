@@ -378,7 +378,7 @@ public class EventController {
     @RequestMapping(value = EVENT_ID+COMMENTS ,method = POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
     public IdInfo addComment(@PathVariable(value = EVENT.ID) final Long eventId,
-                           @RequestBody final CommentDTO commentDTO) {
+                             @RequestBody final CommentDTO commentDTO) {
         methodSecurityService.checkPermission(eventId, Role::isCanAddComments);
         Comment comment = new Comment();
         comment.setAuthor(methodSecurityService.getUser());
@@ -404,6 +404,7 @@ public class EventController {
                            @RequestParam(PHOTO.FILE) final MultipartFile file,
                            @RequestParam(value = PHOTO.NAME, required = false) final String name,
                            @RequestParam(value = PHOTO.DESCRIPTION, required = false) final String description) throws IOException {
+        this.methodSecurityService.checkPermission(eventId, Role::isCanAddPhotos);
         Long userId = this.methodSecurityService.getUserId();
         Photo photo = this.photoService.saveToFileSystem(eventId, userId, file, name);
         return new IdInfo(photo.getId());
@@ -476,8 +477,7 @@ public class EventController {
                                      @PathVariable(ACCOUNT.ID) final Long accountId,
                                      @RequestParam(value = ROLE.ID, required = false) Long roleId,
                                      @RequestParam(value = EVENT.PASSWORD, required = false) final String password) {
-        // todo: test and are this set of roles valid?
-        this.methodSecurityService.checkPermission(eventId, Role::isCanChangeSettings, Role::isCanAssignRoles);
+        this.methodSecurityService.checkPermission(eventId, Role::isCanAssignRoles);
         this.eventService.addOrUpdateAccountToEvent(accountId, eventId, roleId, password);
     }
 
@@ -522,7 +522,6 @@ public class EventController {
     @RequestMapping(value = EVENT_ID+ACCOUNTS+SELF, method = DELETE)
     @ResponseStatus(NO_CONTENT)
     public void deleteUserFromEvent(@PathVariable(EVENT.ID) final Long eventId) {
-        this.methodSecurityService.checkPermission(eventId, Role::isCanAssignRoles); // todo: change/add a new role to be responsible for this logic
         this.accountEventService.delete(eventId, this.methodSecurityService.getUserId());
     }
 

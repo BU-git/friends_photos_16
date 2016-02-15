@@ -1,7 +1,12 @@
 package com.bionic.fp;
 
 import com.bionic.fp.domain.*;
+import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -186,5 +191,27 @@ public class AbstractHelperTest {
         assertEquals(expected.getId(), actual.getId());
         assertEqualsDate(expected.getCreated(), actual.getCreated());
         assertEquals(expected, actual);
+    }
+
+    /**
+     * Return a file from resources by file name.
+     * If file name is empty or null then it returns path to resources of the application
+     *
+     * @param file the file
+     * @return a file
+     */
+    protected static File getFileFromResources(String file) {
+        if(StringUtils.isEmpty(file)) {
+            file = "";
+        }
+        URL resource = AbstractHelperTest.class.getClassLoader().getResource(file);
+        if(resource != null) {
+            try {
+                return Paths.get(resource.toURI()).toFile();
+            } catch (URISyntaxException e) {
+                throw new RuntimeException("The file " + file + " is not found in the resources");
+            }
+        }
+        return null;
     }
 }

@@ -35,7 +35,6 @@ import static org.junit.Assert.*;
 @ContextConfiguration("classpath:spring/test-root-context.xml")
 public abstract class AbstractIT extends AbstractDaoIT {
 
-    @Autowired protected EventDAO eventDAO;
     @Autowired protected EventService eventService;
     @Autowired protected AccountService accountService;
     @Autowired protected AccountEventService accountEventService;
