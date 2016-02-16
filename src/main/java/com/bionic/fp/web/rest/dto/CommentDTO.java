@@ -1,6 +1,6 @@
 package com.bionic.fp.web.rest.dto;
 
-import com.bionic.fp.Constants;
+import com.bionic.fp.Constants.RestConstants.COMMENT;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,8 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentDTO {
 
-    @JsonProperty(Constants.RestConstants.COMMENT.TEXT)
-    String commentText;
+    @JsonProperty(COMMENT.TEXT) String commentText;
 
     public CommentDTO() {}
 
@@ -22,7 +21,6 @@ public class CommentDTO {
     public String getCommentText() {
         return commentText;
     }
-
     public void setCommentText(String commentText) {
         this.commentText = commentText;
     }

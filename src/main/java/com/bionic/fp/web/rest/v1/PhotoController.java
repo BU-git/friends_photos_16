@@ -16,12 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.bionic.fp.Constants.RestConstants.*;
 import static com.bionic.fp.Constants.RestConstants.PATH.*;
-import static com.bionic.fp.util.Checks.check;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.*;
@@ -247,16 +244,20 @@ public class PhotoController {
 	 * @param photoId the photo id
 	 * @param commentDTO the comment
 	 */
-	@RequestMapping(value = PHOTO_ID+COMMENTS, method = POST, consumes = APPLICATION_JSON_VALUE)
+	@RequestMapping(value = PHOTO_ID+COMMENTS, method = POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	@ResponseStatus(CREATED)
-	public void addComment(@PathVariable(PHOTO.ID) final Long photoId,
-						   @RequestBody final CommentDTO commentDTO) {
+	@ResponseBody
+	public IdInfo addComment(@PathVariable(PHOTO.ID) final Long photoId,
+							 @RequestBody final CommentDTO commentDTO) {
+//		System.out.println(photoId);
 		Photo photo = photoService.getOrThrow(photoId);
 		this.methodSecurityService.checkPermission(photo.getEvent().getId(), Role::isCanAddComments);
 		Comment comment = new Comment();
 		comment.setAuthor(this.methodSecurityService.getUser());
 		comment.setText(commentDTO.getCommentText());
 		commentService.addCommentToPhoto(photoId, comment);
+		return new IdInfo(comment.getId());
+//		return new IdInfo(Long.MAX_VALUE);
 	}
 
 
@@ -278,7 +279,7 @@ public class PhotoController {
 	@ResponseBody
 	public PhotoInfo updatePhoto(@PathVariable(PHOTO.ID) final Long photoId,
 								 @RequestParam(value = PHOTO.NAME) final String name,
-								 @RequestParam(value = PHOTO.DESCRIPTION) final String description) {
+								 @RequestParam(value = PHOTO.DESCRIPTION, required = false) final String description) {
 		Photo photo = ofNullable(photoService.get(photoId)).orElseThrow(() -> new NotFoundException(photoId));
 		Long userId = this.methodSecurityService.getUserId();
 		if(userId.equals(photo.getOwner().getId())) {

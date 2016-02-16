@@ -375,8 +375,9 @@ public class EventController {
      * @param commentDTO the comment
      * @throws EventNotFoundException if the event is not found
      */
-    @RequestMapping(value = EVENT_ID+COMMENTS ,method = POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = EVENT_ID+COMMENTS, method = POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
+    @ResponseBody
     public IdInfo addComment(@PathVariable(value = EVENT.ID) final Long eventId,
                              @RequestBody final CommentDTO commentDTO) {
         methodSecurityService.checkPermission(eventId, Role::isCanAddComments);

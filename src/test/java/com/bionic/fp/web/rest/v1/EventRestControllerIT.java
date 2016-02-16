@@ -1,11 +1,10 @@
-package com.bionic.fp.web.rest;
+package com.bionic.fp.web.rest.v1;
 
 import com.bionic.fp.AbstractIT;
 import com.bionic.fp.Constants.RoleConstants;
 import com.bionic.fp.domain.*;
 import com.bionic.fp.service.impl.SpringMethodSecurityService;
 import com.bionic.fp.web.rest.dto.*;
-import com.bionic.fp.web.rest.v1.EventController;
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
 import com.jayway.restassured.module.mockmvc.response.MockMvcResponse;
 import org.junit.After;
@@ -1304,15 +1303,16 @@ public class EventRestControllerIT extends AbstractIT {
     @Test
     public void testAddCommentToEventSuccess() {
         Account owner = getSavedAccount();
-        Account user = getSavedAccount();
+        Account member = getSavedAccount();
         Event event = getSavedEventMax(owner);
-        getSavedAccountEvent(user, event, getRoleMember());
+        getSavedAccountEvent(member, event, getRoleMember());
 
         CommentDTO ownerComment = new CommentDTO("some text" + System.currentTimeMillis());
 
         assertEquals(0, this.commentService.getCommentsByEvent(event.getId()).size());
 
         Mockito.when(springMethodSecurityService.getUserId()).thenReturn(owner.getId());
+        Mockito.when(springMethodSecurityService.getUser()).thenReturn(owner);
         MockMvcResponse response = given()
             .body(ownerComment)
             .contentType(JSON)
@@ -1321,35 +1321,31 @@ public class EventRestControllerIT extends AbstractIT {
         .then()
             .statusCode(SC_CREATED).extract().response();
 
-        IdInfo ownerCommentId = response.as(IdInfo.class);
-
+        Long ownerCommentId = response.as(IdInfo.class).getId();
         List<Comment> comments = this.commentService.getCommentsByEvent(event.getId());
         assertEquals(1, comments.size());
-        assertTrue(comments.stream().filter(comment ->
-                comment.getText().equals(ownerComment.getCommentText()) &&
-                        comment.getId().equals(ownerCommentId.getId())).findFirst().isPresent());
+        assertTrue(comments.stream().filter(comment -> comment.getText().equals(ownerComment.getCommentText()) &&
+                                            comment.getId().equals(ownerCommentId)).findFirst().isPresent());
 
-        CommentDTO userComment = new CommentDTO("some text" + System.currentTimeMillis());
+        CommentDTO memberComment = new CommentDTO("some text" + System.currentTimeMillis());
 
-        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user.getId());
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(member.getId());
+        Mockito.when(springMethodSecurityService.getUser()).thenReturn(member);
         response = given()
-            .body(userComment)
+            .body(memberComment)
             .contentType(JSON)
         .when()
             .post(API+V1+EVENTS+EVENT_ID+COMMENTS, event.getId())
         .then()
             .statusCode(SC_CREATED).extract().response();
 
-        IdInfo userCommentId = response.as(IdInfo.class);
-
+        Long memberCommentId = response.as(IdInfo.class).getId();
         comments = this.commentService.getCommentsByEvent(event.getId());
         assertEquals(2, comments.size());
-        assertTrue(comments.stream().filter(comment ->
-                comment.getText().equals(userComment.getCommentText()) &&
-                        comment.getId().equals(userCommentId.getId())).findFirst().isPresent());
-        assertTrue(comments.stream().filter(comment ->
-                comment.getText().equals(userComment.getCommentText()) &&
-                        comment.getId().equals(userCommentId.getId())).findFirst().isPresent());
+        assertTrue(comments.stream().filter(comment -> comment.getText().equals(ownerComment.getCommentText()) &&
+                                            comment.getId().equals(ownerCommentId)).findFirst().isPresent());
+        assertTrue(comments.stream().filter(comment -> comment.getText().equals(memberComment.getCommentText()) &&
+                                            comment.getId().equals(memberCommentId)).findFirst().isPresent());
     }
 
     @Test
@@ -1407,6 +1403,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         // with an empty comment text
         Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user.getId());
+        Mockito.when(springMethodSecurityService.getUser()).thenReturn(user);
         given()
             .body(new CommentDTO(""))
             .contentType(JSON)
@@ -1417,6 +1414,7 @@ public class EventRestControllerIT extends AbstractIT {
 
         // with a comment text is null
         Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user.getId());
+        Mockito.when(springMethodSecurityService.getUser()).thenReturn(user);
         given()
             .body(new CommentDTO())
             .contentType(JSON)

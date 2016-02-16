@@ -4,6 +4,7 @@ import com.bionic.fp.domain.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -12,7 +13,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
@@ -191,6 +194,17 @@ public class AbstractHelperTest {
         assertEquals(expected.getId(), actual.getId());
         assertEqualsDate(expected.getCreated(), actual.getCreated());
         assertEquals(expected, actual);
+    }
+
+    protected  <PK extends Serializable> List<PK> mapToId(final Stream<IdEntity<PK>> stream) {
+        return stream.map(IdEntity::getId).collect(toList());
+    }
+
+    protected void assertEqualsIgnoreOrder(List<?> expected, List<?> actual) {
+        assertNotNull(expected);
+        assertNotNull(actual);
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     /**

@@ -2419,6 +2419,14 @@
         401 | UNAUTHORIZED
         403 | FORBIDDEN
 
+            {
+                "id": 4
+            }
+
+        Param Name | Nullable | Description
+        ---------- | -------- | -----------
+        id | false | the comment id
+
 	* ### Update the photo
 
     	#### @PUT
