@@ -236,7 +236,7 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/views/events-create-edit.html',
     '<!-- @namespace EventsController -->\n' +
-    '<div class="container">\n' +
+    '<div class="container white-bg">\n' +
     '    <div class="row">\n' +
     '        <div class="col-lg-8 col-xs-12">\n' +
     '            <form name="eventForm" ng-submit="ctrl.save(ctrl.event)">\n' +
@@ -345,20 +345,34 @@ module.run(['$templateCache', function($templateCache) {
     '        </section>\n' +
     '    </div>\n' +
     '    <div class="container row">\n' +
-    '        <section class="event-box col s12 m6 eff effect" ng-repeat="event in ctrl.events">\n' +
-    '            <img ng-src="api/v1/photos/{{event.photos[0]}}/file" alt="event" class="event">\n' +
+    '        <section class="event-box col s12 m6 eff effect" ng-repeat="event in ctrl.events" style="padding-bottom: 6px;">\n' +
+    '            <img style="height: 354px;" ng-src="api/v1/photos/{{event.photos[0]}}/file" alt="event" class="event">\n' +
+    '            <!--<img ng-src="img/event.jpg" alt="event" class="event">-->\n' +
     '\n' +
     '            <div class="status-bar-up row">\n' +
-    '                <p class="timestamp col s10">28.02.15 - {{::event.photos.length}} photos, 51 people 51</p>\n' +
+    '                <p class="timestamp col s10" style="margin-top: 14px;">28.02.15 - {{::event.photos.length}} photos, 51 people 51</p>\n' +
     '\n' +
-    '                <p class="status col s2">Open</p>\n' +
+    '                <p class="status col s2" style="margin-top: 14px;">Open</p>\n' +
     '            </div>\n' +
     '            <div class="status-bar-down row">\n' +
-    '                <p class="timestamp col s12">{{::event.description}}</p>\n' +
+    '                <p class="timestamp col s12" style="margin-top: 14px;">{{::event.description}}</p>\n' +
     '            </div>\n' +
     '            <div class="caption row">\n' +
-    '                <h4 class="col s12">Переглянути фотоальбом</h4>\n' +
-    '                <a class="view-more-btn" href="#" title="View More"></a>\n' +
+    '                <div style="padding: 15px 25px; color: white; text-align: right;">\n' +
+    '                    <a style="color: white"\n' +
+    '                       class="pull-right"\n' +
+    '                       href="#"\n' +
+    '                       type="button"\n' +
+    '                       ui-sref="home.events.edit({id: event.event_id})">\n' +
+    '                        <i class="fa fa-edit fa-2x"></i>\n' +
+    '                    </a>\n' +
+    '                </div>\n' +
+    '                <h4 class="col s12" style="margin-top: 60px;">Переглянути фотоальбом</h4>\n' +
+    '                <a class="view-more-btn"\n' +
+    '                   href="#"\n' +
+    '                   title="View More"\n' +
+    '                   type="button"\n' +
+    '                   ng-click="$event.preventDefault(); ctrl.showCarousel($event, event, event.photos)"></a>\n' +
     '\n' +
     '                <p class="col s12">Boombox 10 years concert</p>\n' +
     '\n' +
@@ -747,7 +761,7 @@ module.run(['$templateCache', function($templateCache) {
     '            <p class="user-name" ng-bind="$root.user.username"></p>\n' +
     '            <ul class="user-menu col s12">\n' +
     '                <li><a ui-sref="home.events">My events</a></li>\n' +
-    '                <li><a href="/new.html">New event</a></li>\n' +
+    '                <li><a ui-sref="home.events.create">New event</a></li>\n' +
     '                <li><a href="/search.html">Search</a></li>\n' +
     '                <li><a href="/invite.html">Invite friends</a></li>\n' +
     '                <li><a href="/index.html">Sign out</a></li>\n' +

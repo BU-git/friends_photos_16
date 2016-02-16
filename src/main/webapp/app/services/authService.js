@@ -14,15 +14,15 @@
             login: login
         });
 
-        function login(data) { debugger
+        function login(data) {
             return $q.when(data).then(function (data) {
                 if (angular.isString(data)) {
                     if (data === 'facebook')
                         return facebook.login();
                 } else {
-                    return $http.post(API_ENDPOINT + 'auth', data);
+                    return $http.form(API_ENDPOINT + 'auth', data);
                 }
-            }).then(function () { debugger
+            }).then(function () {
                 return $http.get(API_ENDPOINT + 'accounts/self').then(function (res) {
                     return res.data;
                 });

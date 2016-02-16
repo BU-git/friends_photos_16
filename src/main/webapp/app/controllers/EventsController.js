@@ -5,13 +5,14 @@
         .module('friends_photos')
         .controller('EventsController', EventsController);
 
-    EventsController.$inject = ['$injector', '$scope', 'eventsService', 'photosService'];
+    EventsController.$inject = ['$injector', '$scope', '$mdDialog', 'eventsService', 'photosService'];
 
-    function EventsController($injector, $scope, eventsService, photosService) {
+    function EventsController($injector, $scope, $mdDialog, eventsService, photosService) {
         var ctrl = this;
         angular.extend(ctrl, {
             listAction: listAction,
-            editAction: editAction
+            editAction: editAction,
+            showCarousel: $mdDialog.showCarousel
         });
 
         var testEvent = {
@@ -41,9 +42,9 @@
                 eventsService.getById(ctrl.eventId).then(function (event) {
                     ctrl.event = event;
                 });
-                //photosService.getEventPhotos(ctrl.eventId).then(function (photos) {
-                //    ctrl.photos = photos;
-                //});
+                photosService.getEventPhotos(ctrl.eventId).then(function (photos) {
+                    ctrl.photos = photos;
+                });
             } else {
                 ctrl.event = testEvent;
                 ctrl.photos = [];

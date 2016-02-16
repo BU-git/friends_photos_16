@@ -57,7 +57,7 @@
                 init($window, $q).then(function () {
                     FB.getLoginStatus(function(res) {
                         if (res.status === 'connected' && res.authResponse) {
-                            $http.post('api/v1/auth/fb', {
+                            $http.post('api/v1/accounts/fb', {
                                 "token": res.authResponse.accessToken,
                                 "social_id": res.authResponse.userID,
                                 "email": "email@gmail.com",

@@ -5,9 +5,9 @@
         .module('friends_photos')
         .service('photosService', photosService);
 
-    photosService.$inject = ['$http', '$q'];
+    photosService.$inject = ['$http', '$q', 'API_ENDPOINT'];
 
-    function photosService($http, $q) {
+    function photosService($http, $q, API_ENDPOINT) {
         var service = this;
         // export public properties and functions
         angular.extend(service, {
@@ -29,7 +29,7 @@
                     event_id: eventId,
                     file: photos[pointer]
                 };
-                $http.form('photos', params, true).then(function () {
+                $http.form(API_ENDPOINT + 'photos/', params, true).then(function () {
                     pointer++;
                     deferred.notify(pointer);
                     uploadSequence(eventId, photos, pointer, deferred);
@@ -38,7 +38,7 @@
         }
 
         function getEventPhotos(eventId) {
-            return $http.get('events/' + eventId + '/photos/id').then(function (res) {
+            return $http.get(API_ENDPOINT + 'photos/id/events/' + eventId).then(function (res) {
                 return res.data.photos;
             });
         }

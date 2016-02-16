@@ -46,23 +46,23 @@
 
         function save(event) {
             if (event.event_id) {
-                return $http.put('events/' + event.event_id, event).then(function (res) {
+                return $http.put(API_ENDPOINT + 'events/' + event.event_id, event).then(function (res) {
                     // FIXME
                     return event.event_id;
                 });
             } else {
-                return $http.post('events', event).then(function (res) {
+                return $http.post(API_ENDPOINT + 'events', event).then(function (res) {
                     return res.data.id;
                 });
             }
         }
 
-        function uploadPhotos(eventId, photos) {
+        function uploadPhotos(eventId, photos) { debugger
             var params = {
                 event_id: eventId,
                 file: photos
             };
-            return $http.form('photos', params, true).then(function (res) {
+            return $http.form(API_ENDPOINT + 'events/' + eventId +'/photos', params, true).then(function (res) {
                 return res;
             });
         }

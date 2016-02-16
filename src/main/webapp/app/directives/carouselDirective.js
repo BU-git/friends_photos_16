@@ -10,31 +10,30 @@
     function carouselDirective() {
         var directive = {
             restrict: 'AE',
-            controller: Controller,
+            controller: CarouselController,
             controllerAs: 'ctrl',
             bindToController: {
                 event: '=',
                 photos: '=',
                 index: '@'
             },
-            template:
-                '<img photo="ctrl.photos[ctrl.index]" ng-click="ctrl.next()">',
+            template: '<img photo="ctrl.photos[ctrl.active]" ng-click="ctrl.next()">',
             link: link
         };
         return directive;
 
         function link(scope, elem, attrs) {}
 
-        function Controller() {
+        function CarouselController() {
             var ctrl = this;
             angular.extend(ctrl, {
-                index: angular.isDefined(ctrl.index) ? parseInt(ctrl.index) : 0,
+                active: isNaN(parseInt(ctrl.index)) ? 0 : parseInt(ctrl.index),
                 next: next
             });
 
             function next() {
-                ctrl.index = parseInt(ctrl.index);
-                ctrl.index = (ctrl.index == ctrl.photos.length - 1) ? 0 : ctrl.index + 1;
+                ctrl.active = parseInt(ctrl.active);
+                ctrl.active = (ctrl.active == ctrl.photos.length - 1) ? 0 : ctrl.active + 1;
             }
         }
     }
