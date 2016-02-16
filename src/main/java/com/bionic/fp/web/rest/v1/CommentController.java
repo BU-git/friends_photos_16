@@ -1,11 +1,8 @@
 package com.bionic.fp.web.rest.v1;
 
-import com.bionic.fp.Constants;
 import com.bionic.fp.Constants.RestConstants.ACCOUNT;
 import com.bionic.fp.Constants.RestConstants.COMMENT;
 import com.bionic.fp.domain.Comment;
-import com.bionic.fp.domain.Event;
-import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.AppException;
 import com.bionic.fp.exception.rest.NotFoundException;
 import com.bionic.fp.service.CommentService;

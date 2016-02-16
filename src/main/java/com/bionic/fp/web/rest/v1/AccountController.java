@@ -8,16 +8,22 @@ import com.bionic.fp.service.MethodSecurityService;
 import com.bionic.fp.service.PhotoService;
 import com.bionic.fp.web.rest.dto.*;
 import com.bionic.fp.service.AccountService;
+import com.bionic.fp.web.security.spring.infrastructure.filter.AuthenticationStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 import static com.bionic.fp.Constants.RestConstants.*;
 import static com.bionic.fp.Constants.RestConstants.PATH.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 
@@ -33,6 +39,7 @@ public class AccountController {
     @Autowired private AccountService accountService;
     @Autowired private AccountEventService accountEventService;
     @Autowired private MethodSecurityService methodSecurityService;
+    @Autowired private AuthenticationStrategy authenticationStrategy;
 
 
     //***************************************
@@ -171,6 +178,23 @@ public class AccountController {
 //    public final void logout(final HttpSession session) {
 //        SessionUtils.logout(session);
 //    }
+
+
+
+    //***************************************
+    //                 @DELETE
+    //***************************************
+
+
+    /**
+     * Deletes the user
+     */
+    @RequestMapping(value = SELF, method = DELETE)
+    @ResponseStatus(NO_CONTENT)
+    public void deleteUser(final HttpServletRequest request, final HttpServletResponse response) {
+        this.accountService.softDelete(this.methodSecurityService.getUserId());
+        this.authenticationStrategy.removeAuthentication(request, response);
+    }
 
 
     //***************************************

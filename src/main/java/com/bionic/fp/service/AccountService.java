@@ -210,19 +210,16 @@ public class AccountService {
         return ofNullable(this.get(accountId)).orElseThrow(() -> new AccountNotFoundException(accountId));
     }
 
-//    /**
-//     * Returns an account with its events by the account ID.
-//     *
-//     * @param accountId the account ID
-//     * @return an account with its events and null otherwise
-//     * @throws InvalidParameterException if the account ID is invalid
-//     * todo: delete it
-//     */
-//    @Deprecated
-//    public Account getWithEvents(final Long accountId) throws InvalidParameterException {
-//        checkAccount(accountId);
-//        return this.accountDAO.getWithEvents(accountId);
-//    }
+    /**
+     * Changes the deleted field to true (soft delete)
+     *
+     * @param accountId the account ID
+     * @throws InvalidParameterException if the account ID is invalid
+     */
+    public void softDelete(final Long accountId) throws InvalidParameterException {
+        checkAccount(accountId);
+        this.accountDAO.setDeleted(accountId, true);
+    }
 
     /**
      * Checks an email
@@ -312,5 +309,4 @@ public class AccountService {
         }
         return firstName != null ? firstName : lastName;
     }
-
 }

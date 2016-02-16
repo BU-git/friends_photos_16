@@ -30,7 +30,7 @@
     
     * ### [~~Update the user info~~] (FriendsPhotosRESTAPI.md/#update-the-user-info-1)
     
-    * ### [~~Delete an account~~] (FriendsPhotosRESTAPI.md/#delete-an-account-1)
+    * ### [Delete the user] (FriendsPhotosRESTAPI.md/#delete-the-user-1)
 
 * ## [Interaction with events] (FriendsPhotosRESTAPI.md/#interaction-with-events-1)
 
@@ -585,22 +585,10 @@
         400 | BAD REQUEST
         401 | UNAUTHORIZED
         
-    * ### ~~Delete an account~~
+    * ### Delete the user
 
     	#### @DELETE
-        #### /api/v1/accounts/{account_id}
-
-        ##### Path Params:
-
-        Path Key | Value
-		-------- | -----
-        account_id | 14
-
-        <p/>
-
-        Param Name | Required | Description
-		---------- | -------- | -----------
-        account_id | true | the account id
+        #### /api/v1/accounts/self
 
         ##### Response:
 
@@ -608,7 +596,6 @@
 		------ | -----------
         204 | NO CONTENT
         401 | UNAUTHORIZED
-        403 | FORBIDDEN
 
 * ## Interaction with events
 
