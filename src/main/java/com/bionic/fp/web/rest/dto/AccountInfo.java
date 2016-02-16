@@ -34,32 +34,39 @@ public class AccountInfo {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
-
     public String getUsername() {
         return username;
     }
-
     public void setUsername(String username) {
         this.username = username;
     }
-
     public String getImageUrl() {
         return imageUrl;
     }
-
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AccountInfo that = (AccountInfo) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (email != null ? !email.equals(that.email) : that.email != null) return false;
+        if (username != null ? !username.equals(that.username) : that.username != null) return false;
+        return imageUrl != null ? imageUrl.equals(that.imageUrl) : that.imageUrl == null;
+
     }
 }

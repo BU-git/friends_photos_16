@@ -1,6 +1,5 @@
 package com.bionic.fp.web.rest.dto;
 
-import com.bionic.fp.Constants;
 import com.bionic.fp.Constants.RestConstants.COMMENT;
 import com.bionic.fp.Constants.RestConstants.EVENT;
 import com.bionic.fp.Constants.RestConstants.PHOTO;
@@ -53,48 +52,53 @@ public class CommentInfo {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public String getText() {
         return text;
     }
-
     public void setText(String text) {
         this.text = text;
     }
-
     public Long getAuthorId() {
         return authorId;
     }
-
     public void setAuthorId(Long authorId) {
         this.authorId = authorId;
     }
-
     public LocalDateTime getDate() {
         return date;
     }
-
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
-
     public Long getEventId() {
         return eventId;
     }
-
     public void setEventId(Long eventId) {
         this.eventId = eventId;
     }
-
     public Long getPhotoId() {
         return photoId;
     }
-
     public void setPhotoId(Long photoId) {
         this.photoId = photoId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CommentInfo that = (CommentInfo) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (text != null ? !text.equals(that.text) : that.text != null) return false;
+        if (authorId != null ? !authorId.equals(that.authorId) : that.authorId != null) return false;
+        if (date != null ? !date.equals(that.date) : that.date != null) return false;
+        if (eventId != null ? !eventId.equals(that.eventId) : that.eventId != null) return false;
+        return photoId != null ? photoId.equals(that.photoId) : that.photoId == null;
+
     }
 }
