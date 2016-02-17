@@ -240,6 +240,6 @@ public class EventService {
         check(event != null, "The event should not be null");
         check(event.getName() != null, "The name of the event should not be null");
         check(event.getEventType() != null, "The type of the event should not be null");
-        check(event.getDescription() != null, "The description of the event should not be null");
+//        check(event.getDescription() != null, "The description of the event should not be null");
     }
 }
