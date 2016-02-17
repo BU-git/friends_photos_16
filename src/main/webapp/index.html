@@ -63,14 +63,15 @@
 <script src="app/components/events.js"></script>
 <script src="app/components/eventsCreateEdir.js"></script>
 <script src="app/components/login.js"></script>
+<script src="app/components/register.js"></script>
 <script src="app/components/signin.js"></script>
+<script src="app/controllers/AuthController.js"></script>
+<script src="app/controllers/EventsController.js"></script>
 <script src="app/config/config.js"></script>
 <script src="app/config/decorator.js"></script>
 <script src="app/config/loadingBar.js"></script>
 <script src="app/config/states.js"></script>
 <script src="app/config/unauthorizedInterceptor.js"></script>
-<script src="app/controllers/AuthController.js"></script>
-<script src="app/controllers/EventsController.js"></script>
 <script src="app/directives/carouselDirective.js"></script>
 <script src="app/directives/dropzoneDirective.js"></script>
 <script src="app/directives/editPhotosListDirective.js"></script>

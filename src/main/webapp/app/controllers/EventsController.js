@@ -15,12 +15,6 @@
             showCarousel: $mdDialog.showCarousel
         });
 
-        var testEvent = {
-            name: 'test event create',
-            type_id: '1',
-            description: 'Description Description Description'
-        };
-
         init();
 
         function init() {
@@ -46,7 +40,7 @@
                     ctrl.photos = photos;
                 });
             } else {
-                ctrl.event = testEvent;
+                ctrl.event = {};
                 ctrl.photos = [];
             }
         }

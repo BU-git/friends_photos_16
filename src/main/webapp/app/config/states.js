@@ -54,7 +54,7 @@
                 url: '/create',
                 views: {
                     'content@': {
-                        template: '<login>'
+                        template: '<register>'
                     }
                 }
             })
