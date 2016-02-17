@@ -167,21 +167,19 @@
         #### @POST
         #### /api/v1/auth
 
-        Header | Value
-		------ | -----
-		Content-Type | application/json
+        ##### Params:
 
-        ##### Body:
+        Key | Value
+        --- | -----
+        email | email@gmail.com
+        password | secret
 
-			{
-    			"email": "email@gmail.com",
-    			"password": "secret"
-			}
+        <p/>
 
         Param Name | Required | Description
-		---------- | -------- | -----------
+        ---------- | -------- | -----------
         email | true | the user email
-		password | true | the user password
+        password | true | the user password
 
         ##### Response:
 
@@ -192,12 +190,14 @@
 
 			{
     			"user_id": 4,
+    			"email": "email@gmail.com",
     			"token": "A#BCDE"
 			}
 
         Param Name | Nullable | Description
 		---------- | -------- | -----------
         user_id | false | the user id
+        email | false | the user email
 		token | true | the user token for future requests
 
 	* ### Register using email
@@ -205,22 +205,20 @@
         #### @POST
         #### /api/v1/auth/register
 
-        Header | Value
-		------ | -----
-		Content-Type | application/json
+        ##### Params:
 
-        ##### Body:
+        Key | Value
+        --- | -----
+        email | email@gmail.com
+        password | secret
+        username | Dude
 
-			{
-    			"email": "email@gmail.com",
-    			"password": "secret",
-                "username": "Dude"
-			}
+        <p/>
 
         Param Name | Required | Description
-		---------- | -------- | -----------
+        ---------- | -------- | -----------
         email | true | the user email
-		password | true | the user password
+        password | true | the user password
         username | false | the username
 
         ##### Response:
@@ -232,12 +230,14 @@
 
 			{
     			"user_id": 4,
+    			"email": "email@gmail.com",
     			"token": "A#BCDE"
 			}
 
         Param Name | Required | Description
 		---------- | -------- | -----------
         user_id | false | the user id
+        email | false | the user email
 		token | true | the user token for future requests
 
 	* ### Authentication via facebook
@@ -282,12 +282,14 @@
 
 			{
     			"user_id": 4,
+    			"email": "email@gmail.com",
     			"token": "A#BCDE"
 			}
 
         Param Name | Nullable | Description
 		---------- | -------- | -----------
         user_id | false | the user id
+        email | false | the user email
 		token | true | the user token for future requests
 
 	* ### ~~Authentication via vkontakte~~

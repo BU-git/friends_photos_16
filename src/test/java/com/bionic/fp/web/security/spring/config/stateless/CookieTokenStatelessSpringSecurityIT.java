@@ -1,7 +1,8 @@
 package com.bionic.fp.web.security.spring.config.stateless;
 
+import com.bionic.fp.Constants.RestConstants.ACCOUNT;
 import com.bionic.fp.domain.Account;
-import com.bionic.fp.web.rest.dto.AuthenticationRequest;
+import com.bionic.fp.web.rest.dto.AuthenticationResponse;
 import com.bionic.fp.web.rest.dto.AuthenticationSocialRequest;
 import com.bionic.fp.web.rest.dto.EntityInfoLists;
 import com.bionic.fp.web.security.spring.infrastructure.utils.TokenUtils;
@@ -47,18 +48,19 @@ public class CookieTokenStatelessSpringSecurityIT extends AbstractAuthentication
     @Test
     public void testAuthenticationByEmailSuccess() {
         Account account = getNewEmailAccount();
-        save(account);
-
-        AuthenticationRequest authRequest = new AuthenticationRequest(account.getEmail(), account.getPassword());
+        Account actual = save(account);
 
         MockMvcResponse response = given()
-            .body(authRequest)
-            .contentType(JSON)
+            .param(ACCOUNT.EMAIL, account.getEmail())
+            .param(ACCOUNT.PASSWORD, account.getPassword())
         .when()
-            .post(API + V1 + AUTH)
+            .post(API+V1+AUTH)
         .then()
-            .statusCode(SC_OK)
-        .extract().response();
+            .statusCode(SC_OK).extract().response();
+
+        AuthenticationResponse authResponse = response.as(AuthenticationResponse.class);
+        assertEquals(actual.getId(), authResponse.getUserId());
+        assertEquals(actual.getEmail(), authResponse.getEmail());
 
         Cookie cookie = response.mockHttpServletResponse().getCookie(cookieToken);
         assertNotNull(cookie);
@@ -87,17 +89,20 @@ public class CookieTokenStatelessSpringSecurityIT extends AbstractAuthentication
     @Test
     public void testAuthenticationViaRegisterByEmailSuccess() {
         Account account = getNewEmailAccount();
-        AuthenticationRequest authRequest = new AuthenticationRequest(
-                account.getEmail(), account.getPassword(), account.getUserName());
 
         MockMvcResponse response = given()
-            .body(authRequest)
-            .contentType(JSON)
+            .param(ACCOUNT.EMAIL, account.getEmail())
+            .param(ACCOUNT.PASSWORD, account.getPassword())
+            .param(ACCOUNT.USERNAME, account.getUserName())
         .when()
-            .post(API + V1 + AUTH + REGISTER)
+            .post(API+V1+AUTH+REGISTER)
         .then()
             .statusCode(SC_CREATED)
         .extract().response();
+
+        AuthenticationResponse authResponse = response.as(AuthenticationResponse.class);
+        assertNotNull(authResponse.getUserId());
+        assertEquals(account.getEmail(), authResponse.getEmail());
 
         Cookie cookie = response.mockHttpServletResponse().getCookie(cookieToken);
         assertNotNull(cookie);
@@ -141,8 +146,11 @@ public class CookieTokenStatelessSpringSecurityIT extends AbstractAuthentication
         .when()
             .post(API + V1 + AUTH + FB)
         .then()
-            .statusCode(SC_OK)
-        .extract().response();
+            .statusCode(SC_OK).extract().response();
+
+        AuthenticationResponse authResponse = response.as(AuthenticationResponse.class);
+        assertNotNull(authResponse.getUserId());
+        assertEquals(socialRequest.getEmail(), authResponse.getEmail());
 
         Cookie cookie = response.mockHttpServletResponse().getCookie(cookieToken);
         assertNotNull(cookie);
@@ -198,8 +206,11 @@ public class CookieTokenStatelessSpringSecurityIT extends AbstractAuthentication
         .when()
             .post(API + V1 + AUTH + FB)
         .then()
-            .statusCode(SC_OK)
-        .extract().response();
+            .statusCode(SC_OK).extract().response();
+
+        AuthenticationResponse authResponse = response.as(AuthenticationResponse.class);
+        assertEquals(account.getId(), authResponse.getUserId());
+        assertEquals(account.getEmail(), authResponse.getEmail());
 
         Cookie cookie = response.mockHttpServletResponse().getCookie(cookieToken);
         assertNotNull(cookie);

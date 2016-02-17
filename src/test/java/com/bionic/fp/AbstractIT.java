@@ -62,6 +62,22 @@ public abstract class AbstractIT extends AbstractDaoIT {
         return account;
     }
 
+    @Override
+    protected Account save(final Account account) {
+        assertNull(account.getId());
+        assertNull(account.getCreated());
+
+        Long accountId = this.accountService.registerByFP(account.getEmail(), account.getPassword(), account.getUserName());
+        Account actual = this.accountService.get(accountId);
+
+        assertNotNull(actual);
+        assertNotNull(actual.getId());
+        assertNotNull(actual.getCreated());
+        assertFalse(actual.isDeleted());
+
+        return actual;
+    }
+
     protected Event setPrivate(final Event event) {
         event.setPrivate(true);
         event.setPassword("secret");

@@ -208,7 +208,6 @@ public class AccountRestControllerIT extends AbstractIT {
     @Test
     public void testSoftDeleteUserSuccess() throws Exception {
         Account user = getSavedAccount();
-
         assertNotNull(this.accountService.get(user.getId()));
 
         Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user.getId());
@@ -216,7 +215,6 @@ public class AccountRestControllerIT extends AbstractIT {
             .delete(API+V1+ACCOUNTS+SELF)
         .then()
             .statusCode(SC_NO_CONTENT);
-
         assertNull(this.accountService.get(user.getId()));
     }
 

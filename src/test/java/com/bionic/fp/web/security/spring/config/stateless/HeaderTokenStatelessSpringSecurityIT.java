@@ -1,7 +1,7 @@
 package com.bionic.fp.web.security.spring.config.stateless;
 
+import com.bionic.fp.Constants.RestConstants.ACCOUNT;
 import com.bionic.fp.domain.Account;
-import com.bionic.fp.web.rest.dto.AuthenticationRequest;
 import com.bionic.fp.web.rest.dto.AuthenticationResponse;
 import com.bionic.fp.web.rest.dto.AuthenticationSocialRequest;
 import com.bionic.fp.web.rest.dto.EntityInfoLists;
@@ -48,13 +48,11 @@ public class HeaderTokenStatelessSpringSecurityIT extends AbstractAuthentication
     @Test
     public void testAuthenticationByEmailSuccess() {
         Account account = getNewEmailAccount();
-        save(account);
-
-        AuthenticationRequest authRequest = new AuthenticationRequest(account.getEmail(), account.getPassword());
+        Account actual = save(account);
 
         MockMvcResponse response = given()
-            .body(authRequest)
-            .contentType(JSON)
+            .param(ACCOUNT.EMAIL, account.getEmail())
+            .param(ACCOUNT.PASSWORD, account.getPassword())
         .when()
             .post(API+V1+AUTH)
         .then()
@@ -63,6 +61,9 @@ public class HeaderTokenStatelessSpringSecurityIT extends AbstractAuthentication
 
         assertTrue(response.mockHttpServletResponse().getCookies().length == 0);
         AuthenticationResponse authResponse = response.as(AuthenticationResponse.class);
+
+        assertEquals(actual.getId(), authResponse.getUserId());
+        assertEquals(actual.getEmail(), authResponse.getEmail());
 
         String token = authResponse.getToken();
         assertNotNull(token);
@@ -87,12 +88,11 @@ public class HeaderTokenStatelessSpringSecurityIT extends AbstractAuthentication
     @Test
     public void testAuthenticationViaRegisterByEmailSuccess() {
         Account account = getNewEmailAccount();
-        AuthenticationRequest authRequest = new AuthenticationRequest(
-                account.getEmail(), account.getPassword(), account.getUserName());
 
         MockMvcResponse response = given()
-            .body(authRequest)
-            .contentType(JSON)
+            .param(ACCOUNT.EMAIL, account.getEmail())
+            .param(ACCOUNT.PASSWORD, account.getPassword())
+            .param(ACCOUNT.USERNAME, account.getUserName())
         .when()
             .post(API+V1+AUTH+REGISTER)
         .then()
@@ -101,6 +101,9 @@ public class HeaderTokenStatelessSpringSecurityIT extends AbstractAuthentication
 
         assertTrue(response.mockHttpServletResponse().getCookies().length == 0);
         AuthenticationResponse authResponse = response.as(AuthenticationResponse.class);
+
+        assertNotNull(authResponse.getUserId());
+        assertEquals(account.getEmail(), authResponse.getEmail());
 
         String token = authResponse.getToken();
         assertNotNull(token);
@@ -141,14 +144,15 @@ public class HeaderTokenStatelessSpringSecurityIT extends AbstractAuthentication
         .when()
             .post(API+V1+AUTH+FB)
         .then()
-            .statusCode(SC_OK)
-        .extract().response();
+            .statusCode(SC_OK).extract().response();
 
         assertTrue(response.mockHttpServletResponse().getCookies().length == 0);
         AuthenticationResponse authResponse = response.as(AuthenticationResponse.class);
 
+        assertNotNull(authResponse.getUserId());
+        assertEquals(socialRequest.getEmail(), authResponse.getEmail());
+
         String token = authResponse.getToken();
-        assertNotNull(token);
         assertNotNull(token);
         assertEquals(this.tokenUtils.getUserEmail(token), socialRequest.getEmail());
         Account actual = this.accountService.get(this.tokenUtils.getUserId(token));
@@ -199,11 +203,14 @@ public class HeaderTokenStatelessSpringSecurityIT extends AbstractAuthentication
         .when()
             .post(API+V1+AUTH+FB)
         .then()
-            .statusCode(SC_OK)
-        .extract().response();
+            .statusCode(SC_OK).extract().response();
 
         assertTrue(response.mockHttpServletResponse().getCookies().length == 0);
         AuthenticationResponse authResponse = response.as(AuthenticationResponse.class);
+
+        assertEquals(account.getId(), authResponse.getUserId());
+        assertEquals(account.getEmail(), authResponse.getEmail());
+
         String token = authResponse.getToken();
         assertNotNull(token);
 

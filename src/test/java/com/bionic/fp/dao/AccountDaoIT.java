@@ -22,8 +22,8 @@ public class AccountDaoIT extends AbstractDaoIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
         Photo photo = getSavedPhoto(event, owner);
-        getSavedEventComment(event, owner);
-        getSavedPhotoComment(photo, owner);
+        getSavedComment(event, owner);
+        getSavedComment(photo, owner);
 
         assertAccountIsNotDeleted(owner, true, true, true, OWNER);
         assertAccountIsNotDeleted(owner, event, true);
@@ -68,8 +68,8 @@ public class AccountDaoIT extends AbstractDaoIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
         Photo photo = getSavedPhoto(event, owner);
-        getSavedEventComment(event, owner);
-        getSavedPhotoComment(photo, owner);
+        getSavedComment(event, owner);
+        getSavedComment(photo, owner);
 
         assertAccountIsNotDeleted(owner, true, true, true, OWNER);
         assertAccountIsNotDeleted(owner, event, true);
@@ -90,8 +90,8 @@ public class AccountDaoIT extends AbstractDaoIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
         getSavedPhoto(event, owner);
-//        getSavedEventComment(event, owner);   //fix physically delete account comments if it's necessary
-//        getSavedPhotoComment(photo, owner);
+//        getSavedComment(event, owner);   //fix physically delete account comments if it's necessary
+//        getSavedComment(photo, owner);
 
         assertAccountIsNotDeleted(owner, true, true, false, OWNER);
         assertAccountIsNotDeleted(owner, event, true);
@@ -109,8 +109,8 @@ public class AccountDaoIT extends AbstractDaoIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
         getSavedPhoto(event, owner);
-//        getSavedEventComment(event, owner);   //fix physically delete account comments if it's necessary
-//        getSavedPhotoComment(photo, owner);
+//        getSavedComment(event, owner);   //fix physically delete account comments if it's necessary
+//        getSavedComment(photo, owner);
 
         assertAccountIsNotDeleted(owner, true, true, false, OWNER);
         assertAccountIsNotDeleted(owner, event, true);

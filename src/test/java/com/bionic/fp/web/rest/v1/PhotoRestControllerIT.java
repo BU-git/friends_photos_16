@@ -28,9 +28,7 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.of;
 import static org.apache.http.HttpStatus.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * This is an integration test that verifies {@link PhotoController}
@@ -762,18 +760,21 @@ public class PhotoRestControllerIT extends AbstractIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMin(owner);
         Photo photo = getSavedPhoto(event, owner);
+        assertNotNull(this.photoService.get(photo.getId()));
 
         Mockito.when(springMethodSecurityService.getUserId()).thenReturn(owner.getId());
         when()
             .delete(API+V1+PHOTOS+PHOTO_ID, photo.getId())
         .then()
             .statusCode(SC_NO_CONTENT);
+        assertNull(this.photoService.get(photo.getId()));
 
         // and the following queries should return NO CONTENT
         when()
             .delete(API+V1+PHOTOS+PHOTO_ID, photo.getId())
         .then()
             .statusCode(SC_NO_CONTENT);
+        assertNull(this.photoService.get(photo.getId()));
     }
 
     @Test

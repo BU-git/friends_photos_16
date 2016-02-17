@@ -99,6 +99,5 @@ public class CommentInfo {
         if (date != null ? !date.equals(that.date) : that.date != null) return false;
         if (eventId != null ? !eventId.equals(that.eventId) : that.eventId != null) return false;
         return photoId != null ? photoId.equals(that.photoId) : that.photoId == null;
-
     }
 }

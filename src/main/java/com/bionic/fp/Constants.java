@@ -56,7 +56,6 @@ public final class Constants {
             String FB_TOKEN = "token";
             String VK_ID = "vkId";
             String VK_TOKEN = "token";
-			String EMAIL = "email";
         }
 
         public interface EVENT {

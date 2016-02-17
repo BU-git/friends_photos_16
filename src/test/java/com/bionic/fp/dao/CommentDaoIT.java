@@ -23,14 +23,14 @@ public class CommentDaoIT extends AbstractDaoIT {
         List<Comment> comments = this.commentDAO.getCommentsByEvent(event.getId());
         assertTrue(comments.isEmpty());
 
-        Comment comment1 = getSavedEventComment(event, owner);
+        Comment comment1 = getSavedComment(event, owner);
 
         comments = this.commentDAO.getCommentsByEvent(event.getId());
 
         assertEquals(1, comments.size());
         assertEqualsEntity(comment1, comments.get(0));
 
-        Comment comment2 = getSavedEventComment(event, owner);
+        Comment comment2 = getSavedComment(event, owner);
 
         comments = this.commentDAO.getCommentsByEvent(event.getId());
 
@@ -47,14 +47,14 @@ public class CommentDaoIT extends AbstractDaoIT {
         List<Comment> comments = this.commentDAO.getCommentsByPhoto(photo.getId());
         assertTrue(comments.isEmpty());
 
-        Comment comment1 = getSavedPhotoComment(photo, owner);
+        Comment comment1 = getSavedComment(photo, owner);
 
         comments = this.commentDAO.getCommentsByPhoto(photo.getId());
 
         assertEquals(1, comments.size());
         assertEqualsEntity(comment1, comments.get(0));
 
-        Comment comment2 = getSavedPhotoComment(photo, owner);
+        Comment comment2 = getSavedComment(photo, owner);
 
         comments = this.commentDAO.getCommentsByPhoto(photo.getId());
 
@@ -71,14 +71,14 @@ public class CommentDaoIT extends AbstractDaoIT {
         List<Comment> comments = this.commentDAO.getCommentsByAuthor(owner.getId());
         assertTrue(comments.isEmpty());
 
-        Comment comment1 = getSavedPhotoComment(photo, owner);
+        Comment comment1 = getSavedComment(photo, owner);
 
         comments = this.commentDAO.getCommentsByAuthor(owner.getId());
 
         assertEquals(1, comments.size());
         assertEqualsEntity(comment1, comments.get(0));
 
-        Comment comment2 = getSavedEventComment(event, owner);
+        Comment comment2 = getSavedComment(event, owner);
 
         comments = this.commentDAO.getCommentsByAuthor(owner.getId());
 
@@ -91,8 +91,8 @@ public class CommentDaoIT extends AbstractDaoIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
         Photo photo = getSavedPhoto(event, owner);
-        Comment comment1 = getSavedEventComment(event, owner);
-        Comment comment2 = getSavedPhotoComment(photo, owner);
+        Comment comment1 = getSavedComment(event, owner);
+        Comment comment2 = getSavedComment(photo, owner);
 
         assertCommentIsNotDeleted(comment1, owner, event, null);
         assertCommentIsNotDeleted(comment2, owner, null, photo);
@@ -103,10 +103,10 @@ public class CommentDaoIT extends AbstractDaoIT {
         assertCommentIsDeleted(comment1, owner, event, null);
         assertCommentIsDeleted(comment2, owner, null, photo);
 
-        Comment comment3 = getSavedEventComment(event, owner);
-        Comment comment4 = getSavedEventComment(event, owner);
-        Comment comment5 = getSavedPhotoComment(photo, owner);
-        Comment comment6 = getSavedPhotoComment(photo, owner);
+        Comment comment3 = getSavedComment(event, owner);
+        Comment comment4 = getSavedComment(event, owner);
+        Comment comment5 = getSavedComment(photo, owner);
+        Comment comment6 = getSavedComment(photo, owner);
         assertEqualsEntities(this.commentDAO.getCommentsByAuthor(owner.getId()), comment3, comment4, comment5,comment6);
         assertEqualsEntities(this.commentDAO.getCommentsByEvent(event.getId()), comment3, comment4);
         assertEqualsEntities(this.commentDAO.getCommentsByPhoto(photo.getId()), comment5, comment6);
@@ -137,8 +137,8 @@ public class CommentDaoIT extends AbstractDaoIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
         Photo photo = getSavedPhoto(event, owner);
-        Comment comment1 = getSavedEventComment(event, owner);
-        Comment comment2 = getSavedPhotoComment(photo, owner);
+        Comment comment1 = getSavedComment(event, owner);
+        Comment comment2 = getSavedComment(photo, owner);
 
         assertCommentIsNotDeleted(comment1, owner, event, null);
         assertCommentIsNotDeleted(comment2, owner, null, photo);
@@ -161,8 +161,8 @@ public class CommentDaoIT extends AbstractDaoIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
         Photo photo = getSavedPhoto(event, owner);
-        Comment comment1 = getSavedEventComment(event, owner);
-        Comment comment2 = getSavedPhotoComment(photo, owner);
+        Comment comment1 = getSavedComment(event, owner);
+        Comment comment2 = getSavedComment(photo, owner);
 
         assertCommentIsNotDeleted(comment1, owner, event, null);
         assertCommentIsNotDeleted(comment2, owner, null, photo);
@@ -182,8 +182,8 @@ public class CommentDaoIT extends AbstractDaoIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
         Photo photo = getSavedPhoto(event, owner);
-        Comment comment1 = getSavedEventComment(event, owner);
-        Comment comment2 = getSavedPhotoComment(photo, owner);
+        Comment comment1 = getSavedComment(event, owner);
+        Comment comment2 = getSavedComment(photo, owner);
 
         assertCommentIsNotDeleted(comment1, owner, event, null);
         assertCommentIsNotDeleted(comment2, owner, null, photo);
@@ -209,8 +209,8 @@ public class CommentDaoIT extends AbstractDaoIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
         Photo photo = getSavedPhoto(event, owner);
-        Comment comment1 = getSavedEventComment(event, owner);
-        Comment comment2 = getSavedPhotoComment(photo, owner);
+        Comment comment1 = getSavedComment(event, owner);
+        Comment comment2 = getSavedComment(photo, owner);
 
         Photo actual = this.commentDAO.getPhotoOf(comment2.getId());
 
@@ -223,8 +223,8 @@ public class CommentDaoIT extends AbstractDaoIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
         Photo photo = getSavedPhoto(event, owner);
-        Comment comment1 = getSavedEventComment(event, owner);
-        Comment comment2 = getSavedPhotoComment(photo, owner);
+        Comment comment1 = getSavedComment(event, owner);
+        Comment comment2 = getSavedComment(photo, owner);
 
         Event actual = this.commentDAO.getEventOf(comment1.getId());
 

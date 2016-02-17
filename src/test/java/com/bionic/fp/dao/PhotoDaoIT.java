@@ -105,7 +105,7 @@ public class PhotoDaoIT extends AbstractDaoIT {
         Event event = getSavedEventMax(owner);
         Event another = getSavedEventMax(account);
         Photo photo = getSavedPhoto(event, owner);
-        Comment comment = getSavedPhotoComment(photo, owner);
+        Comment comment = getSavedComment(photo, owner);
 
         assertPhotoIsNotDeleted(photo, event, owner, comment);
 
@@ -172,7 +172,7 @@ public class PhotoDaoIT extends AbstractDaoIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
         Photo photo = getSavedPhoto(event, owner);
-        Comment comment = getSavedPhotoComment(photo, owner);
+        Comment comment = getSavedComment(photo, owner);
 
         assertPhotoIsNotDeleted(photo, event, owner, comment);
 
@@ -190,7 +190,7 @@ public class PhotoDaoIT extends AbstractDaoIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
         Photo photo = getSavedPhoto(event, owner);
-        Comment comment = getSavedPhotoComment(photo, owner);
+        Comment comment = getSavedComment(photo, owner);
 
         assertPhotoIsNotDeleted(photo, event, owner, comment);
 
@@ -206,7 +206,7 @@ public class PhotoDaoIT extends AbstractDaoIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
         Photo photo = getSavedPhoto(event, owner);
-        Comment comment = getSavedPhotoComment(photo, owner);
+        Comment comment = getSavedComment(photo, owner);
 
         assertPhotoIsNotDeleted(photo, event, owner, comment);
 

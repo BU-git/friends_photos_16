@@ -5,7 +5,6 @@ import com.bionic.fp.domain.Coordinate;
 import com.bionic.fp.domain.Event;
 import com.bionic.fp.domain.Photo;
 import com.bionic.fp.exception.logic.EntityNotFoundException;
-import com.bionic.fp.util.GeoUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -44,7 +43,7 @@ public class EventDAOIT extends AbstractDaoIT {
         Account another = getSavedAccount();
         Event event = getSavedEventMax(owner);
         getSavedPhoto(event, owner);
-        getSavedEventComment(event, owner);
+        getSavedComment(event, owner);
 
         assertEventIsNotDeleted(owner.getId(), event);
 
@@ -85,7 +84,7 @@ public class EventDAOIT extends AbstractDaoIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
         Photo photo = getSavedPhoto(event, owner);
-        getSavedEventComment(event, owner);
+        getSavedComment(event, owner);
 
         assertEventIsNotDeleted(owner.getId(), event);
 
@@ -103,7 +102,7 @@ public class EventDAOIT extends AbstractDaoIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
         Photo photo = getSavedPhoto(event, owner);
-        getSavedEventComment(event, owner);
+        getSavedComment(event, owner);
 
         assertEventIsNotDeleted(owner.getId(), event);
 
@@ -119,7 +118,7 @@ public class EventDAOIT extends AbstractDaoIT {
         Account owner = getSavedAccount();
         Event event = getSavedEventMax(owner);
         Photo photo = getSavedPhoto(event, owner);
-        getSavedEventComment(event, owner);
+        getSavedComment(event, owner);
 
         assertEventIsNotDeleted(owner.getId(), event);
 

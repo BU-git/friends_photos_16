@@ -1600,7 +1600,9 @@ public class EventRestControllerIT extends AbstractIT {
     @Test
     public void testUpdateEventShouldReturnForbidden() {
         Account owner = getSavedAccount();
+        Account member = getSavedAccount();
         Event event = getSavedEventMin(owner);
+        getSavedAccountEvent(member, event, getRoleMember());
         EventInput eventDto = new EventInput(update(getNewEventMax()));
 
         // the user does not exist or the user doesn't belong to the event
@@ -1614,16 +1616,7 @@ public class EventRestControllerIT extends AbstractIT {
             .statusCode(SC_FORBIDDEN);
 
         // no permission
-        Account user = getSavedAccount();
-        assertEquals(1, this.accountEventService.getAccounts(event.getId()).size());
-        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
-        assertEquals(0, this.accountEventService.getEvents(user.getId()).size());
-        this.eventService.addOrUpdateAccountToEvent(user.getId(), event.getId(), MEMBER, null);
-        assertEquals(2, this.accountEventService.getAccounts(event.getId()).size());
-        assertEquals(1, this.accountEventService.getEvents(owner.getId()).size());
-        assertEquals(1, this.accountEventService.getEvents(user.getId()).size());
-
-        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(user.getId());
+        Mockito.when(springMethodSecurityService.getUserId()).thenReturn(member.getId());
         given()
             .body(eventDto)
             .contentType(JSON)
@@ -1867,18 +1860,21 @@ public class EventRestControllerIT extends AbstractIT {
     public void testRemoveEventByIdSuccess() {
         Account owner = getSavedAccount();
         Event event = getSavedEventMin(owner);
+        assertNotNull(this.eventService.get(event.getId()));
 
         Mockito.when(springMethodSecurityService.getUserId()).thenReturn(owner.getId());
         when()
             .delete(API+V1+EVENTS+EVENT_ID, event.getId())
         .then()
             .statusCode(SC_NO_CONTENT);
+        assertNull(this.eventService.get(event.getId()));
 
         // and the following queries should return NO CONTENT
         when()
             .delete(API+V1+EVENTS+EVENT_ID, event.getId())
         .then()
             .statusCode(SC_NO_CONTENT);
+        assertNull(this.eventService.get(event.getId()));
     }
 
     @Test

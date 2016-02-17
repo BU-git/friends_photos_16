@@ -1,7 +1,7 @@
 package com.bionic.fp.web.rest.v1;
 
+import com.bionic.fp.Constants.RestConstants.ACCOUNT;
 import com.bionic.fp.domain.Account;
-import com.bionic.fp.exception.auth.impl.EmptyEmailOrPasswordException;
 import com.bionic.fp.service.AccountService;
 import com.bionic.fp.service.MethodSecurityService;
 import com.bionic.fp.web.rest.dto.AuthenticationRequest;
@@ -10,7 +10,6 @@ import com.bionic.fp.web.rest.dto.AuthenticationSocialRequest;
 import com.bionic.fp.web.security.spring.infrastructure.User;
 import com.bionic.fp.web.security.spring.infrastructure.filter.AuthenticationStrategy;
 import com.bionic.fp.web.security.spring.infrastructure.utils.TokenUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -55,13 +54,9 @@ public class AuthenticationController {
     @RequestMapping(method = POST, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     @ResponseBody
-    public AuthenticationResponse authentication(HttpServletRequest request,
-												 HttpServletResponse response,
-												 @RequestParam String email,
-												 @RequestParam String password) {
-		if (StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {
-			throw new EmptyEmailOrPasswordException();
-		}
+    public AuthenticationResponse authentication(@RequestParam(ACCOUNT.EMAIL) final String email,
+                                                 @RequestParam(ACCOUNT.PASSWORD) final String password,
+                                                 final HttpServletRequest request, final HttpServletResponse response) {
         User user = this.getAuthenticatedUser(email, password);
         this.authenticationStrategy.saveAuthentication(user, request, response);
         String token = this.tokenUtils.generateToken(user);
@@ -76,16 +71,11 @@ public class AuthenticationController {
     @RequestMapping(value = REGISTER, method = POST, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
     @ResponseBody
-    public AuthenticationResponse register(HttpServletRequest request,
-										   HttpServletResponse response,
-										   @RequestParam String email,
-										   @RequestParam String password,
-										   @RequestParam(required = false) String userName) {
-		if (StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {
-			throw new EmptyEmailOrPasswordException();
-		}
+    public AuthenticationResponse register(@RequestParam(ACCOUNT.EMAIL) final String email,
+                                           @RequestParam(ACCOUNT.PASSWORD) final String password,
+                                           @RequestParam(value = ACCOUNT.USERNAME, required = false) final String userName,
+                                           final HttpServletRequest request,final HttpServletResponse response) {
         this.accountService.registerByFP(email, password, userName);
-
         User user = this.getAuthenticatedUser(email, password);
         this.authenticationStrategy.saveAuthentication(user, request, response);
         String token = this.tokenUtils.generateToken(user);

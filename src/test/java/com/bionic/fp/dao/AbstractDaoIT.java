@@ -172,13 +172,13 @@ public abstract class AbstractDaoIT extends AbstractHelperTest {
     //////////////////////////////////////////////
 
 
-    protected Comment getSavedEventComment(final Event event, final Account author) {
+    protected Comment getSavedComment(final Event event, final Account author) {
         Comment comment = getNewComment(author);
         this.commentDAO.createEventComment(event.getId(), comment);
         return comment;
     }
 
-    protected Comment getSavedPhotoComment(final Photo photo, final Account author) {
+    protected Comment getSavedComment(final Photo photo, final Account author) {
         Comment comment = getNewComment(author);
         this.commentDAO.createPhotoComment(photo.getId(), comment);
         return comment;

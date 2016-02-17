@@ -7,6 +7,7 @@ import com.bionic.fp.exception.AppException;
 import com.bionic.fp.exception.rest.NotFoundException;
 import com.bionic.fp.service.CommentService;
 import com.bionic.fp.service.MethodSecurityService;
+import com.bionic.fp.util.Checks;
 import com.bionic.fp.web.rest.dto.CommentDTO;
 import com.bionic.fp.web.rest.dto.CommentInfo;
 import com.bionic.fp.web.rest.dto.EntityInfoLists;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 import static com.bionic.fp.Constants.RestConstants.EVENT;
 import static com.bionic.fp.Constants.RestConstants.PATH.*;
 import static com.bionic.fp.Constants.RestConstants.PHOTO;
+import static com.bionic.fp.util.Checks.checkNotNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -213,7 +215,8 @@ public class CommentController {
 		Comment comment = ofNullable(this.commentService.get(commentId)).orElseThrow(() -> new NotFoundException(commentId));
 		Long userId = this.methodSecurityService.getUserId();
 		if(userId.equals(comment.getAuthor().getId())) {
-			if (StringUtils.isNotEmpty(commentDto.getCommentText()) && !commentDto.getCommentText().equals(comment.getText())) {
+			checkNotNull(commentDto.getCommentText(), "comment text");
+			if (!commentDto.getCommentText().equals(comment.getText())) {
 				comment.setText(commentDto.getCommentText());
 				this.commentService.update(comment);
 			}
