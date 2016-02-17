@@ -1,75 +1,77 @@
 <!-- @namespace EventsController -->
-<div class="container white-bg">
-    <div class="row">
-        <div class="col-lg-8 col-xs-12">
-            <form name="eventForm" ng-submit="ctrl.save(ctrl.event)">
-                <div layout="row">
-                    <md-input-container class="md-block" flex>
-                        <label>Name</label>
-                        <input ng-model="ctrl.event.name" type="text">
-                    </md-input-container>
-                    <div class="md-datepicker-container">
-                        <md-datepicker ng-model="event.date" md-placeholder="Enter date" class="pull-right">
-                        </md-datepicker>
+<section class="col l12 white-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-xs-12">
+                <form name="eventForm" ng-submit="ctrl.save(ctrl.event)">
+                    <div layout="row">
+                        <md-input-container class="md-block" flex>
+                            <label>Name</label>
+                            <input ng-model="ctrl.event.name" type="text">
+                        </md-input-container>
+                        <div class="md-datepicker-container">
+                            <md-datepicker ng-model="event.date" md-placeholder="Enter date" class="pull-right">
+                            </md-datepicker>
+                        </div>
                     </div>
-                </div>
 
-                <md-input-container class="md-block">
-                    <label>Description</label>
-                    <input ng-model="ctrl.event.description" type="text">
-                </md-input-container>
-
-                <div layout="row">
-                    <md-button class="md-icon-button md-primary"
-                               aria-label="Chose location"
-                               ng-click="ctrl.chooseLocation($event)">
-                        <md-icon md-font-set="material-icons">location_on</md-icon>
-                    </md-button>
-                    <md-input-container class="md-block" flex>
-                        <label>Lat</label>
-                        <input ng-model="ctrl.event.lat" type="text">
+                    <md-input-container class="md-block">
+                        <label>Description</label>
+                        <input ng-model="ctrl.event.description" type="text">
                     </md-input-container>
 
-                    <md-input-container class="md-block" flex>
-                        <label>Lng</label>
-                        <input ng-model="ctrl.event.lng" type="text">
-                    </md-input-container>
+                    <div layout="row">
+                        <md-button class="md-icon-button md-primary"
+                                   aria-label="Chose location"
+                                   ng-click="ctrl.chooseLocation($event)">
+                            <md-icon md-font-set="material-icons">location_on</md-icon>
+                        </md-button>
+                        <md-input-container class="md-block" flex>
+                            <label>Lat</label>
+                            <input ng-model="ctrl.event.lat" type="text">
+                        </md-input-container>
 
-                    <md-input-container>
-                        <label>Type</label>
-                        <md-select ng-model="ctrl.event.type_id">
-                            <md-option ng-repeat="type in [1, 2]" value="{{type}}">
-                                {{type}}
-                            </md-option>
-                        </md-select>
-                    </md-input-container>
+                        <md-input-container class="md-block" flex>
+                            <label>Lng</label>
+                            <input ng-model="ctrl.event.lng" type="text">
+                        </md-input-container>
+
+                        <md-input-container>
+                            <label>Type</label>
+                            <md-select ng-model="ctrl.event.type_id">
+                                <md-option ng-repeat="type in [1, 2]" value="{{type}}">
+                                    {{type}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+
+                    <div class="clearfix">
+                        <md-button class="md-raised md-primary pull-right" type="submit">Save</md-button>
+                    </div>
+
+                </form>
+
+                <div class="alert alert-success" type="alert" ng-show="ctrl.uploadedPhotos">
+                    Uploaded <strong>{{ctrl.uploadedPhotos}}/{{ctrl.photos.length}}</strong> photos
                 </div>
 
-                <div class="clearfix">
-                    <md-button class="md-raised md-primary pull-right" type="submit">Save</md-button>
+            </div>
+
+            <div class="col-lg-4 col-xs-12">
+                <div style="min-height: 325px; height: 100%; border: dotted 2px lightgrey; position: relative; border-radius: 5px;">
+                    <dropzone style="position: absolute; width: 100%; min-height: 100%; color: lightgray;"
+                              ng-model="ctrl.photos">
+                        <h3 style="line-height: 292px; text-align: center">Drag and drop files here</h3>
+                    </dropzone>
                 </div>
-
-            </form>
-
-            <div class="alert alert-success" type="alert" ng-show="ctrl.uploadedPhotos">
-                Uploaded <strong>{{ctrl.uploadedPhotos}}/{{ctrl.photos.length}}</strong> photos
             </div>
 
         </div>
 
-        <div class="col-lg-4 col-xs-12">
-            <div style="min-height: 325px; height: 100%; border: dotted 2px lightgrey; position: relative; border-radius: 5px;">
-                <dropzone style="position: absolute; width: 100%; min-height: 100%; color: lightgray;"
-                          ng-model="ctrl.photos">
-                    <h3 style="line-height: 292px; text-align: center">Drag and drop files here</h3>
-                </dropzone>
-            </div>
-        </div>
+        <md-divider></md-divider>
+
+        <edit-photos-list photos-list="ctrl.photos"></edit-photos-list>
 
     </div>
-
-    <md-divider></md-divider>
-
-    <edit-photos-list photos-list="ctrl.photos"></edit-photos-list>
-
-</div>
+</section>

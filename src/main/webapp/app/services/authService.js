@@ -11,7 +11,8 @@
         var service = this;
         // export public properties and functions
         angular.extend(service, {
-            login: login
+            login: login,
+            user: user
         });
 
         function login(data) {
@@ -23,9 +24,13 @@
                     return $http.form(API_ENDPOINT + 'auth', data);
                 }
             }).then(function () {
-                return $http.get(API_ENDPOINT + 'accounts/self').then(function (res) {
-                    return res.data;
-                });
+                return user();
+            });
+        }
+
+        function user() {
+            return $http.get(API_ENDPOINT + 'accounts/self').then(function (res) {
+                return res.data;
             });
         }
     }

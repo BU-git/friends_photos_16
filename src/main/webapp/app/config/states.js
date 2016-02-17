@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     angular
@@ -65,7 +65,7 @@
                 views: {
                     'content@': {
                         template: '<events action="list">'
-                       // templateUrl: 'app/views/events.html'
+                        // templateUrl: 'app/views/events.html'
                     },
                     'usermenu': {
                         templateUrl: 'app/views/usermenu.html'

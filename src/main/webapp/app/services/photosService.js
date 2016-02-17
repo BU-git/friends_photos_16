@@ -29,7 +29,7 @@
                     event_id: eventId,
                     file: photos[pointer]
                 };
-                $http.form(API_ENDPOINT + 'photos/', params, true).then(function () {
+                $http.form(API_ENDPOINT + 'events/' + eventId + '/photos', params, true).then(function () {
                     pointer++;
                     deferred.notify(pointer);
                     uploadSequence(eventId, photos, pointer, deferred);
