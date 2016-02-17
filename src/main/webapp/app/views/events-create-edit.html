@@ -7,8 +7,15 @@
                     <div layout="row">
                         <md-input-container class="md-block" flex>
                             <label>Name</label>
-                            <input ng-model="ctrl.event.name" type="text">
+                            <input required name="name" ng-model="ctrl.event.name">
+                            <div ng-messages="eventForm.name.$error">
+                                <div ng-message="required">This is required.</div>
+                            </div>
                         </md-input-container>
+                        <!--<md-input-container class="md-block" flex>-->
+                            <!--<label>Name</label>-->
+                            <!--<input ng-model="ctrl.event.name" type="text">-->
+                        <!--</md-input-container>-->
                         <div class="md-datepicker-container">
                             <md-datepicker ng-model="event.date" md-placeholder="Enter date" class="pull-right">
                             </md-datepicker>
@@ -28,12 +35,12 @@
                         </md-button>
                         <md-input-container class="md-block" flex>
                             <label>Lat</label>
-                            <input ng-model="ctrl.event.lat" type="text">
+                            <input ng-model="ctrl.event.location.lat" type="text">
                         </md-input-container>
 
                         <md-input-container class="md-block" flex>
                             <label>Lng</label>
-                            <input ng-model="ctrl.event.lng" type="text">
+                            <input ng-model="ctrl.event.location.lng" type="text">
                         </md-input-container>
 
                         <md-input-container>

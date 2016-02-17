@@ -5,15 +5,28 @@
         .module('friends_photos')
         .controller('EventsController', EventsController);
 
-    EventsController.$inject = ['$injector', '$scope', '$mdDialog', 'eventsService', 'photosService'];
+    EventsController.$inject = ['$injector', '$state', '$scope', '$mdDialog', 'eventsService', 'photosService'];
 
-    function EventsController($injector, $scope, $mdDialog, eventsService, photosService) {
+    function EventsController($injector, $state, $scope, $mdDialog, eventsService, photosService) {
         var ctrl = this;
         angular.extend(ctrl, {
             listAction: listAction,
             editAction: editAction,
             showCarousel: $mdDialog.showCarousel
         });
+        var eventModel = {
+            "name": "",
+            "description": "",
+            "type_id": undefined,
+            "visible": undefined,
+            "private": undefined,
+            "password": undefined,
+            "geo": undefined,
+            "location": {
+                "lat": undefined,
+                "lng": undefined
+            }
+        };
 
         init();
 
@@ -34,25 +47,28 @@
             });
             if (ctrl.eventId) {
                 eventsService.getById(ctrl.eventId).then(function (event) {
-                    ctrl.event = event;
+                    ctrl.event = angular.extend(eventModel, event);
                 });
                 photosService.getEventPhotos(ctrl.eventId).then(function (photos) {
                     ctrl.photos = photos;
                 });
             } else {
-                ctrl.event = {};
+                ctrl.event = eventModel;
                 ctrl.photos = [];
             }
         }
 
-        function save(event) {
+        function save(event) { debugger
             eventsService.save(event).then(function (eventId) {
+                return eventId;
+            }).then(function (eventId) {
                 photosService
                     .uploadPhotos(eventId, ctrl.photos.filter(function (file) {
                         return file instanceof File;
                     }))
                     .then(function success(result) {
                         ctrl.uploadedPhotos = result;
+                        if (!ctrl.eventId) $state.go('home.events.edit', {id: eventId});
                     }, function error() {
                         debugger
                     }, function progress(count) {
@@ -72,16 +88,16 @@
                     scope: angular.extend($scope.$new(), {
                         map: {
                             center: {
-                                latitude: ctrl.event.lat || 50.42270673841995,
-                                longitude: ctrl.event.lng || 30.55322265625
+                                latitude: ctrl.event.location.lat || 50.42270673841995,
+                                longitude: ctrl.event.location.lng || 30.55322265625
                             },
                             zoom: 8
                         },
                         marker: {
                             id: 0,
                             coords: {
-                                latitude: ctrl.event.lat || 50.42270673841995,
-                                longitude: ctrl.event.lng || 30.55322265625
+                                latitude: ctrl.event.location.lat || 50.42270673841995,
+                                longitude: ctrl.event.location.lng || 30.55322265625
                             },
                             options: {
                                 draggable: true
@@ -97,8 +113,8 @@
                         });
                     }]
                 }).then(function (coords) {
-                    ctrl.event.lat = coords.latitude;
-                    ctrl.event.lng = coords.longitude;
+                    ctrl.event.location.lat = coords.latitude;
+                    ctrl.event.location.lng = coords.longitude;
                 });
             }]);
         }
