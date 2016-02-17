@@ -12,7 +12,8 @@
         // export public properties and functions
         angular.extend(service, {
             login: login,
-            user: user
+            user: user,
+            register: register
         });
 
         function login(data) {
@@ -30,6 +31,12 @@
 
         function user() {
             return $http.get(API_ENDPOINT + 'accounts/self').then(function (res) {
+                return res.data;
+            });
+        }
+
+        function register(newUser) {
+            return $http.form(API_ENDPOINT + 'auth/register', newUser).then(function (res) { debugger
                 return res.data;
             });
         }

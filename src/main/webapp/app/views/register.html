@@ -1,0 +1,44 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 col-lg-offset-3">
+            <div class="login-box">
+                <h3>Register new account:</h3>
+
+                <form name="loginForm" class="login-form" ng-submit="ctrl.register(user)">
+                    <md-input-container class="md-block">
+                        <label>E-mail</label>
+                        <input ng-model="user.email" type="text">
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label>Password</label>
+                        <input ng-model="user.password" type="password">
+                    </md-input-container>
+
+                    <div class="alert alert-danger" ng-show="ctrl.error">
+                        <span ng-bind="ctrl.error"></span>
+                    </div>
+
+                    <p>Or use socials</p>
+
+                    <!--<fb:login-button show-faces="false" max-rows="1" size="large"></fb:login-button>-->
+                    <div layout="row">
+                        <md-button class="md-raised md-default">
+                            G+
+                        </md-button>
+                        <md-button class="md-raised md-primary" ng-click="ctrl.login('facebook')" type="button">
+                            FB
+                        </md-button>
+                    </div>
+
+                    <div layout="row">
+                        <md-button class="md-raised md-primary" type="submit">
+                            Register
+                        </md-button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
