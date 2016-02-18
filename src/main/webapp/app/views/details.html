@@ -1,0 +1,62 @@
+<!-- @namespace SearchController -->
+<section class="col l12 white-bg">
+    <div class="container row">
+        <section class="">
+            <form name="eventForm" ng-submit="ctrl.join(ctrl.event)">
+                <div layout="row">
+                    <md-input-container class="md-block" flex>
+                        <label>Name</label>
+                        <input disabled required name="name" ng-model="ctrl.event.name">
+                        <div ng-messages="eventForm.name.$error">
+                            <div ng-message="required">This is required.</div>
+                        </div>
+                    </md-input-container>
+                    <!--<md-input-container class="md-block" flex>-->
+                    <!--<label>Name</label>-->
+                    <!--<input ng-model="ctrl.event.name" type="text">-->
+                    <!--</md-input-container>-->
+                    <div class="md-datepicker-container">
+                        <md-datepicker disabled ng-model="event.date" md-placeholder="Enter date" class="pull-right">
+                        </md-datepicker>
+                    </div>
+                </div>
+
+                <md-input-container class="md-block">
+                    <label>Description</label>
+                    <input disabled ng-model="ctrl.event.description" type="text">
+                </md-input-container>
+
+                <div layout="row">
+                    <md-button class="md-icon-button md-primary" ng-show="event.geo"
+                               aria-label="Chose location"
+                               ng-click="ctrl.chooseLocation($event)">
+                        <md-icon md-font-set="material-icons">location_on</md-icon>
+                    </md-button>
+                    <md-input-container class="md-block" flex  ng-show="event.geo">
+                        <label>Lat</label>
+                        <input ng-model="ctrl.event.location.lat" type="text">
+                    </md-input-container>
+
+                    <md-input-container class="md-block" flex  ng-show="event.geo">
+                        <label>Lng</label>
+                        <input ng-model="ctrl.event.location.lng" type="text">
+                    </md-input-container>
+
+                    <md-input-container>
+                        <label>Type</label>
+                        <md-select disabled ng-model="ctrl.event.type_id">
+                            <md-option ng-repeat="type in [1, 2]" value="{{type}}">
+                                {{type}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+
+                <div class="clearfix">
+                    <md-button class="md-raised md-primary pull-right" type="submit">Присоедениться</md-button>
+                </div>
+
+            </form>
+        </section>
+    </div>
+</section>

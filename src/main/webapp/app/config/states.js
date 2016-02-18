@@ -98,6 +98,26 @@
                     }
                 }
             })
+            .state('home.events.search', {
+                url: '/search',
+                views: {
+                    'content@': {
+                        templateProvider: ['$stateParams', function ($stateParams) {
+                            return '<search></search>';
+                        }]
+                    }
+                }
+            })
+            .state('home.events.details', {
+                url: '/details/:id',
+                views: {
+                    'content@': {
+                        templateProvider: ['$stateParams', function ($stateParams) {
+                            return '<event-details></event-details>';
+                        }]
+                    }
+                }
+            })
 
             // search state
             .state('home.search', {

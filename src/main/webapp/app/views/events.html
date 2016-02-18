@@ -26,7 +26,7 @@
             <!--<img ng-src="img/event.jpg" alt="event" class="event">-->
 
             <div class="status-bar-up row">
-                <p class="timestamp col s10" style="margin-top: 14px;">28.02.15 - {{::event.photos.length}} photos, 51 people 51</p>
+            <p class="timestamp col s10" style="margin-top: 14px;">{{event.date | date: 'MM/dd/yyyy'}} - {{::event.photos.length}} photos</p>
 
                 <p class="status col s2" style="margin-top: 14px;">Open</p>
             </div>
